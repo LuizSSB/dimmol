@@ -162,43 +162,36 @@ namespace UI {
 			get { return _shrink; }
 			set { _shrink = ProcessPropertyChanged ("shrink", _shrink, value); }
 		}
-
 		private static float _linkScale = 1f;
 		public static float linkScale {
 			get { return _linkScale; }
 			set { _linkScale = ProcessPropertyChanged ("linkScale", _linkScale, value); }
 		}
-
 		private static float _depthfactor = -1f;
 		public static float depthfactor {
 			get { return _depthfactor; }
 			set { _depthfactor = ProcessPropertyChanged ("depthfactor", _depthfactor, value); }
 		}
-
 		private static float _globalRadius = 1.0f;
 		public static float globalRadius {
 			get { return _globalRadius; }
 			set { _globalRadius = ProcessPropertyChanged ("globalRadius", _globalRadius, value); }
 		}
-
 		private static float _bondWidth = 0.15f; // default bond width for cube/line
 		public static float bondWidth {
 			get { return _bondWidth; }
 			set { _bondWidth = ProcessPropertyChanged ("bondWidth", _bondWidth, value); }
 		}
-
 		private static float _drag = .6f;
 		public static float drag {
 			get { return _drag; }
 			set { _drag = ProcessPropertyChanged ("drag", _drag, value); }
 		}
-
 		private static float _spring = 5f;
 		public static float spring {
 			get { return _spring; }
 			set { _spring = ProcessPropertyChanged ("spring", _spring, value); }
 		}
-
 		private static float _highBFradius = 1f;
 		public static float highBFradius {
 			get { return _highBFradius; }

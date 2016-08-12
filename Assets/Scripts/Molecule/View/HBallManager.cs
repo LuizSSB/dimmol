@@ -77,13 +77,28 @@ public class HBallManager : GenericManager {
 	private EllipsoidUpdateHB[] ellipsoids;
 	
 	public static bool xgmml = false;
-	public static float depthFactor = 1.0f;
-	public static bool resetBrightness = false;
-	private static float oldDepthFactor = 1.0f;
 	private static bool mouseOvers = false;
 
 	// Luiz:
+//	public static float depthFactor = 1.0f;
+//	private static float oldDepthFactor = 1.0f;
+//	public static bool resetBrightness = false;
 //	public static float brightness = 1.0f;
+	private static float _depthFactor = 1f;
+	public static float depthFactor {
+		get { return _depthFactor; }
+		set { _depthFactor = ChangeManager.ProcessPropertyChanged (typeof(HBallManager), "depthFactor", _depthFactor, value); }
+	}
+	private static float _oldDepthFactor = 1f;
+	public static float oldDepthFactor {
+		get { return _oldDepthFactor; }
+		set { _oldDepthFactor = ChangeManager.ProcessPropertyChanged (typeof(HBallManager), "oldDepthFactor", _oldDepthFactor, value);  }
+	}
+	private static bool _resetBrightness = false;
+	public static bool resetBrightness {
+		get { return _resetBrightness; }
+		set { _resetBrightness = ChangeManager.ProcessPropertyChanged (typeof(HBallManager), "resetBrightness", _resetBrightness, value); }
+	}
 	private static float _brightness = 1f;
 	public static float brightness {
 		get { return _brightness; }

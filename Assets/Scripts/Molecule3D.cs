@@ -1184,17 +1184,12 @@ public class Molecule3D:MonoBehaviour {
 		HandlePropertyChanged (typeName, propertyName, param);
 	}
 	private void HandlePropertyChanged(string typeName, string propertyName, object newValue ) {
+		Debug.Log (string.Format ("### Property changed - {0}:{1} = {2}", typeName, propertyName, newValue));
+
 		if (UnityClusterPackage.NodeInformation.IsSlave) {
 			var type = Type.GetType (typeName);
 			var property = type.GetProperty (propertyName);
-			try
-			{
-				property.SetValue (null, newValue, null);
-			}
-			catch(NullReferenceException e) {
-				Debug.Log ("propertyName " + propertyName + " " + property + " newValue " + newValue);
-				throw e;
-			}
+			property.SetValue (null, newValue, null);
 		}
 	}
 	private static HashSet<Type> sRPCHandledTypes = new HashSet<Type> {

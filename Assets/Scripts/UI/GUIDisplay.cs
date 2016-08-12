@@ -138,11 +138,15 @@ namespace UI {
 		public Texture2D ext_surf;
 
 		private Texture2D directoryimage, fileimage;
-		
-		public static float oldScale = 100f;
 
 		// Luiz:
 //		public static float newScale = 100f;
+//		public static float oldScale = 100f;
+		private static float _oldScale = 100f;
+		public static float oldScale {
+			get { return _oldScale; }
+			set { _oldScale = ChangeManager.ProcessPropertyChanged (typeof(GUIDisplay), "oldScale", _oldScale, value); }
+		}
 		private static float _newScale = 100f;
 		public static float newScale {
 			get { return _newScale; }
@@ -152,10 +156,12 @@ namespace UI {
 				if(newScale != oldScale){
 					GenericManager manager = DisplayMolecule.GetManagers()[0];
 					if(!GUIMoleculeController.toggle_NA_CLICK){
+						Debug.Log ("h0wwwww");
 						manager.SetRadii(applyToAtoms, applyToRes, applyToChain);
 						oldScale = newScale;
 					}
 					else{
+						Debug.Log ("h4lp");
 						foreach(GameObject obj in Camera.main.GetComponent<ClickAtom>().objList)
 							manager.SetRadii((int)obj.GetComponent<BallUpdate>().number);	
 

@@ -97,9 +97,9 @@ public class ScenePreload_RNA : MonoBehaviour {
 		pdb_progress = 1.0f;
 		
 		//requestPDB.LoadPDBResource("1KX2");
-		UIData.ffType = UIData.FFType.HiRERNA;
-		UIData.atomtype = UIData.AtomType.hyperball;
-		UIData.bondtype = UIData.BondType.hyperstick;
+		UIData.Instance.ffType = UIData.FFType.HiRERNA;
+		UIData.Instance.atomtype = UIData.AtomType.hyperball;
+		UIData.Instance.bondtype = UIData.BondType.hyperstick;
 		GUIMoleculeController.shrink = 0.8f;
 		GUIMoleculeController.showOpenMenu =false;
 		GUIMoleculeController.showAtomMenu =true;

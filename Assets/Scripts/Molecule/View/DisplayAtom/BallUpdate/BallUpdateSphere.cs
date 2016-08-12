@@ -104,7 +104,7 @@ public class BallUpdateSphere : BallUpdate {
 			oldrayonFactor=rayonFactor;
 		}
 
-		if(UIData.atomtype != UIData.AtomType.sphere)
+		if(UIData.Instance.atomtype != UIData.AtomType.sphere)
 		{
 			renderer.enabled = false;
 			return;

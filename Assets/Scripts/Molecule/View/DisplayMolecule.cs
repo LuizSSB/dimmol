@@ -83,36 +83,36 @@ namespace Molecule.View {
 			IAtomStyle displayAtom;
 			// In case we changed the color of the atoms,
 			// we destroy the "permanent" particles and create new ones with the new colors
-			if(UIData.isConfirm || UIData.changeStructure) {
+			if(UIData.Instance.isConfirm || UIData.Instance.changeStructure) {
 //				DestroyParticles();
 				displayAtom = new AtomCubeStyle();
-				displayAtom.DisplayAtoms(UIData.atomtype, true);
+				displayAtom.DisplayAtoms(UIData.Instance.atomtype, true);
 //				displayAtom.DisplayAtoms(UIData.AtomType.particleball,true);
 			}
 			displayAtom=new AtomCubeStyle();
 			
-			displayAtom.DisplayAtoms(UIData.atomtype);
-			Debug.Log(UIData.atomtype);
+			displayAtom.DisplayAtoms(UIData.Instance.atomtype);
+			Debug.Log(UIData.Instance.atomtype);
 			
 			// This fixes a nasty bug that made carbon alpha chains/entire molecules disappear when switching between the two in sphere mode
-			if(UIData.atomtype == UIData.AtomType.sphere) {
-				UIData.isCubeToSphere = true;
-				UIData.isSphereToCube = false;
-			} else if (UIData.atomtype == UIData.AtomType.cube) {
-				UIData.isCubeToSphere = false ;
-				UIData.isSphereToCube = true ;
+			if(UIData.Instance.atomtype == UIData.AtomType.sphere) {
+				UIData.Instance.isCubeToSphere = true;
+				UIData.Instance.isSphereToCube = false;
+			} else if (UIData.Instance.atomtype == UIData.AtomType.cube) {
+				UIData.Instance.isCubeToSphere = false ;
+				UIData.Instance.isSphereToCube = true ;
 			}
 			
-			if (UIData.bondtype==UIData.BondType.cube||UIData.bondtype==UIData.BondType.hyperstick||UIData.bondtype==UIData.BondType.bbhyperstick) {
+			if (UIData.Instance.bondtype==UIData.BondType.cube||UIData.Instance.bondtype==UIData.BondType.hyperstick||UIData.Instance.bondtype==UIData.BondType.bbhyperstick) {
 				IBondStyle displayBond=new BondCubeStyle();
 				displayBond.DisplayBonds();
-			} else if (UIData.bondtype==UIData.BondType.line) {
+			} else if (UIData.Instance.bondtype==UIData.BondType.line) {
 				IBondStyle displayBond=new BondLineStyle();
 				displayBond.DisplayBonds();
-			} else if (UIData.bondtype==UIData.BondType.tubestick) {
+			} else if (UIData.Instance.bondtype==UIData.BondType.tubestick) {
 				IBondStyle displayBond=new BondTubeStyle();
 				displayBond.DisplayBonds();
-			} else if (UIData.bondtype==UIData.BondType.particlestick) {
+			} else if (UIData.Instance.bondtype==UIData.BondType.particlestick) {
 				IBondStyle displayBond=new BondParticleStyle();
 				displayBond.DisplayBonds();
 			}
@@ -120,15 +120,15 @@ namespace Molecule.View {
 		}
 		
 		/// <summary>
-		/// Gets the list of active managers based on the atom type provided and based on the bond type in UIData.
+		/// Gets the list of active managers based on the atom type provided and based on the bond type in UIData.Instance.
 		/// </summary>
 		/// <returns>
 		/// The list of managers. A List<GenericManager> object that should contains the "atom" manager in position 0 and the "bond" manager in position 1 (if there is one).
 		/// </returns>
 		public static List<GenericManager> GetManagers() {
-			UIData.AtomType aType = UIData.atomtype;
+			UIData.AtomType aType = UIData.Instance.atomtype;
 			List<GenericManager> managerList = new List<GenericManager>();
-			if(aType == UIData.AtomType.hyperball) {  //||  UIData.bondtype == UIData.BondType.hyperstick) {
+			if(aType == UIData.AtomType.hyperball) {  //||  UIData.Instance.bondtype == UIData.BondType.hyperstick) {
 				GameObject hbManagerObj = GameObject.FindGameObjectWithTag("HBallManager");
 				HBallManager hbManager = hbManagerObj.GetComponent<HBallManager>();
 				managerList.Add(hbManager);
@@ -145,15 +145,15 @@ namespace Molecule.View {
 				ShurikenParticleManager shManager =  psObj.GetComponent<ShurikenParticleManager>();
 				managerList.Add(shManager);
 			}
-			if (UIData.bondtype == UIData.BondType.line) {
+			if (UIData.Instance.bondtype == UIData.BondType.line) {
 				GameObject lineManagerObj = GameObject.FindGameObjectWithTag("LineManager");
 				LineManager lineManager = lineManagerObj.GetComponent<LineManager>();
 				managerList.Add(lineManager);
-			} else if (UIData.bondtype == UIData.BondType.cube) {
+			} else if (UIData.Instance.bondtype == UIData.BondType.cube) {
 				GameObject cubeBondManagerObj = GameObject.FindGameObjectWithTag("CubeBondManager");
 				CubeBondManager cubeBondManager = cubeBondManagerObj.GetComponent<CubeBondManager>();
 				managerList.Add(cubeBondManager);
-			} else if (UIData.bondtype == UIData.BondType.hyperstick) {
+			} else if (UIData.Instance.bondtype == UIData.BondType.hyperstick) {
 				GameObject hStickManagerObj = GameObject.FindGameObjectWithTag("HStickManager");
 				HStickManager hStickManager = hStickManagerObj.GetComponent<HStickManager>();
 				managerList.Add(hStickManager);
@@ -192,13 +192,13 @@ namespace Molecule.View {
 		}
 		
 		public static void ToParticle() { // Actually buggy with hyperstick since they don't use "enable/disable renderer" but are destroyed and recreated
-			if(UIData.atomtype!=UIData.AtomType.particleball) {
-				UIData.atomtype = UIData.AtomType.particleball;
-				UIData.bondtype = UIData.BondType.nobond ;
-				UIData.resetBondDisplay = true;
-				UIData.resetDisplay=true;
-				UIData.isCubeToSphere=false;
-				UIData.isSphereToCube=true;
+			if(UIData.Instance.atomtype!=UIData.AtomType.particleball) {
+				UIData.Instance.atomtype = UIData.AtomType.particleball;
+				UIData.Instance.bondtype = UIData.BondType.nobond ;
+				UIData.Instance.resetBondDisplay = true;
+				UIData.Instance.resetDisplay=true;
+				UIData.Instance.isCubeToSphere=false;
+				UIData.Instance.isSphereToCube=true;
 
 //				ParticleEffect.radiusFactor = GUIMoleculeController.rayon;
 				ShurikenParticleManager.radiusFactor = BallUpdate.radiusFactor;
@@ -212,26 +212,26 @@ namespace Molecule.View {
 		}
 		
 		public static void ToNotParticle(UIData.AtomType previousType, UIData.BondType previousBondType) {
-			if(previousType != UIData.AtomType.noatom && UIData.atomtype != previousType) {
+			if(previousType != UIData.AtomType.noatom && UIData.Instance.atomtype != previousType) {
 				GameObject shObject = GameObject.FindGameObjectWithTag("ShurikenParticleManager");
 				ShurikenParticleManager shManager = shObject.GetComponent<ShurikenParticleManager>();
 				shManager.pSystem.GetComponent<Renderer>().enabled = false;
 				shManager.enabled = false;
 				
-				UIData.atomtype = previousType;
-				UIData.bondtype = previousBondType;
-				UIData.resetBondDisplay = true ;
-				UIData.resetDisplay=true;
-				if(UIData.atomtype == UIData.AtomType.sphere){
-					UIData.isCubeToSphere=true;
-					UIData.isSphereToCube=false;
+				UIData.Instance.atomtype = previousType;
+				UIData.Instance.bondtype = previousBondType;
+				UIData.Instance.resetBondDisplay = true ;
+				UIData.Instance.resetDisplay=true;
+				if(UIData.Instance.atomtype == UIData.AtomType.sphere){
+					UIData.Instance.isCubeToSphere=true;
+					UIData.Instance.isSphereToCube=false;
 				}
 				else{
-					UIData.isCubeToSphere=false;
-					UIData.isSphereToCube=true;
+					UIData.Instance.isCubeToSphere=false;
+					UIData.Instance.isSphereToCube=true;
 				}
 
-				if(UIData.atomtype == UIData.AtomType.hyperball) {
+				if(UIData.Instance.atomtype == UIData.AtomType.hyperball) {
 					GameObject hbmObject = GameObject.FindGameObjectWithTag("HBallManager");
 					HBallManager hbManager = hbmObject.GetComponent<HBallManager>();
 					BallUpdate.resetRadii = true;
@@ -240,45 +240,45 @@ namespace Molecule.View {
 				}
 				
 				Debug.Log("ToHyperBall()" );
-				Debug.Log(UIData.atomtype.ToString());
-				Debug.Log(UIData.bondtype.ToString());
+				Debug.Log(UIData.Instance.atomtype.ToString());
+				Debug.Log(UIData.Instance.bondtype.ToString());
 			}
 		}
 		
 		public static void CubeToSphere() {
 			
-			UIData.resetDisplay=false;
+			UIData.Instance.resetDisplay=false;
 //			DestroyObject();
 			HideObject();
-			if(UIData.atomtype == UIData.AtomType.sphere){
+			if(UIData.Instance.atomtype == UIData.AtomType.sphere){
 				GameObject spmObject = GameObject.FindGameObjectWithTag("SphereManager");
 				SphereManager spManager = spmObject.GetComponent<SphereManager>();
 				spManager.EnableRenderers();
 			}
 			
-			if(!UIData.isSphereLoaded){
+			if(!UIData.Instance.isSphereLoaded){
 				IAtomStyle displayAtom;
 				
-				Debug.Log("UIData.atomtype :: "+UIData.atomtype);
+				Debug.Log("UIData.Instance.atomtype :: "+UIData.Instance.atomtype);
 				displayAtom = new AtomSphereStyle();
-				displayAtom.DisplayAtoms(UIData.atomtype);	
+				displayAtom.DisplayAtoms(UIData.Instance.atomtype);	
 			}
 			
-			if(UIData.bondtype==UIData.BondType.cube||UIData.bondtype==UIData.BondType.hyperstick||UIData.bondtype==UIData.BondType.bbhyperstick) {
+			if(UIData.Instance.bondtype==UIData.BondType.cube||UIData.Instance.bondtype==UIData.BondType.hyperstick||UIData.Instance.bondtype==UIData.BondType.bbhyperstick) {
 				IBondStyle displayBond=new BondCubeStyle();
 				displayBond.DisplayBonds();
 
 			}
-			else if(UIData.bondtype==UIData.BondType.line) {
+			else if(UIData.Instance.bondtype==UIData.BondType.line) {
 				IBondStyle displayBond=new BondLineStyle();
 				displayBond.DisplayBonds();
 
 			}
-			else if(UIData.bondtype==UIData.BondType.tubestick) {
+			else if(UIData.Instance.bondtype==UIData.BondType.tubestick) {
 				IBondStyle displayBond=new BondTubeStyle();
 				displayBond.DisplayBonds();
 			}
-			else if(UIData.bondtype==UIData.BondType.particlestick) {
+			else if(UIData.Instance.bondtype==UIData.BondType.particlestick) {
 				IBondStyle displayBond=new BondParticleStyle();
 				displayBond.DisplayBonds();
 			}			
@@ -290,50 +290,50 @@ namespace Molecule.View {
 		
 		
 		public static void SphereToCube() {
-			UIData.resetDisplay=false;
+			UIData.Instance.resetDisplay=false;
 //			DestroyObject();
 			HideObject();
-			if(UIData.atomtype == UIData.AtomType.cube){
+			if(UIData.Instance.atomtype == UIData.AtomType.cube){
 				GameObject cbmObject = GameObject.FindGameObjectWithTag("CubeManager");
 				CubeManager cbManager = cbmObject.GetComponent<CubeManager>();
 				cbManager.EnableRenderers();
 				
-				if(!UIData.isCubeLoaded){
+				if(!UIData.Instance.isCubeLoaded){
 					IAtomStyle displayAtom;
 
-					Debug.Log("UIData.atomtype :: "+UIData.atomtype);
+					Debug.Log("UIData.Instance.atomtype :: "+UIData.Instance.atomtype);
 					displayAtom = new AtomCubeStyle();
-					displayAtom.DisplayAtoms(UIData.atomtype);
+					displayAtom.DisplayAtoms(UIData.Instance.atomtype);
 				}
 			}
-			else if(UIData.atomtype == UIData.AtomType.hyperball){
+			else if(UIData.Instance.atomtype == UIData.AtomType.hyperball){
 				GameObject hbmObject = GameObject.FindGameObjectWithTag("HBallManager");
 				HBallManager hbManager = hbmObject.GetComponent<HBallManager>();
 				hbManager.EnableRenderers();
 				
-				if(!UIData.isHBallLoaded){
+				if(!UIData.Instance.isHBallLoaded){
 					IAtomStyle displayAtom;
 
-					Debug.Log("UIData.atomtype :: "+UIData.atomtype);
+					Debug.Log("UIData.Instance.atomtype :: "+UIData.Instance.atomtype);
 					displayAtom = new AtomCubeStyle();
-					displayAtom.DisplayAtoms(UIData.atomtype);
+					displayAtom.DisplayAtoms(UIData.Instance.atomtype);
 				}
 			}
 			
 			
-			if(UIData.bondtype==UIData.BondType.cube||UIData.bondtype==UIData.BondType.hyperstick||UIData.bondtype==UIData.BondType.bbhyperstick) {
+			if(UIData.Instance.bondtype==UIData.BondType.cube||UIData.Instance.bondtype==UIData.BondType.hyperstick||UIData.Instance.bondtype==UIData.BondType.bbhyperstick) {
 				IBondStyle displayBond=new BondCubeStyle();
 				displayBond.DisplayBonds();
 			}
-			else if(UIData.bondtype==UIData.BondType.line) {
+			else if(UIData.Instance.bondtype==UIData.BondType.line) {
 				IBondStyle displayBond=new BondLineStyle();
 				displayBond.DisplayBonds();
 			}
-			else if(UIData.bondtype==UIData.BondType.tubestick)	{
+			else if(UIData.Instance.bondtype==UIData.BondType.tubestick)	{
 				IBondStyle displayBond=new BondTubeStyle();
 				displayBond.DisplayBonds();
 			}
-			else if(UIData.bondtype==UIData.BondType.particlestick)	{
+			else if(UIData.Instance.bondtype==UIData.BondType.particlestick)	{
 				IBondStyle displayBond=new BondParticleStyle();
 				displayBond.DisplayBonds();
 			}
@@ -344,29 +344,29 @@ namespace Molecule.View {
 		}
 		
 		public static void ResetBondDisplay() {
-			UIData.resetBondDisplay=false;
+			UIData.Instance.resetBondDisplay=false;
 			
 			DestroyBondObject();
-			if(UIData.bondtype==UIData.BondType.cube||UIData.bondtype==UIData.BondType.hyperstick||UIData.bondtype==UIData.BondType.bbhyperstick) {
+			if(UIData.Instance.bondtype==UIData.BondType.cube||UIData.Instance.bondtype==UIData.BondType.hyperstick||UIData.Instance.bondtype==UIData.BondType.bbhyperstick) {
 				IBondStyle displayBond=new BondCubeStyle();
 				displayBond.DisplayBonds();
 			}
-			else if(UIData.bondtype==UIData.BondType.line) {
+			else if(UIData.Instance.bondtype==UIData.BondType.line) {
 				IBondStyle displayBond=new BondLineStyle();
 				displayBond.DisplayBonds();
 			}
-			else if(UIData.bondtype==UIData.BondType.tubestick)	{
+			else if(UIData.Instance.bondtype==UIData.BondType.tubestick)	{
 				IBondStyle displayBond=new BondTubeStyle();
 				displayBond.DisplayBonds();
 			}
-			else if(UIData.bondtype==UIData.BondType.particlestick)	{
+			else if(UIData.Instance.bondtype==UIData.BondType.particlestick)	{
 				IBondStyle displayBond=new BondParticleStyle();
 				displayBond.DisplayBonds();
 			}
-//			else if(UIData.bondtype==UIData.BondType.nobond) {}
+//			else if(UIData.Instance.bondtype==UIData.BondType.nobond) {}
 			CreatBondGameObjectArray();
 			
-			if(UIData.bondtype==UIData.BondType.cube||UIData.bondtype==UIData.BondType.hyperstick||UIData.bondtype==UIData.BondType.bbhyperstick)
+			if(UIData.Instance.bondtype==UIData.BondType.cube||UIData.Instance.bondtype==UIData.BondType.hyperstick||UIData.Instance.bondtype==UIData.BondType.bbhyperstick)
 			{
 					GameObject hbManagerObj = GameObject.FindGameObjectWithTag("HBallManager");
 					HBallManager hbManager = hbManagerObj.GetComponent<HBallManager>();
@@ -376,9 +376,9 @@ namespace Molecule.View {
 
 		
 		public static void Display() {
-//			UIData.EnableUpdate=false;
+//			UIData.Instance.EnableUpdate=false;
 			IAtomStyle displayAtom;
-			if(UIData.isSphereToCube) {
+			if(UIData.Instance.isSphereToCube) {
 				displayAtom=new AtomCubeStyle();
 				Debug.Log("DisplayMolecule.Display(): New atom cube style");
 			}
@@ -388,20 +388,20 @@ namespace Molecule.View {
 				Debug.Log("DisplayMolecule.Display(): New atom sphere style");
 			}
 			Debug.Log("DisplayAtoms here DisplayAtoms here DisplayAtoms here DisplayAtoms here");
-			displayAtom.DisplayAtoms(UIData.atomtype);
-			if(UIData.bondtype==UIData.BondType.cube||UIData.bondtype==UIData.BondType.hyperstick||UIData.bondtype==UIData.BondType.bbhyperstick) {
+			displayAtom.DisplayAtoms(UIData.Instance.atomtype);
+			if(UIData.Instance.bondtype==UIData.BondType.cube||UIData.Instance.bondtype==UIData.BondType.hyperstick||UIData.Instance.bondtype==UIData.BondType.bbhyperstick) {
 				IBondStyle displayBond=new BondCubeStyle();
 				displayBond.DisplayBonds();
 			}
-			else if(UIData.bondtype==UIData.BondType.line) {
+			else if(UIData.Instance.bondtype==UIData.BondType.line) {
 				IBondStyle displayBond=new BondLineStyle();
 				displayBond.DisplayBonds();
 			}
-			else if(UIData.bondtype==UIData.BondType.tubestick) {
+			else if(UIData.Instance.bondtype==UIData.BondType.tubestick) {
 				IBondStyle displayBond=new BondTubeStyle();
 				displayBond.DisplayBonds();
 			}
-			else if(UIData.bondtype==UIData.BondType.particlestick) {
+			else if(UIData.Instance.bondtype==UIData.BondType.particlestick) {
 				IBondStyle displayBond=new BondParticleStyle();
 				displayBond.DisplayBonds();
 			}
@@ -410,11 +410,11 @@ namespace Molecule.View {
 		
 			if (GUIMoleculeController.HYPERBALLSDEFAULT){
 				GUIMoleculeController.toggle_NA_HBALLSMOOTH = !GUIMoleculeController.toggle_NA_HBALLSMOOTH;
-				UIData.hballsmoothmode = GUIMoleculeController.toggle_NA_HBALLSMOOTH;
+				UIData.Instance.hballsmoothmode = GUIMoleculeController.toggle_NA_HBALLSMOOTH;
 			}
  
-			UIData.hasMoleculeDisplay=true;
-//			UIData.EnableUpdate=true;
+			UIData.Instance.hasMoleculeDisplay=true;
+//			UIData.Instance.EnableUpdate=true;
 
 		}
 		
@@ -439,7 +439,7 @@ namespace Molecule.View {
 		}
 		
 		private static void CheckResidues() {
-			if(!UIData.hasResidues)
+			if(!UIData.Instance.hasResidues)
 				return;
 			Debug.Log("Looking for protonated HIS"); // Doesn't handle N-ter and C-ter HIP
 			for(int i = 0; i < MoleculeModel.atomsResnamelist.Count; i++){
@@ -465,17 +465,17 @@ namespace Molecule.View {
 		}
 		
 		public static void HideObject() {
-			if(UIData.atomtype != UIData.AtomType.hyperball){
+			if(UIData.Instance.atomtype != UIData.AtomType.hyperball){
 				GameObject hbManagerObj = GameObject.FindGameObjectWithTag("HBallManager");
 				HBallManager hbManager = hbManagerObj.GetComponent<HBallManager>();
 				hbManager.DisableRenderers();
 			}
-			if(UIData.atomtype != UIData.AtomType.sphere){
+			if(UIData.Instance.atomtype != UIData.AtomType.sphere){
 				GameObject spManagerObj = GameObject.FindGameObjectWithTag("SphereManager");
 				SphereManager spManager = spManagerObj.GetComponent<SphereManager>();
 				spManager.DisableRenderers();
 			}
-			if(UIData.atomtype != UIData.AtomType.cube){
+			if(UIData.Instance.atomtype != UIData.AtomType.cube){
 				GameObject cbManagerObj = GameObject.FindGameObjectWithTag("CubeManager");
 				CubeManager cbManager = cbManagerObj.GetComponent<CubeManager>();
 				cbManager.DisableRenderers();
@@ -505,25 +505,25 @@ namespace Molecule.View {
 			SpriteManager.GetComponent <MeshRenderer>().enabled=false;
 			
 			//Disappear the BoxBound;
-			if(!UIData.openBound||UIData.atomtype!=UIData.AtomType.particleball) {
+			if(!UIData.Instance.openBound||UIData.Instance.atomtype!=UIData.AtomType.particleball) {
 				GameObject[] TransparentCube;
 				TransparentCube = GameObject.FindGameObjectsWithTag("TransparentCube");
 				for(int k=0;k<TransparentCube.Length;k++)
 					Object.Destroy(TransparentCube[k]);
 
-				UIData.openBound=false;
+				UIData.Instance.openBound=false;
 			}
 
-//			if(UIData.atomtype!=UIData.AtomType.particleball || UIData.isclear || UIData.changeStructure) {
-			if(UIData.isclear || UIData.changeStructure) {
+//			if(UIData.Instance.atomtype!=UIData.AtomType.particleball || UIData.Instance.isclear || UIData.Instance.changeStructure) {
+			if(UIData.Instance.isclear || UIData.Instance.changeStructure) {
 				
 				HideAtoms();
 				Debug.Log("AtomType:");
-				Debug.Log(UIData.atomtype.ToString());
-				Debug.Log(UIData.bondtype.ToString());
+				Debug.Log(UIData.Instance.atomtype.ToString());
+				Debug.Log(UIData.Instance.bondtype.ToString());
 				
 				Debug.Log("Entering :: Destroy ALL");
-				Debug.Log(UIData.atomtype);
+				Debug.Log(UIData.Instance.atomtype);
 				 
 				//Will be displayed before the atoms are removed
 				if(MoleculeModel.atoms!=null) {
@@ -596,7 +596,7 @@ namespace Molecule.View {
 		}
 		
 		public static void DeleteAllPhysics() {
-			UIData.resetInteractive=false;
+			UIData.Instance.resetInteractive=false;
 			if(MoleculeModel.atomsByChar!=null) {
 				foreach(string key in MoleculeModel.atomsByChar.Keys){
 					foreach(GameObject box in MoleculeModel.atomsByChar[key]) {
@@ -682,7 +682,7 @@ namespace Molecule.View {
 		}
 		
 		public static void AddAllPhysics() {
-			UIData.resetInteractive=false;
+			UIData.Instance.resetInteractive=false;
 //			Debug.Log("AddAllPhysics");
 			
 			if(MoleculeModel.atomsByChar!=null) {
@@ -818,7 +818,7 @@ namespace Molecule.View {
 		}
 		
 		public static void AddCombineMesh() {
-			UIData.resetMeshcombine=false;
+			UIData.Instance.resetMeshcombine=false;
 			GameObject 	MeshCombineManager;
 			if(!GameObject.Find("MeshCombineManager")) {
 				MeshCombineManager=GameObject.CreatePrimitive(PrimitiveType.Cube);

@@ -85,23 +85,23 @@ public class StickUpdateParticle : MonoBehaviour {
 	{
 		GetComponent<Renderer>().material.SetFloat("_Shrink",shrink);
 		GetComponent<Renderer>().material.SetFloat("_Scale",scale);
-		if(UIData.EnableUpdate)
+		if(UIData.Instance.EnableUpdate)
 		{	
 			GetComponent<Renderer>().material.SetVector("_TexPos1", atompointer1.transform.position);
 			GetComponent<Renderer>().material.SetVector("_TexPos2", atompointer2.transform.position);
 			GetComponent<Renderer>().material.SetColor("_Color", atompointer1.GetComponent<Renderer>().material.GetColor("_Color"));
 			GetComponent<Renderer>().material.SetColor("_Color2", atompointer2.GetComponent<Renderer>().material.GetColor("_Color"));
 		
-			if(UIData.isSphereToCube==true)
+			if(UIData.Instance.isSphereToCube==true)
 			{
-				if(UIData.atomtype==UIData.AtomType.hyperball||UIData.atomtype==UIData.AtomType.raycasting||UIData.atomtype==UIData.AtomType.rcbillboard||UIData.atomtype==UIData.AtomType.hbbillboard)
+				if(UIData.Instance.atomtype==UIData.AtomType.hyperball||UIData.Instance.atomtype==UIData.AtomType.raycasting||UIData.Instance.atomtype==UIData.AtomType.rcbillboard||UIData.Instance.atomtype==UIData.AtomType.hbbillboard)
 				{
 					if(atompointer1.GetComponent<Renderer>().material.HasProperty("_Rayon"))
 						GetComponent<Renderer>().material.SetFloat("_Rayon1",atompointer1.GetComponent<Renderer>().material.GetFloat("_Rayon"));
 					if(atompointer2.GetComponent<Renderer>().material.HasProperty("_Rayon"))
 						GetComponent<Renderer>().material.SetFloat("_Rayon2",atompointer2.GetComponent<Renderer>().material.GetFloat("_Rayon"));
 				}
-				else if(UIData.atomtype==UIData.AtomType.cube)
+				else if(UIData.Instance.atomtype==UIData.AtomType.cube)
 				{
 					GetComponent<Renderer>().material.SetFloat("_Rayon1",atompointer1.transform.lossyScale.x/2);
 					GetComponent<Renderer>().material.SetFloat("_Rayon2",atompointer2.transform.lossyScale.x/2);

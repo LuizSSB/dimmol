@@ -366,9 +366,9 @@ public class ImprovedFileBrowser {
                 GUI.enabled = true;
             GUILayout.EndScrollView();
             GUILayout.BeginHorizontal();
-		    UIData.loadHireRNA = GUILayout.Toggle(UIData.loadHireRNA, "HiRERNA model");
-			UIData.readHetAtom = GUILayout.Toggle (UIData.readHetAtom, "Read HetAtm?");
-			UIData.readWater = GUILayout.Toggle (UIData.readWater, "Read Water?");
+		    UIData.Instance.loadHireRNA = GUILayout.Toggle(UIData.Instance.loadHireRNA, "HiRERNA model");
+			UIData.Instance.readHetAtom = GUILayout.Toggle (UIData.Instance.readHetAtom, "Read HetAtm?");
+			UIData.Instance.readWater = GUILayout.Toggle (UIData.Instance.readWater, "Read Water?");
             GUILayout.EndHorizontal();
             GUILayout.BeginHorizontal();
                 GUILayout.FlexibleSpace();

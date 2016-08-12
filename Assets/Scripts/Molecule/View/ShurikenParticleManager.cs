@@ -133,8 +133,8 @@ public class ShurikenParticleManager : GenericManager {
 	
 /*	private void ForDebugging() {
 		radiusFactor = BallUpdate.radiusFactor;
-		test = UIData.isParticlesInitialized;
-		//Debug.Log(UIData.atomtype.ToString());
+		test = UIData.Instance.isParticlesInitialized;
+		//Debug.Log(UIData.Instance.atomtype.ToString());
 	}
 */
 	
@@ -153,7 +153,7 @@ public class ShurikenParticleManager : GenericManager {
 	}
 	
 	private void ResetColors() {
-		if(UIData.atomtype == UIData.AtomType.particleball) {
+		if(UIData.Instance.atomtype == UIData.AtomType.particleball) {
 			// Can't manage to change the color of the good atom. Particles and atomsColorList aren't organized the same way
 //			for(int i=0; i<pNumber; i++)
 //				currentParticles[i].color = MoleculeModel.atomsColorList[i];
@@ -183,7 +183,7 @@ public class ShurikenParticleManager : GenericManager {
 	
 	void Update () {
 		//ForDebugging();
-		if((UIData.atomtype != UIData.AtomType.particleball) || (!UIData.hasMoleculeDisplay) ){
+		if((UIData.Instance.atomtype != UIData.AtomType.particleball) || (!UIData.Instance.hasMoleculeDisplay) ){
 			DisableRenderers();
 			return;
 		}

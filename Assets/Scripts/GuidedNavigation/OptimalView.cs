@@ -262,12 +262,12 @@ namespace OptimalView
 //					Debug.Log("Best position4: "+best_pos_cart4[0]+" "+best_pos_cart4[1]+" "+best_pos_cart4[2]);
 			
 					// Place the camera at the new best position and make it face the target
-					UIData.optim_view = true;
+					UIData.Instance.optim_view = true;
 					maxCamera.optim_target = new Vector3(target[0], target[1], target[2]);
 					maxCamera.optim_cam_position = new Vector3(best_pos_cart[0], best_pos_cart[1], best_pos_cart[2]);
 					GameObject camera = GameObject.Find("LoadBox");
-					UIData.optim_view_start_point = camera.transform.position;
-					UIData.start_time = Time.time;
+					UIData.Instance.optim_view_start_point = camera.transform.position;
+					UIData.Instance.start_time = Time.time;
 					//camera.transform.position = new Vector3(best_pos_cart[0], best_pos_cart[1], best_pos_cart[2]);
 //					Wait();
 //					camera.transform.position = new Vector3(best_pos_cart2[0], best_pos_cart2[1], best_pos_cart2[2]);

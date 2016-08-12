@@ -62,7 +62,7 @@ public class AlphaChainSmoother {
 			MoleculeModel.CaSplineTypeList.Add(AtomModel.GetModel("chain" + caChainlist[k]));
 		MoleculeModel.CaSplineChainList=caChainlist;
 		
-		if(UIData.ffType == UIData.FFType.HiRERNA)
+		if(UIData.Instance.ffType == UIData.FFType.HiRERNA)
 			MoleculeModel.bondEPList=ControlMolecule.CreateBondsList_HiRERNA(atomsNameList);
 		else {
 			//MoleculeModel.bondList=ControlMolecule.CreateBondsEPList(alist,typelist);

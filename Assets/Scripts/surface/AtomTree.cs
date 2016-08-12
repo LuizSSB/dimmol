@@ -246,22 +246,22 @@ public class AtomTree {
 		for(int i=0; i<atomModels.Count; i++) {
 			//for(int i=0; i<atomChain.Count; i++) {
 			//string type = atomModels[i].type;
-			if(UI.UIData.surfColChain && !UI.UIData.surfColHydroKD){
+			if(UI.UIData.Instance.surfColChain && !UI.UIData.Instance.surfColHydroKD){
 				if(i > 0 && atomResname[i] != atomResname[i-1])
 					nbres++;
 				if(i>0 && atomChain[i] != atomChain[i-1])
 					nbres = 1;
 				// Coloration by domains (only for GLIC)
-				if(nbres > 182 && UI.UIData.isGLIC)
+				if(nbres > 182 && UI.UIData.Instance.isGLIC)
 					type = atomChain[i] + "L";
 				else
 					type = atomChain[i];
 			}
-			else if((UI.UIData.surfColHydroKD || UI.UIData.surfColPChim || UI.UIData.surfColHydroEng || UI.UIData.surfColHydroEis || UI.UIData.surfColHydroWO) && !UI.UIData.surfColChain)
+			else if((UI.UIData.Instance.surfColHydroKD || UI.UIData.Instance.surfColPChim || UI.UIData.Instance.surfColHydroEng || UI.UIData.Instance.surfColHydroEis || UI.UIData.Instance.surfColHydroWO) && !UI.UIData.Instance.surfColChain)
 				type = atomResname[i];
-			else if (UI.UIData.surfColBF)
+			else if (UI.UIData.Instance.surfColBF)
 				type = BfactorList[i].ToString();
-			else if (UI.UIData.spread_tree) // For Spreading when camera near the structure
+			else if (UI.UIData.Instance.spread_tree) // For Spreading when camera near the structure
 				type = atomsNumberList[i].ToString();
 			else
 				type = atomModels[i].type;

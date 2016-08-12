@@ -68,7 +68,7 @@ public class BFactorRep {
 			}
 
 			// Compute bfactor min
-			if(UIData.isRescale)
+			if(UIData.Instance.isRescale)
 				minValue = float.Parse (minval);
 			else{
 				minValue = GetMin(BfactCAlist);
@@ -80,7 +80,7 @@ public class BFactorRep {
 			// End of bfactor min
 
 			// Compute Bfactor max
-			if(UIData.isRescale)
+			if(UIData.Instance.isRescale)
 				maxValue = (float.Parse (maxval) - float.Parse (minval));
 			else{
 				maxValue = GetMax(BfactCAlist);
@@ -119,7 +119,7 @@ public class BFactorRep {
 
 		MoleculeModel.CaSplineChainList=caChainlist;
 			
-		if(UIData.ffType == UIData.FFType.HiRERNA)
+		if(UIData.Instance.ffType == UIData.FFType.HiRERNA)
 			MoleculeModel.bondEPList=ControlMolecule.CreateBondsList_HiRERNA(atomsNameList);
 		else {
 			//MoleculeModel.bondList=ControlMolecule.CreateBondsList(alist,typelist);

@@ -85,10 +85,10 @@ namespace Molecule.View.DisplayBond {
 		}
 		
 		public void DisplayBonds() {
-			if(UIData.bondtype==UIData.BondType.cube) {
+			if(UIData.Instance.bondtype==UIData.BondType.cube) {
 				bondList=MoleculeModel.bondEPList;
 				MoleculeModel.bondsnumber=bondList.Count;
-				if(UIData.secondarystruct)
+				if(UIData.Instance.secondarystruct)
 					bondEPList=MoleculeModel.bondCAList;
 				else
 					bondEPList=MoleculeModel.bondEPList;
@@ -104,8 +104,8 @@ namespace Molecule.View.DisplayBond {
 				
 				// HERE COMES THE BONDMANAGER
 			}
-			else if(UIData.bondtype==UIData.BondType.hyperstick) {
-				if(UIData.secondarystruct)
+			else if(UIData.Instance.bondtype==UIData.BondType.hyperstick) {
+				if(UIData.Instance.secondarystruct)
 					bondEPList=MoleculeModel.bondCAList;
 				else
 					bondEPList=MoleculeModel.bondEPList;
@@ -121,7 +121,7 @@ namespace Molecule.View.DisplayBond {
 //				GameObject hbManagerObj = GameObject.FindGameObjectWithTag("HBallManager");
 //				HBallManager hbManager = hbManagerObj.GetComponent<HBallManager>();
 //				hbManager.findBonds();
-//				if (UIData.atomtype == UIData.AtomType.hyperball)
+//				if (UIData.Instance.atomtype == UIData.AtomType.hyperball)
 //				{
 //					if (hbManager.ellipsoidViewEnabled() == true)
 //					{
@@ -134,8 +134,8 @@ namespace Molecule.View.DisplayBond {
 //					}
 //				}
 			}
-			else if(UIData.bondtype==UIData.BondType.bbhyperstick) {
-				if(UIData.secondarystruct)
+			else if(UIData.Instance.bondtype==UIData.BondType.bbhyperstick) {
+				if(UIData.Instance.secondarystruct)
 					bondEPList=MoleculeModel.bondCAList;
 				else
 					bondEPList=MoleculeModel.bondEPList;
@@ -170,7 +170,7 @@ namespace Molecule.View.DisplayBond {
 				//comp.atompointer1=(GameObject)MoleculeModel.atoms[atomsIds[0]];
 				//comp.atompointer2=(GameObject)MoleculeModel.atoms[atomsIds[1]];
 				
-				if(UI.UIData.atomtype == UI.UIData.AtomType.particleball){
+				if(UI.UIData.Instance.atomtype == UI.UIData.AtomType.particleball){
 					comp.atompointer1=(GameObject)MoleculeModel.atoms[atomsIds[0]];
 					comp.atompointer2=(GameObject)MoleculeModel.atoms[atomsIds[1]];
 				}
@@ -207,7 +207,7 @@ namespace Molecule.View.DisplayBond {
 			//comp.atompointer1=(GameObject)MoleculeModel.atoms[atomsIds[0]];
 			//comp.atompointer2=(GameObject)MoleculeModel.atoms[atomsIds[1]];
 			
-			if(UI.UIData.atomtype == UI.UIData.AtomType.particleball){
+			if(UI.UIData.Instance.atomtype == UI.UIData.AtomType.particleball){
 				comp.atompointer1=(GameObject)MoleculeModel.atoms[atomsIds[0]];
 				comp.atompointer2=(GameObject)MoleculeModel.atoms[atomsIds[1]];
 			}
@@ -228,7 +228,7 @@ namespace Molecule.View.DisplayBond {
 		//Billboard hypersticks
 		private void CreateBBCylinderByShader(int i) {
 			GameObject Stick;
-			if(UIData.toggleClip)
+			if(UIData.Instance.toggleClip)
 				Stick=Clip4HyperStick.CreateClip();
 			else
 				Stick=GameObject.CreatePrimitive(PrimitiveType.Plane);

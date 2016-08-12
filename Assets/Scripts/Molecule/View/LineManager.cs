@@ -33,7 +33,7 @@ public class LineManager : GenericManager {
 	}
 	
 	private void ResetColors() {
-		if(UIData.bondtype == UIData.BondType.line){
+		if(UIData.Instance.bondtype == UIData.BondType.line){
 			foreach(LineUpdate lu in lines)	{
 				lineRenderer = lu.GetComponent<LineRenderer>();
 				lineRenderer.SetColors(lu.atompointer1.GetComponent<Renderer>().material.GetColor("_Color"), lu.atompointer2.GetComponent<Renderer>().material.GetColor("_Color"));   
@@ -67,7 +67,7 @@ public class LineManager : GenericManager {
 	
 	// Update is called once per frame
 	void Update () {
-		if(UIData.bondtype != UIData.BondType.line)	{
+		if(UIData.Instance.bondtype != UIData.BondType.line)	{
 			enabled = false;
 			return;
 		}

@@ -311,7 +311,7 @@ public class GenerateMesh {
 			
 			if(ELECTRO)
 				surface.GetComponent<Renderer>().material = new Material(Shader.Find("Diffuse"));
-			/*else if(UI.UIData.toggleBfac){
+			/*else if(UI.UIData.Instance.toggleBfac){
 				surface.renderer.material = new Material(Shader.Find("Transparent/OIT_BLUE"));} */
 			else {
 				surface.GetComponent<Renderer>().material = new Material(Shader.Find("Mat Cap Cut"));

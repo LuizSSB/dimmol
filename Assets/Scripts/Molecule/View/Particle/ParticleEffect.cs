@@ -118,11 +118,11 @@ public class ParticleEffect : MonoBehaviour
         }
 // 		pn=p;
         emitter.particles = pn;
-		UI.UIData.isParticlesInitialized = true;
+		UI.UIData.Instance.isParticlesInitialized = true;
     }
     
     void Update() {
-	if ((p != null) && !UI.UIData.isParticlesInitialized && (UI.UIData.atomtype == UI.UIData.AtomType.particleball) )
+	if ((p != null) && !UI.UIData.Instance.isParticlesInitialized && (UI.UIData.Instance.atomtype == UI.UIData.AtomType.particleball) )
 		{
 			SpawnEffect();
 		}

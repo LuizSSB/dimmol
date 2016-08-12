@@ -92,7 +92,7 @@ public GameObject atompointer2=null;
 	// Update is called once per frame
 /*	
 	void Update () {
-		if(UIData.EnableUpdate)
+		if(UIData.Instance.EnableUpdate)
 		{
 			// Vector3[] points = new Vector3[2];
 			// points[0]=atompointer1.transform.position;

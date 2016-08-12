@@ -41,7 +41,7 @@ public class HStickManager : GenericManager {
 	}
 	
 	public override void ToggleDistanceCueing(bool enabling) {
-		if(UIData.bondtype != UIData.BondType.hyperstick)
+		if(UIData.Instance.bondtype != UIData.BondType.hyperstick)
 			return;
 		float attenuation;
 		attenuation = enabling? 1f : 0f;
@@ -53,7 +53,7 @@ public class HStickManager : GenericManager {
 	
 	
 	private void ResetColors() {
-		if(UIData.bondtype == UIData.BondType.hyperstick){
+		if(UIData.Instance.bondtype == UIData.BondType.hyperstick){
 			sticks = GameObject.FindObjectsOfType(typeof(StickUpdate)) as StickUpdate[];
 
 			for (int i=0; i< sticks.Length; i++) {
@@ -66,9 +66,9 @@ public class HStickManager : GenericManager {
 	}
 	
 	private void ResetTextures() {
-		if(UIData.bondtype == UIData.BondType.hyperstick){
+		if(UIData.Instance.bondtype == UIData.BondType.hyperstick){
 			sticks = GameObject.FindObjectsOfType(typeof(StickUpdate)) as StickUpdate[];
-			if(UIData.atomtype == UIData.AtomType.hyperball){
+			if(UIData.Instance.atomtype == UIData.AtomType.hyperball){
 				for (int i=0; i< sticks.Length; i++) {
 					sticks[i].GetComponent<Renderer>().material.SetTexture("_MatCap", sticks[i].atompointer1.GetComponent<Renderer>().material.GetTexture("_MatCap"));
 					sticks[i].GetComponent<Renderer>().material.SetTexture("_MatCap2", sticks[i].atompointer2.GetComponent<Renderer>().material.GetTexture("_MatCap"));
@@ -108,7 +108,7 @@ public class HStickManager : GenericManager {
 	/// </summary>
 	private void AdjustStickRadii() {
 		sticks = GameObject.FindObjectsOfType(typeof(StickUpdate)) as StickUpdate[];
-		if(UIData.atomtype == UIData.AtomType.hyperball) {
+		if(UIData.Instance.atomtype == UIData.AtomType.hyperball) {
 			for (int i=0; i< sticks.Length; i++) {
 				//if it's not a network
 				if(!xgmml){
@@ -160,7 +160,7 @@ public class HStickManager : GenericManager {
 	
 	// Update is called once per frame
 	void Update () {
-		if(UIData.bondtype != UIData.BondType.hyperstick) {
+		if(UIData.Instance.bondtype != UIData.BondType.hyperstick) {
 			enabled = false;
 			return;
 		}
@@ -173,7 +173,7 @@ public class HStickManager : GenericManager {
 		if(resetBrightness)
 			ResetBrightness();
 		
-		if(GUIMoleculeController.toggle_NA_INTERACTIVE && UIData.toggleGray)
+		if(GUIMoleculeController.toggle_NA_INTERACTIVE && UIData.Instance.toggleGray)
 			ResetColors();
 		
 		if (xgmml && (oldDepthFactor!=depthFactor)) {

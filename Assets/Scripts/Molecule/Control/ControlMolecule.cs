@@ -102,15 +102,15 @@ namespace Molecule.Control {
 			CreateResidues();
 			CreateResiduesSugar2();
 			
-			if(UIData.loadHireRNA)
+			if(UIData.Instance.loadHireRNA)
 			{
 				BuildHireRnaHydrogenBondsStructures();
 			}
 
 			if(GUIDisplay.pdbID == "3EI0")
-				UIData.isGLIC = true;
+				UIData.Instance.isGLIC = true;
 			
-			UIData.isParticlesInitialized = false ; // new file, new particle system needed
+			UIData.Instance.isParticlesInitialized = false ; // new file, new particle system needed
 			MoleculeModel.networkLoaded = false ; // protein loaded, network removed if present
 		}
 		
@@ -227,10 +227,10 @@ namespace Molecule.Control {
 			Debug.Log("CheckHiRERNAModel");
 			if (MoleculeModel.atomsNamelist.Exists(x => x == "C1" || x == "G1" || x == "G2" || x == "U1" || x == "A1" || x == "A2"))
 			{
-				UIData.ffType = UIData.FFType.HiRERNA;
-				UIData.loadHireRNA = true;
+				UIData.Instance.ffType = UIData.FFType.HiRERNA;
+				UIData.Instance.loadHireRNA = true;
 			}
-			Debug.Log (UIData.loadHireRNA);
+			Debug.Log (UIData.Instance.loadHireRNA);
 		}
 
 		static void BuildHireRnaHydrogenBondsStructures ()
@@ -408,7 +408,7 @@ namespace Molecule.Control {
 				MoleculeModel.CaSplineTypeList.Add(AtomModel.GetModel("chain"+caChainlist[k]));}
 			MoleculeModel.CaSplineChainList=caChainlist;	
 			
-			if(UIData.ffType == UIData.FFType.HiRERNA)
+			if(UIData.Instance.ffType == UIData.FFType.HiRERNA)
 			{
 				MoleculeModel.sequence = ControlMolecule.CreateSequenceString();
 				MoleculeModel.bondEPList=ControlMolecule.CreateBondsList_HiRERNA(atomsNameList);
@@ -466,7 +466,7 @@ namespace Molecule.Control {
 			List<int[]> bond=new List<int[]>();
 			List<int> h_already_in=new List<int>(); // T.T. to not link a hydrogen 2 times
 
-			if (UIData.connectivity_PDB && !UIData.connectivity_calc){
+			if (UIData.Instance.connectivity_PDB && !UIData.Instance.connectivity_calc){
 				return MoleculeModel.BondListFromPDB;
 			}
 
@@ -561,7 +561,7 @@ namespace Molecule.Control {
 				}
 			}
 			//In the case where we want to calculate bonds, and then add other bond inside the PDB.
-			if (UIData.connectivity_PDB && UIData.connectivity_calc){
+			if (UIData.Instance.connectivity_PDB && UIData.Instance.connectivity_calc){
 				for (int i=0; i<MoleculeModel.BondListFromPDB.Count; i++){
 					int atom1 = MoleculeModel.BondListFromPDB[i][0];
 					int atom2 = MoleculeModel.BondListFromPDB[i][1];

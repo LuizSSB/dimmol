@@ -93,6 +93,9 @@ namespace UI {
 	 * 
 	 */
 	public class GUIDisplay	{
+		// Luiz:
+		public const string DefaultTextureLocation = "lit_spheres/";
+
 		public static float guiScale = 1.0f;
 		public static float oldGuiScale = guiScale;
 		/* TODO:
@@ -137,7 +140,30 @@ namespace UI {
 		private Texture2D directoryimage, fileimage;
 		
 		public static float oldScale = 100f;
-		public static float newScale = 100f;
+
+		// Luiz:
+//		public static float newScale = 100f;
+		private static float _newScale = 100f;
+		public static float newScale {
+			get { return _newScale; }
+			set {
+				_newScale = ChangeManager.ProcessPropertyChanged (typeof(GUIDisplay), "newScale", _newScale, value);
+
+				if(newScale != oldScale){
+					GenericManager manager = DisplayMolecule.GetManagers()[0];
+					if(!GUIMoleculeController.toggle_NA_CLICK){
+						manager.SetRadii(applyToAtoms, applyToRes, applyToChain);
+						oldScale = newScale;
+					}
+					else{
+						foreach(GameObject obj in Camera.main.GetComponent<ClickAtom>().objList)
+							manager.SetRadii((int)obj.GetComponent<BallUpdate>().number);	
+
+						oldScale = newScale;
+					}
+				}
+			}
+		}
 		
 /*		private static Dictionary<string, bool> applyToAtoms = new Dictionary<string, bool>(){
 			{"H", false},
@@ -152,10 +178,44 @@ namespace UI {
 		
 		public static bool quickSelection = true;
 		//public static bool extendedSelection = false;
-		
-		public static List<string> applyToAtoms = new List<string>();
-		private static string applyToRes = "All";
-		private static string applyToChain = "All";
+
+		// Luiz
+		private static List<string> _applyToAtoms = null;
+		public static List<string> applyToAtoms
+		{
+			get {
+				if (_applyToAtoms == null) {
+					SetApplyToAtoms (new AtomsChangedEventArgs(null));
+				}
+				return _applyToAtoms;
+			}
+		}
+		public static void SetApplyToAtoms(AtomsChangedEventArgs e)
+		{
+			var atoms = e.NewAtoms;
+			var list = atoms == null ? new ObservableList<string>() : new ObservableList<string> (atoms);
+			System.Action eventHandler =
+				() => {
+					ChangeManager.DispatchMethodEvent (typeof(GUIDisplay), "SetApplyToAtoms", _applyToAtoms);
+				};
+			list.Changed += (obj) => eventHandler();
+			list.Updated += eventHandler;
+			_applyToAtoms = list;
+
+			ChangeManager.DispatchMethodEvent(typeof(GUIDisplay), "SetApplyToAtoms", atoms);
+		}
+//		public static string applyToRes = "All";
+		private static string _applyToRes = "All";
+		public static string applyToRes {
+			get { return _applyToRes; }
+			set { _applyToRes = ChangeManager.ProcessPropertyChanged (typeof(GUIDisplay), "applyToRes", _applyToRes, value); }
+		}
+//		public static string applyToChain = "All";
+		private static string _applyToChain = "All";
+		public static string applyToChain {
+			get { return _applyToChain; }
+			set { _applyToChain = ChangeManager.ProcessPropertyChanged (typeof(GUIDisplay), "applyToChain", _applyToChain, value); }
+		}
 		
 		public struct RendererInfos {
 			public string atom;
@@ -239,10 +299,10 @@ namespace UI {
 			// AT:: temporary hack to test webplayer ------------------
 			// #if UNITY_WEBPLAYER 
 			// {
-			// 	UIData.fetchPDBFile = false;
-			// 	UIData.isOpenFile = true;
-			// 	UIData.atomtype = UIData.AtomType.particleball;
-			// 	UIData.bondtype = UIData.BondType.nobond;
+			// 	UIData.Instance.fetchPDBFile = false;
+			// 	UIData.Instance.isOpenFile = true;
+			// 	UIData.Instance.atomtype = UIData.AtomType.particleball;
+			// 	UIData.Instance.bondtype = UIData.BondType.nobond;
 			// 	GUIMoleculeController.showOpenMenu=false;
 			// }
 			// #endif
@@ -262,13 +322,13 @@ namespace UI {
 			if(path == null)
 				return;
 				
-			if (UIData.loadHireRNA == false) {
-				UIData.ffType = UIData.FFType.atomic;
+			if (UIData.Instance.loadHireRNA == false) {
+				UIData.Instance.ffType = UIData.FFType.atomic;
 				AtomModel.InitAtomic();
 			}
 			else
 			{
-				UIData.ffType = UIData.FFType.HiRERNA;
+				UIData.Instance.ffType = UIData.FFType.HiRERNA;
 				AtomModel.InitHiRERNA();
 			}
 			
@@ -280,10 +340,10 @@ namespace UI {
 			
 			id = System.IO.Path.GetFileNameWithoutExtension(path);
 
-			UIData.fetchPDBFile = false;
-			UIData.isOpenFile=true;
-			UIData.atomtype=UIData.AtomType.particleball;
-			UIData.bondtype=UIData.BondType.nobond;
+			UIData.Instance.fetchPDBFile = false;
+			UIData.Instance.isOpenFile=true;
+			UIData.Instance.atomtype=UIData.AtomType.particleball;
+			UIData.Instance.bondtype=UIData.BondType.nobond;
 	    }
 	    
 		/** Display a GUI pannel for selecting a PDB on a server or on a local file.
@@ -296,9 +356,9 @@ namespace UI {
 		/// Display a GUI pannel for selecting a PDB on a server or on a local file. 
 		/// </summary>
 		public void Display() {
-			if(!UIData.isRenderDictInit)
+			if(!UIData.Instance.isRenderDictInit)
 				InitRenderDict();
-			if(!UIData.isTexturesMenuListInit)
+			if(!UIData.Instance.isTexturesMenuListInit)
 				InitTextureMenuList();
 
 			directoryimage = (Texture2D)Resources.Load("FileBrowser/dossier");
@@ -311,7 +371,7 @@ namespace UI {
 					//id != "" if a molecule is already open
 						
 					GUILayout.BeginHorizontal();
-					if (!UIData.hasMoleculeDisplay) {
+					if (!UIData.Instance.hasMoleculeDisplay) {
 						if(GUILayout.Button (new GUIContent("Open File From Disk", "Load a PDB file from disk"))) {
 							m_fileBrowser = new ImprovedFileBrowser(Rectangles.fileBrowserRect, "", OpenFileCallback, m_lastOpenDir);
 //							m_fileBrowser.SelectionPattern = "*.pdb|*.xgmml";
@@ -323,25 +383,13 @@ namespace UI {
 					}
 					else {
 						if(GUILayout.Button(new GUIContent("Clear","Clear the scene"))) {
-							id="";
-							UIData.isclear = true;
-							GUIMoleculeController.pdbGen = false;
-							UIData.hasMoleculeDisplay = false;
-							GUIMoleculeController.toggle_NA_INTERACTIVE = false; // causes all sorts of headaches otherwise
-							Camera.main.GetComponent<ClickAtom>().ClearSelection(); // so the halos don't stay after clearing
-							// Delete all the Parents to start again on a clear ground
-							GameObject.Destroy(Molecule.View.DisplayAtom.AtomCubeStyle.AtomCubeParent);
-							GameObject.Destroy(Molecule.View.DisplayAtom.AtomSphereStyle.AtomCubeParent);
-
-							DepthCueing.reset = true;
-							AmbientOcclusion.reset = true;
-							
-							UIData.loadHireRNA = false;
+							// Luiz:
+							Clear();
 						}
 					}
 					GUILayout.EndHorizontal();
 					
-					if (!UIData.hasMoleculeDisplay) {
+					if (!UIData.Instance.hasMoleculeDisplay) {
 						int menuWidth = Rectangles.openWidth;
 						float pServerWidth = menuWidth * 0.65f;
 						float pPortWidth = menuWidth * 0.30f;
@@ -371,11 +419,11 @@ namespace UI {
 //						pdbID=GUILayout.TextField(pdbID,4);
 						if(GUILayout.Button(new GUIContent("Fetch PDB", "Fetch a PDB file from the PDB server"))) {
 							id = pdbID;
-							UIData.fetchPDBFile = true;
-							UIData.isOpenFile = true;
+							UIData.Instance.fetchPDBFile = true;
+							UIData.Instance.isOpenFile = true;
 							GUIMoleculeController.showOpenMenu=false;
-							UIData.atomtype=UIData.AtomType.particleball;
-							UIData.bondtype=UIData.BondType.nobond;
+							UIData.Instance.atomtype=UIData.AtomType.particleball;
+							UIData.Instance.bondtype=UIData.BondType.nobond;
 						}
 						GUILayout.EndHorizontal();	
 					}
@@ -384,16 +432,16 @@ namespace UI {
 				if (id==""){
 				GUILayout.BeginHorizontal();
 
-					UIData.readHetAtom = GUILayout.Toggle (UIData.readHetAtom, "Read Hetero Atoms?");
+					UIData.Instance.readHetAtom = GUILayout.Toggle (UIData.Instance.readHetAtom, "Read Hetero Atoms?");
 
-					UIData.readWater = GUILayout.Toggle (UIData.readWater, "Read Water?");
+					UIData.Instance.readWater = GUILayout.Toggle (UIData.Instance.readWater, "Read Water?");
 				
 				GUILayout.EndHorizontal();
 
 				GUILayout.BeginHorizontal();
 					GUILayout.Label("Connectivity :");
-					UIData.connectivity_calc = GUILayout.Toggle (UIData.connectivity_calc, "Calculed?");
-					UIData.connectivity_PDB = GUILayout.Toggle (UIData.connectivity_PDB, "from PDB?");
+					UIData.Instance.connectivity_calc = GUILayout.Toggle (UIData.Instance.connectivity_calc, "Calculed?");
+					UIData.Instance.connectivity_PDB = GUILayout.Toggle (UIData.Instance.connectivity_PDB, "from PDB?");
 				
 
 				GUILayout.EndHorizontal();
@@ -421,7 +469,7 @@ namespace UI {
 	 						Debug.Log("Login2");
 	 						LoginFlag=true;
 	 						Debug.Log("Login3");
-	 						Debug.Log(UIData.loginSucess);
+	 						Debug.Log(UIData.Instance.loginSucess);
 							
 	 					}		
 							
@@ -429,13 +477,13 @@ namespace UI {
 	 				else 
 	 				{
 	 					GUILayout.BeginHorizontal();
-	 					if(UIData.loginSucess)
+	 					if(UIData.Instance.loginSucess)
 	 					{
 	 						GUILayout.Label("Login Success!");
 	 					}
 	 					else
 	 					{	
-							Debug.Log(UIData.loginSucess);
+							Debug.Log(UIData.Instance.loginSucess);
 	 						GUILayout.Label("Login Error!",GUILayout.Width(80));
 	 						if(GUILayout.Button("Login Again",GUILayout.Width(80)))
 	 						{
@@ -453,9 +501,9 @@ namespace UI {
 					GUILayout.BeginHorizontal();
 					if(GUILayout.Button("Main Menu"))
 					{
-						UIData.isclear = true;
+						UIData.Instance.isclear = true;
 						GUIMoleculeController.pdbGen = false;
-						UIData.hasMoleculeDisplay = false;
+						UIData.Instance.hasMoleculeDisplay = false;
 						Application.LoadLevel("MainMenu");
 					}
 					GUILayout.EndHorizontal();
@@ -519,7 +567,7 @@ namespace UI {
 		
 /*		public void SetHyperballMatCapTexture()	{
 //			GUIContent texturehyper = new GUIContent("Set Mat Cap texture");
-			if (m_texture && UIData.atomtype == UIData.AtomType.hyperball)
+			if (m_texture && UIData.Instance.atomtype == UIData.AtomType.hyperball)
 				Rectangles.textureRect = GUI.Window(41,Rectangles.textureRect, loadtexture, "");
 			
 //			if(displayChoice){
@@ -545,7 +593,8 @@ namespace UI {
 		/// </param>
 		public void LoadMenu(int a){
 
-			AtomScales ("lit_spheres/", textureMenuList[texture_set], textureMenuTitles[texture_set]);
+			// Luiz:
+			AtomScales (DefaultTextureLocation, textureMenuList[texture_set], textureMenuTitles[texture_set]);
 			
 			GUI.DragWindow();
 		}
@@ -589,7 +638,9 @@ namespace UI {
 		/// Create a ColorPicker with the currents options.
 		/// </summary>
 		private static void ColorPickerCaller(){
-			GUIMoleculeController.CreateColorPicker(buttonColor, "Select a color", applyToAtoms, applyToRes, applyToChain);
+			// Luiz:
+			var picker = GUIMoleculeController.CreateColorPicker(buttonColor, "Select a color", applyToAtoms, applyToRes, applyToChain);
+			picker.AtomsColorPicked += (sender, e) => ChangeAtomsColor(e);
 		}
 		
 		/// <summary>
@@ -787,7 +838,7 @@ namespace UI {
 			GUILayout.BeginHorizontal();
 			GUILayout.Label("Residue :");
 			if(GUIMoleculeController.toggle_NA_CLICK
-				|| !UIData.hasResidues) {
+				|| !UIData.Instance.hasResidues) {
 				GUI.enabled = false;
 				applyToRes = "All";
 			}
@@ -801,7 +852,7 @@ namespace UI {
 			
 			GUILayout.Label(" Chain :");
 			if(GUIMoleculeController.toggle_NA_CLICK
-				|| !UIData.hasChains) {
+				|| !UIData.Instance.hasChains) {
 				GUI.enabled = false;
 				applyToChain = "All";
 			}
@@ -839,19 +890,6 @@ namespace UI {
 			newScale = GUIMoleculeController.LabelSlider(newScale, 50, 150.0f,
 														"Scale: "+(int)(newScale*10)/10,
 														"Determines atom radius",true,sliderWidth,(int)(nameWidth*0.75));
-			if(newScale != oldScale){
-				GenericManager manager = DisplayMolecule.GetManagers()[0];
-				if(!GUIMoleculeController.toggle_NA_CLICK){
-					manager.SetRadii(applyToAtoms, applyToRes, applyToChain);
-					oldScale = newScale;
-				}
-				else{
-					foreach(GameObject obj in Camera.main.GetComponent<ClickAtom>().objList)
-						manager.SetRadii((int)obj.GetComponent<BallUpdate>().number);	
-						
-					oldScale = newScale;
-				}
-			}
 
 			//GUILayout.FlexibleSpace();
 			GUILayout.EndHorizontal();
@@ -860,10 +898,10 @@ namespace UI {
 			GUILayout.BeginHorizontal();
 			GUILayout.Box("Texture: " + texDescr);
 			GUILayout.FlexibleSpace();
-			if(UIData.atomtype != UIData.AtomType.hyperball)
+			if(UIData.Instance.atomtype != UIData.AtomType.hyperball)
 				GUI.enabled = false;
 			
-			UIData.grayscalemode = GUILayout.Toggle (UIData.grayscalemode, new GUIContent ("Grayscale", "Use grayscale version of the texture"));
+			UIData.Instance.grayscalemode = GUILayout.Toggle (UIData.Instance.grayscalemode, new GUIContent ("Grayscale", "Use grayscale version of the texture"));
 			GUILayout.EndHorizontal();
 			
 			GUILayout.BeginHorizontal();
@@ -911,24 +949,7 @@ namespace UI {
 				i++; if(i>5) {GUILayout.EndHorizontal(); GUILayout.BeginHorizontal(); i=1;}
 //				if(GUILayout.Button((Texture)Resources.Load(texDir+texFil),GUILayout.Width(50),GUILayout.Height(50))) { 
 				if(GUILayout.Button(new GUIContent((Texture)Resources.Load(texDir+texFil),texFil),GUILayout.Width(buttonWidth),GUILayout.Height(buttonHeight))) {
-					GameObject hbManagerObj = GameObject.FindGameObjectWithTag("HBallManager");
-					HBallManager hbManager = hbManagerObj.GetComponent<HBallManager>();
-					Texture texture;
-					if(texFil == "None")
-						texture = (Texture)Resources.Load("lit_spheres/divers/daphz05");
-					else
-						texture = (Texture)Resources.Load(texDir+texFil);
-					
-					if(UIData.grayscalemode)
-						texture = hbManager.ToGray(texture);
-					
-					if(!GUIMoleculeController.toggle_NA_CLICK){
-						hbManager.SetTexture(texture, applyToAtoms, applyToRes, applyToChain);
-					}
-					else {
-						foreach(GameObject obj in Camera.main.GetComponent<ClickAtom>().objList)
-							hbManager.SetTexture(texture, (int)obj.GetComponent<BallUpdate>().number);
-					}
+					ChangeAtomsTexture (texFil);
 				}
 			}
 			GUILayout.EndHorizontal();
@@ -989,7 +1010,7 @@ namespace UI {
 				HBallManager hbManager = hbManagerObj.GetComponent<HBallManager>();
 				Texture2D grayTexture = new Texture2D(www.texture.width, www.texture.height);
 				if(!GUIMoleculeController.toggle_NA_CLICK){
-					if(!UIData.grayscalemode){
+					if(!UIData.Instance.grayscalemode){
 						hbManager.SetTexture(www.texture, applyToAtoms, applyToRes, applyToChain);
 					}
 					else{
@@ -998,7 +1019,7 @@ namespace UI {
 					}
 				}
 				else {
-					if(!UIData.grayscalemode){
+					if(!UIData.Instance.grayscalemode){
 						foreach(GameObject obj in Camera.main.GetComponent<ClickAtom>().objList)
 							hbManager.SetTexture(www.texture, (int)obj.GetComponent<BallUpdate>().number);
 					}
@@ -1030,70 +1051,50 @@ namespace UI {
 			GUILayout.BeginHorizontal();
 			GUILayout.Label("Color Panels");
 			GUILayout.EndHorizontal();
-			
+
+			// Luiz
 			GUILayout.BeginHorizontal();
 			if( GUILayout.Button(new GUIContent("All white", "Change all colors to white"))){
-				SetColorPanel("All_White");
+				HandlePanelSelected ("All_White");
 			}
 			if (GUILayout.Button(new GUIContent("Goodsell", "Change all colors to David Goodsell style colors"))){
-				//extendedSelection = false;
-				quickSelection = true;
-				SetColorPanel("Goodsell");
-				quickSelection = false;
-				//extendedSelection = true;
-				SetColorPanel("Goodsell");
-				//O(0.95,0.76,0.76,1);N(0.75,0.76,0.94,1);S(0.85,0.84,0.46,1);C(0.76,0.76,0.76,1);P(0.99,0.82,0.59,1);H(0.95,0.95,0.95,1);X(0.55,0.55,0.55,1)
-				// Now with precise coloring of charged O and N !
+				HandlePanelSelected ("Goodsell");
 			}
 			if (GUILayout.Button(new GUIContent("Watercolor", "Change all colors to Watercolor palette"))){
-				quickSelection = true;
-				SetColorPanel("Watercolor");
-				//O(0.60,0.13,0.11,1);N(0.19,0.27,0.63,1);S(0.98,0.91,0.44,1);C(0.55,0.86,0.89,1);P(0.99,0.69,0.28,1);H(0.99,0.98,0.96,1);X(0.16,0.17,0.29,1)
+				HandlePanelSelected ("Watercolor");
 			}
 			GUILayout.EndHorizontal();
 
 			GUILayout.BeginHorizontal();
 			if (GUILayout.Button(new GUIContent("Pastel", "Change all colors to pastel"))){
-				quickSelection = true;
-				SetColorPanel("Pastel");
-				//O(0.827,0.294,0.333,1);S(1,0.839,0.325,1);C(0.282,0.6,0.498,1);N(0.443,0.662,0.882,1);P(0.960,0.521,0.313,1);P(white);X(black)
+				HandlePanelSelected ("Pastel");
 			}
 			if (GUILayout.Button(new GUIContent("CPK", "A CPK-like atom color palette"))){
-				quickSelection = true;
-				SetColorPanel("CPK");
-				//O(0.78,0.0,0.09,1);N(0.21,0.67,0.92,1);S(0.86,0.84,0.04,1);C(0.02,0.02,0.03,1);P(1.0,0.60,0.0,1);H(1.0,1.00,0.99,1);X(0.03,0.56,0.26,1)
+				HandlePanelSelected ("CPK");
 			}
 			if(GUILayout.Button(new GUIContent("Basic","Set previous default color parameters (quite intense colors)"))){
-				quickSelection = true;
-				SetColorPanel("Basic");
-				//O(red);S(yellow);C(green);N(blue);P(0.6,0.3,0.0,1);H(white);X(black)
+				HandlePanelSelected ("Basic");
 			}
 			if (GUILayout.Button(new GUIContent("IUPAC?", "A IUPAC color palette (?)"))){
-				quickSelection = true;
-				SetColorPanel("IUPAC");
-				//O(0.21,0.67,0.92,1);N(0.03,0.56,0.26,1);S(0.86,0.84,0.04,1);C(1.0,1.00,0.99,1);P(1.0,0.60,0.0,1);H(0.02,0.02,0.03,1);X(0.78,0.0,0.09,1)
+				HandlePanelSelected ("IUPAC");
 			}
 			GUILayout.EndHorizontal();
 			GUILayout.BeginHorizontal();
-			if(!UIData.hasChains)
+			if(!UIData.Instance.hasChains)
 				GUI.enabled = false;
 			if (GUILayout.Button(new GUIContent("Chains", "Quick chains coloring"))){
-				quickSelection = true;
-				SetColorPanel("Chains");
+				HandlePanelSelected ("Chains");
 			}
 			GUI.enabled = true;
 			//T.T. Add coloring for sugar representation
 			if (GUILayout.Button(new GUIContent("Sugar", "Quick sugar type coloring"))){
-				quickSelection = true;
-				SetColorPanel("Sugar");
+				HandlePanelSelected ("Sugar");
 			}
 			if(GUILayout.Button(new GUIContent("ADN/ARN", "Base coloring: A[red] T/U[blue] C[yellow] G[green]"))){
-				quickSelection = true;
-				SetColorPanel("ADN-ARN");
+				HandlePanelSelected ("ADN-ARN");
 			}
 			if(GUILayout.Button(new GUIContent("HiRE-RNA", "Base coloring: A[red] T/U[blue] C[yellow] G[green]"))){
-				quickSelection = true;
-				SetColorPanel("HiRERNA");
+				HandlePanelSelected ("HiRERNA");
 			}
 			GUILayout.EndHorizontal();
 		
@@ -1101,24 +1102,20 @@ namespace UI {
 			GUILayout.Label("Texture Panels");
 			GUILayout.EndHorizontal();
 			
-			if(UIData.atomtype != UIData.AtomType.hyperball)
+			if(UIData.Instance.atomtype != UIData.AtomType.hyperball)
 				GUI.enabled = false;
 			
 			GUILayout.BeginHorizontal();
 			if (GUILayout.Button(new GUIContent("Default", "Default color/texture palette"))){
-				SetTexturePanel("All_White");
+				HandlePanelSelected ("Default");
 			}
 			if (GUILayout.Button(new GUIContent("CPK", "A CPK-like atom textures palette (great with CPK metaphor)"))){
-				quickSelection = true;
-				SetTexturePanel("CPK");
-				SetColorPanel("All_White");
+				HandlePanelSelected ("CPK/All_White");
 			}
-			if(!UIData.hasResidues)
+			if(!UIData.Instance.hasResidues)
 				GUI.enabled = false;
 			if (GUILayout.Button(new GUIContent("Acid-Basic", "A texturing for acid (ASP/GLU) and basic (ARG/LYS) residues."))){
-				quickSelection = true;
-				SetTexturePanel("Acid-Base_Res");
-				SetColorPanel("Acid-Base_Res");
+				HandlePanelSelected ("Acid-Base_Res");
 			}
 			GUI.enabled = true;
 			GUILayout.EndHorizontal();
@@ -1340,7 +1337,7 @@ namespace UI {
 				}
 			}
 			sr.Close();
-			UIData.isRenderDictInit = true;
+			UIData.Instance.isRenderDictInit = true;
 			Debug.Log("ColorPanelDictionary Initialized");
 		}
 		
@@ -1365,7 +1362,7 @@ namespace UI {
 				}
 			}
 			sr.Close();
-			UIData.isTexturesMenuListInit = true;
+			UIData.Instance.isTexturesMenuListInit = true;
 			Debug.Log("Textures Menu List Initialized");
 		}
 		
@@ -1431,7 +1428,7 @@ namespace UI {
 		/// Name of the texture panel. String
 		/// </param>
 		public static void SetTexturePanel(string panelName) {
-			if(panelDict.ContainsKey(panelName) && UIData.atomtype == UIData.AtomType.hyperball) {
+			if(panelDict.ContainsKey(panelName) && UIData.Instance.atomtype == UIData.AtomType.hyperball) {
 				Debug.Log ("Setting texture panel : " + panelName);
 				GameObject hbManagerObj = GameObject.FindGameObjectWithTag("HBallManager");
 				HBallManager hbManager = hbManagerObj.GetComponent<HBallManager>();
@@ -1442,7 +1439,134 @@ namespace UI {
 				Debug.Log("!!! Invalid Panel Key (or not hyperball) : " + panelName);
 		}
 		
+		// Luiz:
+		public event System.EventHandler Cleared;
+		public void Clear() {
+			id="";
+			UIData.Instance.isclear = true;
+			GUIMoleculeController.pdbGen = false;
+			UIData.Instance.hasMoleculeDisplay = false;
+			GUIMoleculeController.toggle_NA_INTERACTIVE = false; // causes all sorts of headaches otherwise
+			Camera.main.GetComponent<ClickAtom>().ClearSelection(); // so the halos don't stay after clearing
+			// Delete all the Parents to start again on a clear ground
+			GameObject.Destroy(Molecule.View.DisplayAtom.AtomCubeStyle.AtomCubeParent);
+			GameObject.Destroy(Molecule.View.DisplayAtom.AtomSphereStyle.AtomCubeParent);
 
+			DepthCueing.reset = true;
+			AmbientOcclusion.reset = true;
+
+			UIData.Instance.loadHireRNA = false;
+
+			if (Cleared != null) {
+				Cleared (this, null);
+			}
+		}
+		public static void HandlePanelSelected(string panel)
+		{
+			switch (panel) {
+			case "All_White":
+				SetColorPanel ("All_White");
+				break;
+			case "Goodsell":
+				//extendedSelection = false;
+				quickSelection = true;
+				SetColorPanel("Goodsell");
+				quickSelection = false;
+				//extendedSelection = true;
+				SetColorPanel("Goodsell");
+				//O(0.95,0.76,0.76,1);N(0.75,0.76,0.94,1);S(0.85,0.84,0.46,1);C(0.76,0.76,0.76,1);P(0.99,0.82,0.59,1);H(0.95,0.95,0.95,1);X(0.55,0.55,0.55,1)
+				// Now with precise coloring of charged O and N !
+				break;
+			case "Acid-Base_Res":
+				quickSelection = true;
+				SetTexturePanel(panel);
+				SetColorPanel(panel);
+				break;
+			case "CPK/All_White":
+				quickSelection = true;
+				SetTexturePanel("CPK");
+				SetColorPanel("All_White");
+				break;
+			case "Default":
+				SetTexturePanel("All_White");
+				break;
+
+			case "Watercolor":
+				//O(0.60,0.13,0.11,1);N(0.19,0.27,0.63,1);S(0.98,0.91,0.44,1);C(0.55,0.86,0.89,1);P(0.99,0.69,0.28,1);H(0.99,0.98,0.96,1);X(0.16,0.17,0.29,1)
+			case "Pastel":
+				//O(0.827,0.294,0.333,1);S(1,0.839,0.325,1);C(0.282,0.6,0.498,1);N(0.443,0.662,0.882,1);P(0.960,0.521,0.313,1);P(white);X(black)
+			case "CPK":
+				//O(0.78,0.0,0.09,1);N(0.21,0.67,0.92,1);S(0.86,0.84,0.04,1);C(0.02,0.02,0.03,1);P(1.0,0.60,0.0,1);H(1.0,1.00,0.99,1);X(0.03,0.56,0.26,1)
+			case "Basic":
+				//O(red);S(yellow);C(green);N(blue);P(0.6,0.3,0.0,1);H(white);X(black)
+			case "IUPAC":
+				//O(0.21,0.67,0.92,1);N(0.03,0.56,0.26,1);S(0.86,0.84,0.04,1);C(1.0,1.00,0.99,1);P(1.0,0.60,0.0,1);H(0.02,0.02,0.03,1);X(0.78,0.0,0.09,1)
+			case "Chains":
+			case "Sugar":
+			case "ADN-ARN":
+			case "HiRERNA":
+				quickSelection = true;
+				SetColorPanel(panel);
+				break;
+			}
+
+			ChangeManager.DispatchMethodEvent (typeof(GUIDisplay), "HandlePanelSelected", panel);
+		}
+		public static void ChangeAtomsColor(ColorPicker.ColorEventArgs args)
+		{
+			GenericManager manager = Molecule.View.DisplayMolecule.GetManagers()[0];
+
+			if(!UI.GUIMoleculeController.toggle_NA_CLICK) {
+				manager.SetColor(args.Color, args.Atoms, args.Residue, args.Chain);
+			} else { 
+				foreach(GameObject obj in Camera.main.GetComponent<ClickAtom>().objList){
+					manager.SetColor(args.Color, (int)obj.GetComponent<BallUpdate>().number);
+				}
+			}
+
+			ChangeManager.DispatchMethodEvent (typeof(GUIDisplay), "ChangeAtomsColor", args);
+		}
+		public static void ChangeAtomsTexture(string texFil)
+		{
+			GameObject hbManagerObj = GameObject.FindGameObjectWithTag("HBallManager");
+			HBallManager hbManager = hbManagerObj.GetComponent<HBallManager>();
+			Texture texture;
+			if(texFil == "None")
+				texture = (Texture)Resources.Load("lit_spheres/divers/daphz05");
+			else
+				texture = (Texture)Resources.Load(DefaultTextureLocation + texFil);
+
+			Debug.Log ("TExture: " + texture);
+
+			if(UIData.Instance.grayscalemode)
+				texture = hbManager.ToGray(texture);
+
+			if(!GUIMoleculeController.toggle_NA_CLICK){
+				Debug.Log ("ATOMS: " + applyToAtoms.Count + " " + applyToRes + " " + applyToChain);
+				hbManager.SetTexture(texture, applyToAtoms, applyToRes, applyToChain);
+			}
+			else {
+				foreach(GameObject obj in Camera.main.GetComponent<ClickAtom>().objList)
+					hbManager.SetTexture(texture, (int)obj.GetComponent<BallUpdate>().number);
+			}
+
+			// Synchronizing stuff with nodes.
+			ChangeManager.DispatchMethodEvent (typeof(GUIDisplay), "SetApplyToAtoms", new AtomsChangedEventArgs(_applyToAtoms));
+			Debug.Log ("ATOMS: " + applyToAtoms.Count + " " + applyToRes + " " + applyToChain);
+			ChangeManager.DispatchPropertyEvent (typeof(GUIDisplay), "applyToRes", applyToRes, applyToRes);
+			ChangeManager.DispatchPropertyEvent (typeof(GUIDisplay), "applyToChain", applyToChain, applyToChain);
+			ChangeManager.DispatchMethodEvent (typeof(GUIDisplay), "ChangeAtomsTexture", texFil);
+		}
 	}
 
+	// Luiz: needed because Unity's default json capabilities can't encode collections by themselves and MiniJSON can't deserialize
+	[System.Serializable]
+	public class AtomsChangedEventArgs : System.EventArgs
+	{
+		public List<string> NewAtoms;
+		public AtomsChangedEventArgs (List<string> newAtoms)
+		{
+			this.NewAtoms = newAtoms;
+		}		
+	}
 }

@@ -132,10 +132,10 @@ public class GenInterpolationArray_BF {
 	/*
 	void Update()
 	{
-		if (UI.UIData.resetSpline)
+		if (UI.UIData.Instance.resetSpline)
 		{
 			CalculateSplineArray();
-			UI.UIData.resetSpline = false;
+			UI.UIData.Instance.resetSpline = false;
 		}
 	} */
 }

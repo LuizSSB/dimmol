@@ -85,7 +85,7 @@ public class ScenePreload_1KX2 : MonoBehaviour {
 
 	IEnumerator InitScene(RequestPDB requestPDB)
 	{
-		StartCoroutine(requestPDB.LoadPDBWWW(UIData.server_url+"Scenes/1KX2/1KX2.pdb"));
+		StartCoroutine(requestPDB.LoadPDBWWW(UIData.Instance.server_url+"Scenes/1KX2/1KX2.pdb"));
 		while(!RequestPDB.isDone)
 		{
 			pdb_progress = requestPDB.progress;
@@ -95,8 +95,8 @@ public class ScenePreload_1KX2 : MonoBehaviour {
 		pdb_progress = 1.0f;
 		
 		//requestPDB.LoadPDBResource("1KX2");
-		UIData.atomtype = UIData.AtomType.hyperball;
-		UIData.bondtype = UIData.BondType.hyperstick;
+		UIData.Instance.atomtype = UIData.AtomType.hyperball;
+		UIData.Instance.bondtype = UIData.BondType.hyperstick;
 		GUIMoleculeController.showOpenMenu = false;
 		GUIMoleculeController.showAtomMenu = false;
 		GUIMoleculeController.globalRadius = 0.3f;

@@ -53,6 +53,7 @@
      <Compile Include="Assets\Plotter\Test\TestPlotter.cs" />
      <Compile Include="Assets\Scripts\AFMLikeExp.cs" />
      <Compile Include="Assets\Scripts\CameraControlScript.cs" />
+     <Compile Include="Assets\Scripts\ChangeManager.cs" />
      <Compile Include="Assets\Scripts\ColorPicker.cs" />
      <Compile Include="Assets\Scripts\Config\CommandID.cs" />
      <Compile Include="Assets\Scripts\Config\FunctionConfig.cs" />
@@ -174,6 +175,7 @@
      <Compile Include="Assets\Scripts\Utility\Meshcombine.cs" />
      <Compile Include="Assets\Scripts\Utility\MouseOverMDDriverMolecule.cs" />
      <Compile Include="Assets\Scripts\Utility\MouseOverMolecule.cs" />
+     <Compile Include="Assets\Scripts\Utility\ObservableList.cs" />
      <Compile Include="Assets\Scripts\Utility\Popup.cs" />
      <Compile Include="Assets\Scripts\Utility\ScreenShot.cs" />
      <Compile Include="Assets\Scripts\Utility\SelectAtomFocus.cs" />

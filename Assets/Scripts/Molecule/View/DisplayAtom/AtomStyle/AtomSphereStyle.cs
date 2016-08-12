@@ -88,9 +88,9 @@ namespace Molecule.View.DisplayAtom
 
 		public void DisplayAtoms(UIData.AtomType type_atom, bool force_display = false)
 		{
-			if(type_atom != UIData.AtomType.particleball || !UIData.isParticlesInitialized ||force_display)
+			if(type_atom != UIData.AtomType.particleball || !UIData.Instance.isParticlesInitialized ||force_display)
 			{
-				//if(!UIData.isSphereLoaded){
+				//if(!UIData.Instance.isSphereLoaded){
 					if(AtomCubeParent == null)
 						AtomCubeParent = new GameObject("AtomCubeParent");
 					
@@ -106,7 +106,7 @@ namespace Molecule.View.DisplayAtom
 					if(atomtype==UIData.AtomType.sphere)
 					{
 						
-						if(UIData.secondarystruct){
+						if(UIData.Instance.secondarystruct){
 							DisplayAtomMethodBySphere(MoleculeModel.CaSplineList, MoleculeModel.CaSplineTypeList);}
 						else
 							DisplayAtomMethodBySphere(MoleculeModel.atomsLocationlist, MoleculeModel.atomsTypelist);
@@ -114,7 +114,7 @@ namespace Molecule.View.DisplayAtom
 					GameObject sphereManagerObj = GameObject.FindGameObjectWithTag("SphereManager");
 					SphereManager sphereManager =  sphereManagerObj.GetComponent<SphereManager>();
 					sphereManager.Init();
-					UIData.isSphereLoaded = true;
+					UIData.Instance.isSphereLoaded = true;
 				//}
 			}
 		}

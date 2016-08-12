@@ -290,11 +290,15 @@ namespace  ParseData.ParsePDB
             
             // Get the stream containing content returned by the server.
      	    dataStream = response.GetResponseStream ();
-            // Open the stream using a StreamReader for easy access.
-            sr = new StreamReader (dataStream);
-			
-			ControlMolecule.CreateMolecule(sr);
-            //ReadPDB(sr);
+			// Open the stream using a StreamReader for easy access.
+			using (sr = new StreamReader (dataStream)) {
+				// Luiz
+				string pdbContents = sr.ReadToEnd();
+				UIData.Instance.ChosenPdbContents = pdbContents;
+
+				ControlMolecule.CreateMolecule(new StringReader(pdbContents));
+				//ReadPDB(sr);
+			}
 
 			if(dataStream!=null&& response!=null) {
 				dataStream.Close ();
@@ -302,6 +306,10 @@ namespace  ParseData.ParsePDB
 			}
 		}
 
+		public void LoadPDB(string pdbContents)
+		{
+			ControlMolecule.CreateMolecule (new StringReader (pdbContents));
+		}
 	
 		public void LoadPDBRequest(string file_base_name, bool withData = true) {
 			StreamReader sr ;
@@ -429,10 +437,10 @@ namespace  ParseData.ParsePDB
 						MoleculeModel.strandChainList.Add (chainS);
 					}
 						
-					if(UIData.readHetAtom)
+					if(UIData.Instance.readHetAtom)
 						isAtomLine = isAtomLine || s.StartsWith("HETATM");
 
-					if(!UIData.readWater){
+					if(!UIData.Instance.readWater){
 						try{
 							if ((string) s.Substring(17,3).Trim() == "HOH")
 							isAtomLine = false;
@@ -514,7 +522,7 @@ namespace  ParseData.ParsePDB
 						}
 						alist.Add(vect);
 						AtomModel aModel;
-						if (UIData.ffType == UIData.FFType.atomic)
+						if (UIData.Instance.ffType == UIData.FFType.atomic)
 						{
 							aModel = AtomModel.GetModel(type);
 						}
@@ -529,7 +537,7 @@ namespace  ParseData.ParsePDB
 							MoleculeModel.atomsSugarTypelist.Add(aModel);
 
 						
-						if (UIData.ffType == UIData.FFType.atomic)
+						if (UIData.Instance.ffType == UIData.FFType.atomic)
 						{
 							colorList.Add(MoleculeModel.GetAtomColor(type));
 						}
@@ -579,7 +587,7 @@ namespace  ParseData.ParsePDB
 					}
 
 					if (isConnectLine){
-						if (UIData.connectivity_PDB){
+						if (UIData.Instance.connectivity_PDB){
 							string[] splitedStringTemp = s.Split(' '); //0 is Connect, 1 is the atom, 2,3..... is the bounded atoms
 							List<string> splitedString = new List<string>();
 							for (int j=0; j<splitedStringTemp.Length; j++){
@@ -623,9 +631,9 @@ namespace  ParseData.ParsePDB
 			Debug.Log ("atomsLocalScaleList:" + MoleculeModel.atomsLocalScaleList.Count);
 			Debug.Log ("BfactorList: " + BFactorList.Count);
 			if(resnamelist.Count == typelist.Count)
-				UIData.hasResidues = true;
+				UIData.Instance.hasResidues = true;
 			if(chainList.Count == typelist.Count)
-				UIData.hasChains = true;
+				UIData.Instance.hasChains = true;
 
 			MoleculeModel.atomsLocationlist		=	alist;
 			MoleculeModel.CatomsLocationlist	=	calist;

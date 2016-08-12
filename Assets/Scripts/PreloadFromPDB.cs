@@ -87,11 +87,11 @@ public class PreloadFromPDB : MonoBehaviour {
 	IEnumerator InitScene(RequestPDB requestPDB)
 	{
 		string pdbID = MainMenu.pdbID;
-		//StartCoroutine(requestPDB.LoadPDBWWW(UIData.server_url+"Scenes/1KX2/1KX2.pdb"));
+		//StartCoroutine(requestPDB.LoadPDBWWW(UIData.Instance.server_url+"Scenes/1KX2/1KX2.pdb"));
 		WWWForm form = new WWWForm();
 		form.AddField("pdbID",pdbID);
 
-		WWW www = new WWW(UIData.server_url+"FetchPDB.php", form);
+		WWW www = new WWW(UIData.Instance.server_url+"FetchPDB.php", form);
 		Debug.Log(www.url);
 		while(!www.isDone)
 		{
@@ -101,7 +101,7 @@ public class PreloadFromPDB : MonoBehaviour {
 		Debug.Log(www.error);
 		fetch_progress = 1.0f;
 
-		StartCoroutine(requestPDB.LoadPDBWWW(UIData.server_url+"pdb_files/"+pdbID+".pdb"));
+		StartCoroutine(requestPDB.LoadPDBWWW(UIData.Instance.server_url+"pdb_files/"+pdbID+".pdb"));
 		while(!RequestPDB.isDone)
 		{
 			pdb_progress = requestPDB.progress;
@@ -109,8 +109,8 @@ public class PreloadFromPDB : MonoBehaviour {
 		}
 		Debug.Log(www.error);
 		pdb_progress = 1.0f;
-		UIData.atomtype = UIData.AtomType.particleball;
-		UIData.bondtype = UIData.BondType.nobond;
+		UIData.Instance.atomtype = UIData.AtomType.particleball;
+		UIData.Instance.bondtype = UIData.BondType.nobond;
 		GUIMoleculeController.showOpenMenu=false;
 		GUIMoleculeController.showAtomMenu=true;
 		SendMessage("Display",SendMessageOptions.DontRequireReceiver);	

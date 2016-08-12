@@ -74,7 +74,7 @@ public class ScenePreload_Network : MonoBehaviour {
 
 	IEnumerator InitScene(RequestPDB requestPDB)
 	{
-		StartCoroutine(requestPDB.LoadXGMML(UIData.server_url+"Scenes/Network/galFiltered.sif.xgmml"));
+		StartCoroutine(requestPDB.LoadXGMML(UIData.Instance.server_url+"Scenes/Network/galFiltered.sif.xgmml"));
 		while(!RequestPDB.isDone)
 		{
 			xml_progress = requestPDB.progress;
@@ -83,8 +83,8 @@ public class ScenePreload_Network : MonoBehaviour {
 		xml_progress = 1.0f;
 	
 		GUIDisplay.file_extension = "xgmml";	
-		UIData.atomtype=UIData.AtomType.hyperball;
-		UIData.bondtype=UIData.BondType.hyperstick;
+		UIData.Instance.atomtype=UIData.AtomType.hyperball;
+		UIData.Instance.bondtype=UIData.BondType.hyperstick;
 		GUIMoleculeController.globalRadius = 0.7f;
 		GUIMoleculeController.shrink = 0.0001f;
 		GUIMoleculeController.linkScale = 0.3f;

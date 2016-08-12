@@ -167,7 +167,7 @@ namespace Molecule.View.DisplayBond
 //					oratom2number=(int)atomtype.z-oratom1number*99;
 				}
 				
-				if(UIData.isSphereToCube==true)
+				if(UIData.Instance.isSphereToCube==true)
 				{
 //					atom1number=AtomCubeStyle.atomOrderList.IndexOf(oratom1number);
 //					atom2number=AtomCubeStyle.atomOrderList.IndexOf(oratom2number);

@@ -91,7 +91,7 @@ namespace Molecule.View.DisplayBond
 		
 		public void DisplayBonds()
 		{
-			if(UIData.secondarystruct)
+			if(UIData.Instance.secondarystruct)
 			{
 				bondEPList=MoleculeModel.bondCAList;
 			}
@@ -104,7 +104,7 @@ namespace Molecule.View.DisplayBond
 			int Number=bondEPList.Count/number;
 			
 			Debug.Log("DisplayBonds??bondEPList.Count "  + bondEPList.Count);
-			Debug.Log("UIData.EnableUpdate "  + UIData.EnableUpdate);
+			Debug.Log("UIData.Instance.EnableUpdate "  + UIData.Instance.EnableUpdate);
 
 			for(int i=0;i<Number;i++)
 			{
@@ -130,7 +130,7 @@ namespace Molecule.View.DisplayBond
 //			comp.atompointer1=(GameObject)MoleculeModel.atoms[atomsIds[0]];
 //			comp.atompointer2=(GameObject)MoleculeModel.atoms[atomsIds[1]];
 			
-			if(UI.UIData.atomtype == UI.UIData.AtomType.particleball){
+			if(UI.UIData.Instance.atomtype == UI.UIData.AtomType.particleball){
 				comp.atompointer1=(GameObject)MoleculeModel.atoms[atomsIds[0]];
 				comp.atompointer2=(GameObject)MoleculeModel.atoms[atomsIds[1]];
 			}

@@ -249,7 +249,7 @@ public class BallUpdateHB : BallUpdate {
 
 			float v = GetComponent<Rigidbody>().velocity.magnitude;
 
-			if(UIData.toggleGray)
+			if(UIData.Instance.toggleGray)
 			{
 				Color c = Color.Lerp(Color.white, Color.black, v);
 				renderer.material.SetColor("_Color", c);
@@ -266,7 +266,7 @@ public class BallUpdateHB : BallUpdate {
 	//		olddepthfactor = 2.0f;
 		}
 		
-		renderer.enabled = (UIData.atomtype == UIData.AtomType.hyperball);
+		renderer.enabled = (UIData.Instance.atomtype == UIData.AtomType.hyperball);
 	}
 */
 

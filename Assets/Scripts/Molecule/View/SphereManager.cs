@@ -48,7 +48,7 @@ public class SphereManager : GenericManager {
 		balls = GameObject.FindObjectsOfType(typeof(BallUpdateSphere)) as BallUpdateSphere[];
 		foreach(BallUpdateSphere sp in balls){
 			sp.GetComponent<Renderer>().enabled = false;
-			if(UIData.atomtype != UIData.AtomType.particleball) // Particles don't have their own collider so we must keep it
+			if(UIData.Instance.atomtype != UIData.AtomType.particleball) // Particles don't have their own collider so we must keep it
 				sp.GetComponent<Collider>().enabled = false; // Disable the collider at the same time to avoid ghost-clicking
 		}
 		enabled = false;
@@ -58,7 +58,7 @@ public class SphereManager : GenericManager {
 	/// Resets the colors of all spheres and sticks. Uses the colors sets in BallUpdateSphere.
 	/// </summary>
 	private void ResetColors() {
-		if(UIData.atomtype == UIData.AtomType.sphere){
+		if(UIData.Instance.atomtype == UIData.AtomType.sphere){
 	//		balls = GameObject.FindObjectsOfType(typeof(BallUpdateSphere)) as BallUpdateSphere[];
 			foreach(BallUpdateSphere sp in balls) {
 				sp.GetComponent<Renderer>().material.SetColor("_Color", Molecule.Model.MoleculeModel.atomsColorList[(int)sp.number]);
@@ -387,7 +387,7 @@ public class SphereManager : GenericManager {
 	}
 	
 	private void ResetRadii() {
-		if(UIData.atomtype == UIData.AtomType.sphere){
+		if(UIData.Instance.atomtype == UIData.AtomType.sphere){
 			foreach(BallUpdateSphere sp in balls) {
 				float buffer = Molecule.Model.MoleculeModel.atomsTypelist[(int)sp.number].radius
 								* (GUIMoleculeController.globalRadius)
@@ -423,7 +423,7 @@ public class SphereManager : GenericManager {
 	
 	// Update is called once per frame
 	void Update () {
-		if(UIData.atomtype != UIData.AtomType.sphere) {
+		if(UIData.Instance.atomtype != UIData.AtomType.sphere) {
 			if(GameObject.FindObjectsOfType(typeof(BallUpdateSphere)).Length >0) // Sometimes they're already destroyed at this point.
 				DisableRenderers();
 			return;

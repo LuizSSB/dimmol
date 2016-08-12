@@ -48,7 +48,7 @@ public class CubeBondManager : GenericManager {
 	}
 	
 	private void ResetColors() {
-		if(UIData.bondtype == UIData.BondType.cube){
+		if(UIData.Instance.bondtype == UIData.BondType.cube){
 			bonds = GameObject.FindObjectsOfType(typeof(BondCubeUpdate)) as BondCubeUpdate[];
 			foreach(BondCubeUpdate bcu in bonds) {
 				//bcu.renderer.material.SetColor("_Color1", bcu.atompointer1.renderer.material.GetColor("_Color"));
@@ -97,7 +97,7 @@ public class CubeBondManager : GenericManager {
 	
 	// Update is called once per frame
 	void Update () {
-		if(UIData.bondtype != UIData.BondType.cube) {
+		if(UIData.Instance.bondtype != UIData.BondType.cube) {
 			enabled = false;
 			return;
 		}
@@ -115,7 +115,7 @@ public class CubeBondManager : GenericManager {
 	
 	// TODO ?
 /*
-	if(UIData.EnableUpdate)
+	if(UIData.Instance.EnableUpdate)
 	{	
 		transform.position = (atompointer1.transform.position + atompointer2.transform.position)/2.0f;
 		transform.LookAt(atompointer2.transform.position);

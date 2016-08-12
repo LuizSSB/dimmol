@@ -1,4 +1,4 @@
-/// @file UIData.cs
+/// @file UIData.Instance.Instancecs
 /// @brief Details to be specified
 /// @author FvNano/LBT team
 /// @author Marc Baaden <baaden@smplinux.de>
@@ -47,7 +47,7 @@
 /// The fact that you are presently reading this means that you have had 
 /// knowledge of the CeCILL-C license and that you accept its terms.
 ///
-/// $Id: UIData.cs 647 2014-08-06 12:20:04Z tubiana $
+/// $Id: UIData.Instance.Instancecs 647 2014-08-06 12:20:04Z tubiana $
 ///
 /// References : 
 /// If you use this code, please cite the following reference : 	
@@ -62,6 +62,7 @@
 /// using HyperBalls, a unified algorithm for balls, sticks and hyperboloids",
 /// J. Comput. Chem., 2011, 32, 2924
 ///
+using System.Linq;
 
 namespace UI
 {
@@ -75,130 +76,131 @@ namespace UI
 	 * Unity3D Doc :<BR>
 	 * <A HREF="http://docs.unity3d.com/Documentation/ScriptReference/Color.html">Color</A>
 	 */
+	[System.Serializable]
 	public class UIData {
-//		public static bool standalone=true;
+//		public bool standalone=true;
 		
 		//Initial molecule to load from resources
-		public static string init_molecule = "";
+		public string init_molecule = "";
 
 		#if UNITY_EDITOR
-//			public static string server_url = "http://172.27.0.170/";
-			public static string server_url = "http://www.shaman.ibpc.fr/umolweb/";
+//			public string server_url = "http://172.27.0.170/";
+			public string server_url = "http://www.shaman.ibpc.fr/umolweb/";
 		#else
-			public static string server_url = "";
+			public string server_url = "";
 		#endif
-//			public static string server_url = "http://localhost:8888/";
+//			public string server_url = "http://localhost:8888/";
 		
 		
-		public static bool fetchPDBFile = false;
-		public static bool isConfirm = false;
-		public static bool changeStructure = false;
-		public static bool hasMoleculeDisplay = false;
-		public static bool hasResidues = false;
-		public static bool hasChains = false;
-		public static bool isclear=false;
-		public static bool isOpenFile=false;
-		public static bool isParticlesInitialized = false;
+		public bool fetchPDBFile = false;
+		public bool isConfirm = false;
+		public bool changeStructure = false;
+		public bool hasMoleculeDisplay = false;
+		public bool hasResidues = false;
+		public bool hasChains = false;
+		public bool isclear=false;
+		public bool isOpenFile=false;
+		public bool isParticlesInitialized = false;
 		
-		public static bool isCubeLoaded = false;
-		public static bool isSphereLoaded = false;
-		public static bool isHBallLoaded = false;
+		public bool isCubeLoaded = false;
+		public bool isSphereLoaded = false;
+		public bool isHBallLoaded = false;
 		
-		public static bool isRenderDictInit = false;
-		public static bool isTexturesMenuListInit = false;
+		public bool isRenderDictInit = false;
+		public bool isTexturesMenuListInit = false;
 		
-		public static bool readHetAtom = true;
-		public static bool readWater = false;
-		public static bool connectivity_calc = true;
-		public static bool connectivity_PDB = false;
-		public static bool resetDisplay=false;
-		public static bool isCubeToSphere=false;
-		public static bool isSphereToCube=true;
+		public bool readHetAtom = true;
+		public bool readWater = false;
+		public bool connectivity_calc = true;
+		public bool connectivity_PDB = false;
+		public bool resetDisplay=false;
+		public bool isCubeToSphere=false;
+		public bool isSphereToCube=true;
 		
-		public static bool resetBondDisplay=false;
+		public bool resetBondDisplay=false;
 		
-		public static bool toggleMouse = true;
-		public static bool toggleKey = false;
+		public bool toggleMouse = true;
+		public bool toggleKey = false;
 			
-		public static bool toggleClip =true;
-		public static bool togglePlane=false;
+		public bool toggleClip =true;
+		public bool togglePlane=false;
 		
-		public static bool toggleGray =false;
-		public static bool toggleColor=true;
+		public bool toggleGray =false;
+		public bool toggleColor=true;
 		
-		public static bool backGroundIs = false;
-		public static bool backGroundNo = true;
+		public bool backGroundIs = false;
+		public bool backGroundNo = true;
 		
-		public static bool cameraStop = false;
+		public bool cameraStop = false;
 		
-		public static bool cameraStop2 = false;
+		public bool cameraStop2 = false;
 
-		public static bool loginSucess=false;
+		public bool loginSucess=false;
 		
-		public static AtomType atomtype=AtomType.particleball;
+		public AtomType atomtype=AtomType.particleball;
 
-		public static BondType bondtype=BondType.nobond;
+		public BondType bondtype=BondType.nobond;
 		
-		public static bool EnableUpdate=true;
+		public bool EnableUpdate=true;
 		
-		public static bool interactive=false;
+		public bool interactive=false;
 		
-		public static bool resetInteractive=false;
+		public bool resetInteractive=false;
 		
-		public static bool meshcombine=false;
+		public bool meshcombine=false;
 		
-		public static bool resetMeshcombine=false;
+		public bool resetMeshcombine=false;
 		
-		public static bool fileBrowser;
+		public bool fileBrowser;
 		
-		public static bool switchmode=false;
+		public bool switchmode=false;
 		
-		public static bool hballsmoothmode=false;
+		public bool hballsmoothmode=false;
 		
-		public static bool grayscalemode = false;
+		public bool grayscalemode = false;
 		
-		public static bool hiddenUI=false;
+		public bool hiddenUI=false;
 		
-		public static bool hiddenUIbutFPS=false;
+		public bool hiddenUIbutFPS=false;
 		
-		public static bool hiddenCamera=false;
+		public bool hiddenCamera=false;
 
-		public static bool up_part=true;
-		public static bool down_part=false;
+		public bool up_part=true;
+		public bool down_part=false;
 		
-		public static bool openAllMenu=false;
+		public bool openAllMenu=false;
 		
-		public static bool openBound=false;
+		public bool openBound=false;
 		
-		public static bool secondarystruct=false;
-		public static bool toggle_bf = false;
-		public static bool isRescale = false;
-		public static bool toggle_SS = false;
-		public static bool ssColChain = false;
-		public static bool ssColStruct = false;
-		public static bool ssDivCol = false;
-		public static bool surfColChain = false;
-		public static bool surfColHydroKD = false;
-		public static bool surfColHydroEng = false;
-		public static bool surfColHydroWO = false;
-		public static bool surfColHydroEis = false;
-		public static bool surfColHydroHW = false;
-		public static bool surfColPChim = false;
-		public static bool surfColBF = false;
-		public static bool isGLIC = false;
-		public static bool spread_tree = false;
+		public bool secondarystruct=false;
+		public bool toggle_bf = false;
+		public bool isRescale = false;
+		public bool toggle_SS = false;
+		public bool ssColChain = false;
+		public bool ssColStruct = false;
+		public bool ssDivCol = false;
+		public bool surfColChain = false;
+		public bool surfColHydroKD = false;
+		public bool surfColHydroEng = false;
+		public bool surfColHydroWO = false;
+		public bool surfColHydroEis = false;
+		public bool surfColHydroHW = false;
+		public bool surfColPChim = false;
+		public bool surfColBF = false;
+		public bool isGLIC = false;
+		public bool spread_tree = false;
 
-		public static bool firststruct=true;
+		public bool firststruct=true;
 		
-		public static bool toggleSurf=true;
-		public static bool toggleBfac=false;
+		public bool toggleSurf=true;
+		public bool toggleBfac=false;
 
 		// Guided navigation mode
-		public static bool guided=false;
+		public bool guided=false;
 		// Optimal view mode
-		public static bool optim_view=false;
-		public static Vector3 optim_view_start_point;
-		public static float start_time;
+		public bool optim_view=false;
+		public Vector3 optim_view_start_point;
+		public float start_time;
 		
 		public enum AtomType {
 			cube=0,
@@ -231,8 +233,60 @@ namespace UI
 			HiRERNA = 1
 		}
 
-		public static bool loadHireRNA = false;
-		public static FFType ffType = FFType.atomic;
-	}
+		public bool loadHireRNA = false;
+		public FFType ffType = FFType.atomic;
 
+		// Luiz:
+		private static UIData sInstance = new UIData();
+		public static UIData Instance {
+			get {
+				return sInstance;
+			}
+		}
+		public string ChosenPdbContents; //{ get; set; }
+		private static string[] mUpdateParts;
+		public string[] SerializeInParts() {
+			string serialized = JsonUtility.ToJson(this);
+			int length = (int) System.Math.Ceiling (serialized.Length / 4000.0);
+			string[] parts = new string[length];
+			for (int i = 0, idxPart = 0; i < serialized.Length; i += 4000, ++idxPart) {
+				parts [idxPart] = idxPart
+					+ "/"
+					+ length
+					+ "$"
+					+ serialized.Substring (i, System.Math.Min (4000, serialized.Length - i));
+			}
+			return parts;
+		}
+		public static bool DeserializePart(string serializedDataChunk) {
+			int indexOfSlash = serializedDataChunk.IndexOf ("/");
+			int indexOfDollar = serializedDataChunk.IndexOf ("$");
+
+			int totalParts = int.Parse (
+				serializedDataChunk.Substring(indexOfSlash + 1, indexOfDollar - (indexOfSlash + 1))
+			);
+			int idxPart = int.Parse (
+				serializedDataChunk.Substring(0, indexOfSlash)
+			);
+
+			if (mUpdateParts == null
+//				|| mUpdateParts.Length != totalParts
+//				|| (mUpdateParts[idxPart] != null
+//					&& mUpdateParts[idxPart] != serializedDataChunk)
+			) {
+				mUpdateParts = new string[totalParts];
+			}
+
+			mUpdateParts [idxPart] = serializedDataChunk.Substring (indexOfDollar + 1);
+
+			if (mUpdateParts.Any (p => p == null)) {
+				return false;
+			}
+
+			string serialized = string.Join (string.Empty, mUpdateParts);
+			sInstance = JsonUtility.FromJson<UIData> (serialized);
+			mUpdateParts = null;
+			return true;
+		}
+	}
 }

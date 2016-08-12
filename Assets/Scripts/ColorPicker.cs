@@ -195,17 +195,11 @@ public class ColorPicker{
 			m_colorObj.color = new Color((float)m_r_value/255f, (float)m_g_value/255f, (float)m_b_value/255f, 1f);
 			
 			if(m_atoms != null){
-				GenericManager manager = Molecule.View.DisplayMolecule.GetManagers()[0];
-				if(!UI.GUIMoleculeController.toggle_NA_CLICK){
-					manager.SetColor(m_colorObj.color, m_atoms, m_residue, m_chain);
+				// Luiz:
+				if (AtomsColorPicked != null) {
+					AtomsColorPicked (this, new ColorEventArgs (m_colorObj.color, m_atoms, m_residue, m_chain));
 				}
-				else{ 
-					foreach(GameObject obj in Camera.main.GetComponent<ClickAtom>().objList){
-							manager.SetColor(m_colorObj.color, (int)obj.GetComponent<BallUpdate>().number);
-					}
-				}
-			}
-			
+			}			
 		}
 	}
 	
@@ -226,4 +220,41 @@ public class ColorPicker{
 		
 	}
 
+	// Luiz:
+	public event System.EventHandler<ColorEventArgs> AtomsColorPicked;
+	[System.Serializable]
+	public class ColorEventArgs : System.EventArgs 
+	{
+		public Color Color;
+		public List<string> Atoms;
+		public string Residue;
+		public string Chain;
+
+		public ColorEventArgs (Color color, List<string> atoms, string residue, string chain)
+		{
+			this.Color = color;
+			this.Atoms = atoms;
+			this.Residue = residue;
+			this.Chain = chain;
+		}
+	}
+}
+
+// Luiz:
+public static class ColorExtensions
+{
+	public static string Serialize(this Color color)
+	{
+		return color.r + "," + color.g + "," + color.b + "," + color.a;
+	}
+	public static Color Deserialize(string serializedColor)
+	{
+		string[] parts = serializedColor.Split (',');
+		return new Color {
+			r = float.Parse(parts[0]),
+			g = float.Parse(parts[1]),
+			b = float.Parse(parts[2]),
+			a = float.Parse(parts[3])
+		};
+	}
 }

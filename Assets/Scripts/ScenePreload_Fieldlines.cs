@@ -88,7 +88,7 @@ public class ScenePreload_Fieldlines : MonoBehaviour {
 
 	IEnumerator InitScene(RequestPDB requestPDB)
 	{
-		StartCoroutine(requestPDB.LoadPDBWWW(UIData.server_url+"Scenes/fieldlines/fieldline.pdb"));
+		StartCoroutine(requestPDB.LoadPDBWWW(UIData.Instance.server_url+"Scenes/fieldlines/fieldline.pdb"));
 		while(!RequestPDB.isDone)
 		{
 			pdb_progress = requestPDB.progress;
@@ -97,13 +97,13 @@ public class ScenePreload_Fieldlines : MonoBehaviour {
 		}
 		pdb_progress = 1.0f;
 		
-		UIData.atomtype = UIData.AtomType.particleball;
-		UIData.bondtype = UIData.BondType.nobond;
+		UIData.Instance.atomtype = UIData.AtomType.particleball;
+		UIData.Instance.bondtype = UIData.BondType.nobond;
 		GUIMoleculeController.showOpenMenu=false;
 		GUIMoleculeController.showAtomMenu=true;
 		SendMessage("Display",SendMessageOptions.DontRequireReceiver);
 		
-		StartCoroutine(requestPDB.LoadJsonWWW(UIData.server_url+"Scenes/fieldlines/fieldline.json",MoleculeModel.Offset));
+		StartCoroutine(requestPDB.LoadJsonWWW(UIData.Instance.server_url+"Scenes/fieldlines/fieldline.json",MoleculeModel.Offset));
 		while(!RequestPDB.isDone)
 		{
 			json_progress = requestPDB.progress;
@@ -114,7 +114,7 @@ public class ScenePreload_Fieldlines : MonoBehaviour {
 		GUIMoleculeController.showFieldLines = true;
 		FieldLineStyle.DisplayFieldLine();
 
-		StartCoroutine(requestPDB.LoadOBJWWW(UIData.server_url+"Scenes/fieldlines/fieldline.obj"));
+		StartCoroutine(requestPDB.LoadOBJWWW(UIData.Instance.server_url+"Scenes/fieldlines/fieldline.obj"));
 		while(!RequestPDB.isDone)
 		{
 			obj_progress = requestPDB.progress;

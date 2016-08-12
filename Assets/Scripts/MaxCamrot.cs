@@ -135,7 +135,7 @@
 // 	    	if(cameraStop == false){
 // 				if (Input.GetMouseButton(0))
 // 		        {
-// 		        	if(UIData.switchmode)ToParticle();
+// 		        	if(UIData.Instance.switchmode)ToParticle();
 						
 // 	// implmemet of a rotation mod when the mouse is in the right of the scene.
 // 	// TODO : Probleme when we rotate the protéine, the comand rotate too.

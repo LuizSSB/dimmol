@@ -1013,9 +1013,9 @@ public class Ribbons {
 					GenerateFlatRibbon(vertices, normals, triangles);
 				Color32 color;
 
-				if (UI.UIData.ssColChain) {
+				if (UI.UIData.Instance.ssColChain) {
 					color =  GetColorChain(currentchain);
-					if(i > 185 && UI.UIData.ssDivCol ){
+					if(i > 185 && UI.UIData.Instance.ssDivCol ){
 						color.g += 100;
 						color.b += 100;}
 				}else{
@@ -1179,7 +1179,7 @@ public class Ribbons {
 				}
 				else if(j >= tmplisthelix[0][0] && j < tmplisthelix[0][1]){
 					sslist.Add(HELIX);
-					if(tmplisthelix[0][3] <= 5 && !UI.UIData.guided)
+					if(tmplisthelix[0][3] <= 5 && !UI.UIData.Instance.guided)
 						handednesslist.Add (RHANDED);
 					else
 						handednesslist.Add (LHANDED);

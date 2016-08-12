@@ -143,15 +143,15 @@ public class MDDriver : MonoBehaviour {
 			
 			// Copied from DisplayMolecule.GetManagers
 			// Does not work otherwise. Why?
-			if (UIData.bondtype == UIData.BondType.line) {
+			if (UIData.Instance.bondtype == UIData.BondType.line) {
 				GameObject lineManagerObj = GameObject.FindGameObjectWithTag("LineManager");
 				LineManager lineManager = lineManagerObj.GetComponent<LineManager>();
 				lineManager.ResetPositions();
-			} else if (UIData.bondtype == UIData.BondType.cube) {
+			} else if (UIData.Instance.bondtype == UIData.BondType.cube) {
 				GameObject cubeBondManagerObj = GameObject.FindGameObjectWithTag("CubeBondManager");
 				CubeBondManager cubeBondManager = cubeBondManagerObj.GetComponent<CubeBondManager>();
 				cubeBondManager.ResetPositions();
-			} else if (UIData.bondtype == UIData.BondType.hyperstick) {
+			} else if (UIData.Instance.bondtype == UIData.BondType.hyperstick) {
 				GameObject hStickManagerObj = GameObject.FindGameObjectWithTag("HStickManager");
 				HStickManager hStickManager = hStickManagerObj.GetComponent<HStickManager>();
 				hStickManager.ResetPositions();
@@ -257,18 +257,18 @@ public class MDDriver : MonoBehaviour {
 		
 		GUILayout.Space(20);
 		
-		if(UIData.atomtype == UIData.AtomType.hyperball) {
+		if(UIData.Instance.atomtype == UIData.AtomType.hyperball) {
 			GUILayout.BeginHorizontal();
 			GameObject hbManagerObj = GameObject.FindGameObjectWithTag("HBallManager");
 			HBallManager hbManager = hbManagerObj.GetComponent<HBallManager>();
 			if (hbManager.ellipsoidViewEnabled()) 
 			{
-				if (GUILayout.Button (new GUIContent("CG RNA", "Switch to RNA Coarse-Grained representation")) && UIData.atomtype == UIData.AtomType.hyperball) {
+				if (GUILayout.Button (new GUIContent("CG RNA", "Switch to RNA Coarse-Grained representation")) && UIData.Instance.atomtype == UIData.AtomType.hyperball) {
 					hbManager.SwitchRendering();
 				}
 			}
 			else {
-				if (GUILayout.Button (new GUIContent("Ellipsoid RNA", "Switch to RNA ellipsoid representation")) && UIData.atomtype == UIData.AtomType.hyperball) {
+				if (GUILayout.Button (new GUIContent("Ellipsoid RNA", "Switch to RNA ellipsoid representation")) && UIData.Instance.atomtype == UIData.AtomType.hyperball) {
 					hbManager.SwitchRendering();
 				}
 			}

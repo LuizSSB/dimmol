@@ -73,8 +73,8 @@ public class InteractiveStructure : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		UIData.atomtype = UIData.AtomType.hyperball; 
-		UIData.bondtype=UIData.BondType.hyperstick;
+		UIData.Instance.atomtype = UIData.AtomType.hyperball; 
+		UIData.Instance.bondtype=UIData.BondType.hyperstick;
 		GUIMoleculeController.toggle_NA_INTERACTIVE = true;
 	}
 	

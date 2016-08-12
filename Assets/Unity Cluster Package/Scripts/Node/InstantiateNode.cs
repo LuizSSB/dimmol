@@ -24,11 +24,10 @@ namespace UnityClusterPackage {
 				) as GameObject;
 				networkedCamera.transform.parent = this.transform;
 			}
-			else if ( NodeInformation.type.Equals("slave") )
+			else if ( NodeInformation.IsSlave )
 			{
 				Network.Connect( NodeInformation.serverIp, NodeInformation.serverPort );
-			}
-			
+			}			
 		}
 		
 		void OnServerInitialized()
@@ -48,7 +47,17 @@ namespace UnityClusterPackage {
 		
 		void OnConnectedToServer()
 		{
-			Debug.Log( "Connected to server." );
+			Debug.Log( "Connected to server. " +  GameObject.FindGameObjectWithTag("MainCamera"));
+
+			StartCoroutine (check());
+		}
+
+		IEnumerator check()
+		{
+			while (Camera.main == null)
+				yield return new WaitForEndOfFrame ();
+
+			Camera.main.transform.parent = transform;
 		}
 		
 		void OnFailedToConnect(NetworkConnectionError error)
@@ -57,12 +66,12 @@ namespace UnityClusterPackage {
 		}
 		
 		void OnDestroy() {
-			
+			Debug.Log ("Destroying node: " + NodeInformation.name);
 			if ( NodeInformation.type.Equals("master") )
 			{
 				Network.Disconnect();
 			}
-			else if ( NodeInformation.type.Equals("slave") )
+			else if ( NodeInformation.IsSlave )
 			{
 				Network.CloseConnection( Network.player, true );                
 			}

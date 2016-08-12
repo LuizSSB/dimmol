@@ -107,7 +107,7 @@ public class LineUpdate : MonoBehaviour {
 	void  Update ()
 	{
 		//lineRenderer.SetVertexCount(2);
-		if(UIData.EnableUpdate)
+		if(UIData.Instance.EnableUpdate)
 		{
 				if((oldatomcolor1!=atompointer1.renderer.material.GetColor("_Color"))||(oldatomcolor1!=atompointer2.renderer.material.GetColor("_Color")))
 				{

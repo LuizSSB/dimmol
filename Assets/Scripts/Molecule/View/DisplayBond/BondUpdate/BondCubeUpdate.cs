@@ -160,7 +160,7 @@ public class BondCubeUpdate : MonoBehaviour {
 			renderer.material.SetFloat("_Scale",scale);
 			oldscale=scale;
 		}
-		if(UIData.EnableUpdate)
+		if(UIData.Instance.EnableUpdate)
 		{	
 			transform.position = (atompointer1.transform.position + atompointer2.transform.position)/2.0f;
 			transform.LookAt(atompointer2.transform.position);
@@ -169,7 +169,7 @@ public class BondCubeUpdate : MonoBehaviour {
 			renderer.material.SetVector("_Pos2", atompointer2.transform.position);
 			renderer.material.SetColor("_Color1", atompointer1.renderer.material.GetColor("_Color"));
 			renderer.material.SetColor("_Color2", atompointer2.renderer.material.GetColor("_Color"));
-		}//if(UIData.EnableUpdate)
+		}//if(UIData.Instance.EnableUpdate)
 	}//Update()
 */
 }

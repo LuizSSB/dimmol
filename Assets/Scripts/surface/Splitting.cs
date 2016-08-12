@@ -19,7 +19,7 @@ public class Splitting {
 		colors = mData.colors;
 		meshes = new List<Mesh>();
 
-		if(UI.UIData.isGLIC)
+		if(UI.UIData.Instance.isGLIC)
 			vertexLimit = 59520;
 		
 		// Small meshes don't need to be split

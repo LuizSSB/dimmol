@@ -78,10 +78,17 @@ public class HBallManager : GenericManager {
 	
 	public static bool xgmml = false;
 	public static float depthFactor = 1.0f;
-	public static float brightness = 1.0f;
 	public static bool resetBrightness = false;
 	private static float oldDepthFactor = 1.0f;
 	private static bool mouseOvers = false;
+
+	// Luiz:
+//	public static float brightness = 1.0f;
+	private static float _brightness = 1f;
+	public static float brightness {
+		get { return _brightness; }
+		set { _brightness = ChangeManager.ProcessPropertyChanged(typeof(HBallManager), "brightness", _brightness, value); }
+	}
 	
 	private bool ellipsoidView = false;
 	private bool ellipsoidsInitialized = false;
@@ -150,13 +157,13 @@ public class HBallManager : GenericManager {
 	public void SetStickShader(){
 		if(!GUIMoleculeController.toggle_NA_TEXATOM)
 		{
-			if(UIData.bondtype == UIData.BondType.hyperstick)
+			if(UIData.Instance.bondtype == UIData.BondType.hyperstick)
 				foreach(StickUpdate stu in sticks)
 					stu.renderer.material.shader = Shader.Find("FvNano/Stick HyperBalls OpenGL");
 		}
 		else
 		{
-			if(UIData.bondtype == UIData.BondType.hyperstick)
+			if(UIData.Instance.bondtype == UIData.BondType.hyperstick)
 				foreach(StickUpdate stu in sticks)
 					stu.renderer.material.shader = Shader.Find("FvNano/Stick HyperBalls 2 OpenGL");
 		}
@@ -165,7 +172,7 @@ public class HBallManager : GenericManager {
 */
 	
 	public override void ToggleDistanceCueing(bool enabling) {
-		if(UIData.bondtype != UIData.BondType.hyperstick)
+		if(UIData.Instance.bondtype != UIData.BondType.hyperstick)
 			return;
 		float attenuation;
 		attenuation = enabling? 1f : 0f;
@@ -441,11 +448,11 @@ public class HBallManager : GenericManager {
 	/// </summary>
 	private void ResetColors() {
 //		Debug.Log("Resetting HBall colors");
-		if(UIData.atomtype == UIData.AtomType.hyperball) {
+		if(UIData.Instance.atomtype == UIData.AtomType.hyperball) {
 
 			for (int i=0; i<hballs.Length; i++)
 				//C.R
-				if(UIData.secondarystruct){
+				if(UIData.Instance.secondarystruct){
 					hballs[i].GetComponent<Renderer>().material.SetColor("_Color", hballs[i].atomcolor);}
 				else
 					hballs[i].GetComponent<Renderer>().material.SetColor("_Color", Molecule.Model.MoleculeModel.atomsColorList[(int)hballs[i].number]);
@@ -791,7 +798,7 @@ public class HBallManager : GenericManager {
 			                                                MoleculeModel.atomsLocationlist[i][2]);
 		}
 		BallUpdate.bondsReadyToBeReset = true;
-		UIData.resetBondDisplay = true;
+		UIData.Instance.resetBondDisplay = true;
 	}
 	
 	/// <summary>
@@ -811,7 +818,7 @@ public class HBallManager : GenericManager {
 	/// Resets the radii of all balls when it is changed via the GUI.
 	/// </summary>
 	private void ResetRadii() {
-		if(UIData.atomtype == UIData.AtomType.hyperball){
+		if(UIData.Instance.atomtype == UIData.AtomType.hyperball){
 			hballs = GameObject.FindObjectsOfType(typeof(BallUpdateHB)) as BallUpdateHB[];
 			//T.T sometimes this list is not initialized. So we initialise it here.
 			
@@ -829,7 +836,7 @@ public class HBallManager : GenericManager {
 			}			
 			 
 			for (int i=0; i<hballs.Length; i++) {
-				if (UIData.secondarystruct){
+				if (UIData.Instance.secondarystruct){
 					if(GUIMoleculeController.structType == "B Factor"){
 						if (hballs[i].rayon == 3.7f){
 							hballs[i].GetComponent<Renderer>().material.SetFloat("_Rayon", hballs[i].rayon 
@@ -918,7 +925,7 @@ public class HBallManager : GenericManager {
 			
 			float v = hballs[i].GetComponent<Rigidbody>().velocity.magnitude;
 			
-			if(UIData.toggleGray) {
+			if(UIData.Instance.toggleGray) {
 				Color c = Color.Lerp(Color.white, Color.black, v);
 				hballs[i].GetComponent<Renderer>().material.SetColor("_Color", c); // ugly
 			}
@@ -935,7 +942,7 @@ public class HBallManager : GenericManager {
 		for (int i=0; i<hballs.Length; i++){
 			//if(hb)
 			hballs[i].GetComponent<Renderer>().enabled = false;
-			if(UIData.atomtype != UIData.AtomType.particleball) // Particles don't have their own collider so we must keep it
+			if(UIData.Instance.atomtype != UIData.AtomType.particleball) // Particles don't have their own collider so we must keep it
 				hballs[i].GetComponent<Collider>().enabled = false; // Disable the collider at the same time to avoid ghost-clicking with atom selection
 		}
 //		DeactivateBases();
@@ -950,7 +957,7 @@ public class HBallManager : GenericManager {
 	/// </summary>
 	public override void EnableRenderers(){
 		hballs = GameObject.FindObjectsOfType(typeof(BallUpdateHB)) as BallUpdateHB[];
-		if(UIData.atomtype != UIData.AtomType.hyperball)
+		if(UIData.Instance.atomtype != UIData.AtomType.hyperball)
 			return;
 		
 		for (int i=0; i<hballs.Length; i++){
@@ -973,17 +980,17 @@ public class HBallManager : GenericManager {
 	
 
 	void Update () {
-		if (ellipsoidsInitialized == false && UIData.ffType == UIData.FFType.HiRERNA)
+		if (ellipsoidsInitialized == false && UIData.Instance.ffType == UIData.FFType.HiRERNA)
 		{
 			GenerateEllipsoids();
 		}
 		
-		if(UIData.atomtype != UIData.AtomType.hyperball) {
+		if(UIData.Instance.atomtype != UIData.AtomType.hyperball) {
 			DisableRenderers();
 		}
 			
 		if(BallUpdate.resetColors && !Molecule.Model.MoleculeModel.networkLoaded){
-//			Debug.Log("HBALL RESETCOLOR CALL" + UIData.atomtype);
+//			Debug.Log("HBALL RESETCOLOR CALL" + UIData.Instance.atomtype);
 			ResetColors();
 		}
 		
@@ -1024,9 +1031,9 @@ public class HBallManager : GenericManager {
 		}
 		
 		if( ( (BallUpdate.oldRadiusFactor != BallUpdate.radiusFactor) || BallUpdate.resetRadii ||
-			(UIData.bondtype == UIData.BondType.hyperstick && (StickUpdate.shrink != StickUpdate.oldshrink)
+			(UIData.Instance.bondtype == UIData.BondType.hyperstick && (StickUpdate.shrink != StickUpdate.oldshrink)
 												|| (StickUpdate.scale != StickUpdate.oldscale)) ) ) {
-			if(UIData.atomtype == UIData.AtomType.hyperball) {
+			if(UIData.Instance.atomtype == UIData.AtomType.hyperball) {
 				ResetRadii();
 				BallUpdate.resetRadii = false;
 			}
@@ -1038,7 +1045,7 @@ public class HBallManager : GenericManager {
 			UpdateEllipsoids();
 		}
 		
-/*		if(UIData.EnableUpdate){ // not sure what that's for
+/*		if(UIData.Instance.EnableUpdate){ // not sure what that's for
 			
 		}
 */

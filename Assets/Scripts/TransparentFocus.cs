@@ -71,7 +71,7 @@ public class TransparentFocus : MonoBehaviour {
 	{
 		RaycastHit[] hits;
 		
-		if((UIData.atomtype == UIData.AtomType.sphere) && (UIData.optim_view))
+		if((UIData.Instance.atomtype == UIData.AtomType.sphere) && (UIData.Instance.optim_view))
 		{
 			target = maxCamera.optim_target;
 			double distance = Vector3.Distance(transform.position, target) * 0.50;

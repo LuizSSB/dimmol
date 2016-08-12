@@ -87,7 +87,7 @@ namespace Molecule.View.DisplayAtom {
 		//private GameObject[] hyperballs;
 		
 		public AtomCubeStyle() {
-			if(UIData.secondarystruct)
+			if(UIData.Instance.secondarystruct)
 				MoleculeModel.p = new Particle[MoleculeModel.CaSplineList.Count];
 			else
 				MoleculeModel.p = new Particle[MoleculeModel.atomsLocationlist.Count];
@@ -103,8 +103,8 @@ namespace Molecule.View.DisplayAtom {
 		
 		//Create atoms according to type. Particles are created only once except if display is forced
 		public void DisplayAtoms (UIData.AtomType type_atom, bool force_display = false) {
-			if(type_atom != UIData.AtomType.particleball || !UIData.isParticlesInitialized ||force_display) {
-				//if(!UIData.isCubeLoaded){
+			if(type_atom != UIData.AtomType.particleball || !UIData.Instance.isParticlesInitialized ||force_display) {
+				//if(!UIData.Instance.isCubeLoaded){
 					if(AtomCubeParent == null)
 						AtomCubeParent = new GameObject("AtomCubeParent");
 					
@@ -117,11 +117,11 @@ namespace Molecule.View.DisplayAtom {
 					Debug.Log("DisplayAtoms :: ***clear MolecularModel**** " );
 					atomtype = type_atom;
 					DisplayAtomMethodByCube();
-					UIData.isParticlesInitialized = true;
-					if(UIData.atomtype == UIData.AtomType.cube)
-						UIData.isCubeLoaded = true;
-					else if(UIData.atomtype == UIData.AtomType.hyperball)
-						UIData.isHBallLoaded = true;
+					UIData.Instance.isParticlesInitialized = true;
+					if(UIData.Instance.atomtype == UIData.AtomType.cube)
+						UIData.Instance.isCubeLoaded = true;
+					else if(UIData.Instance.atomtype == UIData.AtomType.hyperball)
+						UIData.Instance.isHBallLoaded = true;
 				//}
 			}
 		}
@@ -132,7 +132,7 @@ namespace Molecule.View.DisplayAtom {
 				ArrayList atomListByAxisOrder;
 				ArrayList atomListByType;
 				
-				if(UIData.secondarystruct){
+				if(UIData.Instance.secondarystruct){
 					atomListByType=AtomListByType(MoleculeModel.CaSplineList,MoleculeModel.CaSplineTypeList);}
 				else{
 					atomListByType=AtomListByType(MoleculeModel.atomsLocationlist,MoleculeModel.atomsTypelist);}
@@ -140,7 +140,7 @@ namespace Molecule.View.DisplayAtom {
 				for(int iType=0; iType<atomListByType.Count; iType++)
 					DisplayAtomCube(atomListByType[iType] as ArrayList, iType);		
 				
-				if(UIData.secondarystruct)
+				if(UIData.Instance.secondarystruct)
 					atomListByAxisOrder=AtomListByAxisOrder(MoleculeModel.CaSplineList);
 				else
 					atomListByAxisOrder=AtomListByAxisOrder(MoleculeModel.atomsLocationlist);
@@ -149,7 +149,7 @@ namespace Molecule.View.DisplayAtom {
 			}
 			else if(atomtype==UIData.AtomType.particleballalphablend) {
 				ArrayList atomListByAxisOrder;
-				if(UIData.secondarystruct) {
+				if(UIData.Instance.secondarystruct) {
 					AtomListByType(MoleculeModel.CaSplineList,MoleculeModel.CaSplineTypeList);
 					atomListByAxisOrder=AtomListByAxisOrder(MoleculeModel.CaSplineList);
 				}
@@ -160,13 +160,13 @@ namespace Molecule.View.DisplayAtom {
 				DisplayAtomParticle(atomListByAxisOrder);
 			}
 			else {
-				if(UIData.secondarystruct)
+				if(UIData.Instance.secondarystruct)
 					DisplayAtomCube(MoleculeModel.CaSplineList, MoleculeModel.CaSplineTypeList);
 				else
 					DisplayAtomCube(MoleculeModel.atomsLocationlist, MoleculeModel.atomsTypelist);
 			}
 
-			if(UIData.secondarystruct)
+			if(UIData.Instance.secondarystruct)
 				MoleculeModel.atomsnumber=MoleculeModel.CaSplineList.Count;
 			else
 				MoleculeModel.atomsnumber=MoleculeModel.atomsLocationlist.Count;
@@ -216,7 +216,7 @@ namespace Molecule.View.DisplayAtom {
 			for(int i=0;i<alist.Count;i++) {
 				float typenumber=0f;
 				string  type;
-				if(UIData.secondarystruct)
+				if(UIData.Instance.secondarystruct)
 					type = (MoleculeModel.CaSplineTypeList[i] as AtomModel).type;
 				else
 					type = (MoleculeModel.atomsTypelist[i] as AtomModel).type;
@@ -312,7 +312,7 @@ namespace Molecule.View.DisplayAtom {
 			
 			
 			
-			if(UIData.atomtype == UIData.AtomType.hyperball) {
+			if(UIData.Instance.atomtype == UIData.AtomType.hyperball) {
 				GameObject hbManagerObj = GameObject.FindGameObjectWithTag("HBallManager");
 				HBallManager hbManager = hbManagerObj.GetComponent<HBallManager>();
 				Debug.Log("HBall Manager INIT OUTSIDE");
@@ -453,7 +453,7 @@ namespace Molecule.View.DisplayAtom {
 //			Projector proj = Atom.AddComponent<Projector>();
 			Atom.AddComponent<Projector>();
 			comp.enabled = true;
-			comp.isSplineNode = UIData.secondarystruct;
+			comp.isSplineNode = UIData.Instance.secondarystruct;
 			Atom.tag = atomModel.type;
 
 			if(atomtype==UIData.AtomType.particleball)
@@ -708,7 +708,7 @@ namespace Molecule.View.DisplayAtom {
 
 		private void CreateAtomRCBB(int type,int start ,int end,ArrayList atomLocationalist,Color c,Vector3 v,int order) {		
 			GameObject Atom;
-			if(UIData.toggleClip)
+			if(UIData.Instance.toggleClip)
 				Atom=Clip4RayCasting.CreateClip();
 			else
 				Atom=GameObject.CreatePrimitive(PrimitiveType.Plane);
@@ -741,7 +741,7 @@ namespace Molecule.View.DisplayAtom {
 		
 		private void CreateAtomHBBB(int type,int start ,int end,ArrayList atomLocationalist,Color c,Vector3 v,int order) {		
 			GameObject Atom;
-			if(UIData.toggleClip)
+			if(UIData.Instance.toggleClip)
 				Atom=Clip4RayCasting.CreateClip();
 			else
 				Atom=GameObject.CreatePrimitive(PrimitiveType.Plane);
@@ -864,7 +864,7 @@ namespace Molecule.View.DisplayAtom {
 				SpriteManager=GameObject.Find("SpriteManager");
 
 			GameObject Atom;
-			if(UIData.toggleClip)
+			if(UIData.Instance.toggleClip)
 				Atom=Clip4RayCasting.CreateClip();
 			else
 				Atom=GameObject.CreatePrimitive(PrimitiveType.Plane);

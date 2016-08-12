@@ -52,12 +52,12 @@ namespace Reorient
 				ControlMolecule.BuildMoleculeComponents ();
 				Debug.Log (MoleculeModel.MinValue);
 				// Switch on the guided navigation mode
-				UIData.guided = true;
-				UIData.resetDisplay = true;
-				UIData.resetBondDisplay = true;
-				UIData.isCubeToSphere = true;
-				UIData.isSphereToCube = false;
-				UIData.atomtype = UIData.AtomType.sphere;
+				UIData.Instance.guided = true;
+				UIData.Instance.resetDisplay = true;
+				UIData.Instance.resetBondDisplay = true;
+				UIData.Instance.isCubeToSphere = true;
+				UIData.Instance.isSphereToCube = false;
+				UIData.Instance.atomtype = UIData.AtomType.sphere;
 				BallUpdate.resetColors = true;
 
 //				BallUpdate.resetRadii = true;

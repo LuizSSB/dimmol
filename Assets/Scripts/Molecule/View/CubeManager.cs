@@ -36,7 +36,7 @@ public class CubeManager : GenericManager {
 	/// Resets the colors of all cubes and sticks. Uses the color sets in BallUpdateCube.
 	/// </summary>
 	private void ResetColors() {
-		if(UIData.atomtype == UIData.AtomType.cube){
+		if(UIData.Instance.atomtype == UIData.AtomType.cube){
 //		cubes = GameObject.FindObjectsOfType(typeof(BallUpdateCube)) as BallUpdateCube[];
 		foreach(BallUpdateCube bc in cubes)
 			bc.GetComponent<Renderer>().material.SetColor("_Color", Molecule.Model.MoleculeModel.atomsColorList[(int)bc.number]);
@@ -370,7 +370,7 @@ public class CubeManager : GenericManager {
 		cubes = GameObject.FindObjectsOfType(typeof(BallUpdateCube)) as BallUpdateCube[];
 		foreach(BallUpdateCube bc in cubes){
 			bc.GetComponent<Renderer>().enabled = false;
-			if(UIData.atomtype != UIData.AtomType.particleball) // Particles don't have their own collider so we must keep it
+			if(UIData.Instance.atomtype != UIData.AtomType.particleball) // Particles don't have their own collider so we must keep it
 				bc.GetComponent<Collider>().enabled = false; // Disable the collider at the same time to avoid ghost-clicking with atom selection
 		}
 		enabled = false;
@@ -386,7 +386,7 @@ public class CubeManager : GenericManager {
 	}
 	
 	private void ResetRadii() {
-		if(UIData.atomtype == UIData.AtomType.cube){
+		if(UIData.Instance.atomtype == UIData.AtomType.cube){
 			foreach(BallUpdateCube cb in cubes) {
 				float buffer = Molecule.Model.MoleculeModel.atomsTypelist[(int)cb.number].radius
 								* (GUIMoleculeController.globalRadius)
@@ -421,14 +421,14 @@ public class CubeManager : GenericManager {
 	
 	// Update is called once per frame
 	void Update () {
-		if(UIData.atomtype != UIData.AtomType.cube) {
+		if(UIData.Instance.atomtype != UIData.AtomType.cube) {
 			if(GameObject.FindObjectsOfType(typeof(BallUpdateCube)).Length >0) // Sometimes they're already destroyed at this point. Maybe. Can't hurt to make sure.
 				DisableRenderers();
 			return;
 		}
 	
 		if(BallUpdate.resetColors){
-			//Debug.Log("CUBE RESETCOLOR CALL" + UIData.atomtype);
+			//Debug.Log("CUBE RESETCOLOR CALL" + UIData.Instance.atomtype);
 			ResetColors();
 		}
 		

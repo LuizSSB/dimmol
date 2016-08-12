@@ -4,7 +4,15 @@ using System.Collections.Generic;
 using Molecule.Model;
 
 public class SurfaceManager : MonoBehaviour {
-	public static float brightness = 1f;
+	//Luiz
+//	public static float brightness = 1f;
+	private static float _brightness = 1f;
+	public static float brightness {
+		get { return _brightness; }
+		set { _brightness = ChangeManager.ProcessPropertyChanged (typeof(SurfaceManager), "brightness", _brightness, value); }
+	}
+
+
 	public static float colorWeight = 0.5f;
 	public static bool resetBrightness = false;
 	public static bool resetColorWeight = false;
@@ -105,34 +113,34 @@ public class SurfaceManager : MonoBehaviour {
 		
 		string type;
 		for(int i=0; i<nbVertices; i++) {
-			//if(UI.UIData.atomtype == UI.UIData.AtomType.particleball){
+			//if(UI.UIData.Instance.atomtype == UI.UIData.AtomType.particleball){
 				type = atomTree.GetClosestAtomType(vertices[i]);
-				if(UI.UIData.surfColChain){
+				if(UI.UIData.Instance.surfColChain){
 					Ribbons.InitCol();
 					meshColors[i] = Ribbons.GetColorChain(type);
 				}
-				else if(UI.UIData.surfColHydroKD){
+				else if(UI.UIData.Instance.surfColHydroKD){
 					HydrophobicScales.InitKyteDoo();
 					meshColors[i] = HydrophobicScales.GetColorHydro(type);
 				}
-				else if(UI.UIData.surfColHydroEng){
+				else if(UI.UIData.Instance.surfColHydroEng){
 					HydrophobicScales.InitEngleman();
 					meshColors[i] = HydrophobicScales.GetColorHydro(type);
 				}
 
-				else if(UI.UIData.surfColHydroEis){
+				else if(UI.UIData.Instance.surfColHydroEis){
 					HydrophobicScales.InitEisenberg();
 					meshColors[i] = HydrophobicScales.GetColorHydro(type);
 				}
-				else if(UI.UIData.surfColPChim){
+				else if(UI.UIData.Instance.surfColPChim){
 					HydrophobicScales.InitPhysChim();
 					meshColors[i] = HydrophobicScales.GetColorHydro(type);
 				}
-				else if(UI.UIData.surfColHydroWO){
+				else if(UI.UIData.Instance.surfColHydroWO){
 					HydrophobicScales.InitWhiteOct();
 					meshColors[i] = HydrophobicScales.GetColorHydro(type);
 				}
-				else if(UI.UIData.surfColBF){
+				else if(UI.UIData.Instance.surfColBF){
 					valtype = float.Parse (type);
 					if(valmax == 0){
 						valmin = BFactorRep.GetMin(BFactorList);

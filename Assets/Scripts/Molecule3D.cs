@@ -81,6 +81,8 @@ using DisplayControl;
 using Config;
 using Molecule.Model;
 using System.IO;
+using System.Collections.Generic;
+using System.Linq;
 
 public class Molecule3D:MonoBehaviour {
 
@@ -92,13 +94,20 @@ public class Molecule3D:MonoBehaviour {
 	private GameObject[] Boxes;
 	private GameObject[] boxes;
 	private UnityEngine.Object cameraUser;
-	private  GameObject LocCamera;
 	private Light li;
 	private float []defaultRanglesXZ;
 	private float []defaultRanglesXY;
 	public string url;
 	public string myXml;
 	private WWW xmlDownload;
+
+	private static GameObject mLocCamera;
+	public static GameObject LocCamera
+	{
+		get {
+			return mLocCamera = mLocCamera ?? GameObject.FindGameObjectWithTag ("MainCamera");
+		}
+	}
 	
 	private StreamWriter fpsLog;
 	private bool fpsLogToggle = false;
@@ -180,14 +189,43 @@ public class Molecule3D:MonoBehaviour {
 
 	void Start() {		
 		DebugStreamer.message = "Hello world!";
-		LocCamera=GameObject.FindGameObjectWithTag("MainCamera");
-		DebugStreamer.message = "Find Camera";
-		LocCamera.GetComponent<Skybox>().enabled=false;
+		//LocCamera=GameObject.FindGameObjectWithTag("MainCamera");
+		//DebugStreamer.message = "Find Camera";
+		//LocCamera.GetComponent<Skybox>().enabled=false;
 
 		scenecontroller = GameObject.Find("LoadBox");
 		scenecontroller.AddComponent<ReadDX>();
 		
-		gUIDisplay=new GUIDisplay();
+		gUIDisplay = new GUIDisplay();
+
+		// Luiz:
+		if (!UnityClusterPackage.NodeInformation.IsSlave) {
+			mNetworkView = GetComponent<NetworkView>();
+			gUIDisplay.Cleared += (sender, e) => mNetworkView.RPC("Clear", RPCMode.All);
+			ChangeManager.MethodInvoked += (sender, e) => {
+				var rpcData = GetRPCData(e.Param, "Method");
+				mNetworkView.RPC(
+					rpcData.HandlerName,
+					RPCMode.All,
+					e.TypeName,
+					e.MethodName,
+					(e.Param ?? new object()).GetType().FullName,
+					rpcData.Data
+				);
+			};
+			ChangeManager.PropertyChanged += (sender, e) => {
+				var rpcData = GetRPCData(e.NewValue, "Property");
+				mNetworkView.RPC(
+					rpcData.HandlerName,
+					RPCMode.All,
+					e.TypeName,
+					e.PropertyName,
+					e.NewValue.GetType().FullName,
+					rpcData.Data
+				);
+			};
+		}
+
 		DebugStreamer.message = "new GUIDisplay()";
 		//Init
 		// DebugStreamer.message = "Find LoadBox";
@@ -214,17 +252,17 @@ public class Molecule3D:MonoBehaviour {
 	}
 
 	public void HideAtoms() {
-		if(UIData.atomtype != UIData.AtomType.noatom) {
+		if(UIData.Instance.atomtype != UIData.AtomType.noatom) {
 			Debug.Log("Hiding all atoms now.");
 			DisplayMolecule.HideAtoms();
-			previous_AtomType = UIData.atomtype;
-			UIData.atomtype = UIData.AtomType.noatom;
+			previous_AtomType = UIData.Instance.atomtype;
+			UIData.Instance.atomtype = UIData.AtomType.noatom;
 		}
 	}
 
 	public void ShowAtoms() {
-		if(UIData.atomtype == UIData.AtomType.noatom) {
-			UIData.atomtype = previous_AtomType;
+		if(UIData.Instance.atomtype == UIData.AtomType.noatom) {
+			UIData.Instance.atomtype = previous_AtomType;
 			previous_AtomType = UIData.AtomType.noatom;
 			DisplayMolecule.ShowAtoms();
 		}
@@ -249,37 +287,37 @@ public class Molecule3D:MonoBehaviour {
 		} else
 			GUIMoleculeController.FileBrowser_show=false;
 		
-		UIData.EnableUpdate=false;
-		if((!UIData.hiddenUI)&&(!UIData.hiddenUIbutFPS))
+		UIData.Instance.EnableUpdate=false;
+		if((!UIData.Instance.hiddenUI)&&(!UIData.Instance.hiddenUIbutFPS))
 			gUIDisplay.Display();
 		
-		if((!UIData.hiddenUI)&&(UIData.hiddenUIbutFPS)){
+		if((!UIData.Instance.hiddenUI)&&(UIData.Instance.hiddenUIbutFPS)){
 			GUIMoleculeController.toggle_INFOS = true;
 		}
 		
-		if(!UIData.hiddenUI)
+		if(!UIData.Instance.hiddenUI)
 			if(GUIMoleculeController.showPanelsMenu)
 				GUIMoleculeController.SetPanels();
 		
-		if(!UIData.hiddenUI)
+		if(!UIData.Instance.hiddenUI)
 			if (GUIMoleculeController.showResiduesMenu)
 				GUIMoleculeController.SetResidues();
 		
-		if(!UIData.hiddenUI)
+		if(!UIData.Instance.hiddenUI)
 			if (GUIMoleculeController.showAtomsExtendedMenu)
 				GUIMoleculeController.SetAtomsExtended();
 		
-		if(!UIData.hiddenUI)
+		if(!UIData.Instance.hiddenUI)
 			if (GUIMoleculeController.showChainsMenu)
 				GUIMoleculeController.SetChains();
 
-		if(UIData.changeStructure) {
+		if(UIData.Instance.changeStructure) {
 			DisplayMolecule.ResetDisplay();
-			UIData.changeStructure = false;
-			UIData.isParticlesInitialized = false;
+			UIData.Instance.changeStructure = false;
+			UIData.Instance.isParticlesInitialized = false;
 		}
 		
-		if(UIData.isclear) {
+		if(UIData.Instance.isclear) {
 			DisplayMolecule.DestroyFieldLine();
 			DisplayMolecule.DestroyObject();
 			DisplayMolecule.DestroyRingBlending();
@@ -291,9 +329,9 @@ public class Molecule3D:MonoBehaviour {
 			DisplayMolecule.ClearMemory();
 			
 			// ----- Clearing all variables -----
-			UIData.isCubeLoaded = false;
-			UIData.isSphereLoaded = false;
-			UIData.isHBallLoaded = false;
+			UIData.Instance.isCubeLoaded = false;
+			UIData.Instance.isSphereLoaded = false;
+			UIData.Instance.isHBallLoaded = false;
 			LoadTypeGUI.buildSurfaceDone = false;
 			LoadTypeGUI.surfaceTextureDone = false;
 			LoadTypeGUI.toggle_RING_BLENDING = false;
@@ -303,11 +341,11 @@ public class Molecule3D:MonoBehaviour {
 			LoadTypeGUI.toggle_OXYGEN = false;
 			LoadTypeGUI.ColorationModeBond=0;
 			LoadTypeGUI.ColorationModeRing=0;
-			UIData.isParticlesInitialized=false;
+			UIData.Instance.isParticlesInitialized=false;
 			GUIMoleculeController.globalRadius = 1.0f;
-			UIData.secondarystruct = false;
-			UIData.atomtype = UIData.AtomType.noatom;
-			UIData.bondtype = UIData.BondType.nobond;
+			UIData.Instance.secondarystruct = false;
+			UIData.Instance.atomtype = UIData.AtomType.noatom;
+			UIData.Instance.bondtype = UIData.BondType.nobond;
 			MoleculeModel.existingName.Clear();
 			MoleculeModel.existingRes.Clear();
 			MoleculeModel.existingChain.Clear();
@@ -316,52 +354,52 @@ public class Molecule3D:MonoBehaviour {
 			Molecule.Model.MoleculeModel.atomsLocalScaleList.Clear();
 			RequestPDB.isDone=false;
 			
-			UIData.isclear=false;
-			Debug.Log("UIData.isclear");
+			UIData.Instance.isclear=false;
+			Debug.Log("UIData.Instance.isclear");
 		}
 		
-		if(UIData.resetDisplay&&UIData.isCubeToSphere) {
+		if(UIData.Instance.resetDisplay&&UIData.Instance.isCubeToSphere) {
 			DisplayMolecule.CubeToSphere();
 			Debug.Log ("UIData :: resetDisplay && iscubetoSphere");
 		}
 		
-		if(UIData.resetDisplay&&UIData.isSphereToCube) {
+		if(UIData.Instance.resetDisplay&&UIData.Instance.isSphereToCube) {
 			DisplayMolecule.SphereToCube();
 			Debug.Log ("UIData :: reset display && is spheretocube");
 		}
 		
-		if(UIData.resetBondDisplay) {
+		if(UIData.Instance.resetBondDisplay) {
 			DisplayMolecule.ResetBondDisplay();
 			Debug.Log ("UIData :: reset bonddisplay ");
 		}
 		
-		if(UIData.isOpenFile) {	
+		if(UIData.Instance.isOpenFile) {	
 			StartCoroutine(loadLoadFile());
 		}
 		
-		if(UIData.backGroundIs)
+		if(UIData.Instance.backGroundIs)
 			LocCamera.GetComponent<Skybox>().enabled=true;
 		else
 			LocCamera.GetComponent<Skybox>().enabled=false;
 
-		UIData.EnableUpdate=true;
+		UIData.Instance.EnableUpdate=true;
 		
-		if(UIData.interactive&&UIData.resetInteractive)	{
+		if(UIData.Instance.interactive&&UIData.Instance.resetInteractive)	{
 			DisplayMolecule.AddAllPhysics();
-			UIData.resetInteractive=false;			
+			UIData.Instance.resetInteractive=false;			
 		}
-		else if(!UIData.interactive && UIData.resetInteractive) {
+		else if(!UIData.Instance.interactive && UIData.Instance.resetInteractive) {
 			DisplayMolecule.DeleteAllPhysics();
-			UIData.resetInteractive = false;
+			UIData.Instance.resetInteractive = false;
 		}
 		
-		if(UIData.meshcombine) {
+		if(UIData.Instance.meshcombine) {
 			DisplayMolecule.AddCombineMesh();
-			UIData.resetMeshcombine=false;			
+			UIData.Instance.resetMeshcombine=false;			
 		}
-		else if(!UIData.meshcombine) {
+		else if(!UIData.Instance.meshcombine) {
 			DisplayMolecule.DeleteCombineMesh();
-			UIData.resetMeshcombine=false;			
+			UIData.Instance.resetMeshcombine=false;			
 		}
 		
 		/*if (requestPDB.Loading) {
@@ -380,7 +418,7 @@ public class Molecule3D:MonoBehaviour {
 	//this fonction is used to synchronise the file loading and the Display
 	//Otherwise Display is execute before the end of the loading.
 	public IEnumerator loadLoadFile(){
-			UIData.isOpenFile = false;
+			UIData.Instance.isOpenFile = false;
 			yield return StartCoroutine(loadFile());
 			Debug.Log ("T.T ==> BEFORE DISPLAY");
 			Display();		
@@ -394,7 +432,7 @@ public class Molecule3D:MonoBehaviour {
 //				alist=requestPDB.LoadPDBRequest(url,id);
 		
 		// check all format reading by unitymol PDB, XGMML and OBJ
-			if(UIData.fetchPDBFile) {
+			if(UIData.Instance.fetchPDBFile) {
 				Debug.Log("pdbServer/pdbID :: "+GUIDisplay.pdbServer + GUIDisplay.pdbID);
 				Debug.Log("proxyServer+proxyPort :: "+GUIDisplay.proxyServer + GUIDisplay.proxyPort);
 				int proxyport = 0;
@@ -416,8 +454,8 @@ public class Molecule3D:MonoBehaviour {
 						Debug.Log(requestPDB.progress);
 						yield return new WaitForEndOfFrame();
 					}
-					UIData.atomtype=UIData.AtomType.hyperball;
-					UIData.bondtype=UIData.BondType.hyperstick;
+					UIData.Instance.atomtype=UIData.AtomType.hyperball;
+					UIData.Instance.bondtype=UIData.BondType.hyperstick;
 					GUIMoleculeController.globalRadius = 0.22f;
 					GUIMoleculeController.shrink = 0.0001f;
 					GUIMoleculeController.linkScale = 0.70f;
@@ -439,15 +477,23 @@ public class Molecule3D:MonoBehaviour {
 // //				socketPDB.getTypes();
 // 			clubLocationalist=socketPDB.getClubLocation();
 // 			clubRotationList=socketPDB.getClubRotation();
-			if(UIData.init_molecule != "")
-				requestPDB.LoadPDBResource(UIData.init_molecule);
+			if(UIData.Instance.init_molecule != "")
+				requestPDB.LoadPDBResource(UIData.Instance.init_molecule);
 		}			
 		#endif
 		//Debug.Log("SDGFSDGSDGDSG");
 		GUIMoleculeController.showAtomMenu = true;
 		Camera.main.GetComponent<SplashScreen>().enabled = false;
 		Debug.Log("T.T ==> END OF LOADING");
-}
+
+		// Luiz:
+		if (!UnityClusterPackage.NodeInformation.IsSlave) {
+			var networkinson = GetComponent<NetworkView> ();
+			foreach (var part in UIData.Instance.SerializeInParts ()) {
+				networkinson.RPC ("Synchronize", RPCMode.All, part);
+			}
+		}
+	}
 
 	// Update is called once per frame
 	void Update() {
@@ -459,7 +505,7 @@ public class Molecule3D:MonoBehaviour {
             requestPDB.Loading = true;
 		}*/
 		
-		if(isControl&&(!UIData.cameraStop2)) { // Seems to be true as long as the mouse is in the game window and not on the gui
+		if(isControl&&(!UIData.Instance.cameraStop2)) { // Seems to be true as long as the mouse is in the game window and not on the gui
 			MouseOperate();
 			KeyOperate();
 			
@@ -558,7 +604,7 @@ public class Molecule3D:MonoBehaviour {
 			
 			if ((GUIMoleculeController.surfaceTexture || GUIMoleculeController.externalSurfaceTexture) && !GUIMoleculeController.surfaceTextureDone) {
 				if(GUIMoleculeController.externalSurfaceTexture){
-					if(!UIData.grayscalemode)
+					if(!UIData.Instance.grayscalemode)
 						Surface.GetComponent<Renderer>().material.SetTexture("_MatCap",GUIMoleculeController.extSurf);
 					else{
 						GameObject hbManagerObj = GameObject.FindGameObjectWithTag("HBallManager");
@@ -568,7 +614,7 @@ public class Molecule3D:MonoBehaviour {
 					Debug.Log("File choose surface texture");
 				}
 				else{
-					if(!UIData.grayscalemode)
+					if(!UIData.Instance.grayscalemode)
 						Surface.GetComponent<Renderer>().material.SetTexture("_MatCap",(Texture)Resources.Load(GUIMoleculeController.surfaceTextureName)); // do not do that every frame!
 					else{
 						GameObject hbManagerObj = GameObject.FindGameObjectWithTag("HBallManager");
@@ -687,13 +733,13 @@ public class Molecule3D:MonoBehaviour {
 	/// </summary>
 	private void OpenMenuOperate() {
 		if(Input.GetKeyDown(KeyCode.Delete)) {
-				UIData.openAllMenu=!UIData.openAllMenu; // ???
-				UIData.resetDisplay=true;
-				UIData.isSphereToCube=true;
-				UIData.isCubeToSphere=false;
-				UIData.atomtype=UIData.AtomType.particleball;
-				UIData.resetBondDisplay=true;
-				UIData.bondtype=UIData.BondType.nobond;
+				UIData.Instance.openAllMenu=!UIData.Instance.openAllMenu; // ???
+				UIData.Instance.resetDisplay=true;
+				UIData.Instance.isSphereToCube=true;
+				UIData.Instance.isCubeToSphere=false;
+				UIData.Instance.atomtype=UIData.AtomType.particleball;
+				UIData.Instance.resetBondDisplay=true;
+				UIData.Instance.bondtype=UIData.BondType.nobond;
 		}
 	}
 	
@@ -705,13 +751,13 @@ public class Molecule3D:MonoBehaviour {
 
 			/*
 				Debug.Log("Press Equal key.");
-				UIData.openBound=!UIData.openBound; // ???
-				UIData.resetDisplay=true;
-				UIData.isSphereToCube=true;
-				UIData.isCubeToSphere=false;
-				UIData.atomtype=UIData.AtomType.particleball;
-				UIData.resetBondDisplay=true;
-				UIData.bondtype=UIData.BondType.nobond;
+				UIData.Instance.openBound=!UIData.Instance.openBound; // ???
+				UIData.Instance.resetDisplay=true;
+				UIData.Instance.isSphereToCube=true;
+				UIData.Instance.isCubeToSphere=false;
+				UIData.Instance.atomtype=UIData.AtomType.particleball;
+				UIData.Instance.resetBondDisplay=true;
+				UIData.Instance.bondtype=UIData.BondType.nobond;
 			*/
 		}
 	}
@@ -722,29 +768,29 @@ public class Molecule3D:MonoBehaviour {
 	/// </summary>
 	private void HiddenOperate() {
 		if(Input.GetKeyDown(KeyCode.Backspace))	{
-			if(!UIData.hiddenUI) { //&& !UIData.hiddenUIbutFPS && !UIData.hiddenCamera) {
-					UIData.hiddenUI=true;
+			if(!UIData.Instance.hiddenUI) { //&& !UIData.Instance.hiddenUIbutFPS && !UIData.Instance.hiddenCamera) {
+					UIData.Instance.hiddenUI=true;
 					Debug.Log("Hide all the UI.");
 			} 
 			// I really don't know why we'd want to disable the camera.
-/*			else if(UIData.hiddenUI && !UIData.hiddenUIbutFPS && !UIData.hiddenCamera) {
-					UIData.hiddenCamera=true;
+/*			else if(UIData.Instance.hiddenUI && !UIData.Instance.hiddenUIbutFPS && !UIData.Instance.hiddenCamera) {
+					UIData.Instance.hiddenCamera=true;
 					LocCamera.GetComponent<Camera>().enabled=false;
 					Debug.Log("Hide all the UI and Camera.");
 			}
 */
 			// Doesn't seem to work
-/*			else if(UIData.hiddenUI && !UIData.hiddenUIbutFPS) { //&& UIData.hiddenCamera) {
-					//UIData.hiddenCamera=false;
+/*			else if(UIData.Instance.hiddenUI && !UIData.Instance.hiddenUIbutFPS) { //&& UIData.Instance.hiddenCamera) {
+					//UIData.Instance.hiddenCamera=false;
 					//LocCamera.GetComponent<Camera>().enabled=true;
-					UIData.hiddenUI=false;
-					UIData.hiddenUIbutFPS=true;
+					UIData.Instance.hiddenUI=false;
+					UIData.Instance.hiddenUIbutFPS=true;
 					Debug.Log("Hide all the UI except FPS."); 
 			}
 */
-			else if(UIData.hiddenUI) { //!UIData.hiddenUI && UIData.hiddenUIbutFPS && !UIData.hiddenCamera) {
-					UIData.hiddenUI=false;
-					//UIData.hiddenUIbutFPS=false;		
+			else if(UIData.Instance.hiddenUI) { //!UIData.Instance.hiddenUI && UIData.Instance.hiddenUIbutFPS && !UIData.Instance.hiddenCamera) {
+					UIData.Instance.hiddenUI=false;
+					//UIData.Instance.hiddenUIbutFPS=false;		
 					Debug.Log("Show all the UI and Camera.");
 			}	
 		}
@@ -761,21 +807,21 @@ public class Molecule3D:MonoBehaviour {
 		if(Input.GetKey(KeyCode.D))	{
 			v.x-=0.5f;
 			LocCamera.transform.localPosition=v;
-			if(UIData.switchmode)
+			if(UIData.Instance.switchmode)
 				ToParticle();
 		}
 		//Molecule up
 		if(Input.GetKey(KeyCode.W)) {
 			v.y-=0.5f;
 			LocCamera.transform.localPosition=v;
-			if(UIData.switchmode)
+			if(UIData.Instance.switchmode)
 				ToParticle();
 		}
 		//Molecule down
 		if(Input.GetKey(KeyCode.S)) {
 			v.y+=0.5f;
 			LocCamera.transform.localPosition=v;
-			if(UIData.switchmode)
+			if(UIData.Instance.switchmode)
 				ToParticle();
 			//print("LocCamera.transform.localPosition.y"+v.y);
 		}
@@ -783,7 +829,7 @@ public class Molecule3D:MonoBehaviour {
 		if(Input.GetKey(KeyCode.A)) {
 			v.x+=0.5f;
 			LocCamera.transform.localPosition=v;
-			if(UIData.switchmode)
+			if(UIData.Instance.switchmode)
 				ToParticle();
 			//print("LocCamera.transform.localPosition.x"+v.x);
 		}
@@ -791,7 +837,7 @@ public class Molecule3D:MonoBehaviour {
 		if(Input.GetKey(KeyCode.N)) {
 			v.z+=0.5f;
 			LocCamera.transform.localPosition=v;
-			if(UIData.switchmode)
+			if(UIData.Instance.switchmode)
 				ToParticle();
 			//print("LocCamera.transform.localPosition.x"+v.x);
 		}
@@ -799,7 +845,7 @@ public class Molecule3D:MonoBehaviour {
 		if(Input.GetKey(KeyCode.B)) {
 			v.z-=0.5f;
 			LocCamera.transform.localPosition=v;
-			if(UIData.switchmode)
+			if(UIData.Instance.switchmode)
 				ToParticle();
 			//print("LocCamera.transform.localPosition.x"+v.x);
 		}
@@ -809,107 +855,107 @@ public class Molecule3D:MonoBehaviour {
 		if(Input.GetKey(KeyCode.Q)) {
 			//LocCamera.transform.RotateAround(Deta,axisX,0.6f);	
 			//DMatrix.RotationMatrix(axisX,axisY,axisZ,0.6f);
-			if(UIData.switchmode)
+			if(UIData.Instance.switchmode)
 				ToParticle();
 		}
 		//Up rotation
 		if(Input.GetKey(KeyCode.E)) {
 			//LocCamera.transform.RotateAround(Deta,axisX,-0.6f);		
 			//DMatrix.RotationMatrix(axisX, axisY, axisZ,-0.6f);
-			if(UIData.switchmode)
+			if(UIData.Instance.switchmode)
 				ToParticle();
 		}
 		//Right rotation
 		if(Input.GetKey(KeyCode.Z)) {
 			//LocCamera.transform.RotateAround(Deta,axisZ,0.6f);
 			//DMatrix.RotationMatrix(axisZ,axisY, axisX,0.6f);
-			if(UIData.switchmode)
+			if(UIData.Instance.switchmode)
 				ToParticle();
 		}
 		//Left rotation
 		if(Input.GetKey(KeyCode.X)) {
 			//LocCamera.transform.RotateAround(Deta,axisZ,-0.6f);
 			//DMatrix.RotationMatrix(axisZ, axisY,axisX,-0.6f);
-			if(UIData.switchmode)
+			if(UIData.Instance.switchmode)
 				ToParticle();
 		}
 */
 		if(Input.GetKeyUp(KeyCode.D))
-			if(UIData.switchmode)
+			if(UIData.Instance.switchmode)
 				ToNotParticle();
 
 		if(Input.GetKeyUp(KeyCode.W))
-			if(UIData.switchmode)
+			if(UIData.Instance.switchmode)
 				ToNotParticle();
 
 		if(Input.GetKeyUp(KeyCode.S))
-			if(UIData.switchmode)
+			if(UIData.Instance.switchmode)
 				ToNotParticle();
 		
 		if(Input.GetKeyUp(KeyCode.A))
-			if(UIData.switchmode)
+			if(UIData.Instance.switchmode)
 				ToNotParticle();
 		
 		if(Input.GetKeyUp(KeyCode.N))
-			if(UIData.switchmode)
+			if(UIData.Instance.switchmode)
 				ToNotParticle();
 
 		if(Input.GetKeyUp(KeyCode.B))
-			if(UIData.switchmode)
+			if(UIData.Instance.switchmode)
 				ToNotParticle();
 /*		
 		if(Input.GetKeyUp(KeyCode.Q))
-			if(UIData.switchmode)
+			if(UIData.Instance.switchmode)
 				ToNotParticle();
 		
 		if(Input.GetKeyUp(KeyCode.E))
-			if(UIData.switchmode)
+			if(UIData.Instance.switchmode)
 				ToNotParticle();
 		
 		if(Input.GetKeyUp(KeyCode.Z))
-			if(UIData.switchmode)
+			if(UIData.Instance.switchmode)
 				ToNotParticle();
 		
 		if(Input.GetKeyUp(KeyCode.X))
-			if(UIData.switchmode)
+			if(UIData.Instance.switchmode)
 				ToNotParticle();
 */		
 		if(Input.GetKeyUp(KeyCode.RightArrow))
-			if(UIData.switchmode)
+			if(UIData.Instance.switchmode)
 				ToNotParticle();
 		
 		if(Input.GetKeyUp(KeyCode.LeftArrow))
-			if(UIData.switchmode)
+			if(UIData.Instance.switchmode)
 				ToNotParticle();
 
         if(Input.GetKey("joystick button 3")) {
-            UIData.resetDisplay=true;
-            UIData.isCubeToSphere=false;
-            UIData.isSphereToCube=true;
-            UIData.atomtype=UIData.AtomType.cube;
+            UIData.Instance.resetDisplay=true;
+            UIData.Instance.isCubeToSphere=false;
+            UIData.Instance.isSphereToCube=true;
+            UIData.Instance.atomtype=UIData.AtomType.cube;
         }
         
         if(Input.GetKey("joystick button 2")) {
-            UIData.resetDisplay=true;
-            UIData.isSphereToCube=false;
-            UIData.isCubeToSphere=true;
-            UIData.atomtype=UIData.AtomType.sphere;
+            UIData.Instance.resetDisplay=true;
+            UIData.Instance.isSphereToCube=false;
+            UIData.Instance.isCubeToSphere=true;
+            UIData.Instance.atomtype=UIData.AtomType.sphere;
         }
         
         if(Input.GetKey("joystick button 0")) {
-            UIData.resetDisplay=true;
-            UIData.isCubeToSphere=false;
-            UIData.isSphereToCube=true;
-            UIData.atomtype=UIData.AtomType.hyperball;
+            UIData.Instance.resetDisplay=true;
+            UIData.Instance.isCubeToSphere=false;
+            UIData.Instance.isSphereToCube=true;
+            UIData.Instance.atomtype=UIData.AtomType.hyperball;
         }
         
         if(Input.GetKey("joystick button 1")) {
-            UIData.resetDisplay=true;
-            UIData.isSphereToCube=true;
-            UIData.isCubeToSphere=false;
-            UIData.atomtype=UIData.AtomType.particleball;
-            UIData.resetBondDisplay=true;
-            UIData.bondtype=UIData.BondType.nobond;
+            UIData.Instance.resetDisplay=true;
+            UIData.Instance.isSphereToCube=true;
+            UIData.Instance.isCubeToSphere=false;
+            UIData.Instance.atomtype=UIData.AtomType.particleball;
+            UIData.Instance.resetBondDisplay=true;
+            UIData.Instance.bondtype=UIData.BondType.nobond;
         }
 		
 		// Takes a screenshot of the scene
@@ -959,7 +1005,7 @@ public class Molecule3D:MonoBehaviour {
 //				v=LocCamera.transform.localPosition;
 
 			if (Input.GetMouseButton(0)) {
-				if(UIData.switchmode)ToParticle();
+				if(UIData.Instance.switchmode)ToParticle();
 				rotationXX += Input.GetAxis("Mouse X") * sensitivityX;
 				rotationYY += Input.GetAxis("Mouse Y") * sensitivityY;
 				print("Mouse X"+Input.GetAxis("Mouse X"));
@@ -971,11 +1017,11 @@ public class Molecule3D:MonoBehaviour {
 				Quaternion yQuaternion = Quaternion.AngleAxis (rotationYY, Vector3.left);
 				transform.localRotation =  xQuaternion * yQuaternion;
 //				transform.localRotation = originalRotation * xQuaternion * yQuaternion;
-				if(UIData.switchmode)ToNotParticle();
+				if(UIData.Instance.switchmode)ToNotParticle();
 			}
 			
 			if(Input.GetMouseButtonUp(1))
-				if(UIData.switchmode)ToNotParticle();
+				if(UIData.Instance.switchmode)ToNotParticle();
 			
 			v.z+=Input.GetAxis("Mouse ScrollWheel")*5;
 			LocCamera.transform.localPosition=v;
@@ -999,7 +1045,7 @@ public class Molecule3D:MonoBehaviour {
 				maxCamera comp = scenecontroller.GetComponent<maxCamera>();
 				comp.ToCenter();
 			}
-			if(UIData.atomtype == UIData.AtomType.hyperball){
+			if(UIData.Instance.atomtype == UIData.AtomType.hyperball){
 				GameObject hbManagerObj = GameObject.FindGameObjectWithTag("HBallManager");
 				HBallManager hbManager = hbManagerObj.GetComponent<HBallManager>();
 				hbManager.ResetPositions();
@@ -1015,7 +1061,7 @@ public class Molecule3D:MonoBehaviour {
 	/// Sets the volumetric density.
 	/// </summary>
 	public void SetVolumetricDensity () {
-		if( (GUIMoleculeController.showVolumetricDensity || GUIMoleculeController.showVolumetricFields) && !UIData.hasMoleculeDisplay) {
+		if( (GUIMoleculeController.showVolumetricDensity || GUIMoleculeController.showVolumetricFields) && !UIData.Instance.hasMoleculeDisplay) {
 			GameObject volumObj;
 			volumObj = GameObject.FindGameObjectWithTag("Volumetric");
 			Volumetric volumetric;
@@ -1035,9 +1081,9 @@ public class Molecule3D:MonoBehaviour {
 	/// Switch the protein representation to Hyperball. Used in switch mode (LOD).
 	/// </summary>
 	public void ToNotParticle() {
-		if(UIData.atomtype != UIData.AtomType.particleball && UIData.atomtype != previous_AtomType) {
-			previous_AtomType = UIData.atomtype;
-			previous_BondType = UIData.bondtype;
+		if(UIData.Instance.atomtype != UIData.AtomType.particleball && UIData.Instance.atomtype != previous_AtomType) {
+			previous_AtomType = UIData.Instance.atomtype;
+			previous_BondType = UIData.Instance.bondtype;
 		}
 		DisplayMolecule.ToNotParticle(previous_AtomType, previous_BondType);
 	}
@@ -1046,12 +1092,132 @@ public class Molecule3D:MonoBehaviour {
 	/// Switch the protein representation to Particle. Used in switch mode (LOD).
 	/// </summary>
 	public void ToParticle() {
-		if(UIData.atomtype != UIData.AtomType.particleball) {
-			previous_AtomType = UIData.atomtype;
-			previous_BondType = UIData.bondtype;
+		if(UIData.Instance.atomtype != UIData.AtomType.particleball) {
+			previous_AtomType = UIData.Instance.atomtype;
+			previous_BondType = UIData.Instance.bondtype;
 		}
 		DisplayMolecule.ToParticle();
 		// Debug.Log("ToParticle()");
+	}
+
+	// Luiz:
+	private NetworkView mNetworkView;
+	[RPC]
+	public void Synchronize(string serializedData)
+	{
+		if (UnityClusterPackage.NodeInformation.IsSlave) {
+			if (UIData.DeserializePart (serializedData)) {
+				UIData.Instance.isOpenFile = true;
+				requestPDB.LoadPDB (UIData.Instance.ChosenPdbContents);
+			}
+		}
+	}
+	[RPC]
+	public void Clear()
+	{
+		if (UnityClusterPackage.NodeInformation.IsSlave) {
+			gUIDisplay.Clear ();
+		}
+	}
+	[RPC]
+	public void HandleInt32Method(string typeName, string methodName, string paramTypeName, int param)
+	{
+		HandleMethodInvoked (typeName, methodName, param);
+	}
+	[RPC]
+	public void HandleSingleMethod(string typeName, string methodName, string paramTypeName, float param)
+	{
+		HandleMethodInvoked (typeName, methodName, param);
+	}
+	[RPC]
+	public void HandleBooleanMethod(string typeName, string methodName, string paramTypeName, bool param)
+	{
+		HandleMethodInvoked (typeName, methodName, param);
+	}
+	[RPC]
+	public void HandleStringMethod(string typeName, string methodName, string paramTypeName, string param)
+	{
+		HandleMethodInvoked (typeName, methodName, param);
+	}
+	[RPC]
+	public void HandleObjectMethod(string typeName, string methodName, string paramTypeName, string paramSerialized)
+	{
+		var param = paramSerialized == null ? null : JsonUtility.FromJson (paramSerialized, Type.GetType (paramTypeName));
+		HandleMethodInvoked (typeName, methodName, param);
+	}
+	private void HandleMethodInvoked(string typeName, string methodName, object param)
+	{
+		if (UnityClusterPackage.NodeInformation.IsSlave) {
+			var type = Type.GetType (typeName);
+			var method = type.GetMethod (methodName);
+			if (param != null) {
+				method.Invoke (null, new [] { param });
+			} else {
+				method.Invoke (null, null);
+			}
+		}
+	}
+	[RPC]
+	public void HandleInt32Property(string typeName, string propertyName, string newValueTypeName, int param)
+	{
+		HandlePropertyChanged (typeName, propertyName, param);
+	}
+	[RPC]
+	public void HandleSingleProperty(string typeName, string propertyName, string newValueTypeName, float param)
+	{
+		HandlePropertyChanged (typeName, propertyName, param);
+	}
+	[RPC]
+	public void HandleBooleanProperty(string typeName, string propertyName, string newValueTypeName, bool param)
+	{
+		HandlePropertyChanged (typeName, propertyName, param);
+	}
+	[RPC]
+	public void HandleStringProperty(string typeName, string propertyName, string newValueTypeName, string param)
+	{
+		HandlePropertyChanged (typeName, propertyName, param);
+	}
+	[RPC]
+	public void HandleObjectProperty(string typeName, string propertyName, string newValueTypeName, string newValueSerialized)
+	{
+		var param = JsonUtility.FromJson (newValueSerialized, Type.GetType (newValueTypeName));
+		HandlePropertyChanged (typeName, propertyName, param);
+	}
+	private void HandlePropertyChanged(string typeName, string propertyName, object newValue ) {
+		if (UnityClusterPackage.NodeInformation.IsSlave) {
+			var type = Type.GetType (typeName);
+			var property = type.GetProperty (propertyName);
+			try
+			{
+				property.SetValue (null, newValue, null);
+			}
+			catch(NullReferenceException e) {
+				Debug.Log ("propertyName " + propertyName + " " + property + " newValue " + newValue);
+				throw e;
+			}
+		}
+	}
+	private static HashSet<Type> sRPCHandledTypes = new HashSet<Type> {
+		typeof(int), typeof(float), typeof(bool), typeof(string)
+	};
+	private static RPCData GetRPCData(object forValue, string handlerSuffix)
+	{
+		var valueType = (forValue ?? new object()).GetType ();
+		if (sRPCHandledTypes.Contains (valueType)) {
+			return new RPCData {
+				Data = forValue,
+				HandlerName = "Handle" + valueType.Name + handlerSuffix
+			};
+		} else {
+			return new RPCData {
+				Data = JsonUtility.ToJson(forValue),
+				HandlerName = "HandleObject" + handlerSuffix
+			};
+		}
+	}
+	private class RPCData {
+		public object Data;
+		public string HandlerName;
 	}
 }
 

@@ -231,108 +231,54 @@ namespace UI{
 			
 			GUILayout.BeginHorizontal();
 			if (GUILayout.Button (new GUIContent ("Cube", "Use cubes to represent atoms"))) {	
-				
-				Debug.Log("Cube representation");
-				UIData.resetDisplay = true;
-				UIData.isCubeToSphere = false;
-				UIData.isSphereToCube = true;
-				UIData.atomtype = UIData.AtomType.cube;
-				Debug.Log ("UIData.resetDisplay:" + UIData.resetDisplay);
-				Debug.Log ("UIData.isCubeToSphere:" + UIData.isCubeToSphere);
-				Debug.Log ("UIData.isSphereToCube:" + UIData.isSphereToCube);
-				showAtomType = false;
-				toggle_NA_HIDE = false; // whether molecule must be hidden (I think)
-				toggle_NA_CLICK = false;
-				BallUpdate.resetColors = true;
+				ChangeRepresentation (UIData.AtomType.cube);
 			}
 			
 			if (GUILayout.Button (new GUIContent ("Sphere", "Use triangulated spheres to represent atoms"))) {
-				
-				Debug.Log("Sphere representation");
-				UIData.resetDisplay = true;
-				UIData.isCubeToSphere = true;
-				UIData.isSphereToCube = false;
-				UIData.atomtype = UIData.AtomType.sphere;
-				Debug.Log ("UIData.resetDisplay:" + UIData.resetDisplay);
-				Debug.Log ("UIData.isCubeToSphere:" + UIData.isCubeToSphere);
-				Debug.Log ("UIData.isSphereToCube:" + UIData.isSphereToCube);
-				showAtomType = false;
-				toggle_NA_HIDE = false;
-				toggle_NA_CLICK = false;
-				BallUpdate.resetColors = true;
+				ChangeRepresentation (UIData.AtomType.sphere);
 			}
 			GUILayout.EndHorizontal ();
 			
 			
 			GUILayout.BeginHorizontal ();
 			if (GUILayout.Button (new GUIContent ("Hyperball", "Use the HyperBalls shader to render atoms"))) {
-				
-				Debug.Log("HyperBall representation");
-				UIData.resetDisplay = true;
-				UIData.isCubeToSphere = false;
-				UIData.isSphereToCube = true;
-				UIData.atomtype = UIData.AtomType.hyperball;
-				Debug.Log ("UIData.resetDisplay:" + UIData.resetDisplay);
-				Debug.Log ("UIData.isCubeToSphere:" + UIData.isCubeToSphere);
-				Debug.Log ("UIData.isSphereToCube:" + UIData.isSphereToCube);
-				showAtomType = false;
-				toggle_NA_HIDE = false;
-				toggle_NA_CLICK = false;
-				BallUpdate.resetColors = true;
+				ChangeRepresentation (UIData.AtomType.hyperball);
 			}
 			
 	
 			if (GUILayout.Button (new GUIContent ("Particle", "Use the ParticleBall shader to represent atoms"))) {
-				
-				Debug.Log("Particle representation");
-				UIData.resetDisplay = true;
-				UIData.isSphereToCube = false;
-				UIData.isCubeToSphere = false;
-				UIData.atomtype = UIData.AtomType.particleball;
-				Debug.Log ("UIData.resetDisplay:" + UIData.resetDisplay);
-				Debug.Log ("UIData.isCubeToSphere:" + UIData.isCubeToSphere);
-				Debug.Log ("UIData.isSphereToCube:" + UIData.isSphereToCube);
-				UIData.resetBondDisplay = true;
-				UIData.bondtype=UIData.BondType.nobond; // Probably best to do this by default. Users can still enable bonds if they wish.
-				showAtomType = false;
-				toggle_NA_HIDE = false;
-				toggle_NA_SWITCH = false;
-				toggle_NA_CLICK = false;
-				GameObject shurikenParticleManagerObj = GameObject.FindGameObjectWithTag("ShurikenParticleManager");
-				ShurikenParticleManager shManager = shurikenParticleManagerObj.GetComponent<ShurikenParticleManager>();
-//				shManager.Init();
-				shManager.EnableRenderers();
+				ChangeRepresentation (UIData.AtomType.particleball);
 			}						
 			GUILayout.EndHorizontal ();
 	
 			
 			// Those hidden features aren't working at all
-/*			if (UIData.openAllMenu) { 
+/*			if (UIData.Instance.openAllMenu) { 
 				GUILayout.BeginHorizontal ();
 				if (GUILayout.Button (new GUIContent ("Raycasting", "Use raycasting to represent atoms"))) {
-					UIData.resetDisplay = true;
-					UIData.isCubeToSphere = false;
-					UIData.isSphereToCube = true;
-					UIData.atomtype = UIData.AtomType.raycasting;
-					Debug.Log ("UIData.resetDisplay:" + UIData.resetDisplay);
-					Debug.Log ("UIData.isCubeToSphere:" + UIData.isCubeToSphere);
-					Debug.Log ("UIData.isSphereToCube:" + UIData.isSphereToCube);
+					UIData.Instance.resetDisplay = true;
+					UIData.Instance.isCubeToSphere = false;
+					UIData.Instance.isSphereToCube = true;
+					UIData.Instance.atomtype = UIData.AtomType.raycasting;
+					Debug.Log ("UIData.Instance.resetDisplay:" + UIData.Instance.resetDisplay);
+					Debug.Log ("UIData.Instance.isCubeToSphere:" + UIData.Instance.isCubeToSphere);
+					Debug.Log ("UIData.Instance.isSphereToCube:" + UIData.Instance.isSphereToCube);
 					showAtomType = false;
 					toggle_NA_HIDE = false;
 				}
 				GUILayout.EndHorizontal ();
 			}
 			
-			if (UIData.openAllMenu) {
+			if (UIData.Instance.openAllMenu) {
 				GUILayout.BeginHorizontal ();
 				if (GUILayout.Button (new GUIContent ("RayCasting Sprite", "Use RayCasting Sprites to represent atoms"))) {
-					UIData.resetDisplay = true;
-					UIData.isSphereToCube = true;
-					UIData.isCubeToSphere = false;
-					UIData.atomtype = UIData.AtomType.rcsprite;
-					Debug.Log ("UIData.resetDisplay:" + UIData.resetDisplay);
-					Debug.Log ("UIData.isCubeToSphere:" + UIData.isCubeToSphere);
-					Debug.Log ("UIData.isSphereToCube:" + UIData.isSphereToCube);
+					UIData.Instance.resetDisplay = true;
+					UIData.Instance.isSphereToCube = true;
+					UIData.Instance.isCubeToSphere = false;
+					UIData.Instance.atomtype = UIData.AtomType.rcsprite;
+					Debug.Log ("UIData.Instance.resetDisplay:" + UIData.Instance.resetDisplay);
+					Debug.Log ("UIData.Instance.isCubeToSphere:" + UIData.Instance.isCubeToSphere);
+					Debug.Log ("UIData.Instance.isSphereToCube:" + UIData.Instance.isSphereToCube);
 					showAtomType = false;
 					toggle_NA_HIDE = false;
 				}
@@ -340,13 +286,13 @@ namespace UI{
 				
 				GUILayout.BeginHorizontal ();
 				if (GUILayout.Button (new GUIContent ("Multi-Hyperball", "Use Multi-Hyperballs rendering to represent atoms"))) {
-					UIData.resetDisplay = true;
-					UIData.isSphereToCube = true;
-					UIData.isCubeToSphere = false;
-					UIData.atomtype = UIData.AtomType.multihyperball;
-					Debug.Log ("UIData.resetDisplay:" + UIData.resetDisplay);
-					Debug.Log ("UIData.isCubeToSphere:" + UIData.isCubeToSphere);
-					Debug.Log ("UIData.isSphereToCube:" + UIData.isSphereToCube);
+					UIData.Instance.resetDisplay = true;
+					UIData.Instance.isSphereToCube = true;
+					UIData.Instance.isCubeToSphere = false;
+					UIData.Instance.atomtype = UIData.AtomType.multihyperball;
+					Debug.Log ("UIData.Instance.resetDisplay:" + UIData.Instance.resetDisplay);
+					Debug.Log ("UIData.Instance.isCubeToSphere:" + UIData.Instance.isCubeToSphere);
+					Debug.Log ("UIData.Instance.isSphereToCube:" + UIData.Instance.isSphereToCube);
 					showAtomType = false;
 					toggle_NA_HIDE = false;
 				}				
@@ -354,41 +300,41 @@ namespace UI{
 				
 				GUILayout.BeginHorizontal ();
 				if (GUILayout.Button (new GUIContent ("CombineMesh HyperBall", "Use the CombineMesh HyperBall shader to represent atoms"))) {
-					UIData.resetDisplay = true;
-					UIData.isSphereToCube = true;
-					UIData.isCubeToSphere = false;
-					UIData.atomtype = UIData.AtomType.combinemeshball;
-					Debug.Log ("UIData.resetDisplay:" + UIData.resetDisplay);
-					Debug.Log ("UIData.isCubeToSphere:" + UIData.isCubeToSphere);
-					Debug.Log ("UIData.isSphereToCube:" + UIData.isSphereToCube);
+					UIData.Instance.resetDisplay = true;
+					UIData.Instance.isSphereToCube = true;
+					UIData.Instance.isCubeToSphere = false;
+					UIData.Instance.atomtype = UIData.AtomType.combinemeshball;
+					Debug.Log ("UIData.Instance.resetDisplay:" + UIData.Instance.resetDisplay);
+					Debug.Log ("UIData.Instance.isCubeToSphere:" + UIData.Instance.isCubeToSphere);
+					Debug.Log ("UIData.Instance.isSphereToCube:" + UIData.Instance.isSphereToCube);
 					showAtomType = false;
 					toggle_NA_HIDE = false;
 				}						
 				GUILayout.EndHorizontal ();
 			}
 			
-			if (UIData.openAllMenu) {			
+			if (UIData.Instance.openAllMenu) {			
 			
 				GUILayout.BeginHorizontal ();
 				
 				GUILayout.Label ("Billboard", GUILayout.MaxWidth (50));
 				
-				UIData.toggleClip = GUILayout.Toggle (UIData.toggleClip, new GUIContent ("Clip", "Toggle the Clip plane"));
-				UIData.togglePlane = !UIData.toggleClip;
+				UIData.Instance.toggleClip = GUILayout.Toggle (UIData.Instance.toggleClip, new GUIContent ("Clip", "Toggle the Clip plane"));
+				UIData.Instance.togglePlane = !UIData.Instance.toggleClip;
 				
-				UIData.togglePlane = GUILayout.Toggle (UIData.togglePlane, new GUIContent ("Plane", "Toggle the Cut plane"));
-				UIData.toggleClip = !UIData.togglePlane;
+				UIData.Instance.togglePlane = GUILayout.Toggle (UIData.Instance.togglePlane, new GUIContent ("Plane", "Toggle the Cut plane"));
+				UIData.Instance.toggleClip = !UIData.Instance.togglePlane;
 				
 				GUILayout.EndHorizontal ();
 	
 				toggle_MESHCOMBINE = GUILayout.Toggle (toggle_MESHCOMBINE, new GUIContent ("MESHCOMBINE", "Toggle the mesh combination"));
 		
 				if (!toggle_MESHCOMBINE) {
-					UIData.meshcombine = false;
-					UIData.resetMeshcombine = true;			
+					UIData.Instance.meshcombine = false;
+					UIData.Instance.resetMeshcombine = true;			
 				} else if (toggle_MESHCOMBINE) { 
-					UIData.meshcombine = true;
-					UIData.resetMeshcombine = true;
+					UIData.Instance.meshcombine = true;
+					UIData.Instance.resetMeshcombine = true;
 				}
 			}
 */
@@ -407,7 +353,7 @@ namespace UI{
 
 			/*************************************************/
 			GUILayout.BeginHorizontal();
-			toggle_RING_BLENDING = UIData.hasMoleculeDisplay && GUILayout.Toggle(toggle_RING_BLENDING,
+			toggle_RING_BLENDING = UIData.Instance.hasMoleculeDisplay && GUILayout.Toggle(toggle_RING_BLENDING,
 				new GUIContent("Enable RingBlending", "enable RingBlending visualisation"));
 			
 			if(!ssToggled && toggle_RING_BLENDING) { // enabling the SugarBlending
@@ -427,7 +373,7 @@ namespace UI{
 			bool twToggled = toggle_TWISTER;
 			/*************************************************/
 			GUILayout.BeginHorizontal();
-			toggle_TWISTER = UIData.hasMoleculeDisplay && GUILayout.Toggle(toggle_TWISTER,
+			toggle_TWISTER = UIData.Instance.hasMoleculeDisplay && GUILayout.Toggle(toggle_TWISTER,
 			                                                                  new GUIContent("Enable SugarRibbons", "Switch between all-atoms and SugarRibbons representation"));
 
 
@@ -469,7 +415,7 @@ namespace UI{
 			/*************************************************/
 			GUILayout.BeginHorizontal();
 			bool hydroToggled = toggle_HIDE_HYDROGEN;
-			toggle_HIDE_HYDROGEN = UIData.hasMoleculeDisplay && GUILayout.Toggle(toggle_HIDE_HYDROGEN,
+			toggle_HIDE_HYDROGEN = UIData.Instance.hasMoleculeDisplay && GUILayout.Toggle(toggle_HIDE_HYDROGEN,
 			                                                                     new GUIContent("Hide Hydrogens", "hide hydrogens atoms"));
 			if(!hydroToggled && toggle_HIDE_HYDROGEN)
 				showHydrogens(false);
@@ -484,11 +430,11 @@ namespace UI{
 
 			GUILayout.BeginHorizontal();
 			bool hb_w_sb_toggled = toggle_SHOW_HB_W_SR;
-			toggle_SHOW_HB_W_SR = UIData.hasMoleculeDisplay && GUILayout.Toggle(toggle_SHOW_HB_W_SR,
+			toggle_SHOW_HB_W_SR = UIData.Instance.hasMoleculeDisplay && GUILayout.Toggle(toggle_SHOW_HB_W_SR,
 			                                                                     new GUIContent("Sugar", "Hide sugar atoms"));
 
 			bool hb_not_sugar_toggled = toggle_SHOW_HB_NOT_SUGAR;
-			toggle_SHOW_HB_NOT_SUGAR = UIData.hasMoleculeDisplay && GUILayout.Toggle(toggle_SHOW_HB_NOT_SUGAR,
+			toggle_SHOW_HB_NOT_SUGAR = UIData.Instance.hasMoleculeDisplay && GUILayout.Toggle(toggle_SHOW_HB_NOT_SUGAR,
 			                                                                    new GUIContent("Non Sugar", "Hide Non sugar Atoms"));
 
 
@@ -519,7 +465,7 @@ namespace UI{
 
 			// Bugs otherwise.
 			/*
-			if(!UIData.hasMoleculeDisplay) {
+			if(!UIData.Instance.hasMoleculeDisplay) {
 				showSecStructMenu = false;
 				return;
 			}
@@ -540,7 +486,7 @@ namespace UI{
 			/*************************************************/
 			GUILayout.BeginHorizontal();
 			bool oxyToggled = toggle_OXYGEN; //to avoid to create all sphere to each frames
-			toggle_OXYGEN = UIData.hasMoleculeDisplay && GUILayout.Toggle(toggle_OXYGEN,
+			toggle_OXYGEN = UIData.Instance.hasMoleculeDisplay && GUILayout.Toggle(toggle_OXYGEN,
 			                                                              new GUIContent("Show Oxygens", "show ring oxygens with a red sphere"));
 			
 			if (toggle_TWISTER && toggle_OXYGEN && !oxyToggled) {
@@ -557,7 +503,7 @@ namespace UI{
 				}
 			}
 			
-			toggle_SUGAR_ONLY = UIData.hasMoleculeDisplay && GUILayout.Toggle(toggle_SUGAR_ONLY,
+			toggle_SUGAR_ONLY = UIData.Instance.hasMoleculeDisplay && GUILayout.Toggle(toggle_SUGAR_ONLY,
 			                                                                  new GUIContent("Sugar Only?", "use only sugar for RingBlending and SugarRibbons"));
 			
 			GUILayout.EndHorizontal();
@@ -985,19 +931,15 @@ namespace UI{
 		public static void Bond (int a)	{
 			SetTitle("Bond Style");
 			
-//			if(UIData.atomtype==UIData.AtomType.particleball&&!UIData.openAllMenu)GUI.enabled=false;
+//			if(UIData.Instance.atomtype==UIData.AtomType.particleball&&!UIData.Instance.openAllMenu)GUI.enabled=false;
 			GUILayout.BeginHorizontal ();
 			GUILayout.FlexibleSpace();
 			if (GUILayout.Button (new GUIContent ("Cube", "Use Cubes to represent bonds"), GUILayout.Width(Rectangles.atomButtonWidth))) {
-				UIData.resetBondDisplay = true;
-				UIData.bondtype = UIData.BondType.cube;
-				showBondType = false;
+				ChangeBond (UIData.BondType.cube);
 			}
 
 			if (GUILayout.Button (new GUIContent ("Line", "Use the Line renderer to represent bonds"), GUILayout.Width(Rectangles.atomButtonWidth))) {
-				UIData.resetBondDisplay = true;
-				UIData.bondtype = UIData.BondType.line;
-				showBondType = false;
+				ChangeBond (UIData.BondType.line);
 			}
 			GUILayout.FlexibleSpace();
 			GUILayout.EndHorizontal ();
@@ -1005,26 +947,22 @@ namespace UI{
 			GUILayout.BeginHorizontal ();
 			GUILayout.FlexibleSpace();
 			if (GUILayout.Button (new GUIContent ("HyperStick", "Use the HyperStick shader to represent bonds"), GUILayout.Width(Rectangles.atomButtonWidth))) {	
-				UIData.resetBondDisplay = true;
-				UIData.bondtype = UIData.BondType.hyperstick;
-				showBondType = false;
+				ChangeBond (UIData.BondType.hyperstick);
 			}
 
 			if (GUILayout.Button (new GUIContent ("No Stick", "Do not render any bonds"), GUILayout.Width(Rectangles.atomButtonWidth))) {
-				UIData.resetBondDisplay = true;
-				UIData.bondtype = UIData.BondType.nobond;
-				showBondType = false;
+				ChangeBond (UIData.BondType.nobond);
 			}
 			GUILayout.FlexibleSpace();
 			GUILayout.EndHorizontal ();
 			
 			// Those hidden features aren't working at all		
-/*			if (UIData.openAllMenu) {	
+/*			if (UIData.Instance.openAllMenu) {	
 				GUILayout.BeginHorizontal ();
 
 				if (GUILayout.Button (new GUIContent ("Tube Stick", "Use the Tube Stick renderer to represent bonds"))) {
-					UIData.resetBondDisplay = true;
-					UIData.bondtype = UIData.BondType.tubestick;
+					UIData.Instance.resetBondDisplay = true;
+					UIData.Instance.bondtype = UIData.BondType.tubestick;
 					showBondType = false;
 				}
 
@@ -1033,8 +971,8 @@ namespace UI{
 				GUILayout.BeginHorizontal ();
 
 				if (GUILayout.Button (new GUIContent ("Billboard HyperStick", "Use the Billboard HyperStick shader to represent bonds"))) {
-					UIData.resetBondDisplay = true;
-					UIData.bondtype = UIData.BondType.bbhyperstick;
+					UIData.Instance.resetBondDisplay = true;
+					UIData.Instance.bondtype = UIData.BondType.bbhyperstick;
 				}
 
 				GUILayout.EndHorizontal ();
@@ -1042,8 +980,8 @@ namespace UI{
 				GUILayout.BeginHorizontal ();
 
 				if (GUILayout.Button (new GUIContent ("Particle Stick", "Use the Particle Stick shader to represent bonds"))) {
-					UIData.resetBondDisplay = true;
-					UIData.bondtype = UIData.BondType.particlestick;
+					UIData.Instance.resetBondDisplay = true;
+					UIData.Instance.bondtype = UIData.BondType.particlestick;
 					showBondType = false;
 				}
 
@@ -1574,7 +1512,7 @@ namespace UI{
 				AtomModel.ChangeChainColor("chainG", chainGColor.color);
 				AtomModel.ChangeChainColor("chainH", chainHColor.color);
 				
-				UIData.resetDisplay = true;
+				UIData.Instance.resetDisplay = true;
 				//BallUpdate.resetColors = true;
 			}
 			GUILayout.EndHorizontal();
@@ -1590,7 +1528,7 @@ namespace UI{
 			
 //			if(!SymmetryLoaded)
 //			{
-			if(!UIData.guided)
+			if(!UIData.Instance.guided)
 			{
 				// Enter the origin of symmetry as an array of 3 floats
 				GUILayout.BeginHorizontal();
@@ -1625,7 +1563,7 @@ namespace UI{
 				GUILayout.EndHorizontal ();
 			}
 			
-			if(UIData.guided)
+			if(UIData.Instance.guided)
 			{
 				GUILayout.BeginHorizontal();
 				GUILayout.Label (new GUIContent ("Target: ", "Enter here the 3D coordinates of the atom target"), GUILayout.MinWidth ((int)(Rectangles.advOptWidth * 0.4f)));
@@ -1654,7 +1592,7 @@ namespace UI{
 				}
 				GUILayout.EndHorizontal ();
 				GUILayout.BeginHorizontal ();
-				showOriginAxe = UIData.hasMoleculeDisplay && GUILayout.Toggle(showOriginAxe,
+				showOriginAxe = UIData.Instance.hasMoleculeDisplay && GUILayout.Toggle(showOriginAxe,
 				new GUIContent("Show symmetry axe and origin point", "Hide/Show symmetry axe and origin point"));
 				if(showOriginAxe && !originThere){
 					Reorient.CreateAxeAndOrigin();
@@ -1720,11 +1658,11 @@ namespace UI{
 			GUILayout.EndHorizontal ();
 			
 			GUILayout.BeginHorizontal ();
-			GUI.enabled = UIData.hasMoleculeDisplay; // trying to generate a surface without a molecule would generate an error
+			GUI.enabled = UIData.Instance.hasMoleculeDisplay; // trying to generate a surface without a molecule would generate an error
 			if (GUILayout.Button (new GUIContent ("Generate", "Generate a new surface mesh"))) {
 
-				if(UIData.toggleBfac || showSurface){
-					UIData.toggleBfac = false;
+				if(UIData.Instance.toggleBfac || showSurface){
+					UIData.Instance.toggleBfac = false;
 					pdbGen = false;
 					showSurface = false;
 					GameObject[] Existpdbden = GameObject.FindGameObjectsWithTag("pdb2den");
@@ -1756,7 +1694,7 @@ namespace UI{
 			GUILayout.EndHorizontal();
 
 			GUILayout.BeginHorizontal ();
-			GUI.enabled = UIData.hasMoleculeDisplay; // trying to generate a surface without a molecule would generate an error
+			GUI.enabled = UIData.Instance.hasMoleculeDisplay; // trying to generate a surface without a molecule would generate an error
 			if (GUILayout.Button (new GUIContent ("BFactor", "Generate a new surface mesh using b-factors"))) {
 				if(showSurface){
 					showSurface = false;
@@ -1771,7 +1709,7 @@ namespace UI{
 				
 				if (!pdbGen) {	
 					MoleculeModel.surfaceFileExists = true;
-					UIData.toggleBfac = true;
+					UIData.Instance.toggleBfac = true;
 					
 					GameObject pdb2den = new GameObject("pdb2den OBJ");
 					pdb2den.tag = "pdb2den";
@@ -1839,9 +1777,9 @@ namespace UI{
 			GUILayout.BeginHorizontal();
 			GUI.enabled = true; // otherwise the window might not be draggabl
 
-			MoleculeModel.useHetatmForSurface = UIData.hasMoleculeDisplay && GUILayout.Toggle(MoleculeModel.useHetatmForSurface,
+			MoleculeModel.useHetatmForSurface = UIData.Instance.hasMoleculeDisplay && GUILayout.Toggle(MoleculeModel.useHetatmForSurface,
 			                                                              new GUIContent("HetAtoms", "Use Hetero atoms for surface calculation"));
-			MoleculeModel.useSugarForSurface = UIData.hasMoleculeDisplay && GUILayout.Toggle(MoleculeModel.useSugarForSurface,
+			MoleculeModel.useSugarForSurface = UIData.Instance.hasMoleculeDisplay && GUILayout.Toggle(MoleculeModel.useSugarForSurface,
 			                                                                                  new GUIContent("Sugars", "Use sugar for surface calculation"));
 			GUILayout.EndHorizontal();
 
@@ -1895,9 +1833,9 @@ namespace UI{
 			GUI.enabled = true;
 
 			if (GUILayout.Button (new GUIContent ("Use chain color", "Enable/Disable the colors of the chain on the surface (\"Hide\" must be off)"))) {
-				UIData.surfColChain = !UIData.surfColChain;
+				UIData.Instance.surfColChain = !UIData.Instance.surfColChain;
 
-				if(UIData.surfColChain){
+				if(UIData.Instance.surfColChain){
 					GameObject surfaceManagerObj = GameObject.FindGameObjectWithTag("NewSurfaceManager");
 					SurfaceManager surfaceManager = surfaceManagerObj.GetComponent<SurfaceManager>();
 					GameObject[] surfaceObjs = GameObject.FindGameObjectsWithTag("SurfaceManager");
@@ -1916,7 +1854,7 @@ namespace UI{
 							break; // So you must break...
 						}
 					}
-					UIData.surfColChain = false;
+					UIData.Instance.surfColChain = false;
 				}
 			}
 
@@ -1925,9 +1863,9 @@ namespace UI{
 			}
 
 			if (GUILayout.Button (new GUIContent ("Use properties color", "Show amino acids properties (red/acid ; blue/basic ; green/polar ; white/apolar) (\"Hide\" must be off)"))) {
-				UIData.surfColPChim = !UIData.surfColPChim;
+				UIData.Instance.surfColPChim = !UIData.Instance.surfColPChim;
 				
-				if(UIData.surfColPChim){
+				if(UIData.Instance.surfColPChim){
 					GameObject surfaceManagerObj = GameObject.FindGameObjectWithTag("NewSurfaceManager");
 					SurfaceManager surfaceManager = surfaceManagerObj.GetComponent<SurfaceManager>();
 					GameObject[] surfaceObjs = GameObject.FindGameObjectsWithTag("SurfaceManager");
@@ -1946,15 +1884,15 @@ namespace UI{
 							break; // So you must break...
 						}
 					}
-					UIData.surfColPChim = false;
+					UIData.Instance.surfColPChim = false;
 				}
 			}
 
 			if (GUILayout.Button (new GUIContent ("Use BFactor color", "Show B-Factor values (\"Hide\" must be off)"))) {
-				UIData.surfColBF = !UIData.surfColBF;
-				Debug.Log ("ColBF " + UIData.surfColBF);
+				UIData.Instance.surfColBF = !UIData.Instance.surfColBF;
+				Debug.Log ("ColBF " + UIData.Instance.surfColBF);
 				
-				if(UIData.surfColBF){
+				if(UIData.Instance.surfColBF){
 					GameObject surfaceManagerObj = GameObject.FindGameObjectWithTag("NewSurfaceManager");
 					SurfaceManager surfaceManager = surfaceManagerObj.GetComponent<SurfaceManager>();
 					GameObject[] surfaceObjs = GameObject.FindGameObjectsWithTag("SurfaceManager");
@@ -1973,7 +1911,7 @@ namespace UI{
 							break; // So you must break...
 						}
 					}
-					UIData.surfColBF = false;
+					UIData.Instance.surfColBF = false;
 				}
 
 
@@ -2041,9 +1979,9 @@ namespace UI{
 			SetTitle("Hydrophobic scales");
 
 			if (GUILayout.Button (new GUIContent ("Kyte & Doolittle", "Surface coloring by using Kyte and Doolittle hydrophobic scale"))) {
-				UIData.surfColHydroKD = !UIData.surfColHydroKD;
+				UIData.Instance.surfColHydroKD = !UIData.Instance.surfColHydroKD;
 				
-				if(UIData.surfColHydroKD){
+				if(UIData.Instance.surfColHydroKD){
 					GameObject surfaceManagerObj = GameObject.FindGameObjectWithTag("NewSurfaceManager");
 					SurfaceManager surfaceManager = surfaceManagerObj.GetComponent<SurfaceManager>();
 					GameObject[] surfaceObjs = GameObject.FindGameObjectsWithTag("SurfaceManager");
@@ -2061,14 +1999,14 @@ namespace UI{
 							break; // So you must break...
 						}
 					}
-					UIData.surfColHydroKD = false;
+					UIData.Instance.surfColHydroKD = false;
 				}
 			}
 
 			if (GUILayout.Button (new GUIContent ("Engleman & al.", "Surface coloring by using Engleman & al hydrophobic scale"))) {
-				UIData.surfColHydroEng = !UIData.surfColHydroEng;
+				UIData.Instance.surfColHydroEng = !UIData.Instance.surfColHydroEng;
 				
-				if(UIData.surfColHydroEng){
+				if(UIData.Instance.surfColHydroEng){
 					GameObject surfaceManagerObj = GameObject.FindGameObjectWithTag("NewSurfaceManager");
 					SurfaceManager surfaceManager = surfaceManagerObj.GetComponent<SurfaceManager>();
 					GameObject[] surfaceObjs = GameObject.FindGameObjectsWithTag("SurfaceManager");
@@ -2086,14 +2024,14 @@ namespace UI{
 							break; // So you must break...
 						}
 					}
-					UIData.surfColHydroEng = false;
+					UIData.Instance.surfColHydroEng = false;
 				}
 			}
 
 			if (GUILayout.Button (new GUIContent ("Eisenberg", "Surface coloring by using Eisenberg scale"))) {
-				UIData.surfColHydroEis = !UIData.surfColHydroEis;
+				UIData.Instance.surfColHydroEis = !UIData.Instance.surfColHydroEis;
 				
-				if(UIData.surfColHydroEis){
+				if(UIData.Instance.surfColHydroEis){
 					GameObject surfaceManagerObj = GameObject.FindGameObjectWithTag("NewSurfaceManager");
 					SurfaceManager surfaceManager = surfaceManagerObj.GetComponent<SurfaceManager>();
 					GameObject[] surfaceObjs = GameObject.FindGameObjectsWithTag("SurfaceManager");
@@ -2111,14 +2049,14 @@ namespace UI{
 							break; // So you must break...
 						}
 					}
-					UIData.surfColHydroEis = false;
+					UIData.Instance.surfColHydroEis = false;
 				}
 			}
 
 				if (GUILayout.Button (new GUIContent ("White Octanol", "Surface coloring by using White Octanol scale"))) {
-					UIData.surfColHydroWO = !UIData.surfColHydroWO;
+					UIData.Instance.surfColHydroWO = !UIData.Instance.surfColHydroWO;
 					
-					if(UIData.surfColHydroWO){
+					if(UIData.Instance.surfColHydroWO){
 						GameObject surfaceManagerObj = GameObject.FindGameObjectWithTag("NewSurfaceManager");
 						SurfaceManager surfaceManager = surfaceManagerObj.GetComponent<SurfaceManager>();
 						GameObject[] surfaceObjs = GameObject.FindGameObjectsWithTag("SurfaceManager");
@@ -2136,7 +2074,7 @@ namespace UI{
 								break; // So you must break...
 							}
 						}
-						UIData.surfColHydroWO = false;
+						UIData.Instance.surfColHydroWO = false;
 					}
 			}
 
@@ -2592,17 +2530,17 @@ namespace UI{
 			
 			GUILayout.BeginHorizontal ();
 			
-			UIData.toggleGray = GUILayout.Toggle (UIData.toggleGray, "Gray");
-			if (UIData.toggleGray)
-				UIData.toggleColor = false;
+			UIData.Instance.toggleGray = GUILayout.Toggle (UIData.Instance.toggleGray, "Gray");
+			if (UIData.Instance.toggleGray)
+				UIData.Instance.toggleColor = false;
 			else
-				UIData.toggleColor = true;
+				UIData.Instance.toggleColor = true;
 			
-			UIData.toggleColor = GUILayout.Toggle (UIData.toggleColor, "Normal");
-			if (UIData.toggleColor)
-				UIData.toggleGray = false;
+			UIData.Instance.toggleColor = GUILayout.Toggle (UIData.Instance.toggleColor, "Normal");
+			if (UIData.Instance.toggleColor)
+				UIData.Instance.toggleGray = false;
 			else
-				UIData.toggleGray = true;
+				UIData.Instance.toggleGray = true;
 			
 			GUILayout.EndHorizontal ();
 			if (Event.current.type == EventType.Repaint)
@@ -2632,23 +2570,29 @@ namespace UI{
 			
 			MetaphorControl ();
 			
-			if(UIData.atomtype != UIData.AtomType.hyperball){
+			if(UIData.Instance.atomtype != UIData.AtomType.hyperball){
 				GUI.enabled = false;
 				toggle_NA_INTERACTIVE = false;
 			}
 			toggle_NA_INTERACTIVE = GUILayout.Toggle (toggle_NA_INTERACTIVE, new GUIContent ("Interactive mode", "Toggle interactive mode, the physics engine will be used"));
 			GUI.enabled = true;
 			drag = LabelSlider (drag, 0.00001f, 5f, "Drag " + drag.ToString("0.00"), "Determines PhysX engine drag value", 
-									UIData.interactive, sliderWidth, 1);
+									UIData.Instance.interactive, sliderWidth, 1);
 			spring = LabelSlider (spring, 0.00001f, 20, "Spring " + spring.ToString("0.00"), "Determines PhysX engine spring constant",
-									UIData.interactive, sliderWidth, 1);
+									UIData.Instance.interactive, sliderWidth, 1);
 			PhysicalChoice();
-//			toggle_NA_INTERACTIVE=false;
+
+			// Luiz FIXME: gotta find a way to synchronize this before enabling it
+			toggle_NA_INTERACTIVE=false;
+
 			GUI.enabled = true;	
 			
 			GUILayout.BeginHorizontal();
 			toggle_NA_MEASURE = GUILayout.Toggle (toggle_NA_MEASURE, new GUIContent ("Measure dist.", "Toggle mouse clicking to measure the distance between two atoms"));
 			GUILayout.EndHorizontal();
+
+			// Luiz FIXME gotta find a way to synchronize selection
+			toggle_NA_MEASURE = false;
 			
 			GUILayout.BeginHorizontal();
 			toggle_DISTANCE_CUEING = GUILayout.Toggle (toggle_DISTANCE_CUEING, new GUIContent ("Dist. cueing", "Toggle distance cueing, which darkens distant objects"));
@@ -2680,14 +2624,14 @@ namespace UI{
 
 			//////////////////////modify///////////////////////
 			
-			if (toggle_NA_INTERACTIVE && UIData.atomtype == UIData.AtomType.hyperball) {
-				UIData.interactive = true;
-				UIData.resetInteractive = true;
+			if (toggle_NA_INTERACTIVE && UIData.Instance.atomtype == UIData.AtomType.hyperball) {
+				UIData.Instance.interactive = true;
+				UIData.Instance.resetInteractive = true;
 			} else {
-				UIData.toggleGray = false;
-				UIData.toggleColor = true;
-				UIData.interactive = false;
-				//UIData.resetInteractive = true;
+				UIData.Instance.toggleGray = false;
+				UIData.Instance.toggleColor = true;
+				UIData.Instance.interactive = false;
+				//UIData.Instance.resetInteractive = true;
 				if (!MoleculeModel.fieldLineFileExists)
 					showGrayColor = false;
 				if (!MoleculeModel.surfaceFileExists)
@@ -2749,7 +2693,7 @@ namespace UI{
 
 			}
 			
-			if(!UIData.hasMoleculeDisplay)
+			if(!UIData.Instance.hasMoleculeDisplay)
 				GUI.enabled = false;
 			if (GUILayout.Button (new GUIContent ("Atoms", "Open the Atom appearance dialogue"))) {
 				if (showAtomMenu) { // already open, we close it
@@ -2777,9 +2721,9 @@ namespace UI{
 					showOpenMenu = false;
 
 				}
-				if (!UIData.toggleSurf) {
-					UIData.toggleBfac = false;
-					UIData.toggleSurf = true;
+				if (!UIData.Instance.toggleSurf) {
+					UIData.Instance.toggleBfac = false;
+					UIData.Instance.toggleSurf = true;
 					pdbGen = false;
 				}
 			}
@@ -2800,9 +2744,9 @@ namespace UI{
 			 		showOpenMenu = false;
 
 				}
-			 	if (!UIData.toggleBfac) {
-			 		UIData.toggleBfac = true;
-			 		UIData.toggleSurf = false;
+			 	if (!UIData.Instance.toggleBfac) {
+			 		UIData.Instance.toggleBfac = true;
+			 		UIData.Instance.toggleSurf = false;
 			 		pdbGen = false;
 			 	}
 			}
@@ -2822,7 +2766,7 @@ namespace UI{
 			}
 			GUI.enabled = true ;
 			
-			if(!UIData.hasMoleculeDisplay)
+			if(!UIData.Instance.hasMoleculeDisplay)
 				GUI.enabled = false;
 
 			if (GUILayout.Button (new GUIContent ("Display", "Open display configuration menu")))
@@ -2854,7 +2798,7 @@ namespace UI{
 				maxCamera fixeCam;
 				fixeCam = scenecontroller.GetComponent<maxCamera> ();
 				fixeCam.ToCenter();
-				if(UIData.atomtype == UIData.AtomType.hyperball){
+				if(UIData.Instance.atomtype == UIData.AtomType.hyperball){
 					GameObject hbManagerObj = GameObject.FindGameObjectWithTag("HBallManager");
 					HBallManager hbManager = hbManagerObj.GetComponent<HBallManager>();
 					hbManager.ResetPositions();
@@ -2902,7 +2846,7 @@ namespace UI{
 			GUILayout.EndHorizontal();
 			
 			GUILayout.BeginHorizontal();
-			toggle_SEC_STRUCT = UIData.hasMoleculeDisplay && GUILayout.Toggle(toggle_SEC_STRUCT,
+			toggle_SEC_STRUCT = UIData.Instance.hasMoleculeDisplay && GUILayout.Toggle(toggle_SEC_STRUCT,
 				new GUIContent("Enable Secondary structures", "Switch between all-atoms and secondary structures representation"));
 			if(!ssToggled && toggle_SEC_STRUCT) { // enabling the ribbons
 				Ribbons ribbons = new Ribbons();
@@ -2922,7 +2866,7 @@ namespace UI{
 			GUILayout.EndHorizontal();
 
 			// Bugs otherwise.
-			if(!UIData.hasMoleculeDisplay) {
+			if(!UIData.Instance.hasMoleculeDisplay) {
 				showSecStructMenu = false;
 				return;
 			}
@@ -2963,13 +2907,13 @@ namespace UI{
 			GUILayout.EndHorizontal();
 
 			GUILayout.BeginHorizontal ();
-			//UIData.ssColStruct = UIData.hasMoleculeDisplay && GUILayout.Toggle(UIData.ssColStruct,
+			//UIData.Instance.ssColStruct = UIData.Instance.hasMoleculeDisplay && GUILayout.Toggle(UIData.Instance.ssColStruct,
 			//new GUIContent("Color by Structure", "Color cartoon representation by structure"));
 			if(GUILayout.Button(new GUIContent("Color by ss")))
-				UIData.ssColStruct = !UIData.ssColStruct;
+				UIData.Instance.ssColStruct = !UIData.Instance.ssColStruct;
 			GUILayout.EndHorizontal();
 
-			if(UIData.ssColStruct){
+			if(UIData.Instance.ssColStruct){
 			GUILayout.BeginHorizontal();
 			GUILayout.Label("Helix Color :");
 			GUILayout.FlexibleSpace();
@@ -2997,17 +2941,17 @@ namespace UI{
 
 			//C.R Test color by chains
 			GUILayout.BeginHorizontal ();
-			//UIData.ssColChain = UIData.hasMoleculeDisplay && GUILayout.Toggle(UIData.ssColChain,
+			//UIData.Instance.ssColChain = UIData.Instance.hasMoleculeDisplay && GUILayout.Toggle(UIData.Instance.ssColChain,
 			//new GUIContent("Color by Chain", "Color cartoon representation by chain"));
 			if(GUILayout.Button(new GUIContent("Color by chain")))
-				UIData.ssColChain = !UIData.ssColChain;
+				UIData.Instance.ssColChain = !UIData.Instance.ssColChain;
 			GUILayout.EndHorizontal();
 
-			if (UIData.ssColChain) {
+			if (UIData.Instance.ssColChain) {
 
-				if(UIData.isGLIC){
+				if(UIData.Instance.isGLIC){
 					GUILayout.BeginHorizontal();
-					UIData.ssDivCol = UIData.hasMoleculeDisplay && GUILayout.Toggle(UIData.ssDivCol,
+					UIData.Instance.ssDivCol = UIData.Instance.hasMoleculeDisplay && GUILayout.Toggle(UIData.Instance.ssDivCol,
 					new GUIContent("Show domains", "Color by domains"));
 					GUILayout.EndHorizontal();}
 
@@ -3119,7 +3063,7 @@ namespace UI{
 			
 			GUILayout.BeginHorizontal();
 			GUILayout.FlexibleSpace();
-			UIData.grayscalemode = GUILayout.Toggle (UIData.grayscalemode, new GUIContent ("Grayscale", "Use grayscale version of the texture"));
+			UIData.Instance.grayscalemode = GUILayout.Toggle (UIData.Instance.grayscalemode, new GUIContent ("Grayscale", "Use grayscale version of the texture"));
 			GUILayout.EndHorizontal();
 			
 			GUILayout.BeginHorizontal ();
@@ -3250,20 +3194,20 @@ namespace UI{
 			
 			if (toggle_NA_HBALLSMOOTH) {
 				m_colorPicker = null;
-				UIData.resetDisplay = true;
-				UIData.isCubeToSphere = false;
-				UIData.isSphereToCube = true;
+				UIData.Instance.resetDisplay = true;
+				UIData.Instance.isCubeToSphere = false;
+				UIData.Instance.isSphereToCube = true;
 				
-				UIData.atomtype = UIData.AtomType.hyperball;
-				Debug.Log ("UIData.resetDisplay :: " + UIData.resetDisplay);
-				Debug.Log ("UIData.isCubeToSphere :: " + UIData.isCubeToSphere);
-				Debug.Log ("UIData.isSphereToCube :: " + UIData.isSphereToCube);
+				UIData.Instance.atomtype = UIData.AtomType.hyperball;
+				Debug.Log ("UIData.Instance.resetDisplay :: " + UIData.Instance.resetDisplay);
+				Debug.Log ("UIData.Instance.isCubeToSphere :: " + UIData.Instance.isCubeToSphere);
+				Debug.Log ("UIData.Instance.isSphereToCube :: " + UIData.Instance.isSphereToCube);
 				showAtomType = false;
 				
 				BallUpdate.resetColors = true;
 				BallUpdate.resetRadii = true;
-				UIData.resetBondDisplay = true;
-				UIData.bondtype = UIData.BondType.hyperstick;
+				UIData.Instance.resetBondDisplay = true;
+				UIData.Instance.bondtype = UIData.BondType.hyperstick;
 				showBondType = false;
 				
 				globalRadius = 0.4f;
@@ -3271,16 +3215,16 @@ namespace UI{
 				linkScale = 1.0f;
 				
 				toggle_NA_HBALLSMOOTH = false;
-				UIData.hballsmoothmode = false;
+				UIData.Instance.hballsmoothmode = false;
 			}
 			
 
 			GUILayout.BeginHorizontal();
-			if(toggle_NA_HIDE || UIData.atomtype == UIData.AtomType.particleball)
+			if(toggle_NA_HIDE || UIData.Instance.atomtype == UIData.AtomType.particleball)
 				GUI.enabled = false;
 			toggle_NA_SWITCH = GUILayout.Toggle (toggle_NA_SWITCH, new GUIContent 
 				("LOD mode", "Toggle LOD.  When this is enabled and the molecule is moving, hyperboloids are replaced by particle balls for smoother framerates."));
-			UIData.switchmode = toggle_NA_SWITCH;
+			UIData.Instance.switchmode = toggle_NA_SWITCH;
 			GUI.enabled = true;
 			if(toggle_NA_HIDE)
 				GUI.enabled = false;
@@ -3317,26 +3261,26 @@ namespace UI{
 			GUI.enabled = (MoleculeModel.CatomsLocationlist.Count > 2);
 			if (GUILayout.Button (new GUIContent (structTypeButtonLabel(structType), "Switch to " + structTypeButtonLabel(structType)))) {
 
-				if (UIData.secondarystruct) {
-					UIData.secondarystruct = false;
+				if (UIData.Instance.secondarystruct) {
+					UIData.Instance.secondarystruct = false;
 					structType = "All atoms";
-					UIData.changeStructure = true;
+					UIData.Instance.changeStructure = true;
 					globalRadius = 0.40f;
 					shrink = 0.50f;
 				} else {
-					UIData.secondarystruct = true;
+					UIData.Instance.secondarystruct = true;
 					structType = "C-alpha trace";
-					if (UIData.toggle_bf){
+					if (UIData.Instance.toggle_bf){
 						AlphaChainSmoother.ReSpline ();
 						DisplayMolecule.InitManagers();
-						UIData.toggle_bf = false;
+						UIData.Instance.toggle_bf = false;
 					}
-					UIData.changeStructure = true;
+					UIData.Instance.changeStructure = true;
 					globalRadius = 0.25f;
 					shrink = 0.0001f;
 				}
 				DisplayMolecule.DestroyAtomsAndBonds();
-				UIData.resetDisplay = true ;
+				UIData.Instance.resetDisplay = true ;
 				SetAtomStyle();
 			}
 
@@ -3354,30 +3298,30 @@ namespace UI{
 			
 			GUI.enabled = (MoleculeModel.CatomsLocationlist.Count > 2);
 			if (GUILayout.Button (new GUIContent (structTypeButtonLabel_BF(structType), "Switch to " + structTypeButtonLabel_BF(structType)))) {
-				if (UIData.secondarystruct) {
-					UIData.secondarystruct = false;
+				if (UIData.Instance.secondarystruct) {
+					UIData.Instance.secondarystruct = false;
 					structType = "All atoms";
-					UIData.changeStructure = true;
+					UIData.Instance.changeStructure = true;
 					globalRadius = 0.40f;
 					shrink = 0.50f;
 				} else {
-					UIData.secondarystruct = true;
+					UIData.Instance.secondarystruct = true;
 					structType = "B Factor";
 				//	DisplayMolecule.DestroyAtomsAndBonds();
-					UIData.toggle_bf = true;
+					UIData.Instance.toggle_bf = true;
 					BFactorRep.CreateBFRep();
 					DisplayMolecule.InitManagers();
-					UIData.changeStructure = true;
+					UIData.Instance.changeStructure = true;
 					globalRadius = 0.15f;
 					shrink = 0.0001f;
 
-				//	UIData.resetDisplay = true;
+				//	UIData.Instance.resetDisplay = true;
 				}
 				
 				//if (Event.current.type == EventType.Repaint)
 					//MoleculeModel.newtooltip = GUI.tooltip;
 				DisplayMolecule.DestroyAtomsAndBonds();
-				UIData.resetDisplay = true ;
+				UIData.Instance.resetDisplay = true ;
 				SetAtomStyle();
 			}
 			GUI.enabled = true;
@@ -3403,8 +3347,8 @@ namespace UI{
 				DisplayMolecule.DestroyAtomsAndBonds();
 				AlphaChainSmoother.ReSpline();
 				DisplayMolecule.InitManagers();
-				UIData.changeStructure = true;
-				UIData.resetDisplay = true;
+				UIData.Instance.changeStructure = true;
+				UIData.Instance.resetDisplay = true;
 			}
 			
 			if (Event.current.type == EventType.Repaint)
@@ -3428,8 +3372,8 @@ namespace UI{
 				DisplayMolecule.DestroyAtomsAndBonds();
 				BFactorRep.CreateBFRep();
 				DisplayMolecule.InitManagers();
-				UIData.changeStructure = true;
-				UIData.resetDisplay = true;
+				UIData.Instance.changeStructure = true;
+				UIData.Instance.resetDisplay = true;
 			}
 			
 			if (Event.current.type == EventType.Repaint)
@@ -3475,22 +3419,22 @@ namespace UI{
 			GUILayout.BeginHorizontal ();
 
 			if (GUILayout.Button (new GUIContent ("Rescaling", "Rescale Bfactor values"), GUILayout.Width (buttonWidth))) {
-				UIData.isRescale = true;
+				UIData.Instance.isRescale = true;
 				DisplayMolecule.DestroyAtomsAndBonds();
 				BFactorRep.CreateBFRep();
 				DisplayMolecule.InitManagers ();
-				UIData.changeStructure = true;
-				UIData.resetDisplay = true;
+				UIData.Instance.changeStructure = true;
+				UIData.Instance.resetDisplay = true;
 
 			}
 
 			if (GUILayout.Button (new GUIContent ("Reset", "Reset to original Bfactor values"), GUILayout.Width (buttonWidth))){
-				UIData.isRescale = false;
+				UIData.Instance.isRescale = false;
 				DisplayMolecule.DestroyAtomsAndBonds();
 				BFactorRep.CreateBFRep();
 				DisplayMolecule.InitManagers ();
-				UIData.changeStructure = true;
-				UIData.resetDisplay = true;
+				UIData.Instance.changeStructure = true;
+				UIData.Instance.resetDisplay = true;
 			}
 		}
 
@@ -3537,7 +3481,7 @@ namespace UI{
 			GUILayout.BeginHorizontal ();
 			GUILayout.FlexibleSpace();
 			string atomtype = "";
-			UIData.AtomType atype = UIData.atomtype;
+			UIData.AtomType atype = UIData.Instance.atomtype;
 			if(atype == UIData.AtomType.noatom)
 				atype = Molecule3DComp.PreviousAtomType;
 			switch (atype) {
@@ -3592,7 +3536,7 @@ namespace UI{
 
 
 			string bondtype = "";
-			switch (UIData.bondtype) {
+			switch (UIData.Instance.bondtype) {
 			case UIData.BondType.cube:
 				bondtype = "Cube";
 				break;
@@ -3628,8 +3572,7 @@ namespace UI{
 			if(toggle_NA_HIDE)
 				GUI.enabled = false;
 			if(GUILayout.Button(new GUIContent("Smooth HyperBalls", "Set a parameter combo for HyperBalls and Sticks with SmoothLinks once"))) {
-				toggle_NA_HBALLSMOOTH = !toggle_NA_HBALLSMOOTH;
-				UIData.hballsmoothmode = toggle_NA_HBALLSMOOTH;
+				SmoothHyperBalls ();
 			}
 			GUILayout.EndHorizontal();
 			
@@ -3652,6 +3595,9 @@ namespace UI{
 			GUILayout.BeginHorizontal();
 			toggle_NA_CLICK = GUILayout.Toggle (toggle_NA_CLICK, new GUIContent ("Atom selection", "Toggles mouse clicking to select/deselect atoms (left click/right click)"));
 			GUILayout.EndHorizontal();
+
+			// Luiz FIXME gotta find a way yo synchronize selection
+			toggle_NA_CLICK = false;
 			
 			GUILayout.BeginHorizontal();
 			toggle_NA_CAMLOCK = GUILayout.Toggle (toggle_NA_CAMLOCK, new GUIContent ("Lock camera", "Enable/Disable camera movements"));
@@ -3669,7 +3615,7 @@ namespace UI{
 			GUILayout.BeginHorizontal();
 			HBallManager.brightness = LabelSlider(HBallManager.brightness, 0.33f, 2.0f, "Brightness: " + HBallManager.brightness.ToString("0.00"), 
 									"Adjusts the brightness of atoms and bonds represented with the MatCap shader",
-									(UIData.atomtype == UIData.AtomType.hyperball), sliderWidth, labelWidth, false);
+									(UIData.Instance.atomtype == UIData.AtomType.hyperball), sliderWidth, labelWidth, false);
 			if(GUI.changed)
 				HBallManager.resetBrightness = true;
 			GUILayout.EndHorizontal();
@@ -3714,16 +3660,16 @@ namespace UI{
 			
 			GUILayout.Label (new GUIContent ("BackGround", "Toggle the use of a skybox on/off"), GUILayout.MaxWidth (120));
 			
-			UIData.backGroundIs = GUILayout.Toggle (UIData.backGroundIs, new GUIContent ("Yes", "Toggle the use of a skybox to ON"));
-			UIData.backGroundNo = !UIData.backGroundIs;
+			UIData.Instance.backGroundIs = GUILayout.Toggle (UIData.Instance.backGroundIs, new GUIContent ("Yes", "Toggle the use of a skybox to ON"));
+			UIData.Instance.backGroundNo = !UIData.Instance.backGroundIs;
 
-			UIData.backGroundNo = GUILayout.Toggle (UIData.backGroundNo, new GUIContent ("No", "Toggle the use of a skybox to OFF"));
-			UIData.backGroundIs = !UIData.backGroundNo;
+			UIData.Instance.backGroundNo = GUILayout.Toggle (UIData.Instance.backGroundNo, new GUIContent ("No", "Toggle the use of a skybox to OFF"));
+			UIData.Instance.backGroundIs = !UIData.Instance.backGroundNo;
 			
 			GUILayout.EndHorizontal ();
 			
 			// MB: only show possibility to change skybox if it is set to on
-			showBackgroundType = UIData.backGroundIs ;
+			showBackgroundType = UIData.Instance.backGroundIs ;
 
 			if (Event.current.type == EventType.Repaint)
 				MoleculeModel.newtooltip = GUI.tooltip;
@@ -3834,5 +3780,75 @@ namespace UI{
 				MoleculeModel.newtooltip = GUI.tooltip;
 			GUI.DragWindow();
 		} // End of Manipulator	
+
+		// Luiz:
+		private static void DispatchMethodPerformedEvent(string methodName, object param)
+		{
+			ChangeManager.DispatchMethodEvent (typeof(LoadTypeGUI), methodName, param);
+		}
+		public static void ChangeRepresentation(UIData.AtomType type)
+		{
+			UIData.Instance.resetDisplay = true;
+			UIData.Instance.atomtype = type;
+			Debug.Log ("UIData.Instance.resetDisplay:" + UIData.Instance.resetDisplay);
+			Debug.Log ("UIData.Instance.isCubeToSphere:" + UIData.Instance.isCubeToSphere);
+			Debug.Log ("UIData.Instance.isSphereToCube:" + UIData.Instance.isSphereToCube);
+			showAtomType = false;
+			toggle_NA_HIDE = false;
+			toggle_NA_CLICK = false;
+
+			switch (UIData.Instance.atomtype) {
+			case UIData.AtomType.cube:
+				Debug.Log("Cube representation");
+				UIData.Instance.isCubeToSphere = false;
+				UIData.Instance.isSphereToCube = true;
+				BallUpdate.resetColors = true;
+				break;
+
+			case UIData.AtomType.hyperball:
+				Debug.Log("HyperBall representation");
+				UIData.Instance.isCubeToSphere = false;
+				UIData.Instance.isSphereToCube = true;
+				BallUpdate.resetColors = true;
+				break;
+
+			case UIData.AtomType.particleball:
+				Debug.Log("Particle representation");
+				UIData.Instance.isSphereToCube = false;
+				UIData.Instance.isCubeToSphere = false;
+				UIData.Instance.resetBondDisplay = true;
+				UIData.Instance.bondtype=UIData.BondType.nobond; // Probably best to do this by default. Users can still enable bonds if they wish.
+				toggle_NA_SWITCH = false;
+				GameObject shurikenParticleManagerObj = GameObject.FindGameObjectWithTag("ShurikenParticleManager");
+				ShurikenParticleManager shManager = shurikenParticleManagerObj.GetComponent<ShurikenParticleManager>();
+				//				shManager.Init();
+				shManager.EnableRenderers();
+				break;
+
+			case UIData.AtomType.sphere:
+				Debug.Log("Sphere representation");
+				UIData.Instance.isCubeToSphere = true;
+				UIData.Instance.isSphereToCube = false;
+				BallUpdate.resetColors = true;
+				break;
+			}
+
+			DispatchMethodPerformedEvent ("ChangeRepresentation", type);
+		}
+		public static void ChangeBond(UIData.BondType type)
+		{
+			UIData.Instance.resetBondDisplay = true;
+			UIData.Instance.bondtype = type;
+			showBondType = false;
+
+			DispatchMethodPerformedEvent ("ChangeBond", type);
+		}
+		public static void SmoothHyperBalls()
+		{
+			toggle_NA_HBALLSMOOTH = !toggle_NA_HBALLSMOOTH;
+			UIData.Instance.hballsmoothmode = toggle_NA_HBALLSMOOTH;
+
+			DispatchMethodPerformedEvent ("SmoothHyperBalls", null);
+		}
 	}
 }

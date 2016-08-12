@@ -123,7 +123,7 @@ public class StickUpdate : MonoBehaviour {
 		transform.position = atompointer1.transform.position;
 		GetComponent<Renderer>().material.SetVector("_TexPos2", atompointer2.transform.position);
 //		renderer.material.SetTexture("_MatCap",BallUpdateHB.text2D);
-		if(UIData.atomtype == UIData.AtomType.hyperball) {
+		if(UIData.Instance.atomtype == UIData.AtomType.hyperball) {
 			GetComponent<Renderer>().material.SetTexture("_MatCap", atompointer1.GetComponent<Renderer>().material.GetTexture("_MatCap"));
 			GetComponent<Renderer>().material.SetTexture("_MatCap2", atompointer2.GetComponent<Renderer>().material.GetTexture("_MatCap"));
 		}
@@ -145,7 +145,7 @@ public class StickUpdate : MonoBehaviour {
 		}
 		
 		
-		if(UIData.EnableUpdate)
+		if(UIData.Instance.EnableUpdate)
 		{	
 			if(oldshrink!=shrink)
 			{
@@ -170,7 +170,7 @@ public class StickUpdate : MonoBehaviour {
 			//If atoms are hyperballs
 			//if(atompointer1.renderer.material.HasProperty("_Rayon") && atompointer2.renderer.material.HasProperty("_Rayon"))
 			
-			if(UIData.atomtype == UIData.AtomType.hyperball)
+			if(UIData.Instance.atomtype == UIData.AtomType.hyperball)
 			{
 				if(oldrayon1!=atompointer1.renderer.material.GetFloat("_Rayon"))
 				{

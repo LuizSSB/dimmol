@@ -113,5 +113,11 @@ namespace UnityClusterPackage {
 				}
 			}
 		}
+
+		public static bool IsSlave {
+			get {
+				return type == "slave";
+			}
+		}
     }
 }

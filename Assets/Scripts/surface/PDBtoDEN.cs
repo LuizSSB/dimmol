@@ -266,7 +266,7 @@ public class PDBtoDEN : MonoBehaviour {
 					break;
 			}
 			
-			if (UIData.toggleSurf && !UIData.toggleBfac) {
+			if (UIData.Instance.toggleSurf && !UIData.Instance.toggleBfac) {
 			for (int l = i-8 ;l < i+9 ; l++)
 					for ( int m = j-8 ; m < j+9 ; m++)
 						for ( int n = k-8 ; n < k+9 ; n++){
@@ -280,7 +280,7 @@ public class PDBtoDEN : MonoBehaviour {
 							gridS[l,m,n] += density;
 						}
 			
-			} else if (UIData.toggleBfac) {			// these index bounds might need to be express as functions of fudgeFactor
+			} else if (UIData.Instance.toggleBfac) {			// these index bounds might need to be express as functions of fudgeFactor
 				for (int l = i-8 ;l < i+9 ; l++) {
 					for ( int m = j-8 ; m < j+9 ; m++) {
 						for ( int n = k-8 ; n < k+9 ; n++) {

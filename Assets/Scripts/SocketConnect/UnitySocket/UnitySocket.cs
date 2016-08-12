@@ -133,12 +133,12 @@ namespace SocketConnect.UnitySocket
 //				string s=ReceiveString(2);
 				if(s.Equals("OK"))
 				{
-					UIData.loginSucess=true;
+					UIData.Instance.loginSucess=true;
 				}
 				
 				else
 				{
-					UIData.loginSucess=false;
+					UIData.Instance.loginSucess=false;
 				}
 				//Debug.Log(s.Length);
 				Debug.Log(s);
@@ -147,7 +147,7 @@ namespace SocketConnect.UnitySocket
 		            {
 		                // Something went wrong, so lets get information about it.
 						Debug.Log(e.ToString());
-						UIData.loginSucess=false;
+						UIData.Instance.loginSucess=false;
 		            }
 		}
 		

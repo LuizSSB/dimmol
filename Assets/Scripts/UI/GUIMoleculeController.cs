@@ -62,6 +62,7 @@
 /// using HyperBalls, a unified algorithm for balls, sticks and hyperboloids",
 /// J. Comput. Chem., 2011, 32, 2924
 ///
+using System;
 
 namespace UI {
 	using UnityEngine;
@@ -76,7 +77,7 @@ namespace UI {
 
 	public class GUIMoleculeController {
 
-		private static string umolversion = "v0.9.2 (R676)";
+		private static string umolversion = "v0.9.2X (RX1)";
 		
 //		public static int texSet_max=30; /*!< Maximum number of full texture pages */
 //		public static int besttexSet_min=-5; /*!< Maximum number of condensed texture pages (negative value!) */
@@ -96,19 +97,42 @@ namespace UI {
 		public static bool showBfactorMenu = false;
 		public static bool showElectrostaticsMenu = false;
 		public static bool showManipulatorMenu = false; // Careful! This boolean and all associated behavior are backwards!
-		public static bool showSetAtomScales = false;
+
+//		public static bool showSetAtomScales = false;
 		public static string structType = "All atoms";
 		public static bool showAdvMenu = false;
 		public static bool showGuidedMenu = false;
-		public static bool showResiduesMenu = false;
-		public static bool showAtomsExtendedMenu = false;
-		public static bool showChainsMenu = false;
+//		public static bool showResiduesMenu = false;
+//		public static bool showAtomsExtendedMenu = false;
+//		public static bool showChainsMenu = false;
 		public static bool showPanelsMenu = false;
 		public static bool showSugarChainMenu = false; // T.T Sugar menu
 		public static bool showSugarRibbonsTuneMenu = false;
 		public static bool showColorTuneMenu = false;
 		public static bool showVRPNMenu = false;
 		public static bool showMDDriverMenu = false;
+
+		// Luiz:
+		private static bool _showSetAtomScales = false;
+		public static bool showSetAtomScales {
+			get { return _showSetAtomScales; }
+			set { _showSetAtomScales = ProcessPropertyChanged ("showSetAtomScales", _showSetAtomScales, value); }
+		}
+		private static bool _showAtomsExtendedMenu = false;
+		public static bool showAtomsExtendedMenu {
+			get { return _showAtomsExtendedMenu; }
+			set { _showAtomsExtendedMenu = ProcessPropertyChanged ("showAtomsExtendedMenu", _showAtomsExtendedMenu, value); }
+		}
+		private static bool _showResiduesMenu = false;
+		public static bool showResiduesMenu {
+			get { return _showResiduesMenu; }
+			set { _showResiduesMenu = ProcessPropertyChanged ("showResiduesMenu", _showResiduesMenu, value); }
+		}
+		private static bool _showChainsMenu = false;
+		public static bool showChainsMenu {
+			get { return _showChainsMenu; }
+			set { _showChainsMenu = ProcessPropertyChanged ("showChainsMenu", _showChainsMenu, value);  }
+		}
 			
 			
 		// Generic toggles
@@ -122,15 +146,64 @@ namespace UI {
 		public static bool toggle_HB_RANIM = false;
 		public static float hb_ranim = 0.4f;
 		public static float hb_rsign = 1.0f;
-		public static float shrink = 0.1f;
-		public static float globalRadius = 1.0f;
-		public static float linkScale = 1.0f;
-		public static float depthfactor = -1.0f;
-		public static float drag = 0.6f;
-		public static float spring = 5;
-		public static float bondWidth = 0.15f ; // default bond width for cube/line
-		public static float highBFradius = 1.0f;
-		
+
+//		public static float shrink = 0.1f;
+//		public static float linkScale = 1.0f;
+//		public static float depthfactor = -1.0f;
+//		public static float globalRadius = 1.0f;
+//		public static float drag = 0.6f;
+//		public static float spring = 5;
+//		public static float bondWidth = 0.15f ; // default bond width for cube/line
+//		public static float highBFradius = 1.0f;
+
+		// Luiz:
+		private static float _shrink = .1f;
+		public static float shrink {
+			get { return _shrink; }
+			set { _shrink = ProcessPropertyChanged ("shrink", _shrink, value); }
+		}
+
+		private static float _linkScale = 1f;
+		public static float linkScale {
+			get { return _linkScale; }
+			set { _linkScale = ProcessPropertyChanged ("linkScale", _linkScale, value); }
+		}
+
+		private static float _depthfactor = -1f;
+		public static float depthfactor {
+			get { return _depthfactor; }
+			set { _depthfactor = ProcessPropertyChanged ("depthfactor", _depthfactor, value); }
+		}
+
+		private static float _globalRadius = 1.0f;
+		public static float globalRadius {
+			get { return _globalRadius; }
+			set { _globalRadius = ProcessPropertyChanged ("globalRadius", _globalRadius, value); }
+		}
+
+		private static float _bondWidth = 0.15f; // default bond width for cube/line
+		public static float bondWidth {
+			get { return _bondWidth; }
+			set { _bondWidth = ProcessPropertyChanged ("bondWidth", _bondWidth, value); }
+		}
+
+		private static float _drag = .6f;
+		public static float drag {
+			get { return _drag; }
+			set { _drag = ProcessPropertyChanged ("drag", _drag, value); }
+		}
+
+		private static float _spring = 5f;
+		public static float spring {
+			get { return _spring; }
+			set { _spring = ProcessPropertyChanged ("spring", _spring, value); }
+		}
+
+		private static float _highBFradius = 1f;
+		public static float highBFradius {
+			get { return _highBFradius; }
+			set { _highBFradius = ProcessPropertyChanged ("highBFradius", _highBFradius, value); }
+		}
 		
 		//Electric field line symbol radius
 		public  static float symbolradius = 1.0f;
@@ -144,11 +217,18 @@ namespace UI {
 		public	static	 float newScale;
 		public	static	 float newGlobalRadius = 1.0f;
 		public	static	 float transDelta = 25.0f;
+
+		// Luiz
+		private static bool _toggle_NA_HIDE = false;
+		public static bool toggle_NA_HIDE {
+			get { return _toggle_NA_HIDE; }
+			set { _toggle_NA_HIDE = ProcessPropertyChanged ("toggle_NA_HIDE", _toggle_NA_HIDE, value); }
+		}
 		
 		public	static	 bool toggle_HB_TRANS = true;
 		public 	static	 bool toggle_NA_INTERACTIVE = false;
 		public  static   bool toggle_MDDRIVER = false;
-		public 	static 	 bool toggle_NA_HIDE = false;
+//		public 	static 	 bool toggle_NA_HIDE = false;
 		public 	static	 bool toggle_NA_SWITCH = false;
 		public 	static	 bool toggle_NA_HBALLSMOOTH = false;
 		public 	static 	 bool LOD_INITIALIZED = false;
@@ -177,8 +257,15 @@ namespace UI {
 		protected static bool toggle_VE2_CCORR = false;
 		protected static bool toggle_VE2_BLUR2 = false;
 		protected static bool toggle_VE2_DREAM = false;
-		
-		protected static bool toggle_DISTANCE_CUEING = false;
+
+		// Luiz:
+		private static bool _toggle_DISTANCE_CUEING = false;
+		public static bool toggle_DISTANCE_CUEING {
+			get { return _toggle_DISTANCE_CUEING; }
+			set { _toggle_DISTANCE_CUEING = ProcessPropertyChanged ("toggle_DISTANCE_CUEING", _toggle_DISTANCE_CUEING, value); }
+		}
+
+//		protected static bool toggle_DISTANCE_CUEING = false;
 		public static bool toggle_SEC_STRUCT = false;
 		public static bool toggle_RING_BLENDING=false; //T.T RingBlending visu - public for remove visu when CLEAR (reset to false)
 		public static bool toggle_SUGAR_ONLY=true; 
@@ -327,12 +414,12 @@ namespace UI {
 		public static bool electroIsoNegativeInitialized = false;
 
 
-
-		public static void CreateColorPicker(ColorObject col, string title, List<string> atomTarget, string residueTarget = "All", string chainTarget = "All")
+		// Luiz:
+		public static ColorPicker CreateColorPicker(ColorObject col, string title, List<string> atomTarget, string residueTarget = "All", string chainTarget = "All")
 		{
 			if(m_colorPicker != null)
 				m_colorPicker = null;
-			m_colorPicker = new ColorPicker(Rectangles.colorPickerRect, col, atomTarget, residueTarget, chainTarget, title);
+			return m_colorPicker = new ColorPicker(Rectangles.colorPickerRect, col, atomTarget, residueTarget, chainTarget, title);
 		}
 		
 		public GUIMoleculeController ()
@@ -461,8 +548,8 @@ namespace UI {
 				|| (showSurfaceMenu && showSurfaceCut && Rectangles.surfaceCutRect.Contains (mousePos))
 				|| (showSurfaceMenu && showSurfaceMobileCut && Rectangles.surfaceMobileCutRect.Contains(mousePos))
 				|| (showSurfaceTexture && Rectangles.textureRect.Contains (mousePos))
-				|| showSetAtomScales && !UIData.hiddenUIbutFPS && guirectD11.Contains (mousePos)
-				|| GUIDisplay.m_max && UIData.hiddenUIbutFPS && guirectD12.Contains (mousePos) 
+				|| showSetAtomScales && !UIData.Instance.hiddenUIbutFPS && guirectD11.Contains (mousePos)
+				|| GUIDisplay.m_max && UIData.Instance.hiddenUIbutFPS && guirectD12.Contains (mousePos) 
 				|| GUIDisplay.m_texture && Rectangles.textureRect.Contains (mousePos)
 				|| (rect_paramsurface.Contains (mousePos) && GameObject.FindGameObjectWithTag ("SurfaceManager") && (showSurfaceMenu || showBfactorMenu || showElectrostaticsMenu))
 				|| (guirectHyperballs.Contains (mousePos) && showHyperballsMenu)
@@ -488,15 +575,15 @@ namespace UI {
 			  )
 			{
 				maxCamera.cameraStop = true;  // stop macCamera
-				UIData.cameraStop2 = true;
+				UIData.Instance.cameraStop2 = true;
 //				Debug.Log("maxCamera.cameraStop = true");
 			} else {
-				if (UIData.cameraStop) {
+				if (UIData.Instance.cameraStop) {
 					maxCamera.cameraStop = true;
-					UIData.cameraStop2 = true;
+					UIData.Instance.cameraStop2 = true;
 				} else {
 					maxCamera.cameraStop = false;
-					UIData.cameraStop2 = false;
+					UIData.Instance.cameraStop2 = false;
 				}
 			}
 			
@@ -533,11 +620,11 @@ namespace UI {
 			GUILayout.BeginHorizontal ();
 			GUILayout.Label ("Visual", GUILayout.MaxWidth (50));
 			
-			UIData.toggleMouse = GUILayout.Toggle (UIData.toggleMouse, "Mouse");
-			UIData.toggleKey = !UIData.toggleMouse;
+			UIData.Instance.toggleMouse = GUILayout.Toggle (UIData.Instance.toggleMouse, "Mouse");
+			UIData.Instance.toggleKey = !UIData.Instance.toggleMouse;
 			
-			UIData.toggleKey = GUILayout.Toggle (UIData.toggleKey, "Key");
-			UIData.toggleMouse = !UIData.toggleKey;
+			UIData.Instance.toggleKey = GUILayout.Toggle (UIData.Instance.toggleKey, "Key");
+			UIData.Instance.toggleMouse = !UIData.Instance.toggleKey;
 			GUILayout.EndHorizontal ();
 		}
 			
@@ -649,7 +736,7 @@ namespace UI {
 				Rectangles.ColorTuneRect = GUI.Window(45154, Rectangles.ColorTuneRect, LoadTypeGUI.ColorTuneMenu, emptyContent);
 		}
 		public void SetCubeLineBond() {
-			if	(((UIData.bondtype == UIData.BondType.cube) || (UIData.bondtype == UIData.BondType.line))
+			if	(((UIData.Instance.bondtype == UIData.BondType.cube) || (UIData.Instance.bondtype == UIData.BondType.line))
 					&& !showBondType && !showAtomType && showAtomMenu) {
 				Rectangles.cubeLineBondRect = GUI.Window (13, Rectangles.cubeLineBondRect, LoadTypeGUI.CubeLineBond, emptyContent) ;
 				showCubeLineBondMenu = true ;
@@ -702,7 +789,7 @@ namespace UI {
 		}
 		
 		public void SetHyperBall ()	{
-			if ((/*UIData.atomtype == UIData.AtomType.hyperball || */UIData.bondtype == UIData.BondType.hyperstick) && (!showBondType && !showAtomType) && showAtomMenu) {
+			if ((/*UIData.Instance.atomtype == UIData.AtomType.hyperball || */UIData.Instance.bondtype == UIData.BondType.hyperstick) && (!showBondType && !showAtomType) && showAtomMenu) {
 				Rectangles.hyperballRect = GUI.Window (12, Rectangles.hyperballRect, LoadTypeGUI.HyperballStyle, emptyContent);
 				showHyperballsMenu = true;
 			} else
@@ -850,5 +937,11 @@ namespace UI {
 				toggle_HELP = !toggle_HELP;
 			}
 		} // End of RenderHelp
+
+		// Luiz:
+		private static T ProcessPropertyChanged<T> (string propertyName, T oldValue, T newValue)
+		{
+			return ChangeManager.ProcessPropertyChanged(typeof(GUIMoleculeController), propertyName, oldValue, newValue);
+		}
 	}
 }

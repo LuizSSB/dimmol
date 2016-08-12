@@ -80,7 +80,7 @@ public class BallUpdateRC : BallUpdate {
 
 	void  Update ()
 	{
-		if(UIData.atomtype != UIData.AtomType.raycasting)
+		if(UIData.Instance.atomtype != UIData.AtomType.raycasting)
 		{
 			GetComponent<Renderer>().enabled = false;
 			return;

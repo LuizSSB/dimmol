@@ -315,10 +315,17 @@ namespace  ParseData.ParsePDB
 			StreamReader sr ;
 				
 //			FileInfo file=new FileInfo(file_base_name+".pdb");
-			sr=new StreamReader(file_base_name+".pdb");
+			using (sr =new StreamReader(file_base_name+".pdb")) {
+				// Luiz
+				string pdbContents = sr.ReadToEnd();
+				UIData.Instance.ChosenPdbContents = pdbContents;
+
+				ControlMolecule.CreateMolecule(new StringReader(pdbContents));
+				//ReadPDB(sr);
+			}
 			
 			//ReadPDB(sr);
-			ControlMolecule.CreateMolecule(sr);
+//			ControlMolecule.CreateMolecule(sr);
 
 			if(withData) {
 				FileInfo fieldlinefile=new FileInfo(file_base_name+".json");

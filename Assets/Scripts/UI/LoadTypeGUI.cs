@@ -171,6 +171,123 @@ namespace UI{
 		
 		public static bool showOriginAxe = true;
 		public static bool originThere = true;
+
+		// Luiz:
+		private static bool _toggle_RING_BLENDING = false;
+		public static bool toggle_RING_BLENDING {
+			get { return _toggle_RING_BLENDING; }
+			set {
+				if (toggle_RING_BLENDING == value)
+					return;
+				
+				bool ssToggled = toggle_RING_BLENDING;
+				_toggle_RING_BLENDING = ChangeManager.ProcessPropertyChanged (typeof(LoadTypeGUI), "toggle_RING_BLENDING", _toggle_RING_BLENDING, value);
+
+				if (!ssToggled && toggle_RING_BLENDING) { // enabling the SugarBlending
+					ringblending = new RingBlending ();
+					ringblending.CreateRingBlending ();
+				} else {
+					if (ssToggled && !toggle_RING_BLENDING) { // destroying the SugarBlending
+						GameObject[] blendObjs = GameObject.FindGameObjectsWithTag ("RingBlending");
+						foreach (GameObject blendobj in blendObjs)
+							GameObject.Destroy (blendobj);
+					}
+				}
+			}
+		}
+		private static bool _toggle_TWISTER = false;
+		public static bool toggle_TWISTER {
+			get { return _toggle_TWISTER; }
+			set {
+				if (value == _toggle_TWISTER)
+					return;
+
+				bool twToggled = toggle_TWISTER;
+
+				_toggle_TWISTER = ChangeManager.ProcessPropertyChanged (typeof(LoadTypeGUI), "toggle_TWISTER", _toggle_TWISTER, value);
+
+				if (!twToggled && toggle_TWISTER) { // enabling the ribbons
+					SR = new SugarRibbons (toggle_SUGAR_ONLY);
+					//Twister twisters = new Twister();
+					//twisters.CreateTwister();
+					SR.createSugarRibs (RibbonsThickness, toggle_SUGAR_ONLY, thickness_Little, thickness_BIG, 
+						thickness_bond_6_C1_C4, thickness_6_other, thickness_bond_5, lighter_color_factor_ring, lighter_color_factor_bond,
+						ColorationModeRing, ColorationModeBond, BondColor, RingColor, OxySphereSize, OxySphereColor);
+					toggle_NA_HIDE = !toggle_NA_HIDE;
+					toggle_SHOW_HB_NOT_SUGAR = false;
+					toggle_SHOW_HB_W_SR = false;
+					toggle_HIDE_HYDROGEN = false;
+
+					//Initialize bond & ring color to an "empty" color.
+					BondColorcheck.color = Color.white;
+					BondColor.color = Color.white;
+					RingColorcheck.color = Color.white;
+					RingColor.color = Color.white;
+					OxySphereColorCheck.color = Color.red;
+
+				} else if (twToggled && !toggle_TWISTER) { // destroying the ribbons
+					toggle_NA_HIDE = !toggle_NA_HIDE;
+					GameObject[] SugarRibbons;
+					SugarRibbons = GameObject.FindGameObjectsWithTag ("SugarRibbons_RING_BIG");
+					foreach (GameObject SugarRibbon in SugarRibbons)
+						Object.Destroy (SugarRibbon);
+					SugarRibbons = GameObject.FindGameObjectsWithTag ("SugarRibbons_RING_little");
+					foreach (GameObject SugarRibbon in SugarRibbons)
+						Object.Destroy (SugarRibbon);
+					SugarRibbons = GameObject.FindGameObjectsWithTag ("SugarRibbons_BOND");
+					foreach (GameObject SugarRibbon in SugarRibbons)
+						Object.Destroy (SugarRibbon);
+				}
+			}
+		}
+		private static bool _toggle_HIDE_HYDROGEN = false;
+		public static bool toggle_HIDE_HYDROGEN {
+			get { return _toggle_HIDE_HYDROGEN; }
+			set {
+				if (value == _toggle_HIDE_HYDROGEN)
+					return;
+
+				bool hydroToggled = toggle_HIDE_HYDROGEN;
+				_toggle_HIDE_HYDROGEN = ChangeManager.ProcessPropertyChanged (typeof(LoadTypeGUI), "toggle_HIDE_HYDROGEN", _toggle_HIDE_HYDROGEN, value);
+				if(!hydroToggled && toggle_HIDE_HYDROGEN)
+					showHydrogens(false);
+				else if (hydroToggled && !toggle_HIDE_HYDROGEN)
+					showHydrogens(true);
+			}
+		}
+		private static bool _toggle_SHOW_HB_W_SR = false;
+		public static bool toggle_SHOW_HB_W_SR {
+			get { return _toggle_SHOW_HB_W_SR; }
+			set {
+				if (value == toggle_SHOW_HB_W_SR)
+					return;
+
+				_toggle_SHOW_HB_W_SR = ChangeManager.ProcessPropertyChanged (typeof(LoadTypeGUI), "toggle_SHOW_HB_W_SR", _toggle_SHOW_HB_W_SR, value);
+
+				bool hb_w_sb_toggled = toggle_SHOW_HB_W_SR;
+				if(!hb_w_sb_toggled && toggle_SHOW_HB_W_SR)
+					show_HyperBalls_Sugar(false);
+				else if (hb_w_sb_toggled && !toggle_SHOW_HB_W_SR)
+					show_HyperBalls_Sugar(true);
+			}
+		}
+		private static bool _toggle_SHOW_HB_NOT_SUGAR = false;
+		public static bool toggle_SHOW_HB_NOT_SUGAR {
+			get { return _toggle_SHOW_HB_NOT_SUGAR; }
+			set {
+				if (toggle_SHOW_HB_NOT_SUGAR == value)
+					return;
+
+				bool hb_not_sugar_toggled = toggle_SHOW_HB_NOT_SUGAR;
+				_toggle_SHOW_HB_NOT_SUGAR = ChangeManager.ProcessPropertyChanged (typeof(LoadTypeGUI), "toggle_SHOW_HB_NOT_SUGAR", _toggle_SHOW_HB_NOT_SUGAR, value);
+
+				if(!hb_not_sugar_toggled && toggle_SHOW_HB_NOT_SUGAR)
+					Hide_No_Sugar_Hiperballs(false);
+				else if (hb_not_sugar_toggled && !toggle_SHOW_HB_NOT_SUGAR)
+					Hide_No_Sugar_Hiperballs(true);
+			}
+		}
+
 		/// <summary>
 		/// Sets the title of the current window.
 		/// The FlexibleSpace() function around the Label is here for centering.
@@ -237,21 +354,18 @@ namespace UI{
 			if (GUILayout.Button (new GUIContent ("Sphere", "Use triangulated spheres to represent atoms"))) {
 				ChangeRepresentation (UIData.AtomType.sphere);
 			}
-			GUILayout.EndHorizontal ();
-			
+			GUILayout.EndHorizontal ();			
 			
 			GUILayout.BeginHorizontal ();
 			if (GUILayout.Button (new GUIContent ("Hyperball", "Use the HyperBalls shader to render atoms"))) {
 				ChangeRepresentation (UIData.AtomType.hyperball);
-			}
-			
+			}			
 	
 			if (GUILayout.Button (new GUIContent ("Particle", "Use the ParticleBall shader to represent atoms"))) {
 				ChangeRepresentation (UIData.AtomType.particleball);
 			}						
 			GUILayout.EndHorizontal ();
-	
-			
+				
 			// Those hidden features aren't working at all
 /*			if (UIData.Instance.openAllMenu) { 
 				GUILayout.BeginHorizontal ();
@@ -349,110 +463,47 @@ namespace UI{
 		//Sugar Menu
 		public static void SugarM (int a){
 			showSugarChainMenu = SetTitleExit("Sugar");
-			bool ssToggled = toggle_RING_BLENDING;
 
 			/*************************************************/
+			// Luiz:
 			GUILayout.BeginHorizontal();
 			toggle_RING_BLENDING = UIData.Instance.hasMoleculeDisplay && GUILayout.Toggle(toggle_RING_BLENDING,
 				new GUIContent("Enable RingBlending", "enable RingBlending visualisation"));
-			
-			if(!ssToggled && toggle_RING_BLENDING) { // enabling the SugarBlending
-				ringblending = new RingBlending();
-				ringblending.CreateRingBlending();
-			}else {
-				if (ssToggled && !toggle_RING_BLENDING) { // destroying the SugarBlending
-					GameObject[] blendObjs = GameObject.FindGameObjectsWithTag("RingBlending");
-					foreach(GameObject blendobj in blendObjs)
-						GameObject.Destroy(blendobj);
-				}
-			}			
 			GUILayout.EndHorizontal();
 			/*************************************************/
 
 			//------- Twister
-			bool twToggled = toggle_TWISTER;
 			/*************************************************/
+			// Luiz:
 			GUILayout.BeginHorizontal();
 			toggle_TWISTER = UIData.Instance.hasMoleculeDisplay && GUILayout.Toggle(toggle_TWISTER,
-			                                                                  new GUIContent("Enable SugarRibbons", "Switch between all-atoms and SugarRibbons representation"));
-
-
-			if(!twToggled && toggle_TWISTER) { // enabling the ribbons
-				SR = new SugarRibbons(toggle_SUGAR_ONLY);
-				//Twister twisters = new Twister();
-				//twisters.CreateTwister();
-				SR.createSugarRibs(RibbonsThickness, toggle_SUGAR_ONLY, thickness_Little, thickness_BIG, 
-				                   thickness_bond_6_C1_C4, thickness_6_other, thickness_bond_5, lighter_color_factor_ring, lighter_color_factor_bond,
-				                   ColorationModeRing, ColorationModeBond, BondColor, RingColor, OxySphereSize,OxySphereColor);
-				toggle_NA_HIDE = !toggle_NA_HIDE;
-				toggle_SHOW_HB_NOT_SUGAR = false;
-				toggle_SHOW_HB_W_SR = false;
-				toggle_HIDE_HYDROGEN = false;
-
-				//Initialize bond & ring color to an "empty" color.
-				BondColorcheck.color=Color.white;
-				BondColor.color=Color.white;
-				RingColorcheck.color = Color.white;
-				RingColor.color = Color.white;
-				OxySphereColorCheck.color = Color.red;
-
-			} else if (twToggled && !toggle_TWISTER) { // destroying the ribbons
-					toggle_NA_HIDE = !toggle_NA_HIDE;
-					GameObject [] SugarRibbons;
-					SugarRibbons = GameObject.FindGameObjectsWithTag("SugarRibbons_RING_BIG");
-					foreach (GameObject SugarRibbon in SugarRibbons)
-						Object.Destroy(SugarRibbon);
-					SugarRibbons = GameObject.FindGameObjectsWithTag("SugarRibbons_RING_little");
-					foreach (GameObject SugarRibbon in SugarRibbons)
-						Object.Destroy(SugarRibbon);
-					SugarRibbons = GameObject.FindGameObjectsWithTag("SugarRibbons_BOND");
-					foreach (GameObject SugarRibbon in SugarRibbons)
-						Object.Destroy(SugarRibbon);
-				}
-					
+			                                                                  new GUIContent("Enable SugarRibbons", "Switch between all-atoms and SugarRibbons representation"));					
 			GUILayout.EndHorizontal();
 			/*************************************************/
+
 			/*************************************************/
+			// Luiz:
 			GUILayout.BeginHorizontal();
-			bool hydroToggled = toggle_HIDE_HYDROGEN;
 			toggle_HIDE_HYDROGEN = UIData.Instance.hasMoleculeDisplay && GUILayout.Toggle(toggle_HIDE_HYDROGEN,
 			                                                                     new GUIContent("Hide Hydrogens", "hide hydrogens atoms"));
-			if(!hydroToggled && toggle_HIDE_HYDROGEN)
-				showHydrogens(false);
-			else if (hydroToggled && !toggle_HIDE_HYDROGEN)
-				showHydrogens(true);
 			GUILayout.EndHorizontal();
 			/*************************************************/
+
 			GUILayout.BeginHorizontal();
 			GUILayout.Label(">> Hiding atoms");
 			GUILayout.EndHorizontal();
-			/*************************************************/
 
+			/*************************************************/
+			// Luiz:
 			GUILayout.BeginHorizontal();
-			bool hb_w_sb_toggled = toggle_SHOW_HB_W_SR;
 			toggle_SHOW_HB_W_SR = UIData.Instance.hasMoleculeDisplay && GUILayout.Toggle(toggle_SHOW_HB_W_SR,
 			                                                                     new GUIContent("Sugar", "Hide sugar atoms"));
 
-			bool hb_not_sugar_toggled = toggle_SHOW_HB_NOT_SUGAR;
 			toggle_SHOW_HB_NOT_SUGAR = UIData.Instance.hasMoleculeDisplay && GUILayout.Toggle(toggle_SHOW_HB_NOT_SUGAR,
 			                                                                    new GUIContent("Non Sugar", "Hide Non sugar Atoms"));
-
-
-
-
-			if(!hb_w_sb_toggled && toggle_SHOW_HB_W_SR)
-				show_HyperBalls_Sugar(false);
-			else if (hb_w_sb_toggled && !toggle_SHOW_HB_W_SR)
-				show_HyperBalls_Sugar(true);
-
-			if(!hb_not_sugar_toggled && toggle_SHOW_HB_NOT_SUGAR)
-				Hide_No_Sugar_Hiperballs(false);
-			else if (hb_not_sugar_toggled && !toggle_SHOW_HB_NOT_SUGAR)
-				Hide_No_Sugar_Hiperballs(true);
-			
-			GUILayout.EndHorizontal();
-			
+			GUILayout.EndHorizontal();			
 			/*************************************************/
+
 			/*************************************************/
 			GUILayout.BeginHorizontal();
 			if(GUILayout.Button(new GUIContent("Tune Menu"))) {
@@ -2839,21 +2890,21 @@ namespace UI{
 		/// </param>
 		public static void SecStructMenu(int a) {
 			showSecStructMenu = SetTitleExit("Secondary Structures");
-			bool ssToggled = toggle_SEC_STRUCT;
+			bool ssToggled = toggle_SUGAR_ONLY;
 
 			GUILayout.BeginHorizontal();
 			GUILayout.Box("Secondary structures");
 			GUILayout.EndHorizontal();
 			
 			GUILayout.BeginHorizontal();
-			toggle_SEC_STRUCT = UIData.Instance.hasMoleculeDisplay && GUILayout.Toggle(toggle_SEC_STRUCT,
+			toggle_SUGAR_ONLY = UIData.Instance.hasMoleculeDisplay && GUILayout.Toggle(toggle_SUGAR_ONLY,
 				new GUIContent("Enable Secondary structures", "Switch between all-atoms and secondary structures representation"));
-			if(!ssToggled && toggle_SEC_STRUCT) { // enabling the ribbons
+			if(!ssToggled && toggle_SUGAR_ONLY) { // enabling the ribbons
 				Ribbons ribbons = new Ribbons();
 				ribbons.CreateRibbons();
 				toggle_NA_HIDE = !toggle_NA_HIDE;
 			} else {
-				if (ssToggled && !toggle_SEC_STRUCT) { // destroying the ribbons
+				if (ssToggled && !toggle_SUGAR_ONLY) { // destroying the ribbons
 					toggle_NA_HIDE = !toggle_NA_HIDE;
 					GameObject[] Objs = Object.FindObjectsOfType(typeof(GameObject)) as GameObject[];;
 					foreach(GameObject ribObj in Objs){
@@ -2992,7 +3043,7 @@ namespace UI{
 			}
 			
 			GUILayout.BeginHorizontal();
-			GUI.enabled = toggle_SEC_STRUCT;
+			GUI.enabled = toggle_SUGAR_ONLY;
 			if(GUILayout.Button(new GUIContent("Apply changes"))) {
 				// Destroying the ribbons
 				toggle_NA_HIDE = !toggle_NA_HIDE;

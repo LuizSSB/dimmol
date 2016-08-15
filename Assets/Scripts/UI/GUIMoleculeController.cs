@@ -107,12 +107,17 @@ namespace UI {
 //		public static bool showChainsMenu = false;
 		public static bool showPanelsMenu = false;
 		public static bool showSugarChainMenu = false; // T.T Sugar menu
-		public static bool showSugarRibbonsTuneMenu = false;
+//		public static bool showSugarRibbonsTuneMenu = false;
 		public static bool showColorTuneMenu = false;
 		public static bool showVRPNMenu = false;
 		public static bool showMDDriverMenu = false;
 
 		// Luiz:
+		private static bool _showSugarRibbonsTuneMenu = false;
+		public static bool showSugarRibbonsTuneMenu {
+			get { return _showSugarRibbonsTuneMenu; }
+			set { _showSugarRibbonsTuneMenu = ChangeManager.ProcessPropertyChanged (typeof(GUIMoleculeController), "showsSugarRibbonsTuneMenu", _showSugarRibbonsTuneMenu, value); }
+		}
 		private static bool _showSetAtomScales = false;
 		public static bool showSetAtomScales {
 			get { return _showSetAtomScales; }
@@ -251,25 +256,55 @@ namespace UI {
 		protected static bool toggle_VE2_BLUR2 = false;
 		protected static bool toggle_VE2_DREAM = false;
 
+//		protected static bool toggle_DISTANCE_CUEING = false;
+//		public static bool toggle_SEC_STRUCT = false;
+//		public static bool toggle_RING_BLENDING=false; //T.T RingBlending visu - public for remove visu when CLEAR (reset to false)
+//		public static bool toggle_SUGAR_ONLY=true; 
+//		public static bool toggle_TWISTER=false;
+//		public static bool toggle_HIDE_HYDROGEN=false;
+//		public static bool toggle_SHOW_HB_W_SR=false;
+//		public static bool toggle_SHOW_HB_NOT_SUGAR=false;
+//		public static bool oxyToggled = false;
+//		public static bool toggle_OXYGEN=false;
+//		protected static bool distanceCueingEnabled = false;
+//		protected static bool cutPlaneIsDraggable = true;
+
 		// Luiz:
 		private static bool _toggle_DISTANCE_CUEING = false;
 		public static bool toggle_DISTANCE_CUEING {
 			get { return _toggle_DISTANCE_CUEING; }
 			set { _toggle_DISTANCE_CUEING = ProcessPropertyChanged ("toggle_DISTANCE_CUEING", _toggle_DISTANCE_CUEING, value); }
 		}
-
-//		protected static bool toggle_DISTANCE_CUEING = false;
-		public static bool toggle_SEC_STRUCT = false;
-		public static bool toggle_RING_BLENDING=false; //T.T RingBlending visu - public for remove visu when CLEAR (reset to false)
-		public static bool toggle_SUGAR_ONLY=true; 
-		public static bool toggle_TWISTER=false;
-		public static bool toggle_HIDE_HYDROGEN=false;
-		public static bool toggle_SHOW_HB_W_SR=false;
-		public static bool toggle_SHOW_HB_NOT_SUGAR=false;
-		public static bool oxyToggled = false;
-		public static bool toggle_OXYGEN=false;
-		protected static bool distanceCueingEnabled = false;
-		protected static bool cutPlaneIsDraggable = true;
+		private static bool _toggle_SEC_STRUCT = false;
+		public static bool toggle_SEC_STRUCT {
+			get { return _toggle_SEC_STRUCT; }
+			set { _toggle_SEC_STRUCT = ChangeManager.ProcessPropertyChanged (typeof(GUIMoleculeController), "toggle_SEC_STRUCT", _toggle_SEC_STRUCT, value); }
+		}
+		private static bool _toggle_SUGAR_ONLY = false;
+		public static bool toggle_SUGAR_ONLY {
+			get { return _toggle_SUGAR_ONLY; }
+			set { _toggle_SUGAR_ONLY = ChangeManager.ProcessPropertyChanged (typeof(GUIMoleculeController), "toggle_SUGAR_ONLY", _toggle_SUGAR_ONLY, value); }
+		}
+		private static bool _oxyToggled = false;
+		public static bool oxyToggled {
+			get { return _oxyToggled; }
+			set { _oxyToggled = ChangeManager.ProcessPropertyChanged (typeof(GUIMoleculeController), "oxyToggled", _oxyToggled, value); }
+		}
+		private static bool _toggle_OXYGEN = false;
+		public static bool toggle_OXYGEN {
+			get { return _toggle_OXYGEN; }
+			set { _toggle_OXYGEN = ChangeManager.ProcessPropertyChanged (typeof(GUIMoleculeController), "toggle_OXYGEN", _toggle_OXYGEN, value); }
+		}
+		private static bool _distanceCueingEnabled = false;
+		public static bool distanceCueingEnabled {
+			get { return _distanceCueingEnabled; }
+			set { _distanceCueingEnabled = ChangeManager.ProcessPropertyChanged (typeof(GUIMoleculeController), "distanceCueingEnabled", _distanceCueingEnabled, value);  }
+		}
+		private static bool _cutPlaneIsDraggable = true;
+		public static bool cutPlaneIsDraggable {
+			get { return _cutPlaneIsDraggable; }
+			set { _cutPlaneIsDraggable = ChangeManager.ProcessPropertyChanged (typeof(GUIMoleculeController), "cutPlaneIsDraggable", _cutPlaneIsDraggable, value); }
+		}
 		
 		private GUIContent[] listatom;
 		private GUIContent[] listbond;
@@ -722,7 +757,6 @@ namespace UI {
 			if (showSugarRibbonsTuneMenu)
 				Rectangles.SugarRibbonsTuneRect = GUI.Window(4554, Rectangles.SugarRibbonsTuneRect, LoadTypeGUI.SugarRibbonsTune, emptyContent);
 		}
-
 
 		public void setColorTuneMenu(){
 			if (showColorTuneMenu)

@@ -1147,6 +1147,8 @@ public class Molecule3D:MonoBehaviour {
 	}
 	private void HandleMethodInvoked(string typeName, string methodName, object param)
 	{
+		Debug.Log ("### Method " + typeName + "." + methodName + "(" + param + ")");
+
 		if (UnityClusterPackage.NodeInformation.IsSlave) {
 			var type = Type.GetType (typeName);
 			var method = type.GetMethod (methodName);
@@ -1204,6 +1206,7 @@ public class Molecule3D:MonoBehaviour {
 				HandlerName = "Handle" + valueType.Name + handlerSuffix
 			};
 		} else {
+			Debug.Log ("forValue " + JsonUtility.ToJson(forValue));
 			return new RPCData {
 				Data = JsonUtility.ToJson(forValue),
 				HandlerName = "HandleObject" + handlerSuffix

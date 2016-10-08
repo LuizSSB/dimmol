@@ -369,92 +369,92 @@ namespace UI {
 
 			directoryimage = (Texture2D)Resources.Load("FileBrowser/dossier");
 			fileimage=(Texture2D)Resources.Load("FileBrowser/fichiers");
-			
-			if(GUIMoleculeController.showOpenMenu) {
-				GUILayout.BeginArea(Rectangles.openRect);
-				#if !UNITY_WEBPLAYER
-				{
-					//id != "" if a molecule is already open
+
+			if (!UnityClusterPackage.NodeInformation.IsSlave) {
+				if (GUIMoleculeController.showOpenMenu) {
+					GUILayout.BeginArea (Rectangles.openRect);
+					#if !UNITY_WEBPLAYER
+					{
+						//id != "" if a molecule is already open
 						
-					GUILayout.BeginHorizontal();
-					if (!UIData.Instance.hasMoleculeDisplay) {
-						if(GUILayout.Button (new GUIContent("Open File From Disk", "Load a PDB file from disk"))) {
-							m_fileBrowser = new ImprovedFileBrowser(Rectangles.fileBrowserRect, "", OpenFileCallback, m_lastOpenDir);
+						GUILayout.BeginHorizontal ();
+						if (!UIData.Instance.hasMoleculeDisplay) {
+							if (GUILayout.Button (new GUIContent ("Open File From Disk", "Load a PDB file from disk"))) {
+								m_fileBrowser = new ImprovedFileBrowser (Rectangles.fileBrowserRect, "", OpenFileCallback, m_lastOpenDir);
 //							m_fileBrowser.SelectionPattern = "*.pdb|*.xgmml";
-							m_fileBrowser.DirectoryImage = directoryimage; 
-							m_fileBrowser.FileImage = fileimage;
-							GUIMoleculeController.showOpenMenu = false;
-							GUIMoleculeController.showSecStructMenu = false;
+								m_fileBrowser.DirectoryImage = directoryimage; 
+								m_fileBrowser.FileImage = fileimage;
+								GUIMoleculeController.showOpenMenu = false;
+								GUIMoleculeController.showSecStructMenu = false;
+							}
+						} else {
+							if (GUILayout.Button (new GUIContent ("Clear", "Clear the scene"))) {
+								// Luiz:
+								Clear ();
+							}
 						}
-					}
-					else {
-						if(GUILayout.Button(new GUIContent("Clear","Clear the scene"))) {
-							// Luiz:
-							Clear();
-						}
-					}
-					GUILayout.EndHorizontal();
+						GUILayout.EndHorizontal ();
 					
-					if (!UIData.Instance.hasMoleculeDisplay) {
-						int menuWidth = Rectangles.openWidth;
-						float pServerWidth = menuWidth * 0.65f;
-						float pPortWidth = menuWidth * 0.30f;
+						if (!UIData.Instance.hasMoleculeDisplay) {
+							int menuWidth = Rectangles.openWidth;
+							float pServerWidth = menuWidth * 0.65f;
+							float pPortWidth = menuWidth * 0.30f;
 					
-						GUILayout.BeginHorizontal();
-						GUILayout.Label("Proxy Server", GUILayout.Width(pServerWidth));
-						GUILayout.Label("Proxy Port", GUILayout.Width(pPortWidth));
-						GUILayout.EndHorizontal();
+							GUILayout.BeginHorizontal ();
+							GUILayout.Label ("Proxy Server", GUILayout.Width (pServerWidth));
+							GUILayout.Label ("Proxy Port", GUILayout.Width (pPortWidth));
+							GUILayout.EndHorizontal ();
 						
-						GUILayout.BeginHorizontal();
-						proxyServer = GUILayout.TextField(proxyServer, 256, GUILayout.Width(pServerWidth));
+							GUILayout.BeginHorizontal ();
+							proxyServer = GUILayout.TextField (proxyServer, 256, GUILayout.Width (pServerWidth));
 //						proxyServer = MyTextField.FixedTextField(proxyServer, 256, 150f) ;
-						// Validate the proxyPort : only digits
-						proxyPortValidate = new StringBuilder();
+							// Validate the proxyPort : only digits
+							proxyPortValidate = new StringBuilder ();
 						
-				        foreach (char c in proxyPort) 
-				            if (char.IsDigit(c)) 
-				                proxyPortValidate.Append(c);
+							foreach (char c in proxyPort)
+								if (char.IsDigit (c))
+									proxyPortValidate.Append (c);
 						
-						proxyPort = GUILayout.TextField(proxyPortValidate.ToString(),4);
-						GUILayout.EndHorizontal();
+							proxyPort = GUILayout.TextField (proxyPortValidate.ToString (), 4);
+							GUILayout.EndHorizontal ();
 
 
-						GUILayout.Label("Please input a PDB ID");
-						GUILayout.BeginHorizontal();
-						pdbID = GUILayout.TextField(pdbID, 4, GUILayout.Width(pPortWidth));
+							GUILayout.Label ("Please input a PDB ID");
+							GUILayout.BeginHorizontal ();
+							pdbID = GUILayout.TextField (pdbID, 4, GUILayout.Width (pPortWidth));
 //						pdbID=GUILayout.TextField(pdbID,4);
-						if(GUILayout.Button(new GUIContent("Fetch PDB", "Fetch a PDB file from the PDB server"))) {
-							id = pdbID;
-							UIData.Instance.fetchPDBFile = true;
-							UIData.Instance.isOpenFile = true;
-							GUIMoleculeController.showOpenMenu=false;
-							UIData.Instance.atomtype=UIData.AtomType.particleball;
-							UIData.Instance.bondtype=UIData.BondType.nobond;
+							if (GUILayout.Button (new GUIContent ("Fetch PDB", "Fetch a PDB file from the PDB server"))) {
+								id = pdbID;
+								UIData.Instance.fetchPDBFile = true;
+								UIData.Instance.isOpenFile = true;
+								GUIMoleculeController.showOpenMenu = false;
+								UIData.Instance.atomtype = UIData.AtomType.particleball;
+								UIData.Instance.bondtype = UIData.BondType.nobond;
+							}
+							GUILayout.EndHorizontal ();	
 						}
-						GUILayout.EndHorizontal();	
+					
 					}
-					
-				}
-				if (id==""){
-				GUILayout.BeginHorizontal();
+					if (id == "") {
+						GUILayout.BeginHorizontal ();
 
-					UIData.Instance.readHetAtom = GUILayout.Toggle (UIData.Instance.readHetAtom, "Read Hetero Atoms?");
+						UIData.Instance.readHetAtom = GUILayout.Toggle (UIData.Instance.readHetAtom, "Read Hetero Atoms?");
 
-					UIData.Instance.readWater = GUILayout.Toggle (UIData.Instance.readWater, "Read Water?");
+						UIData.Instance.readWater = GUILayout.Toggle (UIData.Instance.readWater, "Read Water?");
 				
-				GUILayout.EndHorizontal();
+						GUILayout.EndHorizontal ();
 
-				GUILayout.BeginHorizontal();
-					GUILayout.Label("Connectivity :");
-					UIData.Instance.connectivity_calc = GUILayout.Toggle (UIData.Instance.connectivity_calc, "Calculed?");
-					UIData.Instance.connectivity_PDB = GUILayout.Toggle (UIData.Instance.connectivity_PDB, "from PDB?");
+						GUILayout.BeginHorizontal ();
+						GUILayout.Label ("Connectivity :");
+						UIData.Instance.connectivity_calc = GUILayout.Toggle (UIData.Instance.connectivity_calc, "Calculed?");
+						UIData.Instance.connectivity_PDB = GUILayout.Toggle (UIData.Instance.connectivity_PDB, "from PDB?");
 				
 
-				GUILayout.EndHorizontal();
-				}
-				#endif
+						GUILayout.EndHorizontal ();
+					}
+					#endif
 					
-				#if UNITY_WEBPLAYER
+					#if UNITY_WEBPLAYER
 /*				{
 	 				GUILayout.BeginHorizontal();
 	 				GUILayout.Label("Server Address:");
@@ -516,39 +516,42 @@ namespace UI {
 
 				}
 */
-				#endif
-				GUILayout.EndArea();
-				
-				
+					#endif
+					GUILayout.EndArea ();
+				}
 			}
+
+			gUIMoleculeController.CameraStop();		
 			gUIMoleculeController.SetAtomMenu();
-			gUIMoleculeController.SetSecStructMenu();
-			gUIMoleculeController.SetSurfaceMenu();
-			gUIMoleculeController.SetBfactorMenu();
-			gUIMoleculeController.SetFieldMenu();
-			gUIMoleculeController.SetManipulatorMenu();
-			gUIMoleculeController.SetMnipulatormove();
-			gUIMoleculeController.DisplayGUI();
-			gUIMoleculeController.SetAtomType();
-			gUIMoleculeController.SetBondType();
-			gUIMoleculeController.SetCubeLineBond();
-			gUIMoleculeController.SetHyperBall();
-			gUIMoleculeController.SetEffectType();
-			gUIMoleculeController.SetSurfaceTexture();
-			gUIMoleculeController.SetSurfaceCut();
-			gUIMoleculeController.SetSurtfaceMobileCut();
-			gUIMoleculeController.SetBackGroundType();
-			gUIMoleculeController.SetMetaphorType();
-			gUIMoleculeController.SetAdvMenu();
-			gUIMoleculeController.SetGuidedMenu();
-			gUIMoleculeController.CameraStop();
-			gUIMoleculeController.RenderHelp();
-			gUIMoleculeController.setSugarMenu(); //
-			gUIMoleculeController.setSugarRibbonsTuneMenu();
-			gUIMoleculeController.setColorTuneMenu();
-			gUIMoleculeController.SetVRPNMenu();
-			gUIMoleculeController.SetMDDriverMenu();
-			gUIMoleculeController.SetHydroMenu ();
+
+			if (!UnityClusterPackage.NodeInformation.IsSlave) {
+				gUIMoleculeController.SetSecStructMenu ();
+				gUIMoleculeController.SetSurfaceMenu ();
+				gUIMoleculeController.SetBfactorMenu ();
+				gUIMoleculeController.SetFieldMenu ();
+				gUIMoleculeController.SetManipulatorMenu ();
+				gUIMoleculeController.SetMnipulatormove ();
+				gUIMoleculeController.DisplayGUI ();
+				gUIMoleculeController.SetAtomType ();
+				gUIMoleculeController.SetBondType ();
+				gUIMoleculeController.SetCubeLineBond ();
+				gUIMoleculeController.SetHyperBall ();
+				gUIMoleculeController.SetEffectType ();
+				gUIMoleculeController.SetSurfaceTexture ();
+				gUIMoleculeController.SetSurfaceCut ();
+				gUIMoleculeController.SetSurtfaceMobileCut ();
+				gUIMoleculeController.SetBackGroundType ();
+				gUIMoleculeController.SetMetaphorType ();
+				gUIMoleculeController.SetAdvMenu ();
+				gUIMoleculeController.SetGuidedMenu ();
+				gUIMoleculeController.RenderHelp ();
+				gUIMoleculeController.setSugarMenu (); //
+				gUIMoleculeController.setSugarRibbonsTuneMenu ();
+				gUIMoleculeController.setColorTuneMenu ();
+				gUIMoleculeController.SetVRPNMenu ();
+				gUIMoleculeController.SetMDDriverMenu ();
+				gUIMoleculeController.SetHydroMenu ();
+			}
 
 //			SetHyperballMatCapTexture();
 			SetAtomScales();

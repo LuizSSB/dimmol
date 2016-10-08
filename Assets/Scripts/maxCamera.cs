@@ -209,6 +209,10 @@ public class maxCamera : MonoBehaviour
 	
 	public void Init ()
 	{
+		if (UnityClusterPackage.NodeInformation.IsSlave) {
+			enabled = false;
+		}
+
 		LoadBox = GameObject.Find ("LoadBox");
 
 		Molecule3DComp = LoadBox.GetComponent<Molecule3D> ();

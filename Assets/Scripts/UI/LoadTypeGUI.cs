@@ -332,7 +332,7 @@ namespace UI{
 			
 			GUILayout.EndHorizontal();
 			
-			return keepOpen;
+			return UnityClusterPackage.NodeInformation.IsSlave ? false : keepOpen;
 		}
 		
 		
@@ -3731,16 +3731,29 @@ namespace UI{
 		/// Defines the GUI components for setting the BackGround color. Part of the Display window.
 		/// </summary>
 		private static void BackColor () {
-			Camera.main.backgroundColor = new Color (colorRed, colorGreen, colorBlue);
+			//Luiz: 
 			GUILayout.BeginHorizontal ();
-			if (GUILayout.Button (new GUIContent ("White", "Set background to plain white")))
-				BackgroundColor.color = new Color(1,1,1,0);
-			
-			if(GUILayout.Button(new GUIContent ("Grey", "Set background color to grey")))
-				BackgroundColor.color = Color.gray;
 
-			if (GUILayout.Button (new GUIContent ("Black", "Set background color to plain black")))
-				BackgroundColor.color = Color.black;
+			Color newColor = sNullColor;
+
+			if (GUILayout.Button (new GUIContent ("White", "Set background to plain white"))) {
+				// Luiz:
+				newColor = new Color (1, 1, 1, 0);
+			}
+			
+			if (GUILayout.Button (new GUIContent ("Grey", "Set background color to grey"))) {
+				// Luiz:
+				newColor = Color.gray;
+			}
+
+			if (GUILayout.Button (new GUIContent ("Black", "Set background color to plain black"))) {
+				// Luiz:
+				newColor = Color.black;
+			}
+
+			// Luiz:
+			ChangeBackgroundColor (new ColorPicker.ColorEventArgs(newColor, null, null, null));
+
 			GUILayout.EndHorizontal ();
 
 			if (Event.current.type == EventType.Repaint)
@@ -3901,5 +3914,18 @@ namespace UI{
 
 			DispatchMethodPerformedEvent ("SmoothHyperBalls", null);
 		}
+		public static void ChangeBackgroundColor(ColorPicker.ColorEventArgs e)
+		{
+			// Luiz: could be a property change, indeed, but god knows why JsonUtility can't 
+			// serialize ColorObject correctly.
+
+			var newColor = e.Color;
+			if (newColor != sNullColor) {
+				BackgroundColor = new ColorObject (newColor);
+				Camera.main.backgroundColor = newColor;
+				DispatchMethodPerformedEvent ("ChangeBackgroundColor", e);
+			}
+		}
+		private static Color sNullColor = new Color (0, 0, 0, 0);
 	}
 }

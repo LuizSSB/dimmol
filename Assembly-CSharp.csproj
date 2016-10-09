@@ -59,6 +59,12 @@
      <Compile Include="Assets\Scripts\Config\FunctionConfig.cs" />
      <Compile Include="Assets\Scripts\Convert\TypeConvert.cs" />
      <Compile Include="Assets\Scripts\DisplayControl\DMatrix.cs" />
+     <Compile Include="Assets\Scripts\GamessOutput\Atom.cs" />
+     <Compile Include="Assets\Scripts\GamessOutput\AtomParser.cs" />
+     <Compile Include="Assets\Scripts\GamessOutput\IParser.cs" />
+     <Compile Include="Assets\Scripts\GamessOutput\PDBMaker.cs" />
+     <Compile Include="Assets\Scripts\GamessOutput\ParseUtils.cs" />
+     <Compile Include="Assets\Scripts\GamessOutput\SearchingParser.cs" />
      <Compile Include="Assets\Scripts\GuidedNavigation\FortuneVoronoi\AssemblyInfo.cs" />
      <Compile Include="Assets\Scripts\GuidedNavigation\FortuneVoronoi\FortuneVoronoi.cs" />
      <Compile Include="Assets\Scripts\GuidedNavigation\FortuneVoronoi\HashSet.cs" />

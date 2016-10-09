@@ -173,6 +173,19 @@ namespace UI{
 		public static bool originThere = true;
 
 		// Luiz:
+		public static int _CurrentStateIdx = 0;
+		public static int CurrentStateIdx {
+			get {
+				return _CurrentStateIdx;
+			}
+			set {
+				if(value != _CurrentStateIdx) {
+					if (value < 0 || value > GUIDisplay.StateFiles.Length - 1)
+						throw new System.ArgumentOutOfRangeException("CurrentStateIdx out of bounds");
+					_CurrentStateIdx = value;
+				}
+			}
+		}
 		private static bool _toggle_RING_BLENDING = false;
 		public static bool toggle_RING_BLENDING {
 			get { return _toggle_RING_BLENDING; }
@@ -3839,6 +3852,20 @@ namespace UI{
 				fixeCam.downzDeg ();
 
 			GUILayout.EndHorizontal ();
+
+			if (GUIDisplay.StateFiles != null) {
+				CurrentStateIdx = (int) System.Math.Round(LabelSlider(
+					CurrentStateIdx,
+					0f,
+					GUIDisplay.StateFiles.Length,
+					"State: " + CurrentStateIdx + " / " + GUIDisplay.StateFiles.Length,
+					"State of molecule across time",
+					true,
+					(int)(0.9f * Rectangles.manipulatorWidth),
+					100,
+					true
+				));
+			}
 			
 			if (Event.current.type == EventType.Repaint)
 				MoleculeModel.newtooltip = GUI.tooltip;

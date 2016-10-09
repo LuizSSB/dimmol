@@ -95,6 +95,10 @@ namespace UI {
 	public class GUIDisplay	{
 		// Luiz:
 		public const string DefaultTextureLocation = "lit_spheres/";
+		public static string[] StateFiles {
+			get;
+			private set;
+		}
 
 		public static float guiScale = 1.0f;
 		public static float oldGuiScale = guiScale;
@@ -322,6 +326,16 @@ namespace UI {
 		void OnLevelWasLoaded () {
 		    Debug.Log ("If you don't see me, Uniteh brOke!");
 		}
+
+		public void OpenGamessOutputCallback(string path) {
+			m_fileBrowser = null;
+			if(path == null)
+				return;
+
+			var states = GamessOutput.ParseUtils.ExtractStates(path);
+			StateFiles = GamessOutput.ParseUtils.SaveStatesAsPDBs(states, Application.persistentDataPath);
+			OpenFileCallback(StateFiles[0]);
+		}
 		
 		public void OpenFileCallback(string path) {
 			m_fileBrowser = null;
@@ -379,6 +393,18 @@ namespace UI {
 						
 						GUILayout.BeginHorizontal ();
 						if (!UIData.Instance.hasMoleculeDisplay) {
+							// Luiz:
+							if(GUILayout.Button(new GUIContent("Open GAMESS optimization output", "Load a GAMESS optimization output file from disk"))) {
+								m_fileBrowser = new ImprovedFileBrowser(Rectangles.fileBrowserRect, "", OpenGamessOutputCallback, m_lastOpenDir);
+								//							m_fileBrowser.SelectionPattern = "*.pdb|*.xgmml";
+								m_fileBrowser.DirectoryImage = directoryimage; 
+								m_fileBrowser.FileImage = fileimage;
+								GUIMoleculeController.showOpenMenu = false;
+								GUIMoleculeController.showSecStructMenu = false;
+							}
+							GUILayout.EndHorizontal();
+							GUILayout.BeginHorizontal();
+
 							if (GUILayout.Button (new GUIContent ("Open File From Disk", "Load a PDB file from disk"))) {
 								m_fileBrowser = new ImprovedFileBrowser (Rectangles.fileBrowserRect, "", OpenFileCallback, m_lastOpenDir);
 //							m_fileBrowser.SelectionPattern = "*.pdb|*.xgmml";
@@ -1451,6 +1477,7 @@ namespace UI {
 		// Luiz:
 		public event System.EventHandler Cleared;
 		public void Clear() {
+			StateFiles = null;
 			id="";
 			UIData.Instance.isclear = true;
 			GUIMoleculeController.pdbGen = false;

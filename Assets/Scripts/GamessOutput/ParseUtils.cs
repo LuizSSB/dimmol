@@ -6,7 +6,7 @@ namespace GamessOutput
 {
 	public class ParseUtils
 	{
-		public static List<List<Atom>> ExtractStates(string fromOutputFilePath)
+		public static List<OutputState> ExtractStates(string fromOutputFilePath)
 		{
 			IParser parser = new SearchingParser();
 			using (var reader = File.OpenText(fromOutputFilePath))
@@ -21,7 +21,7 @@ namespace GamessOutput
 			return parser.AtomsStates;
 		}
 
-		public static string[] SaveStatesAsPDBs(List<List<Atom>> states, string toFolder)
+		public static string[] SaveStatesAsPDBs(List<OutputState> states, string toFolder)
 		{
 			int stateIdx = 0;
 			var pdbsPaths = new string[states.Count];
@@ -37,6 +37,50 @@ namespace GamessOutput
 			}
 
 			return pdbsPaths;
+		}
+
+		public static OutputState ExtractState(string pdbPath) {
+			var state = new OutputState();
+			using (var reader = File.OpenText(pdbPath))
+			{
+				string line;
+				while ((line = reader.ReadLine()) != null)
+				{
+					if(line.StartsWith("ATOM")) {
+						state.Atoms.Add(new Atom {
+							Id = line.Substring(13, 4).Trim(),
+							X = line.Substring(30, 8).Trim(),
+							Y = line.Substring(38, 8).Trim(),
+							Z = line.Substring(46, 8).Trim()
+						});
+					}
+					else if (line.StartsWith("TITLE")) {
+						state.Energy = float.Parse(line.Substring(line.IndexOf("energy=") + "energy=".Length));
+					}
+				}
+			}
+
+			return state;
+		}
+
+		public static string SerializeState(Atom[] state) {
+			var serialized = new System.Text.StringBuilder("[");
+			foreach(var atom in state) {
+				serialized.Append(UnityEngine.JsonUtility.ToJson(atom) + ",");
+			}
+			serialized.Append("]");
+			return serialized.ToString();
+		}
+
+		public static Atom[] DeserializeState(string serializedState) {
+			var atoms = serializedState.Trim('[', ']').Replace("},", "};").Split(';');
+			var atomsArray = new Atom[atoms.Length - 1];
+			var idxAtom = 0;
+			foreach(var atom in atoms) {
+				if(atom.Trim().Length > 0)
+				atomsArray[idxAtom++] = UnityEngine.JsonUtility.FromJson<Atom>(atom);
+			}
+			return atomsArray;
 		}
 	}
 }

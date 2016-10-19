@@ -258,8 +258,8 @@ using Molecule.Model;
 			for (int j=0; j<cycles[i].Count; j++){
 				verticesSM.Add(CycleAtomToVector3(i,j));
 
-				if (UI.GUIDisplay.colorByResiduesDict.ContainsKey(resname))
-					colorsSM.Add(UI.GUIDisplay.colorByResiduesDict[resname]);
+				if (UI.GUIDisplay.Instance.colorByResiduesDict.ContainsKey(resname))
+					colorsSM.Add(UI.GUIDisplay.Instance.colorByResiduesDict[resname]);
 				else
 					colorsSM.Add(new Color(0.7f,0.7f,0.7f,0.5f));
 			}
@@ -413,13 +413,13 @@ using Molecule.Model;
 			verticesSM = makeFlatVertex(verticesSM);
 			for (int j=0; j<verticesSM.Count; j++){
 				if (COLOR_MODE_RING == SUGAR){
-					if (UI.GUIDisplay.colorByResiduesDict.ContainsKey(resname))
-						colorsSM.Add(lightColor(UI.GUIDisplay.colorByResiduesDict[resname], LIGHTER_COLOR_FACTOR_RING));
+					if (UI.GUIDisplay.Instance.colorByResiduesDict.ContainsKey(resname))
+						colorsSM.Add(lightColor(UI.GUIDisplay.Instance.colorByResiduesDict[resname], LIGHTER_COLOR_FACTOR_RING));
 					else
 						colorsSM.Add(lightColor(new Color(0.7f,0.7f,0.7f,0.5f), LIGHTER_COLOR_FACTOR_RING));
 				}else if (COLOR_MODE_RING == CHAIN){
-					if (UI.GUIDisplay.ChainColorDict.ContainsKey(chain))
-						colorsSM.Add(lightColor(UI.GUIDisplay.ChainColorDict[chain], LIGHTER_COLOR_FACTOR_RING));
+					if (UI.GUIDisplay.Instance.ChainColorDict.ContainsKey(chain))
+						colorsSM.Add(lightColor(UI.GUIDisplay.Instance.ChainColorDict[chain], LIGHTER_COLOR_FACTOR_RING));
 					else
 						colorsSM.Add(lightColor(new Color(0.7f,0.7f,0.7f,0.5f), LIGHTER_COLOR_FACTOR_RING));
 				}else if (COLOR_MODE_RING == PICKER){
@@ -490,8 +490,8 @@ using Molecule.Model;
 
 		//COLORS SET
 		for (int j=0; j<centralMesh.vertices.Length; j++){
-			if (UI.GUIDisplay.colorByResiduesDict.ContainsKey(resname))
-				colors.Add(UI.GUIDisplay.colorByResiduesDict[resname]);
+			if (UI.GUIDisplay.Instance.colorByResiduesDict.ContainsKey(resname))
+				colors.Add(UI.GUIDisplay.Instance.colorByResiduesDict[resname]);
 			else
 				colors.Add(new Color(0.7f,0.7f,0.7f,0.5f));
 		}
@@ -615,11 +615,11 @@ using Molecule.Model;
 
 				if (COLOR_MODE_BOND == SUGAR){
 
-					if (UI.GUIDisplay.colorByResiduesDict.ContainsKey(resname1)){
-						colorsUP.Add(lightColor(UI.GUIDisplay.colorByResiduesDict[resname1], LIGHTER_COLOR_FACTOR_BOND));
-						colorsDown.Add(lightColor(UI.GUIDisplay.colorByResiduesDict[resname1], LIGHTER_COLOR_FACTOR_BOND));
-						colorsUP.Add(lightColor(UI.GUIDisplay.colorByResiduesDict[resname1], LIGHTER_COLOR_FACTOR_BOND));
-						colorsDown.Add(lightColor(UI.GUIDisplay.colorByResiduesDict[resname1], LIGHTER_COLOR_FACTOR_BOND));
+					if (UI.GUIDisplay.Instance.colorByResiduesDict.ContainsKey(resname1)){
+						colorsUP.Add(lightColor(UI.GUIDisplay.Instance.colorByResiduesDict[resname1], LIGHTER_COLOR_FACTOR_BOND));
+						colorsDown.Add(lightColor(UI.GUIDisplay.Instance.colorByResiduesDict[resname1], LIGHTER_COLOR_FACTOR_BOND));
+						colorsUP.Add(lightColor(UI.GUIDisplay.Instance.colorByResiduesDict[resname1], LIGHTER_COLOR_FACTOR_BOND));
+						colorsDown.Add(lightColor(UI.GUIDisplay.Instance.colorByResiduesDict[resname1], LIGHTER_COLOR_FACTOR_BOND));
 					}else{
 						colorsUP.Add(lightColor(new Color(0.7f,0.7f,0.7f,0.5f), LIGHTER_COLOR_FACTOR_BOND));
 						colorsDown.Add(lightColor(new Color(0.7f,0.7f,0.7f,0.5f), LIGHTER_COLOR_FACTOR_BOND));
@@ -627,11 +627,11 @@ using Molecule.Model;
 						colorsDown.Add(lightColor(new Color(0.7f,0.7f,0.7f,0.5f), LIGHTER_COLOR_FACTOR_BOND));
 					}
 
-					if (UI.GUIDisplay.colorByResiduesDict.ContainsKey(resname2)){
-						colorsUP.Add(lightColor(UI.GUIDisplay.colorByResiduesDict[resname2], LIGHTER_COLOR_FACTOR_BOND));
-						colorsDown.Add(lightColor(UI.GUIDisplay.colorByResiduesDict[resname2], LIGHTER_COLOR_FACTOR_BOND));
-						colorsUP.Add(lightColor(UI.GUIDisplay.colorByResiduesDict[resname2], LIGHTER_COLOR_FACTOR_BOND));
-						colorsDown.Add(lightColor(UI.GUIDisplay.colorByResiduesDict[resname2], LIGHTER_COLOR_FACTOR_BOND));
+					if (UI.GUIDisplay.Instance.colorByResiduesDict.ContainsKey(resname2)){
+						colorsUP.Add(lightColor(UI.GUIDisplay.Instance.colorByResiduesDict[resname2], LIGHTER_COLOR_FACTOR_BOND));
+						colorsDown.Add(lightColor(UI.GUIDisplay.Instance.colorByResiduesDict[resname2], LIGHTER_COLOR_FACTOR_BOND));
+						colorsUP.Add(lightColor(UI.GUIDisplay.Instance.colorByResiduesDict[resname2], LIGHTER_COLOR_FACTOR_BOND));
+						colorsDown.Add(lightColor(UI.GUIDisplay.Instance.colorByResiduesDict[resname2], LIGHTER_COLOR_FACTOR_BOND));
 					}else{
 						colorsUP.Add(lightColor(new Color(0.7f,0.7f,0.7f,0.5f), LIGHTER_COLOR_FACTOR_BOND));
 						colorsDown.Add(lightColor(new Color(0.7f,0.7f,0.7f,0.5f), LIGHTER_COLOR_FACTOR_BOND));
@@ -640,22 +640,22 @@ using Molecule.Model;
 					}
 
 				}else if (COLOR_MODE_BOND == CHAIN){
-					if (UI.GUIDisplay.ChainColorDict.ContainsKey(chain1)){
-						colorsUP.Add(lightColor(UI.GUIDisplay.ChainColorDict[chain1], LIGHTER_COLOR_FACTOR_BOND));
-						colorsDown.Add(lightColor(UI.GUIDisplay.ChainColorDict[chain1], LIGHTER_COLOR_FACTOR_BOND));
-						colorsUP.Add(lightColor(UI.GUIDisplay.ChainColorDict[chain1], LIGHTER_COLOR_FACTOR_BOND));
-						colorsDown.Add(lightColor(UI.GUIDisplay.ChainColorDict[chain1], LIGHTER_COLOR_FACTOR_BOND));
+					if (UI.GUIDisplay.Instance.ChainColorDict.ContainsKey(chain1)){
+						colorsUP.Add(lightColor(UI.GUIDisplay.Instance.ChainColorDict[chain1], LIGHTER_COLOR_FACTOR_BOND));
+						colorsDown.Add(lightColor(UI.GUIDisplay.Instance.ChainColorDict[chain1], LIGHTER_COLOR_FACTOR_BOND));
+						colorsUP.Add(lightColor(UI.GUIDisplay.Instance.ChainColorDict[chain1], LIGHTER_COLOR_FACTOR_BOND));
+						colorsDown.Add(lightColor(UI.GUIDisplay.Instance.ChainColorDict[chain1], LIGHTER_COLOR_FACTOR_BOND));
 					}else{
 						colorsUP.Add(lightColor(new Color(0.7f,0.7f,0.7f,0.5f), LIGHTER_COLOR_FACTOR_BOND));
 						colorsDown.Add(lightColor(new Color(0.7f,0.7f,0.7f,0.5f), LIGHTER_COLOR_FACTOR_BOND));
 						colorsUP.Add(lightColor(new Color(0.7f,0.7f,0.7f,0.5f), LIGHTER_COLOR_FACTOR_BOND));
 						colorsDown.Add(lightColor(new Color(0.7f,0.7f,0.7f,0.5f), LIGHTER_COLOR_FACTOR_BOND));
 					}
-					if (UI.GUIDisplay.ChainColorDict.ContainsKey(chain2)){
-						colorsUP.Add(lightColor(UI.GUIDisplay.ChainColorDict[chain2], LIGHTER_COLOR_FACTOR_BOND));
-						colorsDown.Add(lightColor(UI.GUIDisplay.ChainColorDict[chain2], LIGHTER_COLOR_FACTOR_BOND));
-						colorsUP.Add(lightColor(UI.GUIDisplay.ChainColorDict[chain2], LIGHTER_COLOR_FACTOR_BOND));
-						colorsDown.Add(lightColor(UI.GUIDisplay.ChainColorDict[chain2], LIGHTER_COLOR_FACTOR_BOND));
+					if (UI.GUIDisplay.Instance.ChainColorDict.ContainsKey(chain2)){
+						colorsUP.Add(lightColor(UI.GUIDisplay.Instance.ChainColorDict[chain2], LIGHTER_COLOR_FACTOR_BOND));
+						colorsDown.Add(lightColor(UI.GUIDisplay.Instance.ChainColorDict[chain2], LIGHTER_COLOR_FACTOR_BOND));
+						colorsUP.Add(lightColor(UI.GUIDisplay.Instance.ChainColorDict[chain2], LIGHTER_COLOR_FACTOR_BOND));
+						colorsDown.Add(lightColor(UI.GUIDisplay.Instance.ChainColorDict[chain2], LIGHTER_COLOR_FACTOR_BOND));
 					}else{
 						colorsUP.Add(lightColor(new Color(0.7f,0.7f,0.7f,0.5f), LIGHTER_COLOR_FACTOR_BOND));
 						colorsDown.Add(lightColor(new Color(0.7f,0.7f,0.7f,0.5f), LIGHTER_COLOR_FACTOR_BOND));
@@ -713,12 +713,12 @@ using Molecule.Model;
 		string resname = residueslist[res];
 		string chain = resChainList[res];
 		if (sugartype==1){
-			if (UI.GUIDisplay.colorByResiduesDict.ContainsKey(resname))
-				oxysphere.GetComponent<Renderer>().material.color = UI.GUIDisplay.colorByResiduesDict[resname];
+			if (UI.GUIDisplay.Instance.colorByResiduesDict.ContainsKey(resname))
+				oxysphere.GetComponent<Renderer>().material.color = UI.GUIDisplay.Instance.colorByResiduesDict[resname];
 			else
 				oxysphere.GetComponent<Renderer>().material.color = new Color(0.7f,0.7f,0.7f,0.5f);
 		}else if (sugartype==2){
-			oxysphere.GetComponent<Renderer>().material.color = UI.GUIDisplay.ChainColorDict[chain];
+			oxysphere.GetComponent<Renderer>().material.color = UI.GUIDisplay.Instance.ChainColorDict[chain];
 		}else{
 			oxysphere.GetComponent<Renderer>().material.color = Color.red;
 		}
@@ -845,21 +845,21 @@ using Molecule.Model;
 				Color32 col1;
 				Color32 col2;
 				if (type == SUGAR){
-					if (UI.GUIDisplay.colorByResiduesDict.ContainsKey(resname1))
-						col1 =(lightColor(UI.GUIDisplay.colorByResiduesDict[resname1], LIGHTER_COLOR_FACTOR_BOND));
+					if (UI.GUIDisplay.Instance.colorByResiduesDict.ContainsKey(resname1))
+						col1 =(lightColor(UI.GUIDisplay.Instance.colorByResiduesDict[resname1], LIGHTER_COLOR_FACTOR_BOND));
 					else
 						col1 =lightColor(new Color(0.7f,0.7f,0.7f,0.5f), LIGHTER_COLOR_FACTOR_BOND);
-					if (UI.GUIDisplay.colorByResiduesDict.ContainsKey(resname1))
-						col2=(lightColor(UI.GUIDisplay.colorByResiduesDict[resname2], LIGHTER_COLOR_FACTOR_BOND));
+					if (UI.GUIDisplay.Instance.colorByResiduesDict.ContainsKey(resname1))
+						col2=(lightColor(UI.GUIDisplay.Instance.colorByResiduesDict[resname2], LIGHTER_COLOR_FACTOR_BOND));
 					else
 						col2 =lightColor(new Color(0.7f,0.7f,0.7f,0.5f), LIGHTER_COLOR_FACTOR_BOND);
 				}else {
-					if (UI.GUIDisplay.ChainColorDict.ContainsKey(chain1))
-						col1=(lightColor(UI.GUIDisplay.ChainColorDict[chain1], LIGHTER_COLOR_FACTOR_BOND));
+					if (UI.GUIDisplay.Instance.ChainColorDict.ContainsKey(chain1))
+						col1=(lightColor(UI.GUIDisplay.Instance.ChainColorDict[chain1], LIGHTER_COLOR_FACTOR_BOND));
 					else
 						col1 = (lightColor(new Color(0.7f,0.7f,0.7f,0.5f), LIGHTER_COLOR_FACTOR_BOND));
-					if (UI.GUIDisplay.ChainColorDict.ContainsKey(chain2))
-						col2=(lightColor(UI.GUIDisplay.ChainColorDict[chain2], LIGHTER_COLOR_FACTOR_BOND));
+					if (UI.GUIDisplay.Instance.ChainColorDict.ContainsKey(chain2))
+						col2=(lightColor(UI.GUIDisplay.Instance.ChainColorDict[chain2], LIGHTER_COLOR_FACTOR_BOND));
 					else
 						col2 = (lightColor(new Color(0.7f,0.7f,0.7f,0.5f), LIGHTER_COLOR_FACTOR_BOND));
 				}
@@ -887,13 +887,13 @@ using Molecule.Model;
 				string chain = objs[i].ToString().Split('_')[2].Split(' ')[0];
 				for (int j=0; j<colours.Length; j++){
 					if (type == SUGAR){
-						if (UI.GUIDisplay.colorByResiduesDict.ContainsKey(resname))
-							colours[j]=(lightColor(UI.GUIDisplay.colorByResiduesDict[resname], LIGHTER_COLOR_FACTOR_RING));
+						if (UI.GUIDisplay.Instance.colorByResiduesDict.ContainsKey(resname))
+							colours[j]=(lightColor(UI.GUIDisplay.Instance.colorByResiduesDict[resname], LIGHTER_COLOR_FACTOR_RING));
 						else
 							colours[j]=(lightColor(new Color(0.7f,0.7f,0.7f,0.5f), LIGHTER_COLOR_FACTOR_RING));
 					}else if (type == CHAIN){
-						if (UI.GUIDisplay.ChainColorDict.ContainsKey(chain))
-							colours[j]=(lightColor(UI.GUIDisplay.ChainColorDict[chain], LIGHTER_COLOR_FACTOR_RING));
+						if (UI.GUIDisplay.Instance.ChainColorDict.ContainsKey(chain))
+							colours[j]=(lightColor(UI.GUIDisplay.Instance.ChainColorDict[chain], LIGHTER_COLOR_FACTOR_RING));
 						else
 							colours[j]=(lightColor(new Color(0.7f,0.7f,0.7f,0.5f), LIGHTER_COLOR_FACTOR_RING));
 						

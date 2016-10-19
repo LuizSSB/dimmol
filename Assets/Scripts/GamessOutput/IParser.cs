@@ -10,7 +10,7 @@ namespace GamessOutput
 			set;
 		}
 
-		List<List<Atom>> AtomsStates {
+		List<OutputState> AtomsStates {
 			get;
 			set;
 		}
@@ -20,10 +20,18 @@ namespace GamessOutput
 
 	public abstract	class BaseParser : IParser
 	{
-		protected BaseParser(List<List<Atom>> statesSoFar = null, Dictionary<string, object> userInfo = null)
+		protected BaseParser(List<OutputState> statesSoFar = null, Dictionary<string, object> userInfo = null)
 		{
-			AtomsStates = statesSoFar ?? new List<List<Atom>>();
+			AtomsStates = statesSoFar ?? new List<OutputState>();
 			UserInfo = userInfo ?? new Dictionary<string, object>();
+
+			if(AtomsStates.Count > 0)
+				CurrentAtoms = statesSoFar[statesSoFar.Count - 1];
+		}
+
+		protected OutputState CurrentAtoms {
+			get;
+			private set;
 		}
 
 		#region IParser implementation
@@ -34,7 +42,7 @@ namespace GamessOutput
 			set;
 		}
 
-		public List<List<Atom>> AtomsStates {
+		public List<OutputState> AtomsStates {
 			get;
 			set;
 		}

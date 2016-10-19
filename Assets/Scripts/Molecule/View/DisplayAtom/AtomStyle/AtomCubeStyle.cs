@@ -333,7 +333,7 @@ namespace Molecule.View.DisplayAtom {
 //			int atom1number = 0;
 //			int atom2number = 0;
 			
-			if(UI.GUIDisplay.file_extension=="xgmml") {
+			if(UI.GUIDisplay.Instance.file_extension=="xgmml") {
 //				atom1number=AtomCubeStyle.atomOrderList.IndexOf(oratom1number);
 //				atom2number=AtomCubeStyle.atomOrderList.IndexOf(oratom2number);
 			}
@@ -353,7 +353,7 @@ namespace Molecule.View.DisplayAtom {
 //			CreateAtomArray(Number);
 			for(int k=0;k<Number;k++) {
 				int order=(int)((atomOrderListArray[iType] as ArrayList)[k]);
-				if(UI.GUIDisplay.file_extension=="xgmml") {
+				if(UI.GUIDisplay.Instance.file_extension=="xgmml") {
 					float pointradius=((MoleculeModel.CSRadiusList[order]) as float[])[0];
 					c=HexToColor((MoleculeModel.CSColorList[order] as string[])[0]);
 					v=new Vector3(pointradius,pointradius,pointradius);
@@ -425,7 +425,7 @@ namespace Molecule.View.DisplayAtom {
 				}
 
 				Atom.AddComponent<BallUpdateHB>();
-				if(UI.GUIDisplay.file_extension=="xgmml")
+				if(UI.GUIDisplay.Instance.file_extension=="xgmml")
 					Atom.GetComponent<BallUpdateHB>().z=(float)(fLocation[2]);
 			}
 			else {
@@ -443,7 +443,7 @@ namespace Molecule.View.DisplayAtom {
 //			Debug.Log (comp.number);
 			comp.oldrayonFactor = atomModel.scale/100;  // Why division by 100 ???
 
-			if(UI.GUIDisplay.file_extension=="xgmml") {
+			if(UI.GUIDisplay.Instance.file_extension=="xgmml") {
 				comp.rayon = ((MoleculeModel.CSRadiusList[iAtom]) as float[])[0];
 				comp.atomcolor = HexToColor((MoleculeModel.CSColorList[iAtom] as string[])[0]);
 			}
@@ -616,7 +616,7 @@ namespace Molecule.View.DisplayAtom {
 				comp.z=(float)(fLocation[2]);
 //				Projector proj = Atom.AddComponent<Projector>();
 				Atom.AddComponent<Projector>();
-//				if(UI.GUIDisplay.file_extension=="xgmml")comp.xgmml=true;
+//				if(UI.GUIDisplay.Instance.file_extension=="xgmml")comp.xgmml=true;
 				comp.enabled = true;		
 				switch(iType) {
 					case 0:

@@ -107,7 +107,7 @@ namespace Molecule.Control {
 				BuildHireRnaHydrogenBondsStructures();
 			}
 
-			if(GUIDisplay.pdbID == "3EI0")
+			if(GUIDisplay.Instance.pdbID == "3EI0")
 				UIData.Instance.isGLIC = true;
 			
 			UIData.Instance.isParticlesInitialized = false ; // new file, new particle system needed
@@ -233,7 +233,7 @@ namespace Molecule.Control {
 			Debug.Log (UIData.Instance.loadHireRNA);
 		}
 
-		static void BuildHireRnaHydrogenBondsStructures ()
+		public static void BuildHireRnaHydrogenBondsStructures ()
 		{
 			foreach (KeyValuePair<int, ArrayList> entry in MoleculeModel.residues) 
 			{
@@ -255,7 +255,7 @@ namespace Molecule.Control {
 				}
 			}
 			
-			StreamReader sr = new StreamReader(GUIDisplay.directorypath + "/scale_RNA.dat");
+			StreamReader sr = new StreamReader(GUIDisplay.Instance.directorypath + "/scale_RNA.dat");
 			string s;
 //			Debug.Log ("------------");
 			float num;

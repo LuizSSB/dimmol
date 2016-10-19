@@ -70,8 +70,8 @@ using System.Collections;
 
 public class Rectangles : UI.GUIMoleculeController {
 
-	private static int sWidth = (int) (Screen.width * UI.GUIDisplay.guiScale) ;
-	private static int sHeight = (int) (Screen.height * UI.GUIDisplay.guiScale) ;	
+	private static int sWidth = (int) (Screen.width * UI.GUIDisplay.Instance.guiScale) ;
+	private static int sHeight = (int) (Screen.height * UI.GUIDisplay.Instance.guiScale) ;	
 	
 	private static float BASE_FONT_SIZE = 20f;
 	private static float BASE_SCREEN_WIDTH = 1920f;
@@ -231,11 +231,22 @@ public class Rectangles : UI.GUIMoleculeController {
 	
 	public static int manipulatorMoveWidth = manipulatorWidth;
 	public static int manipulatorMoveXstart = Screen.width - manipulatorMoveWidth;
-	private static int manipulatorMoveHeight = (int) (sHeight * 0.22f);
+
+	// Luiz:
+	private static int manipulatorMoveHeight = 170;//(int) (sHeight * 0.22f);
+
 	private static int manipulatorMoveYstart = Screen.height - manipulatorMoveHeight;
 	
 	// Rectangle for the Molecule Manipulator menu
 	public static Rect manipulatorMoveRect = new Rect(manipulatorXstart, manipulatorMoveYstart, manipulatorWidth, manipulatorMoveHeight);
+
+	// Luiz:
+	public static Rect EnergyRect = new Rect(
+		Screen.width - 75,
+		Screen.height - manipulatorMoveHeight - (Screen.height - manipulatorMoveHeight - mainHeight),
+		75,
+		Screen.height - manipulatorMoveHeight - mainHeight
+	);
 	
 	public static int colorPickerWidth = 238;
 	public static int colorPickerXstart = Screen.width - colorPickerWidth - atomScalesWidth;
@@ -388,7 +399,7 @@ public class Rectangles : UI.GUIMoleculeController {
 		
 		// Computing the font size as a function of the screen width (currently proportional to its height)
 		// It's probably best to exclude this from the influence of guiScale.
-		int fontSize =  (int) ( ((Screen.width / BASE_SCREEN_WIDTH) * BASE_FONT_SIZE) * UI.GUIDisplay.guiScale);
+		int fontSize =  (int) ( ((Screen.width / BASE_SCREEN_WIDTH) * BASE_FONT_SIZE) * UI.GUIDisplay.Instance.guiScale);
 		
 		// You'd expect that changing the global font size would conveniently
 		// change all the font sizes of the sub-components of the GUI.
@@ -419,8 +430,8 @@ public class Rectangles : UI.GUIMoleculeController {
 	/// </summary>
 	public static void Scale() {
 		SetFontSize();
-		sWidth = (int) (Screen.width * UI.GUIDisplay.guiScale) ;
-		sHeight = (int) (Screen.height * UI.GUIDisplay.guiScale) ;
+		sWidth = (int) (Screen.width * UI.GUIDisplay.Instance.guiScale) ;
+		sHeight = (int) (Screen.height * UI.GUIDisplay.Instance.guiScale) ;
 		
 		mainWidth =  (int) (sWidth * 0.5f);
 		mainHeight = sHeight / 20;
@@ -513,7 +524,8 @@ public class Rectangles : UI.GUIMoleculeController {
 		manipulatorRect = new Rect(manipulatorRect.x, manipulatorRect.y, manipulatorWidth, manipulatorHeight);
 		
 		manipulatorMoveWidth = manipulatorWidth;
-		manipulatorMoveHeight = (int) (sHeight * 0.22f);
+		// Luiz:
+//		manipulatorMoveHeight = (int) (sHeight * 0.22f);
 
 		manipulatorMoveRect = new Rect(manipulatorMoveRect.x, manipulatorMoveRect.y, manipulatorWidth, manipulatorMoveHeight);
 		

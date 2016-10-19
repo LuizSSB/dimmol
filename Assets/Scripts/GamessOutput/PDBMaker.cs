@@ -5,14 +5,15 @@ namespace GamessOutput
 {
 	public static class PDBMaker
 	{
-		public static string MakePDB (List<Atom> atoms)
+		public static string MakePDB (OutputState state)
 		{
 			var pdbBuilder = new System.Text.StringBuilder();
 			pdbBuilder.AppendLine("COMPND    MAGICKOMPOUND");
+			pdbBuilder.AppendLine("TITLE     MAGICKOMPOUND, energy=" + state.Energy);
 			pdbBuilder.AppendLine("AUTHOR    Foo bar");
 
 			var idx = 1;
-			foreach (var atom in atoms)
+			foreach (var atom in state.Atoms)
 			{
 				pdbBuilder.Append(
 					"ATOM  "

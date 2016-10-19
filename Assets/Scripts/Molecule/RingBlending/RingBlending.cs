@@ -223,8 +223,8 @@ public class RingBlending
 		papobj.AddComponent<MeshRenderer>();
 		papobj.GetComponent<MeshFilter>().mesh = mesh;
 		papobj.GetComponent<Renderer>().material = new Material(Shader.Find("Transparent/Diffuse"));
-		if (UI.GUIDisplay.colorByResiduesDict.ContainsKey(res))
-			papobj.GetComponent<Renderer>().material.color=UI.GUIDisplay.colorByResiduesDict[res];
+		if (UI.GUIDisplay.Instance.colorByResiduesDict.ContainsKey(res))
+			papobj.GetComponent<Renderer>().material.color=UI.GUIDisplay.Instance.colorByResiduesDict[res];
 		else
 			papobj.GetComponent<Renderer>().material.color=new Color(0.7f,0.7f,0.7f,0.5f);
 

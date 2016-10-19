@@ -70,7 +70,7 @@ public class CubeManager : GenericManager {
 				if(chain == "All"){
 		// ---------- ATOM
 //					Debug.Log("ATOM");
-					if(GUIDisplay.quickSelection){
+					if(GUIDisplay.Instance.quickSelection){
 						foreach(BallUpdateCube cb in cubes){
 							if(atom.Contains(cb.tag))
 								Molecule.Model.MoleculeModel.atomsColorList[(int)cb.number] = col;
@@ -85,7 +85,7 @@ public class CubeManager : GenericManager {
 				else{
 		// ---------- ATOM + CHAIN
 //					Debug.Log("ATOM+CHAIN");
-					if(GUIDisplay.quickSelection){
+					if(GUIDisplay.Instance.quickSelection){
 						foreach(BallUpdateCube cb in cubes){
 							if(atom.Contains(cb.tag)
 								&& Molecule.Model.MoleculeModel.atomsChainList[(int)cb.number] == chain)
@@ -104,7 +104,7 @@ public class CubeManager : GenericManager {
 				if(chain == "All"){
 		// ---------- ATOM + RESIDUE
 //					Debug.Log("ATOM+RESIDUE");
-					if(GUIDisplay.quickSelection){
+					if(GUIDisplay.Instance.quickSelection){
 						foreach(BallUpdateCube cb in cubes){
 							if(atom.Contains(cb.tag)
 								&& Molecule.Model.MoleculeModel.atomsResnamelist[(int)cb.number] == residue)
@@ -121,7 +121,7 @@ public class CubeManager : GenericManager {
 				else{
 		// ---------- ATOM + RESIDUE + CHAIN
 //					Debug.Log("ATOM+RESIDUE+CHAIN");
-					if(GUIDisplay.quickSelection){
+					if(GUIDisplay.Instance.quickSelection){
 						foreach(BallUpdateCube cb in cubes){
 							if(atom.Contains(cb.tag)
 								&& Molecule.Model.MoleculeModel.atomsResnamelist[(int)cb.number] == residue
@@ -218,31 +218,31 @@ public class CubeManager : GenericManager {
 			if(residue == "All"){
 				if(chain == "All"){
 		// ---------- ATOM
-					if(GUIDisplay.quickSelection){
+					if(GUIDisplay.Instance.quickSelection){
 					foreach(BallUpdateCube cb in cubes) {
 							if(atom.Contains(cb.tag))
-								Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)cb.number] = (GUIDisplay.newScale);
+								Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)cb.number] = (GUIDisplay.Instance.newScale);
 						}
 					}else{
 						foreach(BallUpdateCube cb in cubes) {
 							if(atom.Contains(Molecule.Model.MoleculeModel.atomsNamelist[(int)cb.number]))
-								Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)cb.number] = (GUIDisplay.newScale);
+								Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)cb.number] = (GUIDisplay.Instance.newScale);
 							}
 					}
 				}
 				else{
 		// ---------- ATOM + CHAIN
-					if(GUIDisplay.quickSelection){
+					if(GUIDisplay.Instance.quickSelection){
 						foreach(BallUpdateCube cb in cubes) {
 							if(atom.Contains(cb.tag)
 								&& Molecule.Model.MoleculeModel.atomsChainList[(int)cb.number] == chain)
-									Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)cb.number] = (GUIDisplay.newScale);		
+									Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)cb.number] = (GUIDisplay.Instance.newScale);		
 						}
 					}else{
 						foreach(BallUpdateCube cb in cubes) {
 							if(atom.Contains(Molecule.Model.MoleculeModel.atomsNamelist[(int)cb.number])
 								&& Molecule.Model.MoleculeModel.atomsChainList[(int)cb.number] == chain)
-									Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)cb.number] = (GUIDisplay.newScale);		
+									Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)cb.number] = (GUIDisplay.Instance.newScale);		
 						}
 					}
 				}
@@ -250,35 +250,35 @@ public class CubeManager : GenericManager {
 			else{
 				if(chain == "All"){
 		// ---------- ATOM + RESIDUE
-					if(GUIDisplay.quickSelection){
+					if(GUIDisplay.Instance.quickSelection){
 						foreach(BallUpdateCube cb in cubes) {
 							if(atom.Contains(cb.tag)
 								&& Molecule.Model.MoleculeModel.atomsResnamelist[(int)cb.number] == residue)
-									Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)cb.number] = (GUIDisplay.newScale);
+									Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)cb.number] = (GUIDisplay.Instance.newScale);
 						}
 					}else{
 						foreach(BallUpdateCube cb in cubes) {
 							if(atom.Contains(Molecule.Model.MoleculeModel.atomsNamelist[(int)cb.number])
 								&& Molecule.Model.MoleculeModel.atomsResnamelist[(int)cb.number] == residue)
-									Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)cb.number] = (GUIDisplay.newScale);
+									Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)cb.number] = (GUIDisplay.Instance.newScale);
 						}
 					}
 				}
 				else{
 		// ---------- ATOM + CHAIN + RESIDUE
-					if(GUIDisplay.quickSelection){
+					if(GUIDisplay.Instance.quickSelection){
 						foreach(BallUpdateCube cb in cubes) {
 							if(atom.Contains(cb.tag) 
 								&& Molecule.Model.MoleculeModel.atomsResnamelist[(int)cb.number] == residue
 								&& Molecule.Model.MoleculeModel.atomsChainList[(int)cb.number] == chain)
-									Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)cb.number] = (GUIDisplay.newScale);		
+									Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)cb.number] = (GUIDisplay.Instance.newScale);		
 						}
 					}else{
 						foreach(BallUpdateCube cb in cubes) {
 							if(atom.Contains(Molecule.Model.MoleculeModel.atomsNamelist[(int)cb.number])
 								&& Molecule.Model.MoleculeModel.atomsResnamelist[(int)cb.number] == residue
 								&& Molecule.Model.MoleculeModel.atomsChainList[(int)cb.number] == chain)
-									Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)cb.number] = (GUIDisplay.newScale);		
+									Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)cb.number] = (GUIDisplay.Instance.newScale);		
 						}
 					}
 				}
@@ -289,14 +289,14 @@ public class CubeManager : GenericManager {
 				if(chain == "All"){
 		// ---------- EVERYTHING
 					foreach(BallUpdateCube cb in cubes) {
-						Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)cb.number] = (GUIDisplay.newScale);
+						Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)cb.number] = (GUIDisplay.Instance.newScale);
 					}
 				}
 				else{
 		// ---------- CHAIN
 					foreach(BallUpdateCube cb in cubes) {
 						if(Molecule.Model.MoleculeModel.atomsChainList[(int)cb.number] == chain)
-							Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)cb.number] = (GUIDisplay.newScale);		
+							Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)cb.number] = (GUIDisplay.Instance.newScale);		
 					}
 				}
 			}
@@ -305,7 +305,7 @@ public class CubeManager : GenericManager {
 		// ---------- RESIDUE
 					foreach(BallUpdateCube cb in cubes) {
 						if(Molecule.Model.MoleculeModel.atomsResnamelist[(int)cb.number] == residue)
-							Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)cb.number] = (GUIDisplay.newScale);
+							Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)cb.number] = (GUIDisplay.Instance.newScale);
 					}
 				}
 				else{
@@ -313,7 +313,7 @@ public class CubeManager : GenericManager {
 					foreach(BallUpdateCube cb in cubes) {
 						if(Molecule.Model.MoleculeModel.atomsResnamelist[(int)cb.number] == residue
 							&& Molecule.Model.MoleculeModel.atomsChainList[(int)cb.number] == chain)
-								Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)cb.number] = (GUIDisplay.newScale);	
+								Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)cb.number] = (GUIDisplay.Instance.newScale);	
 					}
 				}
 			}
@@ -331,7 +331,7 @@ public class CubeManager : GenericManager {
 	public override void SetRadii(int id) {
 		foreach(BallUpdateCube cb in cubes) {
 			if((int)cb.number == id)
-				Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)cb.number] = (GUIDisplay.newScale);
+				Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)cb.number] = (GUIDisplay.Instance.newScale);
 		}
 		BallUpdate.resetRadii = true;
 		BallUpdate.bondsReadyToBeReset = true;

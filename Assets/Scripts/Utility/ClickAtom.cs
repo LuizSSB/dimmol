@@ -129,7 +129,7 @@ public class ClickAtom : MonoBehaviour
 		
 				float[] a=alist[(int)atomnumber];
 					
-				if(UI.GUIDisplay.file_extension=="xgmml")
+				if(UI.GUIDisplay.Instance.file_extension=="xgmml")
 				{
 					
 					atominfo+="ID :  "+(MoleculeModel.CSidList[(int)atomnumber])[0];

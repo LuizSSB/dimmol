@@ -173,19 +173,6 @@ namespace UI{
 		public static bool originThere = true;
 
 		// Luiz:
-		public static int _CurrentStateIdx = 0;
-		public static int CurrentStateIdx {
-			get {
-				return _CurrentStateIdx;
-			}
-			set {
-				if(value != _CurrentStateIdx) {
-					if (value < 0 || value > GUIDisplay.StateFiles.Length - 1)
-						throw new System.ArgumentOutOfRangeException("CurrentStateIdx out of bounds");
-					_CurrentStateIdx = value;
-				}
-			}
-		}
 		private static bool _toggle_RING_BLENDING = false;
 		public static bool toggle_RING_BLENDING {
 			get { return _toggle_RING_BLENDING; }
@@ -1166,7 +1153,7 @@ namespace UI{
 			if (GUILayout.Button (new GUIContent ("Load Neg.", "Read an OpenDx format electrostatic field and generate a surface"))) {
 				MoleculeModel.surfaceFileExists = true;
 				
-				readdx.ReadFile(GUIDisplay.file_base_name+".dx",MoleculeModel.Offset);
+				readdx.ReadFile(GUIDisplay.Instance.file_base_name+".dx",MoleculeModel.Offset);
 				dxRead = true;
 				
 				string tag = "Elect_iso_negative";
@@ -1193,7 +1180,7 @@ namespace UI{
 			GUILayout.BeginHorizontal ();
 			if (GUILayout.Button (new GUIContent ("Load Pos.", "Read an OpenDx format electrostatic field and generate a surface"))) {
 				MoleculeModel.surfaceFileExists = true;	
-				readdx.ReadFile(GUIDisplay.file_base_name+".dx",MoleculeModel.Offset);
+				readdx.ReadFile(GUIDisplay.Instance.file_base_name+".dx",MoleculeModel.Offset);
 				dxRead = true;
 				string tag = "Elect_iso_positive";
 				showElectroIsoPositive = true;
@@ -1268,7 +1255,7 @@ namespace UI{
 			GUILayout.BeginHorizontal();
 			if(GUILayout.Button(new GUIContent("Volumetric Fields", "Toggles volumetric rendering of electrostatic fields"))) {
 				showVolumetricFields = !showVolumetricFields;
-				readdx.ReadFile(GUIDisplay.file_base_name+".dx",MoleculeModel.Offset);
+				readdx.ReadFile(GUIDisplay.Instance.file_base_name+".dx",MoleculeModel.Offset);
 				dxRead = true;
 				GameObject volumObj;
 				volumObj = GameObject.FindGameObjectWithTag("Volumetric");
@@ -1337,12 +1324,12 @@ namespace UI{
 			showAdvMenu = SetTitleExit("Advanced Options");
 			
 			GUILayout.BeginHorizontal();
-			GUILayout.Label (new GUIContent ("GUI Scale: " + GUIDisplay.guiScale.ToString("0.00"), "Adjusts the scale of the GUI windows"), GUILayout.MinWidth ((int)(Rectangles.advOptWidth * 0.4f)));
-			GUIDisplay.guiScale = GUILayout.HorizontalSlider (GUIDisplay.guiScale, 0.3f, 1.7f, GUILayout.Width (((int)(Rectangles.advOptWidth * 0.4f))));
+			GUILayout.Label (new GUIContent ("GUI Scale: " + GUIDisplay.Instance.guiScale.ToString("0.00"), "Adjusts the scale of the GUI windows"), GUILayout.MinWidth ((int)(Rectangles.advOptWidth * 0.4f)));
+			GUIDisplay.Instance.guiScale = GUILayout.HorizontalSlider (GUIDisplay.Instance.guiScale, 0.3f, 1.7f, GUILayout.Width (((int)(Rectangles.advOptWidth * 0.4f))));
 			
 			if (GUILayout.Button(new GUIContent("OK", "Apply new GUI Scale")))
-				if(GUIDisplay.guiScale != GUIDisplay.oldGuiScale) {
-					GUIDisplay.oldGuiScale = GUIDisplay.guiScale;
+				if(GUIDisplay.Instance.guiScale != GUIDisplay.Instance.oldGuiScale) {
+					GUIDisplay.Instance.oldGuiScale = GUIDisplay.Instance.guiScale;
 					Rectangles.Scale();
 				}
 			GUILayout.EndHorizontal();
@@ -1379,7 +1366,7 @@ namespace UI{
 			
 			if (GUILayout.Button(new GUIContent("Depth Cueing", "Depth Cueing"))) {
 				if (!dxRead) {
-					readdx.ReadFile(GUIDisplay.file_base_name+".dx",MoleculeModel.Offset);
+					readdx.ReadFile(GUIDisplay.Instance.file_base_name+".dx",MoleculeModel.Offset);
 					dxRead = true;
 				}
 				if(DepthCueing.isEnabled && !DepthCueing.reset)
@@ -1396,7 +1383,7 @@ namespace UI{
 				showVolumetricDepth = !showVolumetricDepth;
 				
 				if (!dxRead) {
-					readdx.ReadFile(GUIDisplay.file_base_name+".dx",MoleculeModel.Offset);
+					readdx.ReadFile(GUIDisplay.Instance.file_base_name+".dx",MoleculeModel.Offset);
 					dxRead = true;
 				}
 				
@@ -2705,9 +2692,16 @@ namespace UI{
 				MoleculeModel.newtooltip = GUI.tooltip;
 			GUI.DragWindow();
 		} // End of HyperballStyle
-		
-		
-		
+
+		[System.Serializable]
+		public class hey {
+			public System.Collections.Generic.List<hoy> hoys;
+		}
+
+		[System.Serializable]
+		public class hoy {
+			public string a;
+		}
 		
 		/// <summary>
 		/// Defines the main menu of the GUI.
@@ -2739,7 +2733,7 @@ namespace UI{
 					showManipulatorMenu = false;
 					showSetAtomScales = false;
 					showPanelsMenu = false;
-					GUIDisplay.m_texture = false;
+					GUIDisplay.Instance.m_texture = false;
 					m_colorPicker = null;
 					showSurfaceButton = false;
 					showBackgroundType = false;
@@ -2762,7 +2756,7 @@ namespace UI{
 			if (GUILayout.Button (new GUIContent ("Atoms", "Open the Atom appearance dialogue"))) {
 				if (showAtomMenu) { // already open, we close it
 					showAtomMenu = false;
-					GUIDisplay.m_texture = false ; // this is pointless when the atom menu is closed
+					GUIDisplay.Instance.m_texture = false ; // this is pointless when the atom menu is closed
 					showSetAtomScales = false;
 				} else {
 					showAtomMenu = true;
@@ -3140,7 +3134,7 @@ namespace UI{
 				}
 				else{
 					if(texture_set < 5)
-						texture_set = GUIDisplay.textureMenuList.Count - 1;
+						texture_set = GUIDisplay.Instance.textureMenuList.Count - 1;
 				}
 			}			
 
@@ -3163,7 +3157,7 @@ namespace UI{
 						texture_set = 0;
 				}
 				else{
-					if (texture_set > GUIDisplay.textureMenuList.Count - 1)
+					if (texture_set > GUIDisplay.Instance.textureMenuList.Count - 1)
 						texture_set = 5;
 				}
 			}			
@@ -3215,7 +3209,7 @@ namespace UI{
 		/// </param>
 		public static void SurfaceTexture (int a) {
 			
-			textureMenu ("lit_spheres/", GUIDisplay.textureMenuList[texture_set], GUIDisplay.textureMenuTitles[texture_set]);
+			textureMenu ("lit_spheres/", GUIDisplay.Instance.textureMenuList[texture_set], GUIDisplay.Instance.textureMenuTitles[texture_set]);
 			
 			GUI.DragWindow();
 		}	// End of SurfaceTexture				
@@ -3238,7 +3232,7 @@ namespace UI{
 				showAtomsExtendedMenu = false;
 				showResiduesMenu = false;
 				showChainsMenu = false;
-				GUIDisplay.applyToAtoms.Add("All");
+				GUIDisplay.Instance.applyToAtoms.Add("All");
 			}
 			
 			if (GUILayout.Button (new GUIContent ("Panels", "Open colors and textures panels menu"), GUILayout.Width(Rectangles.atomButtonWidth))) {
@@ -3816,7 +3810,21 @@ namespace UI{
 				MoleculeModel.newtooltip = GUI.tooltip;
 			GUI.DragWindow();
 		} // End of Display
-		
+
+		// Luiz:
+		public static void Energy(int id) {
+			EnergyWindow.Draw(
+				GUIDisplay.Instance.CurrentState.Energy,
+				GUIDisplay.Instance.StateEnergyMinMax.max,
+				GUIDisplay.Instance.StateEnergyMinMax.min
+			);
+//			EnergyWindow.Draw(
+//				-282,
+//				-282,
+//				-286
+//			);
+			GUI.DragWindow();
+		}
 		
 		/// <summary>
 		/// Defines the manipulator window, labaled "Movement" in the program.
@@ -3853,14 +3861,25 @@ namespace UI{
 
 			GUILayout.EndHorizontal ();
 
-			if (GUIDisplay.StateFiles != null) {
-				CurrentStateIdx = (int) System.Math.Round(LabelSlider(
-					CurrentStateIdx,
+			if (GUIDisplay.Instance.StateFiles != null && GUIDisplay.Instance.StateFiles.Length > 1) {
+				var oldAutoChangeState = UIData.Instance.autoChangingState;
+				GUILayout.BeginHorizontal();
+				UIData.Instance.autoChangingState = GUILayout.Toggle(
+					UIData.Instance.autoChangingState, new GUIContent ("Auto state transition", "Automatically transitions between states.")
+				);
+				GUILayout.EndHorizontal();
+
+				if(!oldAutoChangeState && UIData.Instance.autoChangingState) {
+					GUIDisplay.Instance.GoToNextState();
+				}
+
+				GUIDisplay.Instance.CurrentStateIdx = (int) System.Math.Round(LabelSlider(
+					GUIDisplay.Instance.CurrentStateIdx,
 					0f,
-					GUIDisplay.StateFiles.Length,
-					"State: " + CurrentStateIdx + " / " + GUIDisplay.StateFiles.Length,
+					GUIDisplay.Instance.StateFiles.Length - 1,
+					"State: " + GUIDisplay.Instance.CurrentStateIdx + " / " + (GUIDisplay.Instance.StateFiles.Length - 1),
 					"State of molecule across time",
-					true,
+					!UIData.Instance.autoChangingState,
 					(int)(0.9f * Rectangles.manipulatorWidth),
 					100,
 					true

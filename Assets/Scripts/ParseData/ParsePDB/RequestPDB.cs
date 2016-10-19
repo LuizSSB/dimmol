@@ -957,17 +957,17 @@ namespace  ParseData.ParsePDB
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	private void LoadChoice(int a)
 	{
-		FileInfo fieldlinefile=new FileInfo(UI.GUIDisplay.file_base_name+".json");
+		FileInfo fieldlinefile=new FileInfo(UI.GUIDisplay.Instance.file_base_name+".json");
 		if(fieldlinefile.Exists)
 			wantjson = GUILayout.Toggle (wantjson, new GUIContent ( "JSON" , "Open the Json file"));
 		
-		FileInfo Surfacefile=new FileInfo(UI.GUIDisplay.file_base_name+".obj");
-		FileInfo Surfacefile0=new FileInfo(UI.GUIDisplay.file_base_name+"0.obj");
+		FileInfo Surfacefile=new FileInfo(UI.GUIDisplay.Instance.file_base_name+".obj");
+		FileInfo Surfacefile0=new FileInfo(UI.GUIDisplay.Instance.file_base_name+"0.obj");
 
 		if(Surfacefile.Exists || Surfacefile0.Exists)
 			wantobj = GUILayout.Toggle (wantobj, new GUIContent ( "OBJ" , "Open the Obj file"));
 			
-		FileInfo dxfile=new FileInfo(UI.GUIDisplay.file_base_name+".dx");
+		FileInfo dxfile=new FileInfo(UI.GUIDisplay.Instance.file_base_name+".dx");
 		if(dxfile.Exists)
 				wantdx = GUILayout.Toggle (wantdx, new GUIContent ( "DX" , "Open the Dx file"));
 		if (GUILayout.Button("Confirm")){

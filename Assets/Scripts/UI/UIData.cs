@@ -101,6 +101,10 @@ namespace UI
 		public bool isclear=false;
 		public bool isOpenFile=false;
 		public bool isParticlesInitialized = false;
+
+		// Luiz:
+		public bool stateChanged = false;
+		public bool autoChangingState = false;
 		
 		public bool isCubeLoaded = false;
 		public bool isSphereLoaded = false;
@@ -169,7 +173,8 @@ namespace UI
 		public bool down_part=false;
 		
 		public bool openAllMenu=false;
-		
+
+		public bool changingState=false;
 		public bool openBound=false;
 		
 		public bool secondarystruct=false;

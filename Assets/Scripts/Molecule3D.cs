@@ -118,7 +118,6 @@ public class Molecule3D:MonoBehaviour {
 //	private Vector3 Deta;
 //	private 	string textField="";
 //	private string id="";
-	public GUIDisplay gUIDisplay;
 	private RequestPDB requestPDB=new RequestPDB();
 //	private Boolean flag=false;
 	private Boolean isControl=false;
@@ -195,13 +194,11 @@ public class Molecule3D:MonoBehaviour {
 
 		scenecontroller = GameObject.Find("LoadBox");
 		scenecontroller.AddComponent<ReadDX>();
-		
-		gUIDisplay = new GUIDisplay();
 
 		// Luiz:
 		if (!UnityClusterPackage.NodeInformation.IsSlave) {
 			mNetworkView = GetComponent<NetworkView>();
-			gUIDisplay.Cleared += (sender, e) => mNetworkView.RPC("Clear", RPCMode.All);
+			GUIDisplay.Instance.Cleared += (sender, e) => mNetworkView.RPC("Clear", RPCMode.All);
 			ChangeManager.MethodInvoked += (sender, e) => {
 				var rpcData = GetRPCData(e.Param, "Method");
 				mNetworkView.RPC(
@@ -281,15 +278,15 @@ public class Molecule3D:MonoBehaviour {
 
 
 
-		if(gUIDisplay.m_fileBrowser != null) {
+		if(GUIDisplay.Instance.m_fileBrowser != null) {
 			GUIMoleculeController.FileBrowser_show=true;
-			gUIDisplay.m_fileBrowser.OnGUI();
+			GUIDisplay.Instance.m_fileBrowser.OnGUI();
 		} else
 			GUIMoleculeController.FileBrowser_show=false;
 		
 		UIData.Instance.EnableUpdate=false;
 		if((!UIData.Instance.hiddenUI)&&(!UIData.Instance.hiddenUIbutFPS))
-			gUIDisplay.Display();
+			GUIDisplay.Instance.Display();
 		
 		if((!UIData.Instance.hiddenUI)&&(UIData.Instance.hiddenUIbutFPS)){
 			GUIMoleculeController.toggle_INFOS = true;
@@ -376,6 +373,15 @@ public class Molecule3D:MonoBehaviour {
 		if(UIData.Instance.isOpenFile) {	
 			StartCoroutine(loadLoadFile());
 		}
+
+		if(UIData.Instance.autoChangingState) {
+			LoadState(GUIDisplay.Instance.CurrentState);
+		} else {
+			if(UIData.Instance.stateChanged) {
+				UIData.Instance.stateChanged = false;
+				LoadState(GUIDisplay.Instance.CurrentState);
+			}	
+		}
 		
 		if(UIData.Instance.backGroundIs)
 			LocCamera.GetComponent<Skybox>().enabled=true;
@@ -421,9 +427,130 @@ public class Molecule3D:MonoBehaviour {
 			UIData.Instance.isOpenFile = false;
 			yield return StartCoroutine(loadFile());
 			Debug.Log ("T.T ==> BEFORE DISPLAY");
-			Display();		
+			Display();
 	}
-	
+
+	// Luiz:
+	public void LoadState(GamessOutput.OutputState state) {
+		var transitionspeed = Time.deltaTime * 1.5f;
+		GamessOutput.Atom currentAtom;
+		float[] currentLocation;
+		for(int idxAtom = 0; idxAtom < MoleculeModel.atomsLocationlist.Count; ++idxAtom) {
+			currentAtom = state.Atoms.ElementAt(idxAtom);
+			currentLocation = MoleculeModel.atomsLocationlist[idxAtom];
+
+			if(UIData.Instance.autoChangingState) {
+				var previousStateAtom = GUIDisplay.Instance.PreviousState.Atoms[idxAtom];
+				currentLocation[0] += (currentAtom.FloatX - previousStateAtom.FloatX) * transitionspeed;
+				currentLocation[1] += (currentAtom.FloatY - previousStateAtom.FloatY) * transitionspeed;
+				currentLocation[2] += (currentAtom.FloatZ - previousStateAtom.FloatZ) * transitionspeed;
+
+			} else {
+				currentLocation[0] = (float) currentAtom.FloatX;
+				currentLocation[1] = (float) currentAtom.FloatY;
+				currentLocation[2] = (float) currentAtom.FloatZ;
+			}
+		}
+
+		if(UIData.Instance.autoChangingState) {
+			float prevX = GUIDisplay.Instance.PreviousState.Atoms[0].FloatX;
+			float currX = state.Atoms[0].FloatX;
+			float firstX = MoleculeModel.atomsLocationlist[0][0];
+			if(Mathf.Abs(currX - prevX) <= 1e-6 || (prevX < currX && firstX >= currX) || (prevX > currX && firstX <= currX)) {
+				GUIDisplay.Instance.GoToNextState();
+			}	
+		}
+
+		if (!UnityClusterPackage.NodeInformation.IsSlave) {
+			var newLocations = MiniJSON.JsonEncode(MoleculeModel.atomsLocationlist.ToArray());
+			var networkinson = GetComponent<NetworkView> ();
+			networkinson.RPC("LoadStateRPC", RPCMode.All, newLocations);
+		}
+
+//		UpdateVisualState();
+	}
+	public IEnumerator UpdateVisualState() {
+		GameObject parentGameObject;
+		GenericManager manager;
+
+		switch(UIData.Instance.atomtype) {
+		case UIData.AtomType.sphere:
+			parentGameObject = GameObject.FindGameObjectWithTag("SphereManager");
+			manager = parentGameObject.GetComponent<SphereManager>();
+			break;
+
+		case UIData.AtomType.cube:
+			parentGameObject = GameObject.FindGameObjectWithTag("CubeManager");
+			manager = parentGameObject.GetComponent<CubeManager>();
+			break;
+
+		case UIData.AtomType.particleball:
+			parentGameObject = GameObject.FindGameObjectWithTag("ShurikenParticleManager");
+			manager = parentGameObject.GetComponent<ShurikenParticleManager>();
+			break;
+
+		case UIData.AtomType.hyperball:
+			parentGameObject = GameObject.FindGameObjectWithTag("HBallManager");
+			manager = parentGameObject.GetComponent<HBallManager>();
+			break;
+
+		default:
+			manager = null;
+			break;
+		}
+
+		if(manager != null)
+			manager.ResetPositions();
+
+		var oldClubs = GameObject.FindGameObjectsWithTag("Club");
+
+		Molecule.Control.ControlMolecule.CreateSplines();
+		new Molecule.View.DisplayBond.BondCubeStyle().DisplayBonds();
+
+		switch(UIData.Instance.bondtype) {
+		case UIData.BondType.hyperstick:
+			parentGameObject = GameObject.FindGameObjectWithTag("HStickManager");
+			manager = parentGameObject.GetComponent<HStickManager>();
+			break;
+		case UIData.BondType.line:
+			parentGameObject = GameObject.FindGameObjectWithTag("LineManager");
+			manager = parentGameObject.GetComponent<LineManager>();
+			break;
+		case UIData.BondType.cube:
+			parentGameObject = GameObject.FindGameObjectWithTag("CubeBondManager");
+			manager = parentGameObject.GetComponent<CubeBondManager>();
+			break;
+		case UIData.BondType.nobond:
+			manager = null;
+			break;
+		}
+
+		if(manager != null)
+			manager.ResetPositions();
+
+		yield return new WaitForSeconds(0);
+		
+		// Luiz: making sure that things are reset,  believe it or not.
+		UIData.Instance.resetBondDisplay = true;
+		UIData.Instance.resetMeshcombine = true;
+		UIData.Instance.resetDisplay = true;
+		UIData.Instance.resetInteractive = true;
+		StickUpdate.resetColors = true;
+		HStickManager.resetBrightness = true;
+		BallUpdate.resetBondColors = true;
+		BallUpdate.resetColors = true;
+		BallUpdate.resetRadii = true;
+		BallUpdateCube.resetBondColors = true;
+		BallUpdate.bondsReadyToBeReset = true;
+		var diff = 1e-6f;
+		GUIMoleculeController.linkScale -= diff;
+
+		yield return new WaitForSeconds(0);
+
+		foreach(var club in oldClubs) {
+			GameObject.Destroy(club);
+		}
+	}
 	
 	// loading the file in all possibilities
 	public  IEnumerator loadFile() {
@@ -433,23 +560,23 @@ public class Molecule3D:MonoBehaviour {
 		
 		// check all format reading by unitymol PDB, XGMML and OBJ
 			if(UIData.Instance.fetchPDBFile) {
-				Debug.Log("pdbServer/pdbID :: "+GUIDisplay.pdbServer + GUIDisplay.pdbID);
-				Debug.Log("proxyServer+proxyPort :: "+GUIDisplay.proxyServer + GUIDisplay.proxyPort);
+				Debug.Log("pdbServer/pdbID :: "+GUIDisplay.Instance.pdbServer + GUIDisplay.Instance.pdbID);
+				Debug.Log("proxyServer+proxyPort :: "+GUIDisplay.Instance.proxyServer + GUIDisplay.Instance.proxyPort);
 				int proxyport = 0;
-				if(GUIDisplay.proxyPort != "")
-					proxyport = int.Parse(GUIDisplay.proxyPort);
+				if(GUIDisplay.Instance.proxyPort != "")
+					proxyport = int.Parse(GUIDisplay.Instance.proxyPort);
 				else
 					proxyport = 0;
 
-				requestPDB.FetchPDB(GUIDisplay.pdbServer, GUIDisplay.pdbID, GUIDisplay.proxyServer, proxyport);
+				requestPDB.FetchPDB(GUIDisplay.Instance.pdbServer, GUIDisplay.Instance.pdbID, GUIDisplay.Instance.proxyServer, proxyport);
 			}
 		// if we laod a pdb file launch the reading of file
-			else if(GUIDisplay.file_extension=="pdb")
-				requestPDB.LoadPDBRequest(GUIDisplay.file_base_name);
+			else if(GUIDisplay.Instance.file_extension=="pdb")
+				requestPDB.LoadPDBRequest(GUIDisplay.Instance.file_base_name);
 
 		// check the format of xgmml	
-			else if(UI.GUIDisplay.file_extension=="xgmml") {
-					yield return StartCoroutine(requestPDB.LoadXGMML("file://"+GUIDisplay.file_base_name+"."+GUIDisplay.file_extension));
+			else if(UI.GUIDisplay.Instance.file_extension=="xgmml") {
+					yield return StartCoroutine(requestPDB.LoadXGMML("file://"+GUIDisplay.Instance.file_base_name+"."+GUIDisplay.Instance.file_extension));
 					while(!RequestPDB.isDone) {
 						Debug.Log(requestPDB.progress);
 						yield return new WaitForEndOfFrame();
@@ -461,8 +588,8 @@ public class Molecule3D:MonoBehaviour {
 					GUIMoleculeController.linkScale = 0.70f;
 					SendMessage("Display",SendMessageOptions.DontRequireReceiver);
 			}
-			else if(UI.GUIDisplay.file_extension=="obj") {
-					requestPDB.LoadOBJRequest(GUIDisplay.file_base_name+"."+GUIDisplay.file_extension);
+			else if(UI.GUIDisplay.Instance.file_extension=="obj") {
+					requestPDB.LoadOBJRequest(GUIDisplay.Instance.file_base_name+"."+GUIDisplay.Instance.file_extension);
 					MoleculeModel.surfaceFileExists=true;
 					GUIMoleculeController.modif=true;
 			}	
@@ -689,7 +816,7 @@ public class Molecule3D:MonoBehaviour {
 		}
 		
 		//SetVolumetricDensity();
-		// gUIDisplay.gUIMoleculeController.GetPanelPixel();
+		// GUIDisplay.Instance.gUIMoleculeController.GetPanelPixel();
 	}
 	
 	public void toggleFPSLog() { // Debugging tool creating .txt files with FPS informations
@@ -1035,7 +1162,7 @@ public class Molecule3D:MonoBehaviour {
 	/// <param name='mode'>
 	/// Setting mode (0 for original center, 1 for atom center). Int.
 	/// </param>
-	private void SetCenter( int mode) {
+	private void SetCenter(int mode, bool reallyChangePosition = true) {
 		GameObject CamTarget = GameObject.Find("Cam Target");
 	
 		// choose the main function 0 to restart position or 1 to center around an atom
@@ -1043,7 +1170,7 @@ public class Molecule3D:MonoBehaviour {
 			Debug.Log("Entering :: SetCenter for cam target to" + MoleculeModel.cameraLocation.z);
 			if(scenecontroller.GetComponent<maxCamera>().enabled) {
 				maxCamera comp = scenecontroller.GetComponent<maxCamera>();
-				comp.ToCenter();
+				comp.ToCenter(reallyChangePosition);
 			}
 			if(UIData.Instance.atomtype == UIData.AtomType.hyperball){
 				GameObject hbManagerObj = GameObject.FindGameObjectWithTag("HBallManager");
@@ -1103,12 +1230,59 @@ public class Molecule3D:MonoBehaviour {
 	// Luiz:
 	private NetworkView mNetworkView;
 	[RPC]
+	public void LoadStateRPC(string serializedPositions)
+	{
+//		if(UnityClusterPackage.NodeInformation.IsSlave)
+		{
+			var deserialized = (System.Collections.ArrayList)MiniJSON.JsonDecode(serializedPositions);
+
+			// Faster than proper deserialization
+			MoleculeModel.atomsLocationlist.Clear();
+//			var a = new System.Collections.Generic.List<float[]>();
+			foreach(var atom in deserialized) {
+				var trueAtom = (System.Collections.ArrayList)atom;
+				MoleculeModel.atomsLocationlist.Add(new [] {
+					(float)(System.Double)trueAtom[0],
+					(float)(System.Double)trueAtom[1],
+					(float)(System.Double)trueAtom[2]
+				});
+			}
+			StartCoroutine(UpdateVisualState());
+		}
+	}
+	[RPC]
 	public void Synchronize(string serializedData)
 	{
 		if (UnityClusterPackage.NodeInformation.IsSlave) {
 			if (UIData.DeserializePart (serializedData)) {
-				UIData.Instance.isOpenFile = true;
+				if(!UIData.Instance.changingState)
+					UIData.Instance.isOpenFile = true;
+
 				requestPDB.LoadPDB (UIData.Instance.ChosenPdbContents);
+
+				if(UIData.Instance.changingState)
+				{
+					GUIMoleculeController.HYPERBALLSDEFAULT = false;
+					DisplayMolecule.Display();
+					DisplayMolecule.DisplayFieldLine();
+					SetCenter(0, false);
+
+					// Luiz: making sure that things are reset,
+					// believe it or not.
+					UIData.Instance.resetBondDisplay = true;
+					UIData.Instance.resetMeshcombine = true;
+					UIData.Instance.resetDisplay = true;
+					UIData.Instance.resetInteractive = true;
+					StickUpdate.resetColors = true;
+					HStickManager.resetBrightness = true;
+					BallUpdate.resetBondColors = true;
+					BallUpdate.resetColors = true;
+					BallUpdate.resetRadii = true;
+					BallUpdateCube.resetBondColors = true;
+					BallUpdate.bondsReadyToBeReset = true;
+					var diff = 1e-6f;
+					GUIMoleculeController.linkScale -= diff;
+				}
 			}
 		}
 	}
@@ -1116,7 +1290,7 @@ public class Molecule3D:MonoBehaviour {
 	public void Clear()
 	{
 		if (UnityClusterPackage.NodeInformation.IsSlave) {
-			gUIDisplay.Clear ();
+			GUIDisplay.Instance.Clear ();
 		}
 	}
 	[RPC]
@@ -1147,7 +1321,7 @@ public class Molecule3D:MonoBehaviour {
 	}
 	private void HandleMethodInvoked(string typeName, string methodName, object param)
 	{
-		Debug.Log ("### Method " + typeName + "." + methodName + "(" + param + ")");
+//		Debug.Log ("### Method " + typeName + "." + methodName + "(" + param + ")");
 
 		if (UnityClusterPackage.NodeInformation.IsSlave) {
 			var type = Type.GetType (typeName);
@@ -1186,7 +1360,7 @@ public class Molecule3D:MonoBehaviour {
 		HandlePropertyChanged (typeName, propertyName, param);
 	}
 	private void HandlePropertyChanged(string typeName, string propertyName, object newValue ) {
-		Debug.Log (string.Format ("### Property changed - {0}:{1} = {2}", typeName, propertyName, newValue));
+//		Debug.Log (string.Format ("### Property changed - {0}:{1} = {2}", typeName, propertyName, newValue));
 
 		if (UnityClusterPackage.NodeInformation.IsSlave) {
 			var type = Type.GetType (typeName);
@@ -1206,7 +1380,7 @@ public class Molecule3D:MonoBehaviour {
 				HandlerName = "Handle" + valueType.Name + handlerSuffix
 			};
 		} else {
-			Debug.Log ("forValue " + JsonUtility.ToJson(forValue));
+//			Debug.Log ("forValue " + JsonUtility.ToJson(forValue));
 			return new RPCData {
 				Data = JsonUtility.ToJson(forValue),
 				HandlerName = "HandleObject" + handlerSuffix

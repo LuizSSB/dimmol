@@ -82,7 +82,7 @@ public class ScenePreload_Network : MonoBehaviour {
 		}
 		xml_progress = 1.0f;
 	
-		GUIDisplay.file_extension = "xgmml";	
+		GUIDisplay.Instance.file_extension = "xgmml";	
 		UIData.Instance.atomtype=UIData.AtomType.hyperball;
 		UIData.Instance.bondtype=UIData.BondType.hyperstick;
 		GUIMoleculeController.globalRadius = 0.7f;

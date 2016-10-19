@@ -577,8 +577,8 @@ namespace UI {
 				|| (showSurfaceMenu && showSurfaceMobileCut && Rectangles.surfaceMobileCutRect.Contains(mousePos))
 				|| (showSurfaceTexture && Rectangles.textureRect.Contains (mousePos))
 				|| showSetAtomScales && !UIData.Instance.hiddenUIbutFPS && guirectD11.Contains (mousePos)
-				|| GUIDisplay.m_max && UIData.Instance.hiddenUIbutFPS && guirectD12.Contains (mousePos) 
-				|| GUIDisplay.m_texture && Rectangles.textureRect.Contains (mousePos)
+				|| GUIDisplay.Instance.m_max && UIData.Instance.hiddenUIbutFPS && guirectD12.Contains (mousePos) 
+				|| GUIDisplay.Instance.m_texture && Rectangles.textureRect.Contains (mousePos)
 				|| (rect_paramsurface.Contains (mousePos) && GameObject.FindGameObjectWithTag ("SurfaceManager") && (showSurfaceMenu || showBfactorMenu || showElectrostaticsMenu))
 				|| (guirectHyperballs.Contains (mousePos) && showHyperballsMenu)
 				|| (showCubeLineBondMenu && Rectangles.cubeLineBondRect.Contains(mousePos))
@@ -702,24 +702,24 @@ namespace UI {
 		}
 		
 		//public static void SetAtomScales() {
-		//	Rectangles.atomScalesRect = GUI.Window( 40, Rectangles.atomScalesRect, GUIDisplay.AtomScales, emptyContent);
+		//	Rectangles.atomScalesRect = GUI.Window( 40, Rectangles.atomScalesRect, GUIDisplay.Instance.AtomScales, emptyContent);
 		//}
 		
 		public static void SetPanels () {
-			Rectangles.panelsMenuRect = GUILayout.Window (44, Rectangles.panelsMenuRect, GUIDisplay.PanelsMenu, emptyContent);
+			Rectangles.panelsMenuRect = GUILayout.Window (44, Rectangles.panelsMenuRect, GUIDisplay.Instance.PanelsMenu, emptyContent);
 		}
 		
 		public static void SetAtomsExtended () {
-			//Rectangles.atomsExtendedMenuRect = GUI.Window (45, Rectangles.atomsExtendedMenuRect, GUIDisplay.AtomsExtendedMenu, emptyContent);
-			Rectangles.atomsExtendedMenuRect = GUILayout.Window(45, Rectangles.atomsExtendedMenuRect, GUIDisplay.AtomsExtendedMenu, emptyContent);
+			//Rectangles.atomsExtendedMenuRect = GUI.Window (45, Rectangles.atomsExtendedMenuRect, GUIDisplay.Instance.AtomsExtendedMenu, emptyContent);
+			Rectangles.atomsExtendedMenuRect = GUILayout.Window(45, Rectangles.atomsExtendedMenuRect, GUIDisplay.Instance.AtomsExtendedMenu, emptyContent);
 		}
 		
 		public static void SetResidues () {
-			Rectangles.residuesMenuRect = GUILayout.Window (46, Rectangles.residuesMenuRect, GUIDisplay.ResiduesMenu, emptyContent);
+			Rectangles.residuesMenuRect = GUILayout.Window (46, Rectangles.residuesMenuRect, GUIDisplay.Instance.ResiduesMenu, emptyContent);
 		}
 		
 		public static void SetChains () {
-			Rectangles.chainsMenuRect = GUILayout.Window (47, Rectangles.chainsMenuRect, GUIDisplay.ChainsMenu, emptyContent);
+			Rectangles.chainsMenuRect = GUILayout.Window (47, Rectangles.chainsMenuRect, GUIDisplay.Instance.ChainsMenu, emptyContent);
 		}
 		
 		public void SetAtomType () {
@@ -825,7 +825,7 @@ namespace UI {
 		
 		public void SetSurfaceTexture () {
 			if (showSurfaceTexture && (showSurfaceMenu || showBfactorMenu)) {	
-				GUIDisplay.m_texture = false;		
+				GUIDisplay.Instance.m_texture = false;		
 //				GUI.Window(41, new Rect(texturetypexstart,texturetypeystart,texturewidth,textureheight),loadSurfaceTexture, "Surface texture parameters");
 				Rectangles.textureRect = GUI.Window (41, Rectangles.textureRect, LoadTypeGUI.SurfaceTexture, emptyContent);
 			}
@@ -861,6 +861,13 @@ namespace UI {
 		public void SetMDDriverMenu () {
 			if (showMDDriverMenu)
 				Rectangles.mddriverMenuRect = GUI.Window (420, Rectangles.mddriverMenuRect, MDDriver.MDDriverM, emptyContent);
+		}
+
+		public void SetEnergyWindow() {
+			if(GUIDisplay.Instance.StateFiles != null && GUIDisplay.Instance.StateFiles.Length > 0)
+			{
+				Rectangles.EnergyRect = GUI.Window(666, Rectangles.EnergyRect, LoadTypeGUI.Energy, emptyContent);
+			}
 		}
 			
 		

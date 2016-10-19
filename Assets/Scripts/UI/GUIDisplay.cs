@@ -1,4 +1,4 @@
-/// @file GUIDisplay.cs
+/// @file GUIDisplay.Instance.cs
 /// @brief Details to be specified
 /// @author FvNano/LBT team
 /// @author Marc Baaden <baaden@smplinux.de>
@@ -47,7 +47,7 @@
 /// The fact that you are presently reading this means that you have had 
 /// knowledge of the CeCILL-C license and that you accept its terms.
 ///
-/// $Id: GUIDisplay.cs 647 2014-08-06 12:20:04Z tubiana $
+/// $Id: GUIDisplay.Instance.cs 647 2014-08-06 12:20:04Z tubiana $
 ///
 /// References : 
 /// If you use this code, please cite the following reference : 	
@@ -62,6 +62,8 @@
 /// using HyperBalls, a unified algorithm for balls, sticks and hyperboloids",
 /// J. Comput. Chem., 2011, 32, 2924
 ///
+using GamessOutput;
+using System.Linq;
 
 namespace UI {
 	using UnityEngine;
@@ -74,9 +76,9 @@ namespace UI {
 	using Molecule.Model;
 	using System.Text;
 	
-	/** !WiP manage GUI, and provide static strings for the GUI.
+	/** !WiP manage GUI, and provide strings for the GUI.
 	 * 
-	 * $Id: GUIDisplay.cs 647 2014-08-06 12:20:04Z tubiana $
+	 * $Id: GUIDisplay.Instance.cs 647 2014-08-06 12:20:04Z tubiana $
 	 * An important part of the User interface. Texture handling for atoms and bonds is done
 	 * here.
 	 * 
@@ -95,40 +97,82 @@ namespace UI {
 	public class GUIDisplay	{
 		// Luiz:
 		public const string DefaultTextureLocation = "lit_spheres/";
-		public static string[] StateFiles {
+		public string[] StateFiles {
 			get;
 			private set;
 		}
+		public OutputState CurrentState {
+			get;
+			private set;
+		}
+		public OutputState PreviousState {
+			get;
+			private set;
+		}
+		public UnityEngine.RangeAttribute StateEnergyMinMax;
+		private int _CurrentStateIdx = -1;
+		public int CurrentStateIdx {
+			get {
+				return _CurrentStateIdx;
+			}
+			set {
+				if(value != _CurrentStateIdx) {
+					if(value < 0 || value > StateFiles.Length - 1) {
+						throw new System.ArgumentOutOfRangeException("CurrentStateIdx " + value + " out of bounds");
+					}
 
-		public static float guiScale = 1.0f;
-		public static float oldGuiScale = guiScale;
+					var state = ParseUtils.ExtractState(StateFiles[value]);
+					if (MoleculeModel.atomsLocationlist.Count > 0 && state.Atoms.Count != MoleculeModel.atomsLocationlist.Count) {
+						throw new System.InvalidOperationException("number of atoms in PDB file does not match number of atoms in display.");
+					}
+
+					PreviousState = CurrentState;
+					CurrentState = state;
+					_CurrentStateIdx = value;
+					UIData.Instance.stateChanged = true;
+				}
+			}
+		}
+		public void GoToNextState() {
+			if(CurrentStateIdx >= StateFiles.Length - 1) {
+				CurrentStateIdx = 0;
+			} else {
+				++CurrentStateIdx;
+			}
+		}
+
+		public float guiScale = 1.0f;
+		public float oldGuiScale = 1.0f;
 		/* TODO:
-		 * GET RID OF STATIC VARIABLES ?
+		 * GET RID OF VARIABLES ?
 		 * See also : Singleton design pattern.
+		 * 
+		 * Luiz: I "converted" this class to a singleton,
+		 * though it's only a small step towards code quality in this particular project
 		 */
-		public 	static string pdbID="1KX2";
-		public	static string pdbServer = "http://www.pdb.org/pdb/files/";
-		public 	static string proxyServer = ""; //OLD proxy : cache.ibpc.fr
-		public	static string proxyPort = ""; //OLD port : 8080
-		private 	   StringBuilder proxyPortValidate;
+		public 	string pdbID="1KX2";
+		public	string pdbServer = "http://www.pdb.org/pdb/files/";
+		public 	string proxyServer = ""; //OLD proxy : cache.ibpc.fr
+		public	string proxyPort = ""; //OLD port : 8080
+		private StringBuilder proxyPortValidate;
 
-//		private static string idField="172.27.0.141";
-//		private static string PortField="843";
-		public    bool   display=false;
+//		private string idField="172.27.0.141";
+//		private string PortField="843";
+		public bool display=false;
 		public bool displayChoice=false;
 //		private GUIContent []list;
-		public static string directorypath="/opt/src/Unity/UnityMol_SVN/";
-		//		public static string directorypath="/opt/Unity3D/UnityMol_SVN/";
-		public static string file_base_name = "";
-		public static string file_extension = ".pdb";
+		public string directorypath="/opt/src/Unity/UnityMol_SVN/";
+		//		public string directorypath="/opt/Unity3D/UnityMol_SVN/";
+		public string file_base_name = "";
+		public string file_extension = ".pdb";
 				
 		private string id="";
 		public InputURL inputURL=new InputURL();
-		public static bool m_max=false;
-		public static bool m_texture=false; // texture menu is displayed if true
-//		public static int texSet_max=30; /*!< Maximum number of full texture pages */ // Actually unused
-//		public static int besttexSet_min=-5; /*!< Maximum number of condensed texture pages (negative value!) */
-		public static int texture_set=0;
+		public bool m_max=false;
+		public bool m_texture=false; // texture menu is displayed if true
+//		public int texSet_max=30; /*!< Maximum number of full texture pages */ // Actually unused
+//		public int besttexSet_min=-5; /*!< Maximum number of condensed texture pages (negative value!) */
+		public int texture_set=0;
 		
 		public bool LoginFlag=false;
 		public bool LoginAgainFlag=false;
@@ -144,15 +188,15 @@ namespace UI {
 		private Texture2D directoryimage, fileimage;
 
 		// Luiz:
-//		public static float newScale = 100f;
-//		public static float oldScale = 100f;
-		private static float _oldScale = 100f;
-		public static float oldScale {
+//		public float newScale = 100f;
+//		public float oldScale = 100f;
+		private float _oldScale = 100f;
+		public float oldScale {
 			get { return _oldScale; }
 			set { _oldScale = ChangeManager.ProcessPropertyChanged (typeof(GUIDisplay), "oldScale", _oldScale, value); }
 		}
-		private static float _newScale = 100f;
-		public static float newScale {
+		private float _newScale = 100f;
+		public float newScale {
 			get { return _newScale; }
 			set {
 				_newScale = ChangeManager.ProcessPropertyChanged (typeof(GUIDisplay), "newScale", _newScale, value);
@@ -175,7 +219,7 @@ namespace UI {
 			}
 		}
 		
-/*		private static Dictionary<string, bool> applyToAtoms = new Dictionary<string, bool>(){
+/*		private Dictionary<string, bool> applyToAtoms = new Dictionary<string, bool>(){
 			{"H", false},
 			{"C", false},
 			{"N", false},
@@ -186,12 +230,12 @@ namespace UI {
 		};
 */
 		
-		public static bool quickSelection = true;
-		//public static bool extendedSelection = false;
+		public bool quickSelection = true;
+		//public bool extendedSelection = false;
 
 		// Luiz
-		private static List<string> _applyToAtoms = null;
-		public static List<string> applyToAtoms
+		private List<string> _applyToAtoms = null;
+		public List<string> applyToAtoms
 		{
 			get {
 				if (_applyToAtoms == null) {
@@ -200,7 +244,7 @@ namespace UI {
 				return _applyToAtoms;
 			}
 		}
-		public static void SetApplyToAtoms(AtomsChangedEventArgs e)
+		public void SetApplyToAtoms(AtomsChangedEventArgs e)
 		{
 			var atoms = e.NewAtoms;
 			var list = atoms == null ? new ObservableList<string>() : new ObservableList<string> (atoms);
@@ -214,15 +258,15 @@ namespace UI {
 
 			ChangeManager.DispatchMethodEvent(typeof(GUIDisplay), "SetApplyToAtoms", atoms);
 		}
-//		public static string applyToRes = "All";
-		private static string _applyToRes = "All";
-		public static string applyToRes {
+//		public string applyToRes = "All";
+		private string _applyToRes = "All";
+		public string applyToRes {
 			get { return _applyToRes; }
 			set { _applyToRes = ChangeManager.ProcessPropertyChanged (typeof(GUIDisplay), "applyToRes", _applyToRes, value); }
 		}
-//		public static string applyToChain = "All";
-		private static string _applyToChain = "All";
-		public static string applyToChain {
+//		public string applyToChain = "All";
+		private string _applyToChain = "All";
+		public string applyToChain {
 			get { return _applyToChain; }
 			set { _applyToChain = ChangeManager.ProcessPropertyChanged (typeof(GUIDisplay), "applyToChain", _applyToChain, value); }
 		}
@@ -234,21 +278,21 @@ namespace UI {
 			public Color color;
 			public string texture;
 		}
-		private static Dictionary<string, List<RendererInfos>> panelDict = new Dictionary<string, List<RendererInfos>>();
+		private Dictionary<string, List<RendererInfos>> panelDict = new Dictionary<string, List<RendererInfos>>();
 		
 		// Those are public because "SurfaceTexture" in LoadTypeGUI use them for the Surface Textures Menu.
 		// BTW, I don't really get how things are distributed between GUIDisplay, LoadTypeGUI or GUIMoleculeController... [Erwan]
-		public static List<string> textureMenuTitles = new List<string>();
-		public static List<string[]> textureMenuList = new List<string[]>();
+		public List<string> textureMenuTitles = new List<string>();
+		public List<string[]> textureMenuList = new List<string[]>();
 		
 		// public to be used in PaperChain script
-		public static Dictionary<string, Color> colorByResiduesDict = new Dictionary<string, Color>();
-		public static Dictionary<string, Color> ChainColorDict = new Dictionary<string, Color>();
+		public Dictionary<string, Color> colorByResiduesDict = new Dictionary<string, Color>();
+		public Dictionary<string, Color> ChainColorDict = new Dictionary<string, Color>();
 				
-		static Color[] colorButtonNew = new Color[200];
-		static Texture2D colorButton = new Texture2D(20,10,TextureFormat.ARGB32,false);
+		Color[] colorButtonNew = new Color[200];
+		Texture2D colorButton = new Texture2D(20,10,TextureFormat.ARGB32,false);
 		
-		static ColorObject buttonColor = new ColorObject(Color.red);
+		ColorObject buttonColor = new ColorObject(Color.red);
 
 		// MB for centered text		
 		protected GUIStyle CentredText {
@@ -275,7 +319,9 @@ namespace UI {
 		/// <summary>
 		/// Make a box for atom color selecting.
 		/// </summary>
-		public GUIDisplay() {
+		// Luiz:
+		public static GUIDisplay Instance = new GUIDisplay();
+		private GUIDisplay() {
 			if (Screen.width > 900)
 				guiScale = 0.9f;
 			if (Screen.width > 1200)
@@ -332,11 +378,21 @@ namespace UI {
 			if(path == null)
 				return;
 
-			var states = GamessOutput.ParseUtils.ExtractStates(path);
-			StateFiles = GamessOutput.ParseUtils.SaveStatesAsPDBs(states, Application.persistentDataPath);
+			var states = ParseUtils.ExtractStates(path);
+			var energies = states.Select(s => s.Energy);
+			StateEnergyMinMax = new RangeAttribute(energies.Min(), energies.Max());
+
+			StateFiles = ParseUtils.SaveStatesAsPDBs(states, Application.persistentDataPath);
 			OpenFileCallback(StateFiles[0]);
+			CurrentStateIdx = 0;
+
+//				directorypath = System.IO.Path.GetDirectoryName(path);
+//				m_lastOpenDir = directorypath;
+//				file_base_name = directorypath + System.IO.Path.DirectorySeparatorChar +
+//					System.IO.Path.GetFileNameWithoutExtension(path);
+//				file_extension = System.IO.Path.GetExtension(path).Substring(1);
 		}
-		
+
 		public void OpenFileCallback(string path) {
 			m_fileBrowser = null;
 			if(path == null)
@@ -577,6 +633,9 @@ namespace UI {
 				gUIMoleculeController.SetVRPNMenu ();
 				gUIMoleculeController.SetMDDriverMenu ();
 				gUIMoleculeController.SetHydroMenu ();
+
+				// Luiz:
+				gUIMoleculeController.SetEnergyWindow();
 			}
 
 //			SetHyperballMatCapTexture();
@@ -643,7 +702,7 @@ namespace UI {
 		/// <param name='dic'>
 		/// Send applyToAtoms here (Dictionary of booleans).
 		/// </param>
-		private static List<string> ToList(Dictionary<string, bool> dic){
+		private List<string> ToList(Dictionary<string, bool> dic){
 			List<string> sendingAtoms = new List<string>();
 			foreach(string key in dic.Keys)
 				if(dic[key])
@@ -662,7 +721,7 @@ namespace UI {
 		/// <param name='atom'>
 		/// Atom.
 		/// </param>
-		private static List<string> ToList(string atom){
+		private List<string> ToList(string atom){
 			List<string> sendingAtoms = new List<string>();
 			sendingAtoms.Add(atom);
 			
@@ -672,7 +731,7 @@ namespace UI {
 		/// <summary>
 		/// Create a ColorPicker with the currents options.
 		/// </summary>
-		private static void ColorPickerCaller(){
+		private void ColorPickerCaller(){
 			// Luiz:
 			var picker = GUIMoleculeController.CreateColorPicker(buttonColor, "Select a color", applyToAtoms, applyToRes, applyToChain);
 			picker.AtomsColorPicked += (sender, e) => ChangeAtomsColor(e);
@@ -999,7 +1058,7 @@ namespace UI {
 		/// <summary>
 		/// Updates the colors of the ColorPicker boxes.
 		/// </summary>
-		public static void ChangeAllColors(){
+		public void ChangeAllColors(){
 
 			for (int i =0; i <200; i++){
 				colorButtonNew[i]   =buttonColor.color;
@@ -1077,7 +1136,7 @@ namespace UI {
 		/// <param name='a'>
 		/// No idea...
 		/// </param>
-		public static void PanelsMenu(int a) {
+		public void PanelsMenu(int a) {
 			GUIMoleculeController.showPanelsMenu = LoadTypeGUI.SetTitleExit("Panels Menu");
 			
 			//---------- To edit/add Color and Texture palettes, please read Assets/Resources/HowToColorPanel.txt ----------
@@ -1168,7 +1227,7 @@ namespace UI {
 		/// <param name='a'>
 		/// No idea...
 		/// </param>
-		public static void AtomsExtendedMenu(int a) {
+		public void AtomsExtendedMenu(int a) {
 			GUIMoleculeController.showAtomsExtendedMenu = LoadTypeGUI.SetTitleExit("Choose an atom");
 			
 			int buttonWidth = (int)(Rectangles.residuesMenuWidth / 4.8);
@@ -1225,7 +1284,7 @@ namespace UI {
 		/// <param name='a'>
 		/// No idea...
 		/// </param>
-		public static void ResiduesMenu(int a) {
+		public void ResiduesMenu(int a) {
 			GUIMoleculeController.showResiduesMenu = LoadTypeGUI.SetTitleExit("Choose a residue");
 			
 			int buttonWidth = (int)(Rectangles.residuesMenuWidth / 4.8);
@@ -1277,7 +1336,7 @@ namespace UI {
 		/// <param name='a'>
 		/// No idea...
 		/// </param>
-		public static void ChainsMenu(int a) {
+		public void ChainsMenu(int a) {
 			GUIMoleculeController.showChainsMenu = LoadTypeGUI.SetTitleExit("Choose a chain");
 			
 			int buttonWidth = (int)(Rectangles.residuesMenuWidth / 4.8);
@@ -1325,7 +1384,7 @@ namespace UI {
 		/// <summary>
 		/// Inits the color/texture panel dictionary.
 		/// </summary>
-		public static void InitRenderDict() {
+		public void InitRenderDict() {
 			TextAsset cPanel = (TextAsset)Resources.Load("ColorPanel");
 			StringReader sr = new StringReader(cPanel.text);
 			
@@ -1379,7 +1438,7 @@ namespace UI {
 		/// <summary>
 		/// Inits the Textures Menu list.
 		/// </summary>
-		public static void InitTextureMenuList() {
+		public void InitTextureMenuList() {
 			TextAsset tList = (TextAsset)Resources.Load("TexturesMenu");
 			StringReader sr = new StringReader(tList.text);
 			
@@ -1410,7 +1469,7 @@ namespace UI {
 		/// <param name='col'>
 		/// Color to apply. Color.
 		/// </param>
-		public static void SetAtomColor(string atomChar, Color col) {
+		public void SetAtomColor(string atomChar, Color col) {
 			switch(atomChar) {
 				case "H" :
 					MoleculeModel.hydrogenColor.color = col;
@@ -1444,7 +1503,7 @@ namespace UI {
 		/// <param name='panelName'>
 		/// Name of the color panel. String.
 		/// </param>
-		public static void SetColorPanel(string panelName) {
+		public void SetColorPanel(string panelName) {
 			if(panelDict.ContainsKey(panelName)) {
 				Debug.Log ("Setting color panel : " + panelName);
 				GenericManager manager = Molecule.View.DisplayMolecule.GetManagers()[0];
@@ -1462,7 +1521,7 @@ namespace UI {
 		/// <param name='panelName'>
 		/// Name of the texture panel. String
 		/// </param>
-		public static void SetTexturePanel(string panelName) {
+		public void SetTexturePanel(string panelName) {
 			if(panelDict.ContainsKey(panelName) && UIData.Instance.atomtype == UIData.AtomType.hyperball) {
 				Debug.Log ("Setting texture panel : " + panelName);
 				GameObject hbManagerObj = GameObject.FindGameObjectWithTag("HBallManager");
@@ -1497,7 +1556,7 @@ namespace UI {
 				Cleared (this, null);
 			}
 		}
-		public static void HandlePanelSelected(string panel)
+		public void HandlePanelSelected(string panel)
 		{
 			switch (panel) {
 			case "All_White":
@@ -1548,7 +1607,7 @@ namespace UI {
 
 			ChangeManager.DispatchMethodEvent (typeof(GUIDisplay), "HandlePanelSelected", panel);
 		}
-		public static void ChangeAtomsColor(ColorPicker.ColorEventArgs args)
+		public void ChangeAtomsColor(ColorPicker.ColorEventArgs args)
 		{
 			GenericManager manager = Molecule.View.DisplayMolecule.GetManagers()[0];
 
@@ -1562,7 +1621,7 @@ namespace UI {
 
 			ChangeManager.DispatchMethodEvent (typeof(GUIDisplay), "ChangeAtomsColor", args);
 		}
-		public static void ChangeAtomsTexture(string texFil)
+		public void ChangeAtomsTexture(string texFil)
 		{
 			GameObject hbManagerObj = GameObject.FindGameObjectWithTag("HBallManager");
 			HBallManager hbManager = hbManagerObj.GetComponent<HBallManager>();

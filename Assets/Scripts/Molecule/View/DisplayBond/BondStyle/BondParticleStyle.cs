@@ -156,7 +156,7 @@ namespace Molecule.View.DisplayBond
 //				int atom1number;
 //				int atom2number;
 			
-				if(UI.GUIDisplay.file_extension=="xgmml")
+				if(UI.GUIDisplay.Instance.file_extension=="xgmml")
 				{
 //					oratom1number=(int)atomtype.x;
 //					oratom2number=(int)atomtype.y;

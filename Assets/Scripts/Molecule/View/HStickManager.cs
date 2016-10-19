@@ -13,7 +13,7 @@ public class HStickManager : GenericManager {
 
 	// Use this for initialization
 	public override void Init () {
-		if(UI.GUIDisplay.file_extension=="xgmml")
+		if(UI.GUIDisplay.Instance.file_extension=="xgmml")
 			xgmml = true;
 		
 		sticks = GameObject.FindObjectsOfType(typeof(StickUpdate)) as StickUpdate[];

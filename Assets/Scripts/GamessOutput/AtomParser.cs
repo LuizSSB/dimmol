@@ -5,24 +5,17 @@ namespace GamessOutput
 {
 	public class AtomParser : BaseParser
 	{
-		public AtomParser(List<List<Atom>> statesSoFar = null, Dictionary<string, object> userInfo = null)
+		public AtomParser(List<OutputState> statesSoFar = null, Dictionary<string, object> userInfo = null)
 			: base(statesSoFar, userInfo)
 		{
-			CurrentAtoms = statesSoFar[statesSoFar.Count - 1];
 		}
-
-		public List<Atom> CurrentAtoms {
-			get;
-			set;
-		}
-		
-		
+				
 		#region IParser implementation
 		public override IParser ParseLine (string line, int lineNumber)
 		{
-			if (line.Substring(0, 4) == "--- ")
+			if (line.Trim().Length == 0)
 			{
-				return new SearchingParser(AtomsStates, UserInfo);
+				return new EnergyParser(AtomsStates, UserInfo);
 			}
 
 			var lineParts = System.Text.RegularExpressions.Regex.Split(line.Trim(), " +");
@@ -34,7 +27,7 @@ namespace GamessOutput
 				Z = lineParts[4]
 			};
 
-			CurrentAtoms.Add(atom);
+			CurrentAtoms.Atoms.Add(atom);
 
 			return this;
 		}

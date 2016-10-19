@@ -70,11 +70,31 @@ using UI;
 public class StickUpdate : MonoBehaviour {
 	
 	public static bool resetColors = false;
-	
-	public static float shrink = 0.01f;
+
+	public static float _shrink = 0.01f;
+	public static float shrink {
+		get {
+			return _shrink;
+		}
+		set {
+			if (value == _shrink)
+				return;
+			_shrink = value;
+		}
+	}
 	public static float oldshrink = 0.01f;
-	
-	public static float scale = 1.0f;
+
+	public static float _scale = 1.0f;
+	public static float scale {
+		get {
+			return _scale;
+		}
+		set {
+			if (value == _scale)
+				return;
+			_scale = value;
+		}
+	}
 	public static float oldscale = 1.0f;
 	
 	public static float radiusFactor = 1.0f;

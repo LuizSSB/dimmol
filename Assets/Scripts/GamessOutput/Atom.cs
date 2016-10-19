@@ -2,32 +2,45 @@
 
 namespace GamessOutput
 {
+	[Serializable]
 	public class Atom
 	{
-		public string Id {
-			get;
-			set;
+		public string Id;
+
+		public float Charge;
+
+		public float FloatX {
+			get {
+				return float.Parse(X);
+			}
+			set {
+				X = value.ToString();
+			}
 		}
 
-		public float Charge {
-			get;
-			set;
+		public float FloatY {
+			get {
+				return float.Parse(Y);
+			}
+			set {
+				Y = value.ToString();
+			}
 		}
 
-		public string X {
-			get;
-			set;
+		public float FloatZ {
+			get {
+				return float.Parse(Z);
+			}
+			set {
+				Z = value.ToString();
+			}
 		}
 
-		public string Y {
-			get;
-			set;
-		}
+		public string X;
 
-		public string Z {
-			get;
-			set;
-		}
+		public string Y;
+
+		public string Z;
 	}
 }
 

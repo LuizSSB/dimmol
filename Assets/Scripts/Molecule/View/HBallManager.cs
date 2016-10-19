@@ -116,7 +116,7 @@ public class HBallManager : GenericManager {
 	/// </summary>
 	public override void Init () {
 		hballs = GameObject.FindObjectsOfType(typeof(BallUpdateHB)) as BallUpdateHB[];
-		if(UI.GUIDisplay.file_extension=="xgmml")
+		if(UI.GUIDisplay.Instance.file_extension=="xgmml")
 			xgmml = true;
 		
 		// Useful for second molecule
@@ -296,7 +296,7 @@ public class HBallManager : GenericManager {
 				if(chain == "All"){
 	// ---------- ATOM
 //					Debug.Log("ATOM");
-					if(GUIDisplay.quickSelection){
+					if(GUIDisplay.Instance.quickSelection){
 						for (int i=0; i<hballs.Length; i++)
 							if(atom.Contains(hballs[i].tag))
 								hballs[i].GetComponent<Renderer>().material.SetTexture("_MatCap", texture);
@@ -309,7 +309,7 @@ public class HBallManager : GenericManager {
 				else{
 		// ---------- ATOM + CHAIN
 //					Debug.Log("ATOM+CHAIN");
-					if(GUIDisplay.quickSelection){
+					if(GUIDisplay.Instance.quickSelection){
 						for (int i=0; i<hballs.Length; i++){
 							if(atom.Contains(hballs[i].tag)
 								&& Molecule.Model.MoleculeModel.atomsChainList[(int)hballs[i].number] == chain)
@@ -328,7 +328,7 @@ public class HBallManager : GenericManager {
 				if(chain == "All"){
 		// ---------- ATOM + RESIDUE
 //					Debug.Log("ATOM+RESIDUE");
-					if(GUIDisplay.quickSelection){
+					if(GUIDisplay.Instance.quickSelection){
 						for (int i=0; i<hballs.Length; i++){
 							if(atom.Contains(hballs[i].tag)
 								&& Molecule.Model.MoleculeModel.atomsResnamelist[(int)hballs[i].number] == residue)
@@ -345,7 +345,7 @@ public class HBallManager : GenericManager {
 				else{
 		// ---------- ATOM + RESIDUE + CHAIN
 //					Debug.Log("ATOM+RESIDUE+CHAIN");
-					if(GUIDisplay.quickSelection){
+					if(GUIDisplay.Instance.quickSelection){
 						for (int i=0; i<hballs.Length; i++){
 							if(atom.Contains(hballs[i].tag)
 								&& Molecule.Model.MoleculeModel.atomsResnamelist[(int)hballs[i].number] == residue
@@ -499,7 +499,7 @@ public class HBallManager : GenericManager {
 				if(chain == "All"){
 		// ---------- ATOM
 //					Debug.Log("ATOM");
-					if(GUIDisplay.quickSelection){
+					if(GUIDisplay.Instance.quickSelection){
 						for (int i=0; i<hballs.Length; i++){
 							if(atom.Contains(hballs[i].tag))
 								Molecule.Model.MoleculeModel.atomsColorList[(int)hballs[i].number] = col;
@@ -514,7 +514,7 @@ public class HBallManager : GenericManager {
 				else{
 		// ---------- ATOM + CHAIN
 //					Debug.Log("ATOM+CHAIN");
-					if(GUIDisplay.quickSelection){
+					if(GUIDisplay.Instance.quickSelection){
 						for (int i=0; i<hballs.Length; i++){
 							if(atom.Contains(hballs[i].tag)
 								&& Molecule.Model.MoleculeModel.atomsChainList[(int)hballs[i].number] == chain)
@@ -533,7 +533,7 @@ public class HBallManager : GenericManager {
 				if(chain == "All"){
 		// ---------- ATOM + RESIDUE
 //					Debug.Log("ATOM+RESIDUE");
-					if(GUIDisplay.quickSelection){
+					if(GUIDisplay.Instance.quickSelection){
 						for (int i=0; i<hballs.Length; i++){
 							if(atom.Contains(hballs[i].tag)
 								&& Molecule.Model.MoleculeModel.atomsResnamelist[(int)hballs[i].number] == residue)
@@ -550,7 +550,7 @@ public class HBallManager : GenericManager {
 				else{
 		// ---------- ATOM + RESIDUE + CHAIN
 //					Debug.Log("ATOM+RESIDUE+CHAIN");
-					if(GUIDisplay.quickSelection){
+					if(GUIDisplay.Instance.quickSelection){
 						for (int i=0; i<hballs.Length; i++){
 							if(atom.Contains(hballs[i].tag)
 								&& Molecule.Model.MoleculeModel.atomsResnamelist[(int)hballs[i].number] == residue
@@ -645,31 +645,31 @@ public class HBallManager : GenericManager {
 				if(residue == "All"){
 					if(chain == "All"){
 			// ---------- ATOM
-						if(GUIDisplay.quickSelection){
+						if(GUIDisplay.Instance.quickSelection){
 							for (int i=0; i<hballs.Length; i++) {
 								if(atom.Contains(hballs[i].tag))
-									Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)hballs[i].number] = (GUIDisplay.newScale);
+									Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)hballs[i].number] = (GUIDisplay.Instance.newScale);
 							}
 						}else{
 							for (int i=0; i<hballs.Length; i++) {
 								if(atom.Contains(Molecule.Model.MoleculeModel.atomsNamelist[(int)hballs[i].number]))
-									Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)hballs[i].number] = (GUIDisplay.newScale);
+									Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)hballs[i].number] = (GUIDisplay.Instance.newScale);
 								}
 						}
 					}
 					else{
 			// ---------- ATOM + CHAIN
-						if(GUIDisplay.quickSelection){
+						if(GUIDisplay.Instance.quickSelection){
 							for (int i=0; i<hballs.Length; i++) {
 								if(atom.Contains(hballs[i].tag)
 									&& Molecule.Model.MoleculeModel.atomsChainList[(int)hballs[i].number] == chain)
-										Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)hballs[i].number] = (GUIDisplay.newScale);		
+										Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)hballs[i].number] = (GUIDisplay.Instance.newScale);		
 							}
 						}else{
 							for (int i=0; i<hballs.Length; i++) {
 								if(atom.Contains(Molecule.Model.MoleculeModel.atomsNamelist[(int)hballs[i].number])
 									&& Molecule.Model.MoleculeModel.atomsChainList[(int)hballs[i].number] == chain)
-										Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)hballs[i].number] = (GUIDisplay.newScale);		
+										Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)hballs[i].number] = (GUIDisplay.Instance.newScale);		
 							}
 						}
 					}
@@ -677,35 +677,35 @@ public class HBallManager : GenericManager {
 				else{
 					if(chain == "All"){
 			// ---------- ATOM + RESIDUE
-						if(GUIDisplay.quickSelection){
+						if(GUIDisplay.Instance.quickSelection){
 							for (int i=0; i<hballs.Length; i++) {
 								if(atom.Contains(hballs[i].tag)
 									&& Molecule.Model.MoleculeModel.atomsResnamelist[(int)hballs[i].number] == residue)
-										Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)hballs[i].number] = (GUIDisplay.newScale);
+										Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)hballs[i].number] = (GUIDisplay.Instance.newScale);
 							}
 						}else{
 							for (int i=0; i<hballs.Length; i++) {
 								if(atom.Contains(Molecule.Model.MoleculeModel.atomsNamelist[(int)hballs[i].number])
 									&& Molecule.Model.MoleculeModel.atomsResnamelist[(int)hballs[i].number] == residue)
-										Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)hballs[i].number] = (GUIDisplay.newScale);
+										Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)hballs[i].number] = (GUIDisplay.Instance.newScale);
 							}
 						}
 					}
 					else{
 			// ---------- ATOM + CHAIN + RESIDUE
-						if(GUIDisplay.quickSelection){
+						if(GUIDisplay.Instance.quickSelection){
 							for (int i=0; i<hballs.Length; i++) {
 								if(atom.Contains(hballs[i].tag) 
 									&& Molecule.Model.MoleculeModel.atomsResnamelist[(int)hballs[i].number] == residue
 									&& Molecule.Model.MoleculeModel.atomsChainList[(int)hballs[i].number] == chain)
-										Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)hballs[i].number] = (GUIDisplay.newScale);		
+										Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)hballs[i].number] = (GUIDisplay.Instance.newScale);		
 							}
 						}else{
 							for (int i=0; i<hballs.Length; i++) {
 								if(atom.Contains(Molecule.Model.MoleculeModel.atomsNamelist[(int)hballs[i].number])
 									&& Molecule.Model.MoleculeModel.atomsResnamelist[(int)hballs[i].number] == residue
 									&& Molecule.Model.MoleculeModel.atomsChainList[(int)hballs[i].number] == chain)
-										Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)hballs[i].number] = (GUIDisplay.newScale);		
+										Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)hballs[i].number] = (GUIDisplay.Instance.newScale);		
 							}
 						}
 					}
@@ -716,14 +716,14 @@ public class HBallManager : GenericManager {
 					if(chain == "All"){
 			// ---------- EVERYTHING
 						for (int i=0; i<hballs.Length; i++) {
-							Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)hballs[i].number] = (GUIDisplay.newScale);
+							Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)hballs[i].number] = (GUIDisplay.Instance.newScale);
 						}
 					}
 					else{
 			// ---------- CHAIN
 						for (int i=0; i<hballs.Length; i++) {
 							if(Molecule.Model.MoleculeModel.atomsChainList[(int)hballs[i].number] == chain)
-								Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)hballs[i].number] = (GUIDisplay.newScale);		
+								Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)hballs[i].number] = (GUIDisplay.Instance.newScale);		
 						}
 					}
 				}
@@ -732,7 +732,7 @@ public class HBallManager : GenericManager {
 			// ---------- RESIDUE
 						for (int i=0; i<hballs.Length; i++) {
 							if(Molecule.Model.MoleculeModel.atomsResnamelist[(int)hballs[i].number] == residue)
-								Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)hballs[i].number] = (GUIDisplay.newScale);
+								Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)hballs[i].number] = (GUIDisplay.Instance.newScale);
 						}
 					}
 					else{
@@ -740,7 +740,7 @@ public class HBallManager : GenericManager {
 						for (int i=0; i<hballs.Length; i++) {
 							if(Molecule.Model.MoleculeModel.atomsResnamelist[(int)hballs[i].number] == residue
 								&& Molecule.Model.MoleculeModel.atomsChainList[(int)hballs[i].number] == chain)
-									Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)hballs[i].number] = (GUIDisplay.newScale);	
+									Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)hballs[i].number] = (GUIDisplay.Instance.newScale);	
 						}
 					}
 				}
@@ -758,7 +758,7 @@ public class HBallManager : GenericManager {
 		public override void SetRadii(int id) {
 			for (int i=0; i<hballs.Length; i++) {
 				if((int)hballs[i].number == id)
-					Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)hballs[i].number] = (GUIDisplay.newScale);
+					Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)hballs[i].number] = (GUIDisplay.Instance.newScale);
 			}
 			BallUpdate.resetRadii = true;
 			BallUpdate.bondsReadyToBeReset = true;
@@ -812,8 +812,8 @@ public class HBallManager : GenericManager {
 			                                                MoleculeModel.atomsLocationlist[i][1],
 			                                                MoleculeModel.atomsLocationlist[i][2]);
 		}
-		BallUpdate.bondsReadyToBeReset = true;
-		UIData.Instance.resetBondDisplay = true;
+//		BallUpdate.bondsReadyToBeReset = true;
+//		UIData.Instance.resetBondDisplay = true;
 	}
 	
 	/// <summary>
@@ -839,14 +839,14 @@ public class HBallManager : GenericManager {
 			
 			if (Molecule.Model.MoleculeModel.atomsLocalScaleList.Count==0){
 				for (int i=0; i<(Molecule.Model.MoleculeModel.atomsTypelist.Count); i++){
-					Molecule.Model.MoleculeModel.atomsLocalScaleList.Add(GUIDisplay.newScale);
+					Molecule.Model.MoleculeModel.atomsLocalScaleList.Add(GUIDisplay.Instance.newScale);
 				}
 			}
 
 			//C.R 
 			if (Molecule.Model.MoleculeModel.atomsLocalScaleList.Count < hballs[0].number+1){
 				for(int i=(Molecule.Model.MoleculeModel.atomsLocalScaleList.Count)+1; i<=hballs[0].number+1; i++){
-					Molecule.Model.MoleculeModel.atomsLocalScaleList.Add(GUIDisplay.newScale);
+					Molecule.Model.MoleculeModel.atomsLocalScaleList.Add(GUIDisplay.Instance.newScale);
 				}
 			}			
 			 

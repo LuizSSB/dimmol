@@ -108,10 +108,10 @@ public class ScreenShot : MonoBehaviour
             byte[] bytes = texture.EncodeToPNG();
 
             // save our test image (could also upload to WWW)
-    	    if(UI.GUIDisplay.directorypath=="/Users/lvzhihan/temp/pdb/")
+    	    if(UI.GUIDisplay.Instance.directorypath=="/Users/lvzhihan/temp/pdb/")
     	    	File.WriteAllBytes(Application.dataPath + "/../testscreen-" + count + ".png", bytes);
     	    else
-            	File.WriteAllBytes(UI.GUIDisplay.directorypath + "/testscreen-" + count + ".png", bytes);
+            	File.WriteAllBytes(UI.GUIDisplay.Instance.directorypath + "/testscreen-" + count + ".png", bytes);
 
             count++;
 

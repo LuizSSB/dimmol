@@ -181,9 +181,9 @@
 //		
 //		
 //		int curentline=11;
-////		FileInfo file=new FileInfo(UI.GUIDisplay.file_base_name+".dx");
+////		FileInfo file=new FileInfo(UI.GUIDisplay.Instance.file_base_name+".dx");
 //        string text;
-//		StreamReader sr=new StreamReader(UI.GUIDisplay.file_base_name+".dx");
+//		StreamReader sr=new StreamReader(UI.GUIDisplay.Instance.file_base_name+".dx");
 //		using (sr)
 //        {              
 //            text = sr.ReadToEnd();                 

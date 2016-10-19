@@ -91,7 +91,7 @@ public class SphereManager : GenericManager {
 				if(chain == "All"){
 		// ---------- ATOM
 //					Debug.Log("ATOM");
-					if(GUIDisplay.quickSelection){
+					if(GUIDisplay.Instance.quickSelection){
 						foreach(BallUpdateSphere sp in balls){
 							if(atom.Contains(sp.tag))
 								Molecule.Model.MoleculeModel.atomsColorList[(int)sp.number] = col;
@@ -106,7 +106,7 @@ public class SphereManager : GenericManager {
 				else{
 		// ---------- ATOM + CHAIN
 //					Debug.Log("ATOM+CHAIN");
-					if(GUIDisplay.quickSelection){
+					if(GUIDisplay.Instance.quickSelection){
 						foreach(BallUpdateSphere sp in balls){
 							if(atom.Contains(sp.tag)
 								&& Molecule.Model.MoleculeModel.atomsChainList[(int)sp.number] == chain)
@@ -125,7 +125,7 @@ public class SphereManager : GenericManager {
 				if(chain == "All"){
 		// ---------- ATOM + RESIDUE
 //					Debug.Log("ATOM+RESIDUE");
-					if(GUIDisplay.quickSelection){
+					if(GUIDisplay.Instance.quickSelection){
 						foreach(BallUpdateSphere sp in balls){
 							if(atom.Contains(sp.tag)
 								&& Molecule.Model.MoleculeModel.atomsResnamelist[(int)sp.number] == residue)
@@ -142,7 +142,7 @@ public class SphereManager : GenericManager {
 				else{
 		// ---------- ATOM + RESIDUE + CHAIN
 //					Debug.Log("ATOM+RESIDUE+CHAIN");
-					if(GUIDisplay.quickSelection){
+					if(GUIDisplay.Instance.quickSelection){
 						foreach(BallUpdateSphere sp in balls){
 							if(atom.Contains(sp.tag)
 								&& Molecule.Model.MoleculeModel.atomsResnamelist[(int)sp.number] == residue
@@ -238,31 +238,31 @@ public class SphereManager : GenericManager {
 			if(residue == "All"){
 				if(chain == "All"){
 		// ---------- ATOM
-					if(GUIDisplay.quickSelection){
+					if(GUIDisplay.Instance.quickSelection){
 						foreach(BallUpdateSphere sp in balls) {
 							if(atom.Contains(sp.tag))
-								Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)sp.number] = (GUIDisplay.newScale);
+								Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)sp.number] = (GUIDisplay.Instance.newScale);
 						}
 					}else{
 						foreach(BallUpdateSphere sp in balls) {
 							if(atom.Contains(Molecule.Model.MoleculeModel.atomsNamelist[(int)sp.number]))
-								Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)sp.number] = (GUIDisplay.newScale);
+								Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)sp.number] = (GUIDisplay.Instance.newScale);
 							}
 					}
 				}
 				else{
 		// ---------- ATOM + CHAIN
-					if(GUIDisplay.quickSelection){
+					if(GUIDisplay.Instance.quickSelection){
 						foreach(BallUpdateSphere sp in balls) {
 							if(atom.Contains(sp.tag)
 								&& Molecule.Model.MoleculeModel.atomsChainList[(int)sp.number] == chain)
-									Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)sp.number] = (GUIDisplay.newScale);		
+									Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)sp.number] = (GUIDisplay.Instance.newScale);		
 						}
 					}else{
 						foreach(BallUpdateSphere sp in balls) {
 							if(atom.Contains(Molecule.Model.MoleculeModel.atomsNamelist[(int)sp.number])
 								&& Molecule.Model.MoleculeModel.atomsChainList[(int)sp.number] == chain)
-									Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)sp.number] = (GUIDisplay.newScale);		
+									Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)sp.number] = (GUIDisplay.Instance.newScale);		
 						}
 					}
 				}
@@ -270,35 +270,35 @@ public class SphereManager : GenericManager {
 			else{
 				if(chain == "All"){
 		// ---------- ATOM + RESIDUE
-					if(GUIDisplay.quickSelection){
+					if(GUIDisplay.Instance.quickSelection){
 						foreach(BallUpdateSphere sp in balls) {
 							if(atom.Contains(sp.tag)
 								&& Molecule.Model.MoleculeModel.atomsResnamelist[(int)sp.number] == residue)
-									Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)sp.number] = (GUIDisplay.newScale);
+									Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)sp.number] = (GUIDisplay.Instance.newScale);
 						}
 					}else{
 						foreach(BallUpdateSphere sp in balls) {
 							if(atom.Contains(Molecule.Model.MoleculeModel.atomsNamelist[(int)sp.number])
 								&& Molecule.Model.MoleculeModel.atomsResnamelist[(int)sp.number] == residue)
-									Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)sp.number] = (GUIDisplay.newScale);
+									Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)sp.number] = (GUIDisplay.Instance.newScale);
 						}
 					}
 				}
 				else{
 		// ---------- ATOM + CHAIN + RESIDUE
-					if(GUIDisplay.quickSelection){
+					if(GUIDisplay.Instance.quickSelection){
 						foreach(BallUpdateSphere sp in balls) {
 							if(atom.Contains(sp.tag) 
 								&& Molecule.Model.MoleculeModel.atomsResnamelist[(int)sp.number] == residue
 								&& Molecule.Model.MoleculeModel.atomsChainList[(int)sp.number] == chain)
-									Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)sp.number] = (GUIDisplay.newScale);		
+									Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)sp.number] = (GUIDisplay.Instance.newScale);		
 						}
 					}else{
 						foreach(BallUpdateSphere sp in balls) {
 							if(atom.Contains(Molecule.Model.MoleculeModel.atomsNamelist[(int)sp.number])
 								&& Molecule.Model.MoleculeModel.atomsResnamelist[(int)sp.number] == residue
 								&& Molecule.Model.MoleculeModel.atomsChainList[(int)sp.number] == chain)
-									Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)sp.number] = (GUIDisplay.newScale);		
+									Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)sp.number] = (GUIDisplay.Instance.newScale);		
 						}
 					}
 				}
@@ -309,14 +309,14 @@ public class SphereManager : GenericManager {
 				if(chain == "All"){
 		// ---------- EVERYTHING
 					foreach(BallUpdateSphere sp in balls) {
-						Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)sp.number] = (GUIDisplay.newScale);
+						Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)sp.number] = (GUIDisplay.Instance.newScale);
 					}
 				}
 				else{
 		// ---------- CHAIN
 					foreach(BallUpdateSphere sp in balls) {
 						if(Molecule.Model.MoleculeModel.atomsChainList[(int)sp.number] == chain)
-							Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)sp.number] = (GUIDisplay.newScale);		
+							Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)sp.number] = (GUIDisplay.Instance.newScale);		
 					}
 				}
 			}
@@ -325,7 +325,7 @@ public class SphereManager : GenericManager {
 		// ---------- RESIDUE
 					foreach(BallUpdateSphere sp in balls) {
 						if(Molecule.Model.MoleculeModel.atomsResnamelist[(int)sp.number] == residue)
-							Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)sp.number] = (GUIDisplay.newScale);
+							Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)sp.number] = (GUIDisplay.Instance.newScale);
 					}
 				}
 				else{
@@ -333,7 +333,7 @@ public class SphereManager : GenericManager {
 					foreach(BallUpdateSphere sp in balls) {
 						if(Molecule.Model.MoleculeModel.atomsResnamelist[(int)sp.number] == residue
 							&& Molecule.Model.MoleculeModel.atomsChainList[(int)sp.number] == chain)
-								Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)sp.number] = (GUIDisplay.newScale);	
+								Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)sp.number] = (GUIDisplay.Instance.newScale);	
 					}
 				}
 			}
@@ -351,7 +351,7 @@ public class SphereManager : GenericManager {
 	public override void SetRadii(int id) {
 		foreach(BallUpdateSphere sp in balls) {
 			if((int)sp.number == id)
-				Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)sp.number] = (GUIDisplay.newScale);
+				Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)sp.number] = (GUIDisplay.Instance.newScale);
 		}
 		BallUpdate.resetRadii = true;
 		BallUpdate.bondsReadyToBeReset = true;

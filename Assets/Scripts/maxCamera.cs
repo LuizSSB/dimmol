@@ -678,6 +678,7 @@ public class maxCamera : MonoBehaviour
 				if (UIData.Instance.switchmode)
 					Molecule3DComp.ToParticle ();
 				xDeg += Mathf.Lerp (0.0F, 100.0F, Time.deltaTime * 0.8f);
+				Debug.Log(xDeg.ToString());
 				yDeg = 0;
 			}
 	
@@ -893,13 +894,16 @@ public class maxCamera : MonoBehaviour
 		return Mathf.Clamp (angle, min, max);
 	}
     
-	public void ToCenter ()
+	public void ToCenter (bool reallyChangePosition = true)
 	{
-		LocCamera.transform.localPosition = Vector3.zero;
-		target.transform.localPosition = Vector3.zero;
-		transform.position = new Vector3 (0, 0, MoleculeModel.cameraLocation.z);
-		LocCamera.transform.rotation = new Quaternion (0, 0, 0, 0);
-		transform.rotation = Quaternion.identity;
+		if(reallyChangePosition)
+		{
+			LocCamera.transform.localPosition = Vector3.zero;
+			target.transform.localPosition = Vector3.zero;
+			transform.position = new Vector3 (0, 0, MoleculeModel.cameraLocation.z);
+			LocCamera.transform.rotation = new Quaternion (0, 0, 0, 0);
+			transform.rotation = Quaternion.identity;
+		}
 		centerChanged = false;
 		weight = 0;
 		Init ();

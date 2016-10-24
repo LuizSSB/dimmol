@@ -292,9 +292,9 @@ namespace  ParseData.ParsePDB
      	    dataStream = response.GetResponseStream ();
 			// Open the stream using a StreamReader for easy access.
 			using (sr = new StreamReader (dataStream)) {
-				// Luiz
+				// Luiz:
 				string pdbContents = sr.ReadToEnd();
-				UIData.Instance.ChosenPdbContents = pdbContents;
+				UIData.Instance.ChosenPdbContents = JsonUtility.ToJson(GUIDisplay.Instance.PdbRequest);
 
 				ControlMolecule.CreateMolecule(new StringReader(pdbContents));
 				//ReadPDB(sr);

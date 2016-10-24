@@ -120,7 +120,7 @@ public class Rectangles : UI.GUIMoleculeController {
 	public static int openXstart = mainXstart;
 	public static int openYstart = mainYstart + mainHeight;
 	public static int openWidth = sWidth / 4;
-	public static int openHeight = sHeight / 2;
+	public static int openHeight =(int) (sHeight / 1.5);
 	
 	// Rectangle for the open file menu
 	public static Rect openRect = new Rect(openXstart, openYstart, openWidth, openHeight);
@@ -233,7 +233,7 @@ public class Rectangles : UI.GUIMoleculeController {
 	public static int manipulatorMoveXstart = Screen.width - manipulatorMoveWidth;
 
 	// Luiz:
-	private static int manipulatorMoveHeight = 170;//(int) (sHeight * 0.22f);
+	private static int manipulatorMoveHeight = 180;//(int) (sHeight * 0.22f);
 
 	private static int manipulatorMoveYstart = Screen.height - manipulatorMoveHeight;
 	
@@ -242,9 +242,9 @@ public class Rectangles : UI.GUIMoleculeController {
 
 	// Luiz:
 	public static Rect EnergyRect = new Rect(
-		Screen.width - 75,
+		Screen.width - 80,
 		Screen.height - manipulatorMoveHeight - (Screen.height - manipulatorMoveHeight - mainHeight),
-		75,
+		80,
 		Screen.height - manipulatorMoveHeight - mainHeight
 	);
 	

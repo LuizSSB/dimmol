@@ -560,15 +560,15 @@ public class Molecule3D:MonoBehaviour {
 		
 		// check all format reading by unitymol PDB, XGMML and OBJ
 			if(UIData.Instance.fetchPDBFile) {
-				Debug.Log("pdbServer/pdbID :: "+GUIDisplay.Instance.pdbServer + GUIDisplay.Instance.pdbID);
-				Debug.Log("proxyServer+proxyPort :: "+GUIDisplay.Instance.proxyServer + GUIDisplay.Instance.proxyPort);
+				Debug.Log("pdbServer/pdbID :: "+GUIDisplay.Instance.pdbServer + GUIDisplay.Instance.PdbRequest.PdbId);
+				Debug.Log("proxyServer+proxyPort :: "+GUIDisplay.Instance.PdbRequest.ProxyServer + GUIDisplay.Instance.PdbRequest.ProxyPort);
 				int proxyport = 0;
-				if(GUIDisplay.Instance.proxyPort != "")
-					proxyport = int.Parse(GUIDisplay.Instance.proxyPort);
+				if(GUIDisplay.Instance.PdbRequest.ProxyPort != "")
+					proxyport = int.Parse(GUIDisplay.Instance.PdbRequest.ProxyPort);
 				else
 					proxyport = 0;
 
-				requestPDB.FetchPDB(GUIDisplay.Instance.pdbServer, GUIDisplay.Instance.pdbID, GUIDisplay.Instance.proxyServer, proxyport);
+				requestPDB.FetchPDB(GUIDisplay.Instance.pdbServer, GUIDisplay.Instance.PdbRequest.PdbId, GUIDisplay.Instance.PdbRequest.ProxyServer, proxyport);
 			}
 		// if we laod a pdb file launch the reading of file
 			else if(GUIDisplay.Instance.file_extension=="pdb")
@@ -1255,33 +1255,12 @@ public class Molecule3D:MonoBehaviour {
 	{
 		if (UnityClusterPackage.NodeInformation.IsSlave) {
 			if (UIData.DeserializePart (serializedData)) {
-				if(!UIData.Instance.changingState)
-					UIData.Instance.isOpenFile = true;
+				UIData.Instance.isOpenFile = true;
 
-				requestPDB.LoadPDB (UIData.Instance.ChosenPdbContents);
-
-				if(UIData.Instance.changingState)
-				{
-					GUIMoleculeController.HYPERBALLSDEFAULT = false;
-					DisplayMolecule.Display();
-					DisplayMolecule.DisplayFieldLine();
-					SetCenter(0, false);
-
-					// Luiz: making sure that things are reset,
-					// believe it or not.
-					UIData.Instance.resetBondDisplay = true;
-					UIData.Instance.resetMeshcombine = true;
-					UIData.Instance.resetDisplay = true;
-					UIData.Instance.resetInteractive = true;
-					StickUpdate.resetColors = true;
-					HStickManager.resetBrightness = true;
-					BallUpdate.resetBondColors = true;
-					BallUpdate.resetColors = true;
-					BallUpdate.resetRadii = true;
-					BallUpdateCube.resetBondColors = true;
-					BallUpdate.bondsReadyToBeReset = true;
-					var diff = 1e-6f;
-					GUIMoleculeController.linkScale -= diff;
+				if(UIData.Instance.ChosenPdbContents.IndexOf("ProxyPort") > -1) {
+					GUIDisplay.Instance.PdbRequest = JsonUtility.FromJson<GUIDisplay.PdbRequestData>(UIData.Instance.ChosenPdbContents);
+				} else {
+					requestPDB.LoadPDB (UIData.Instance.ChosenPdbContents);
 				}
 			}
 		}
@@ -1321,7 +1300,7 @@ public class Molecule3D:MonoBehaviour {
 	}
 	private void HandleMethodInvoked(string typeName, string methodName, object param)
 	{
-//		Debug.Log ("### Method " + typeName + "." + methodName + "(" + param + ")");
+		Debug.Log ("### Method " + typeName + "." + methodName + "(" + param + ")");
 
 		if (UnityClusterPackage.NodeInformation.IsSlave) {
 			var type = Type.GetType (typeName);
@@ -1360,7 +1339,7 @@ public class Molecule3D:MonoBehaviour {
 		HandlePropertyChanged (typeName, propertyName, param);
 	}
 	private void HandlePropertyChanged(string typeName, string propertyName, object newValue ) {
-//		Debug.Log (string.Format ("### Property changed - {0}:{1} = {2}", typeName, propertyName, newValue));
+		Debug.Log (string.Format ("### Property changed - {0}:{1} = {2}", typeName, propertyName, newValue));
 
 		if (UnityClusterPackage.NodeInformation.IsSlave) {
 			var type = Type.GetType (typeName);

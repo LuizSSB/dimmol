@@ -107,7 +107,7 @@ namespace Molecule.Control {
 				BuildHireRnaHydrogenBondsStructures();
 			}
 
-			if(GUIDisplay.Instance.pdbID == "3EI0")
+			if(GUIDisplay.Instance.PdbRequest.PdbId == "3EI0")
 				UIData.Instance.isGLIC = true;
 			
 			UIData.Instance.isParticlesInitialized = false ; // new file, new particle system needed

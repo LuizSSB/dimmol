@@ -174,7 +174,6 @@ namespace UI
 		
 		public bool openAllMenu=false;
 
-		public bool changingState=false;
 		public bool openBound=false;
 		
 		public bool secondarystruct=false;

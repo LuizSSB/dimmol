@@ -150,11 +150,26 @@ namespace UI {
 		 * Luiz: I "converted" this class to a singleton,
 		 * though it's only a small step towards code quality in this particular project
 		 */
-		public 	string pdbID="1KX2";
-		public	string pdbServer = "http://www.pdb.org/pdb/files/";
-		public 	string proxyServer = ""; //OLD proxy : cache.ibpc.fr
-		public	string proxyPort = ""; //OLD port : 8080
+
+		// Luiz: 
+		// Luiz: using setter and getter methods because, 
+		[System.Serializable]
+		public class PdbRequestData {
+			public string PdbId;
+			public string ProxyServer;
+			public string ProxyPort;
+		}
+
+		public PdbRequestData PdbRequest = new PdbRequestData {
+			PdbId = "2MK1",
+			ProxyPort = string.Empty,
+			ProxyServer = string.Empty
+		};
+//		public 	string pdbID="1KX2";
+//		public 	string proxyServer = ""; //OLD proxy : cache.ibpc.fr
+//		public	string proxyPort = ""; //OLD port : 8080
 		private StringBuilder proxyPortValidate;
+		public	string pdbServer = "http://www.pdb.org/pdb/files/";
 
 //		private string idField="172.27.0.141";
 //		private string PortField="843";
@@ -306,6 +321,8 @@ namespace UI {
     	}
 	    protected GUIStyle m_centredText;
 
+		// Luiz:
+		public string GamessOutputWebAddress = "https://gist.github.com/LuizSSB/a9f9487453e44807f7c7a3e048fc0bde/raw/8a4939d111cf889fa73e1301ac1f59fe310a974d/gistfile1.txt";
 		
 // 		private int left=0;//0:oxygen;1:sulphur;2:carbon;3:nitrogen;4:phosphorus;5:unknown
 		
@@ -446,21 +463,9 @@ namespace UI {
 					#if !UNITY_WEBPLAYER
 					{
 						//id != "" if a molecule is already open
-						
-						GUILayout.BeginHorizontal ();
+
 						if (!UIData.Instance.hasMoleculeDisplay) {
 							// Luiz:
-							if(GUILayout.Button(new GUIContent("Open GAMESS optimization output", "Load a GAMESS optimization output file from disk"))) {
-								m_fileBrowser = new ImprovedFileBrowser(Rectangles.fileBrowserRect, "", OpenGamessOutputCallback, m_lastOpenDir);
-								//							m_fileBrowser.SelectionPattern = "*.pdb|*.xgmml";
-								m_fileBrowser.DirectoryImage = directoryimage; 
-								m_fileBrowser.FileImage = fileimage;
-								GUIMoleculeController.showOpenMenu = false;
-								GUIMoleculeController.showSecStructMenu = false;
-							}
-							GUILayout.EndHorizontal();
-							GUILayout.BeginHorizontal();
-
 							if (GUILayout.Button (new GUIContent ("Open File From Disk", "Load a PDB file from disk"))) {
 								m_fileBrowser = new ImprovedFileBrowser (Rectangles.fileBrowserRect, "", OpenFileCallback, m_lastOpenDir);
 //							m_fileBrowser.SelectionPattern = "*.pdb|*.xgmml";
@@ -475,7 +480,6 @@ namespace UI {
 								Clear ();
 							}
 						}
-						GUILayout.EndHorizontal ();
 					
 						if (!UIData.Instance.hasMoleculeDisplay) {
 							int menuWidth = Rectangles.openWidth;
@@ -488,25 +492,25 @@ namespace UI {
 							GUILayout.EndHorizontal ();
 						
 							GUILayout.BeginHorizontal ();
-							proxyServer = GUILayout.TextField (proxyServer, 256, GUILayout.Width (pServerWidth));
+							PdbRequest.ProxyServer = GUILayout.TextField (PdbRequest.ProxyServer, 256, GUILayout.Width (pServerWidth));
 //						proxyServer = MyTextField.FixedTextField(proxyServer, 256, 150f) ;
 							// Validate the proxyPort : only digits
 							proxyPortValidate = new StringBuilder ();
 						
-							foreach (char c in proxyPort)
+							foreach (char c in PdbRequest.ProxyPort)
 								if (char.IsDigit (c))
 									proxyPortValidate.Append (c);
 						
-							proxyPort = GUILayout.TextField (proxyPortValidate.ToString (), 4);
+							PdbRequest.ProxyPort = GUILayout.TextField (proxyPortValidate.ToString (), 4);
 							GUILayout.EndHorizontal ();
 
 
 							GUILayout.Label ("Please input a PDB ID");
 							GUILayout.BeginHorizontal ();
-							pdbID = GUILayout.TextField (pdbID, 4, GUILayout.Width (pPortWidth));
+							PdbRequest.PdbId = GUILayout.TextField (PdbRequest.PdbId, 4, GUILayout.Width (pPortWidth));
 //						pdbID=GUILayout.TextField(pdbID,4);
 							if (GUILayout.Button (new GUIContent ("Fetch PDB", "Fetch a PDB file from the PDB server"))) {
-								id = pdbID;
+								id = PdbRequest.PdbId;
 								UIData.Instance.fetchPDBFile = true;
 								UIData.Instance.isOpenFile = true;
 								GUIMoleculeController.showOpenMenu = false;
@@ -514,8 +518,46 @@ namespace UI {
 								UIData.Instance.bondtype = UIData.BondType.nobond;
 							}
 							GUILayout.EndHorizontal ();	
+
+							// Luiz:
+//							GUILayout.Label("Web address to PDB file");
+//							GUILayout.BeginHorizontal(); {
+//								PdbWebAddress = GUILayout.TextField(PdbWebAddress, GUILayout.Width(pServerWidth));
+//								if(GUILayout.Button(new GUIContent("Fetch", "Fetch PDB file from the web"))) {
+//									UIData.Instance.fetchPDBFile = UIData.PDBFetchingType.PDBServer;
+//									UIData.Instance.isOpenFile = true;
+//									GUIMoleculeController.showOpenMenu = false;
+//									UIData.Instance.atomtype = UIData.AtomType.particleball;
+//									UIData.Instance.bondtype = UIData.BondType.nobond;
+//
+//								}
+//							} GUILayout.EndHorizontal();
+							if(GUILayout.Button(new GUIContent("Open GAMESS optimization output", "Load a GAMESS optimization output file from disk"))) {
+								m_fileBrowser = new ImprovedFileBrowser(Rectangles.fileBrowserRect, "", OpenGamessOutputCallback, m_lastOpenDir);
+								m_fileBrowser.DirectoryImage = directoryimage; 
+								m_fileBrowser.FileImage = fileimage;
+								GUIMoleculeController.showOpenMenu = false;
+								GUIMoleculeController.showSecStructMenu = false;
+							}
+							GUILayout.Label("Web address to GAMESS output");
+							GUILayout.BeginHorizontal(); {
+								GamessOutputWebAddress = GUILayout.TextField(GamessOutputWebAddress, GUILayout.Width(pServerWidth));
+								if(GUILayout.Button(new GUIContent("Fetch", "Fetch GAMESS optimization output file from the web"))) {
+
+									try {
+										GUIMoleculeController.showOpenMenu = false;
+										GUIMoleculeController.showSecStructMenu = false;
+										var filePath = RequestGamessOutput.Fetch(GamessOutputWebAddress, Application.persistentDataPath);
+										OpenGamessOutputCallback(filePath);
+									} catch(System.Exception e) {
+										Debug.Log("Could not fetch gamess output: " + e);
+										GUIMoleculeController.showOpenMenu = true;
+										GUIMoleculeController.showSecStructMenu = true;
+									}
+
+								}
+							} GUILayout.EndHorizontal();
 						}
-					
 					}
 					if (id == "") {
 						GUILayout.BeginHorizontal ();
@@ -1664,4 +1706,5 @@ namespace UI {
 			this.NewAtoms = newAtoms;
 		}		
 	}
+
 }

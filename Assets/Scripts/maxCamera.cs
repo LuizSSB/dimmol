@@ -711,6 +711,16 @@ public class maxCamera : MonoBehaviour
 				transform.rotation = rotation;
 			}
 
+
+			if ((position.x <= -maxDistance || position.y <= -maxDistance || position.z <= -maxDistance)
+				&& desiredDistance > maxDistance) {
+				Debug.Log("man " + desiredDistance);
+				desiredDistance = maxDistance;
+			} else if ((position.x >= -minDistance || position.y >= -minDistance || position.z >= -minDistance)
+				&& desiredDistance < minDistance) {
+				desiredDistance = minDistance;
+			}
+
 			//Camera movement
 			currentDistance = Mathf.Lerp (currentDistance, desiredDistance, Time.deltaTime * zoomDampening);
 			position = target.position - (rotation * Vector3.forward * currentDistance + targetOffset);

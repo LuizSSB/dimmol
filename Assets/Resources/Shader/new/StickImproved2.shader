@@ -510,5 +510,5 @@ ENDCG
 
 } 
 // Pour les cartes graphiques ne supportant pas nos Shaders
-//Fallback "VertexLit"
+Fallback "VertexLit"
 }

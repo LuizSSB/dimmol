@@ -165,13 +165,13 @@ SubShader {
 			pos = mul (UNITY_MATRIX_MVP, float4(i.worldPos.x+_SurfacePos.x,i.worldPos.y+_SurfacePos.y,i.worldPos.z+_SurfacePos.z,0));
 
 			// Cut of the molecule
-			if ( _cut== 1f ){ // active le cut fixe
+			if ( _cut== 1 ){ // active le cut fixe
 				if ((_depthcut + _cutX*(i.worldPos.x+_SurfacePos.x) + _cutY*(i.worldPos.y+_SurfacePos.y) + _cutZ*(i.worldPos.z+_SurfacePos.z))<0){
 					clip(-1);
 				}//else {
 					//clip((_depthcut + _cutX*(i.worldPos.x+_SurfacePos.x) + _cutY*(i.worldPos.y+_SurfacePos.y) + _cutZ*(i.worldPos.z+_SurfacePos.z)));
 				//}
-			}else if ( _cut== 2f ){
+			}else if ( _cut== 2 ){
 				clip (frac(-(_depthcut + pos.z)/500) -0.5);
 			}
 			// get normal from the normal map
@@ -187,7 +187,7 @@ SubShader {
 			float4 matcapLookup = tex2D(_MatCap, vn*0.5 + 0.5);
 
 			// coment for benoist video
-			if (_colormode == 0f){
+			if (_colormode == 0){
 				_Color=i.color;
 			}
 			

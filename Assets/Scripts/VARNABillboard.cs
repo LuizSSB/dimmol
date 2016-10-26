@@ -15,7 +15,10 @@ public class VARNABillboard : MonoBehaviour {
 	private Process varnaProcess;
 	private Thread oThread;
 	
-	private string outputDirectory = Application.dataPath + "/Resources";
+	private string outputDirectory;
+	public void Awake() {
+		outputDirectory = Application.dataPath + "/Resources";
+	}
 
 	// Use this for initialization
 	void Start () {

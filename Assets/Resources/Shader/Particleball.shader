@@ -127,7 +127,7 @@ Category {
 			
 			fixed4 frag (v2f i) : COLOR
 			{
-				fixed4 tempcolor : COLOR;
+				fixed4 tempcolor;
 				tempcolor.r=tex2D(_MainTex, i.texcoord).r;
 				tempcolor.g=tex2D(_MainTex, i.texcoord).g;
 				

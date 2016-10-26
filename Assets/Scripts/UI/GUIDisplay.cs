@@ -140,6 +140,13 @@ namespace UI {
 				++CurrentStateIdx;
 			}
 		}
+		public void SetEnergyData(float minEnergy, float maxEnergy, float energy) {
+			StateEnergyMinMax = new RangeAttribute(minEnergy, maxEnergy);
+
+			if (CurrentState == null)
+				CurrentState = new OutputState();
+			CurrentState.Energy = energy;
+		}
 
 		public float guiScale = 1.0f;
 		public float oldGuiScale = 1.0f;
@@ -151,7 +158,6 @@ namespace UI {
 		 * though it's only a small step towards code quality in this particular project
 		 */
 
-		// Luiz: 
 		// Luiz: using setter and getter methods because, 
 		[System.Serializable]
 		public class PdbRequestData {
@@ -402,12 +408,6 @@ namespace UI {
 			StateFiles = ParseUtils.SaveStatesAsPDBs(states, Application.persistentDataPath);
 			OpenFileCallback(StateFiles[0]);
 			CurrentStateIdx = 0;
-
-//				directorypath = System.IO.Path.GetDirectoryName(path);
-//				m_lastOpenDir = directorypath;
-//				file_base_name = directorypath + System.IO.Path.DirectorySeparatorChar +
-//					System.IO.Path.GetFileNameWithoutExtension(path);
-//				file_extension = System.IO.Path.GetExtension(path).Substring(1);
 		}
 
 		public void OpenFileCallback(string path) {
@@ -675,10 +675,10 @@ namespace UI {
 				gUIMoleculeController.SetVRPNMenu ();
 				gUIMoleculeController.SetMDDriverMenu ();
 				gUIMoleculeController.SetHydroMenu ();
-
-				// Luiz:
-				gUIMoleculeController.SetEnergyWindow();
 			}
+
+			// Luiz:
+			gUIMoleculeController.SetEnergyWindow();
 
 //			SetHyperballMatCapTexture();
 			SetAtomScales();

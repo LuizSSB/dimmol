@@ -678,7 +678,6 @@ public class maxCamera : MonoBehaviour
 				if (UIData.Instance.switchmode)
 					Molecule3DComp.ToParticle ();
 				xDeg += Mathf.Lerp (0.0F, 100.0F, Time.deltaTime * 0.8f);
-				Debug.Log(xDeg.ToString());
 				yDeg = 0;
 			}
 	

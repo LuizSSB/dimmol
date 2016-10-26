@@ -864,7 +864,8 @@ namespace UI {
 		}
 
 		public void SetEnergyWindow() {
-			if(GUIDisplay.Instance.StateFiles != null && GUIDisplay.Instance.StateFiles.Length > 0)
+			if((Config.SlaveConfig.Instance.ShowEnergy && UnityClusterPackage.NodeInformation.IsSlave && GUIDisplay.Instance.CurrentState != null)
+				|| (GUIDisplay.Instance.StateFiles != null && GUIDisplay.Instance.StateFiles.Length > 0))
 			{
 				Rectangles.EnergyRect = GUI.Window(666, Rectangles.EnergyRect, LoadTypeGUI.Energy, emptyContent);
 			}

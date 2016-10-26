@@ -183,7 +183,11 @@ public class Molecule3D:MonoBehaviour {
 	}
 
 	void Awake() {
-		System.Threading.Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-US");	
+		System.Threading.Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-US");
+
+		// FIXME remove
+//		SlaveConfig.Instance.ToString();
+		print(SlaveConfig.Instance.CameraControl + " " + SlaveConfig.Instance.ShowEnergy);
 	}
 
 	void Start() {		
@@ -452,11 +456,11 @@ public class Molecule3D:MonoBehaviour {
 			}
 		}
 
-		if(UIData.Instance.autoChangingState) {
+		if (UIData.Instance.autoChangingState) {
 			float prevX = GUIDisplay.Instance.PreviousState.Atoms[0].FloatX;
 			float currX = state.Atoms[0].FloatX;
 			float firstX = MoleculeModel.atomsLocationlist[0][0];
-			if(Mathf.Abs(currX - prevX) <= 1e-6 || (prevX < currX && firstX >= currX) || (prevX > currX && firstX <= currX)) {
+			if (Mathf.Abs(currX - prevX) <= 1e-6 || (prevX < currX && firstX >= currX) || (prevX > currX && firstX <= currX)) {
 				GUIDisplay.Instance.GoToNextState();
 			}	
 		}
@@ -464,7 +468,13 @@ public class Molecule3D:MonoBehaviour {
 		if (!UnityClusterPackage.NodeInformation.IsSlave) {
 			var newLocations = MiniJSON.JsonEncode(MoleculeModel.atomsLocationlist.ToArray());
 			var networkinson = GetComponent<NetworkView> ();
-			networkinson.RPC("LoadStateRPC", RPCMode.All, newLocations);
+			networkinson.RPC(
+				"LoadStateRPC", RPCMode.All,
+				newLocations,
+				GUIDisplay.Instance.StateEnergyMinMax.min,
+				GUIDisplay.Instance.StateEnergyMinMax.max,
+				GUIDisplay.Instance.CurrentState.Energy
+			);
 		}
 
 //		UpdateVisualState();
@@ -1230,15 +1240,15 @@ public class Molecule3D:MonoBehaviour {
 	// Luiz:
 	private NetworkView mNetworkView;
 	[RPC]
-	public void LoadStateRPC(string serializedPositions)
+	public void LoadStateRPC(string serializedPositions, float minEnergy, float maxEnergy, float currentEnergy)
 	{
+		Debug.Log("%%%%%%% disco bus " + minEnergy + " " + maxEnergy + " " + currentEnergy);
 //		if(UnityClusterPackage.NodeInformation.IsSlave)
 		{
 			var deserialized = (System.Collections.ArrayList)MiniJSON.JsonDecode(serializedPositions);
 
 			// Faster than proper deserialization
 			MoleculeModel.atomsLocationlist.Clear();
-//			var a = new System.Collections.Generic.List<float[]>();
 			foreach(var atom in deserialized) {
 				var trueAtom = (System.Collections.ArrayList)atom;
 				MoleculeModel.atomsLocationlist.Add(new [] {
@@ -1247,6 +1257,11 @@ public class Molecule3D:MonoBehaviour {
 					(float)(System.Double)trueAtom[2]
 				});
 			}
+
+			if (UnityClusterPackage.NodeInformation.IsSlave) {
+				GUIDisplay.Instance.SetEnergyData(minEnergy, maxEnergy, currentEnergy);
+			}
+
 			StartCoroutine(UpdateVisualState());
 		}
 	}

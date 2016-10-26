@@ -34,7 +34,7 @@ namespace UnityClusterPackage {
 			
 			xmlDocument.LoadXml(contentXml);
 
-			ReadNodeInformation();            
+			ReadNodeInformation();
 		}
 
 		static void ReadNodeInformation()

@@ -396,6 +396,7 @@ namespace UI {
 		    Debug.Log ("If you don't see me, Uniteh brOke!");
 		}
 
+		// Luiz:
 		public void OpenGamessOutputCallback(string path) {
 			m_fileBrowser = null;
 			if(path == null)
@@ -404,10 +405,15 @@ namespace UI {
 			var states = ParseUtils.ExtractStates(path);
 			var energies = states.Select(s => s.Energy);
 			StateEnergyMinMax = new RangeAttribute(energies.Min(), energies.Max());
-
 			StateFiles = ParseUtils.SaveStatesAsPDBs(states, Application.persistentDataPath);
+
 			OpenFileCallback(StateFiles[0]);
-			CurrentStateIdx = 0;
+
+			new System.Threading.Thread(new System.Threading.ThreadStart(() => {
+//				while (MoleculeModel.atomsLocationlist == null) {}
+				System.Threading.Thread.Sleep(250);
+				CurrentStateIdx = 0;
+			})).Start();
 		}
 
 		public void OpenFileCallback(string path) {
@@ -649,32 +655,35 @@ namespace UI {
 			gUIMoleculeController.SetAtomMenu();
 
 			if (!UnityClusterPackage.NodeInformation.IsSlave) {
-				gUIMoleculeController.SetSecStructMenu ();
-				gUIMoleculeController.SetSurfaceMenu ();
-				gUIMoleculeController.SetBfactorMenu ();
-				gUIMoleculeController.SetFieldMenu ();
-				gUIMoleculeController.SetManipulatorMenu ();
+				gUIMoleculeController.SetSecStructMenu();
+				gUIMoleculeController.SetSurfaceMenu();
+				gUIMoleculeController.SetBfactorMenu();
+				gUIMoleculeController.SetFieldMenu();
+				gUIMoleculeController.SetManipulatorMenu();
+				gUIMoleculeController.DisplayGUI();
+				gUIMoleculeController.SetAtomType();
+				gUIMoleculeController.SetBondType();
+				gUIMoleculeController.SetCubeLineBond();
+				gUIMoleculeController.SetHyperBall();
+				gUIMoleculeController.SetEffectType();
+				gUIMoleculeController.SetSurfaceTexture();
+				gUIMoleculeController.SetSurfaceCut();
+				gUIMoleculeController.SetSurtfaceMobileCut();
+				gUIMoleculeController.SetBackGroundType();
+				gUIMoleculeController.SetMetaphorType();
+				gUIMoleculeController.SetAdvMenu();
+				gUIMoleculeController.SetGuidedMenu();
+				gUIMoleculeController.RenderHelp();
+				gUIMoleculeController.setSugarMenu(); //
+				gUIMoleculeController.setSugarRibbonsTuneMenu();
+				gUIMoleculeController.setColorTuneMenu();
+				gUIMoleculeController.SetVRPNMenu();
+				gUIMoleculeController.SetMDDriverMenu();
+				gUIMoleculeController.SetHydroMenu();
+			}
+
+			if(Config.SlaveConfig.Instance.CameraControl) {
 				gUIMoleculeController.SetMnipulatormove ();
-				gUIMoleculeController.DisplayGUI ();
-				gUIMoleculeController.SetAtomType ();
-				gUIMoleculeController.SetBondType ();
-				gUIMoleculeController.SetCubeLineBond ();
-				gUIMoleculeController.SetHyperBall ();
-				gUIMoleculeController.SetEffectType ();
-				gUIMoleculeController.SetSurfaceTexture ();
-				gUIMoleculeController.SetSurfaceCut ();
-				gUIMoleculeController.SetSurtfaceMobileCut ();
-				gUIMoleculeController.SetBackGroundType ();
-				gUIMoleculeController.SetMetaphorType ();
-				gUIMoleculeController.SetAdvMenu ();
-				gUIMoleculeController.SetGuidedMenu ();
-				gUIMoleculeController.RenderHelp ();
-				gUIMoleculeController.setSugarMenu (); //
-				gUIMoleculeController.setSugarRibbonsTuneMenu ();
-				gUIMoleculeController.setColorTuneMenu ();
-				gUIMoleculeController.SetVRPNMenu ();
-				gUIMoleculeController.SetMDDriverMenu ();
-				gUIMoleculeController.SetHydroMenu ();
 			}
 
 			// Luiz:

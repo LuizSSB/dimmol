@@ -233,7 +233,7 @@ public class Rectangles : UI.GUIMoleculeController {
 	public static int manipulatorMoveXstart = Screen.width - manipulatorMoveWidth;
 
 	// Luiz:
-	private static int manipulatorMoveHeight = 180;//(int) (sHeight * 0.22f);
+	private static int manipulatorMoveHeight = 210;//(int) (sHeight * 0.22f);
 
 	private static int manipulatorMoveYstart = Screen.height - manipulatorMoveHeight;
 	
@@ -242,9 +242,9 @@ public class Rectangles : UI.GUIMoleculeController {
 
 	// Luiz:
 	public static Rect EnergyRect = new Rect(
-		Screen.width - 80,
+		Screen.width - 100,
 		Screen.height - manipulatorMoveHeight - (Screen.height - manipulatorMoveHeight - mainHeight),
-		80,
+		100,
 		Screen.height - manipulatorMoveHeight - mainHeight
 	);
 	

@@ -210,7 +210,17 @@ public class maxCamera : MonoBehaviour
 	public void Init ()
 	{
 		if (UnityClusterPackage.NodeInformation.IsSlave) {
-			enabled = false;
+			if (Config.SlaveConfig.Instance.CameraControl) {
+				// Luiz: the purpose of the instruction below is to stop the synchronization for this specific node.
+				// While the end-result is pretty much the intended one, it also causes a lot of errors to be
+				// constantly logged, probably because the recipient of the synchronized data sent by the
+				// server/host is no more. I honestly don't know what can be done about it, supposing there is such thing.
+//				GetComponent<NetworkView>().SetScope(new NetworkPlayer(), false);
+				Debug.Log("heyyy");
+				GetComponent<NetworkView>().observed = null;//GameObject.Find("DummyObservable").transform;
+			} else {
+				enabled = false;
+			}
 		}
 
 		LoadBox = GameObject.Find ("LoadBox");

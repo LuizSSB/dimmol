@@ -184,10 +184,6 @@ public class Molecule3D:MonoBehaviour {
 
 	void Awake() {
 		System.Threading.Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-US");
-
-		// FIXME remove
-//		SlaveConfig.Instance.ToString();
-		print(SlaveConfig.Instance.CameraControl + " " + SlaveConfig.Instance.ShowEnergy);
 	}
 
 	void Start() {		

@@ -119,11 +119,16 @@ public class maxCamera : MonoBehaviour
 	private GameObject LoadBox;
 	private Molecule3D Molecule3DComp;
 
-	private static GameObject mLocCamera;
+	private static GameObject _LocCamera;
 	public static GameObject LocCamera
 	{
 		get {
-			return mLocCamera = mLocCamera ?? GameObject.FindGameObjectWithTag ("MainCamera");
+			if (_LocCamera == null) {
+				Debug.Log("foo ba");
+				_LocCamera = GameObject.FindGameObjectWithTag("MainCamera");
+			}
+
+			return _LocCamera;
 		}
 	}
 
@@ -200,6 +205,10 @@ public class maxCamera : MonoBehaviour
 	void Awake ()
 	{
 		Init ();
+		GUIDisplay.Instance.Cleared += (sender, e) => {
+			Debug.Log("heyyy");
+			_LocCamera = null;
+		};
 	}
 
 	void OnEnable ()
@@ -209,14 +218,13 @@ public class maxCamera : MonoBehaviour
 	
 	public void Init ()
 	{
-		if (UnityClusterPackage.NodeInformation.IsSlave) {
-			if (Config.SlaveConfig.Instance.CameraControl) {
+		if (UnityClusterPackage.Node.CurrentNode.IsSlave) {
+			if (Config.SlaveConfig.CurrentConfig.CameraControl) {
 				// Luiz: the purpose of the instruction below is to stop the synchronization for this specific node.
 				// While the end-result is pretty much the intended one, it also causes a lot of errors to be
 				// constantly logged, probably because the recipient of the synchronized data sent by the
 				// server/host is no more. I honestly don't know what can be done about it, supposing there is such thing.
 //				GetComponent<NetworkView>().SetScope(new NetworkPlayer(), false);
-				Debug.Log("heyyy");
 				GetComponent<NetworkView>().observed = null;//GameObject.Find("DummyObservable").transform;
 			} else {
 				enabled = false;

@@ -105,7 +105,7 @@ public class Molecule3D:MonoBehaviour {
 	public static GameObject LocCamera
 	{
 		get {
-			return mLocCamera = mLocCamera ?? GameObject.FindGameObjectWithTag ("MainCamera");
+			return maxCamera.LocCamera;
 		}
 	}
 	
@@ -186,7 +186,7 @@ public class Molecule3D:MonoBehaviour {
 		System.Threading.Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-US");
 	}
 
-	void Start() {		
+	void Start() {
 		DebugStreamer.message = "Hello world!";
 		//LocCamera=GameObject.FindGameObjectWithTag("MainCamera");
 		//DebugStreamer.message = "Find Camera";
@@ -196,7 +196,7 @@ public class Molecule3D:MonoBehaviour {
 		scenecontroller.AddComponent<ReadDX>();
 
 		// Luiz:
-		if (!UnityClusterPackage.NodeInformation.IsSlave) {
+		if (!UnityClusterPackage.Node.CurrentNode.IsSlave) {
 			mNetworkView = GetComponent<NetworkView>();
 			GUIDisplay.Instance.Cleared += (sender, e) => mNetworkView.RPC("Clear", RPCMode.All);
 			ChangeManager.MethodInvoked += (sender, e) => {
@@ -461,7 +461,7 @@ public class Molecule3D:MonoBehaviour {
 			}	
 		}
 
-		if (!UnityClusterPackage.NodeInformation.IsSlave) {
+		if (!UnityClusterPackage.Node.CurrentNode.IsSlave) {
 			var newLocations = MiniJSON.JsonEncode(MoleculeModel.atomsLocationlist.ToArray());
 			var networkinson = GetComponent<NetworkView> ();
 			networkinson.RPC(
@@ -620,7 +620,7 @@ public class Molecule3D:MonoBehaviour {
 		Debug.Log("T.T ==> END OF LOADING");
 
 		// Luiz:
-		if (!UnityClusterPackage.NodeInformation.IsSlave) {
+		if (!UnityClusterPackage.Node.CurrentNode.IsSlave) {
 			var networkinson = GetComponent<NetworkView> ();
 			foreach (var part in UIData.Instance.SerializeInParts ()) {
 				networkinson.RPC ("Synchronize", RPCMode.All, part);
@@ -1239,7 +1239,7 @@ public class Molecule3D:MonoBehaviour {
 	public void LoadStateRPC(string serializedPositions, float minEnergy, float maxEnergy, float currentEnergy)
 	{
 		Debug.Log("%%%%%%% disco bus " + minEnergy + " " + maxEnergy + " " + currentEnergy);
-//		if(UnityClusterPackage.NodeInformation.IsSlave)
+//		if(UnityClusterPackage.Node.CurrentNode.IsSlave)
 		{
 			var deserialized = (System.Collections.ArrayList)MiniJSON.JsonDecode(serializedPositions);
 
@@ -1254,7 +1254,7 @@ public class Molecule3D:MonoBehaviour {
 				});
 			}
 
-			if (UnityClusterPackage.NodeInformation.IsSlave) {
+			if (UnityClusterPackage.Node.CurrentNode.IsSlave) {
 				GUIDisplay.Instance.SetEnergyData(minEnergy, maxEnergy, currentEnergy);
 			}
 
@@ -1264,7 +1264,7 @@ public class Molecule3D:MonoBehaviour {
 	[RPC]
 	public void Synchronize(string serializedData)
 	{
-		if (UnityClusterPackage.NodeInformation.IsSlave) {
+		if (UnityClusterPackage.Node.CurrentNode.IsSlave) {
 			if (UIData.DeserializePart (serializedData)) {
 				UIData.Instance.isOpenFile = true;
 
@@ -1279,7 +1279,7 @@ public class Molecule3D:MonoBehaviour {
 	[RPC]
 	public void Clear()
 	{
-		if (UnityClusterPackage.NodeInformation.IsSlave) {
+		if (UnityClusterPackage.Node.CurrentNode.IsSlave) {
 			GUIDisplay.Instance.Clear ();
 		}
 	}
@@ -1313,7 +1313,7 @@ public class Molecule3D:MonoBehaviour {
 	{
 		Debug.Log ("### Method " + typeName + "." + methodName + "(" + param + ")");
 
-		if (UnityClusterPackage.NodeInformation.IsSlave) {
+		if (UnityClusterPackage.Node.CurrentNode.IsSlave) {
 			var type = Type.GetType (typeName);
 			var method = type.GetMethod (methodName);
 			if (param != null) {
@@ -1352,7 +1352,7 @@ public class Molecule3D:MonoBehaviour {
 	private void HandlePropertyChanged(string typeName, string propertyName, object newValue ) {
 		Debug.Log (string.Format ("### Property changed - {0}:{1} = {2}", typeName, propertyName, newValue));
 
-		if (UnityClusterPackage.NodeInformation.IsSlave) {
+		if (UnityClusterPackage.Node.CurrentNode.IsSlave) {
 			var type = Type.GetType (typeName);
 			var property = type.GetProperty (propertyName);
 			property.SetValue (null, newValue, null);

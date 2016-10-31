@@ -198,7 +198,14 @@ namespace UI {
 		public bool LoginFlag=false;
 		public bool LoginAgainFlag=false;
 
-		public GUIMoleculeController gUIMoleculeController= new GUIMoleculeController();
+		private GUIMoleculeController _gUIMoleculeController;
+		public GUIMoleculeController gUIMoleculeController
+		{
+			get
+			{
+				return _gUIMoleculeController = _gUIMoleculeController ?? new GUIMoleculeController();
+			}
+		}
 		
 		public ImprovedFileBrowser m_fileBrowser;
 		public string m_textPath;
@@ -463,7 +470,7 @@ namespace UI {
 			directoryimage = (Texture2D)Resources.Load("FileBrowser/dossier");
 			fileimage=(Texture2D)Resources.Load("FileBrowser/fichiers");
 
-			if (!UnityClusterPackage.NodeInformation.IsSlave) {
+			if (!UnityClusterPackage.Node.CurrentNode.IsSlave) {
 				if (GUIMoleculeController.showOpenMenu) {
 					GUILayout.BeginArea (Rectangles.openRect);
 					#if !UNITY_WEBPLAYER
@@ -654,7 +661,8 @@ namespace UI {
 			gUIMoleculeController.CameraStop();		
 			gUIMoleculeController.SetAtomMenu();
 
-			if (!UnityClusterPackage.NodeInformation.IsSlave) {
+			// Luiz:
+			if (!UnityClusterPackage.Node.CurrentNode.IsSlave) {
 				gUIMoleculeController.SetSecStructMenu();
 				gUIMoleculeController.SetSurfaceMenu();
 				gUIMoleculeController.SetBfactorMenu();
@@ -681,13 +689,15 @@ namespace UI {
 				gUIMoleculeController.SetMDDriverMenu();
 				gUIMoleculeController.SetHydroMenu();
 			}
-
-			if(Config.SlaveConfig.Instance.CameraControl) {
-				gUIMoleculeController.SetMnipulatormove ();
+			gUIMoleculeController.SetEnergyWindow();
+			if (GUI.Button(Rectangles.GoBackRect, new GUIContent("Go Back", "Goes back to the node setup"))) {
+				GUIDisplay.Instance.Clear ();
+				UnityEngine.SceneManagement.SceneManager.LoadScene("UCPSetup", UnityEngine.SceneManagement.LoadSceneMode.Single);
 			}
 
-			// Luiz:
-			gUIMoleculeController.SetEnergyWindow();
+			if(Config.SlaveConfig.CurrentConfig.CameraControl) {
+				gUIMoleculeController.SetMnipulatormove ();
+			}
 
 //			SetHyperballMatCapTexture();
 			SetAtomScales();
@@ -1587,6 +1597,7 @@ namespace UI {
 		// Luiz:
 		public event System.EventHandler Cleared;
 		public void Clear() {
+			_gUIMoleculeController = null;
 			StateFiles = null;
 			id="";
 			UIData.Instance.isclear = true;

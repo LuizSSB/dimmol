@@ -456,7 +456,7 @@ namespace UI {
 				m_last_extSurf_Path = System.IO.Directory.GetCurrentDirectory();
 			#endif
 
-
+			Debug.Log("new scene controller");
 			scenecontroller = GameObject.Find ("LoadBox");
 			Molecule3DComp = scenecontroller.GetComponent<Molecule3D> ();
 /*
@@ -864,7 +864,7 @@ namespace UI {
 		}
 
 		public void SetEnergyWindow() {
-			if((Config.SlaveConfig.Instance.ShowEnergy && UnityClusterPackage.NodeInformation.IsSlave && GUIDisplay.Instance.CurrentState != null)
+			if((Config.SlaveConfig.CurrentConfig.ShowEnergy && UnityClusterPackage.Node.CurrentNode.IsSlave && GUIDisplay.Instance.CurrentState != null)
 				|| (GUIDisplay.Instance.StateFiles != null && GUIDisplay.Instance.StateFiles.Length > 0))
 			{
 				Rectangles.EnergyRect = GUI.Window(666, Rectangles.EnergyRect, LoadTypeGUI.Energy, emptyContent);

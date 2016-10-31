@@ -11,11 +11,11 @@ namespace UnityClusterPackage {
 		void Awake() {
 			Network.sendRate = 100;
 
-			if ( NodeInformation.type.Equals("master") )
+			if ( Node.CurrentNode.NodeType == Node.Type.master )
 			{
-				Network.proxyIP = NodeInformation.serverIp;
+				Network.proxyIP = Node.CurrentNode.NodeServer.Ip;
 				bool useNat = Network.HavePublicAddress();
-				Network.InitializeServer( NodeInformation.nodes, NodeInformation.serverPort, useNat );				
+				Network.InitializeServer( Node.CurrentNode.Nodes, Node.CurrentNode.NodeServer.Port, useNat );				
 				var networkedCamera = Network.Instantiate(
 					MultiProjectionCamera,
 					transform.position,
@@ -24,9 +24,9 @@ namespace UnityClusterPackage {
 				) as GameObject;
 				networkedCamera.transform.parent = this.transform;
 			}
-			else if ( NodeInformation.IsSlave )
+			else if ( Node.CurrentNode.IsSlave )
 			{
-				Network.Connect( NodeInformation.serverIp, NodeInformation.serverPort );
+				Network.Connect( Node.CurrentNode.NodeServer.Ip, Node.CurrentNode.NodeServer.Port );
 			}			
 		}
 		
@@ -67,12 +67,12 @@ namespace UnityClusterPackage {
 		}
 		
 		void OnDestroy() {
-			Debug.Log ("Destroying node: " + NodeInformation.name);
-			if ( NodeInformation.type.Equals("master") )
+			Debug.Log ("Destroying node: " + Node.CurrentNode.Name);
+			if ( Node.CurrentNode.NodeType == Node.Type.master )
 			{
 				Network.Disconnect();
 			}
-			else if ( NodeInformation.IsSlave )
+			else if ( Node.CurrentNode.IsSlave )
 			{
 				Network.CloseConnection( Network.player, true );                
 			}

@@ -351,9 +351,12 @@ public class Rectangles : UI.GUIMoleculeController {
 	public static int webHelpHeight = (int) (Screen.height * 0.05f);
 	public static int webHelpYstart = Screen.height - webHelpHeight;
 	public static int webHelpWidth = sWidth / 10;
-	
+
+	// Luiz:
+	public static Rect GoBackRect = new Rect(webHelpXstart, webHelpYstart, webHelpWidth, webHelpHeight);
+
 	// Rectangle for the button that opens documentation in a web browser (help).
-	public static Rect webHelpRect = new Rect(webHelpXstart, webHelpYstart, webHelpWidth, webHelpHeight);
+	public static Rect webHelpRect = new Rect(webHelpXstart + webHelpWidth, webHelpYstart, webHelpWidth, webHelpHeight);
 	
 	public static int fpsInfosXstart = 0;
 	public static int fpsInfosHeight = (int) (Screen.height * 0.05f);

@@ -20,13 +20,13 @@ namespace UnityClusterPackage {
 			projectionPlane = transform.Find("ProjectionPlane");
 			userHead = transform.Find("ProjectionPlane/UserHead");
 
-			if ( NodeInformation.stereo ) 
+			if ( Node.CurrentNode.NodeScreen.Stereo ) 
 			{
-				if( NodeInformation.eye.Equals("right") ) 
+				if( Node.CurrentNode.NodeScreen.ScreenEye == Node.Eye.right) 
 				{
 					eyeX = 0.03f;
 				}
-				else if( NodeInformation.eye.Equals("left") )
+				else
 				{
 					eyeX = -0.03f;
 				}
@@ -36,7 +36,7 @@ namespace UnityClusterPackage {
 				eyeX = 0.0f;
 			}
 
-			userHead.localPosition = new Vector3 ( NodeInformation.peX, NodeInformation.peZ, NodeInformation.peY );
+			userHead.localPosition = ConvertPointToVector3(Node.CurrentNode.NodeScreen.Pe);
 
 			n = GetComponent<Camera>().nearClipPlane;		
 			f = GetComponent<Camera>().farClipPlane;				
@@ -48,9 +48,9 @@ namespace UnityClusterPackage {
 
 		private void CalcProjectionMatrix() {
 
-			pa = projectionPlane.TransformPoint( new Vector3( NodeInformation.paX, NodeInformation.paZ, NodeInformation.paY ) );
-			pb = projectionPlane.TransformPoint( new Vector3( NodeInformation.pbX, NodeInformation.pbZ, NodeInformation.pbY ) );
-			pc = projectionPlane.TransformPoint( new Vector3( NodeInformation.pcX, NodeInformation.pcZ, NodeInformation.pcY ) );
+			pa = projectionPlane.TransformPoint(ConvertPointToVector3(Node.CurrentNode.NodeScreen.Pa));
+			pb = projectionPlane.TransformPoint(ConvertPointToVector3(Node.CurrentNode.NodeScreen.Pb));
+			pc = projectionPlane.TransformPoint(ConvertPointToVector3(Node.CurrentNode.NodeScreen.Pc));
 						
 			pe = userHead.position;
 			pe.x += eyeX;
@@ -96,6 +96,14 @@ namespace UnityClusterPackage {
 			tm[3,0] = 0.0f; tm[3,1] = 0.0f; tm[3,2] = 0.0f; tm[3,3] = 1.0f;
 			
 			GetComponent<Camera>().worldToCameraMatrix = rm * tm;		
+		}
+
+		private static Vector3 ConvertPointToVector3(Node.Point point)
+		{
+			var vector = point.ToVector3();
+			vector.y = point.Z;
+			vector.z = point.Y;
+			return vector;
 		}
 	}
 }

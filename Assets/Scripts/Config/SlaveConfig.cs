@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Xml.Serialization;
 using UnityEngine;
+using System.IO;
 
 namespace Config
 {
@@ -22,29 +23,41 @@ namespace Config
 
 		private const string ConfigFileName = "slave-config.xml";
 		static SlaveConfig() {
-			if (UnityClusterPackage.NodeInformation.IsSlave) {
+			if (UnityClusterPackage.Node.CurrentNode.IsSlave) {
 				try {
-					var filePath = System.IO.Path.Combine(Application.streamingAssetsPath, ConfigFileName);
-					var reader = new System.IO.StreamReader(filePath);
-					var serializer = new XmlSerializer(typeof(SlaveConfig));
-					Instance = (SlaveConfig)serializer.Deserialize(reader);
+					var filePath = Path.Combine(Application.streamingAssetsPath, ConfigFileName);
+					using(var reader = new StreamReader(filePath)) {
+						var serializer = new XmlSerializer(typeof(SlaveConfig));
+						CurrentConfig = (SlaveConfig)serializer.Deserialize(reader);
+					}
 				} catch (Exception e) {
-					UnityEngine.Debug.Log(e);
-					Instance = new SlaveConfig() {
+					UnityEngine.Debug.Log("Failed to load slave-config.xml: " + e);
+
+					CurrentConfig = new SlaveConfig() {
 						CameraControl = false,
 						ShowEnergy = false
 					};
 				}
 			} else {
-				// Luiz: In case this is the master node, everything's enabled
-				Instance = new SlaveConfig() {
+				// Luiz: In case this is the master node, everything must be enabled
+				CurrentConfig = new SlaveConfig() {
 					CameraControl = true,
 					ShowEnergy = true
 				};
 			}
 		}
 
-		public static readonly SlaveConfig Instance;
+		public static void SetSlaveConfigData(SlaveConfig config, string path = null)
+		{
+			using (var writer = new StreamWriter(path ?? Path.Combine(Application.streamingAssetsPath, ConfigFileName))) {
+				var serializer = new XmlSerializer(typeof(SlaveConfig));
+				serializer.Serialize(writer, config);
+			}
+
+			CurrentConfig = config;
+		}
+
+		public static SlaveConfig CurrentConfig { get; private set; }
 		private SlaveConfig() {}
 	}
 }

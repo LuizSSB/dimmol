@@ -332,7 +332,7 @@ namespace UI{
 			
 			GUILayout.EndHorizontal();
 			
-			return UnityClusterPackage.NodeInformation.IsSlave ? false : keepOpen;
+			return UnityClusterPackage.Node.CurrentNode.IsSlave ? false : keepOpen;
 		}
 		
 		

@@ -1347,12 +1347,12 @@ namespace UI{
 			
 			GUILayout.BeginHorizontal();
 			orthoSize = LabelSlider(Camera.main.orthographicSize, minOrthoSize, maxOrthoSize, 
-					"Camera Size", "This slider changes the size of the orthographic camera.", Camera.main.orthographic, 100, 20);
+				"Camera Size", "This slider changes the size of the orthographic camera.", Camera.main.orthographic, 100, 20);
 			GUI.enabled = true; // LabeLSlider can disable the entire GUI. I don't like that at all, but it's expected in some parts of the GUI.
 			// Still needs changing, methinks. ---Alexandre
 			GUILayout.EndHorizontal();
 			
-			Camera.main.orthographicSize = orthoSize ;
+				Camera.main.orthographicSize = orthoSize ;
 			
 			GUILayout.BeginHorizontal();
 			if (GUILayout.Button(new GUIContent("Best Textures: "+ queryBestTextures(), 
@@ -2146,55 +2146,55 @@ namespace UI{
 
 			GUILayout.BeginHorizontal ();
 
-			if (GUILayout.Button (new GUIContent ("1", "Lerpz background")))
-				LocCamera.GetComponent<Skybox> ().material = (Material)Resources.Load ("skybox/skyBoxLerpzMaterial");		
-
-			if (GUILayout.Button (new GUIContent ("2", "HotDesert background")))
-				LocCamera.GetComponent<Skybox> ().material = (Material)Resources.Load ("skybox/skyBoxHotDesert");
-
-			if (GUILayout.Button (new GUIContent ("3", "Molecule background")))
-				LocCamera.GetComponent<Skybox> ().material = (Material)Resources.Load ("skybox/skyBoxmolecularMaterial");
-			
-			if (GUILayout.Button (new GUIContent ("4", "Snow background")))
-				LocCamera.GetComponent<Skybox> ().material = (Material)Resources.Load ("skybox/skyBoxSnow");
+//			if (GUILayout.Button (new GUIContent ("1", "Lerpz background")))
+//				LocCamera.GetComponent<Skybox> ().material = (Material)Resources.Load ("skybox/skyBoxLerpzMaterial");		
+//
+//			if (GUILayout.Button (new GUIContent ("2", "HotDesert background")))
+//				LocCamera.GetComponent<Skybox> ().material = (Material)Resources.Load ("skybox/skyBoxHotDesert");
+//
+//			if (GUILayout.Button (new GUIContent ("3", "Molecule background")))
+//				LocCamera.GetComponent<Skybox> ().material = (Material)Resources.Load ("skybox/skyBoxmolecularMaterial");
+//			
+//			if (GUILayout.Button (new GUIContent ("4", "Snow background")))
+//				LocCamera.GetComponent<Skybox> ().material = (Material)Resources.Load ("skybox/skyBoxSnow");
 						
 			GUILayout.EndHorizontal ();
 
 			GUILayout.BeginHorizontal ();
-			if (GUILayout.Button (new GUIContent ("5", "DawnDusk Skybox")))
-							LocCamera.GetComponent<Skybox> ().material = (Material)Resources.Load ("skybox/DawnDusk Skybox");				
-
-			if (GUILayout.Button (new GUIContent ("6", "Eerie Skybox")))
-				LocCamera.GetComponent<Skybox> ().material = (Material)Resources.Load ("skybox/Eerie Skybox");				
-
-			if (GUILayout.Button (new GUIContent ("7", "MoonShine Skybox")))
-				LocCamera.GetComponent<Skybox> ().material = (Material)Resources.Load ("skybox/MoonShine Skybox");				
-
-			if (GUILayout.Button (new GUIContent ("8", "Overcast1 Skybox")))
-				LocCamera.GetComponent<Skybox> ().material = (Material)Resources.Load ("skybox/Overcast1 Skybox");				
-
-			GUILayout.EndHorizontal ();
-
-			GUILayout.BeginHorizontal ();
-			
-			if (GUILayout.Button (new GUIContent ("9", "Overcast2 Skybox")))
-				LocCamera.GetComponent<Skybox> ().material = (Material)Resources.Load ("skybox/Overcast2 Skybox");
-
-			if (GUILayout.Button (new GUIContent ("10", "StarryNight Skybox")))
-				LocCamera.GetComponent<Skybox> ().material = (Material)Resources.Load ("skybox/StarryNight Skybox");				
-
-			if (GUILayout.Button (new GUIContent ("11", "Sunny1 Skybox")))
-				LocCamera.GetComponent<Skybox> ().material = (Material)Resources.Load ("skybox/Sunny1 Skybox");				
+//			if (GUILayout.Button (new GUIContent ("5", "DawnDusk Skybox")))
+//							LocCamera.GetComponent<Skybox> ().material = (Material)Resources.Load ("skybox/DawnDusk Skybox");				
+//
+//			if (GUILayout.Button (new GUIContent ("6", "Eerie Skybox")))
+//				LocCamera.GetComponent<Skybox> ().material = (Material)Resources.Load ("skybox/Eerie Skybox");				
+//
+//			if (GUILayout.Button (new GUIContent ("7", "MoonShine Skybox")))
+//				LocCamera.GetComponent<Skybox> ().material = (Material)Resources.Load ("skybox/MoonShine Skybox");				
+//
+//			if (GUILayout.Button (new GUIContent ("8", "Overcast1 Skybox")))
+//				LocCamera.GetComponent<Skybox> ().material = (Material)Resources.Load ("skybox/Overcast1 Skybox");				
 
 			GUILayout.EndHorizontal ();
 
 			GUILayout.BeginHorizontal ();
 			
-			if (GUILayout.Button (new GUIContent ("12", "Sunny2 Skybox")))
-				LocCamera.GetComponent<Skybox> ().material = (Material)Resources.Load ("skybox/Sunny2 Skybox");				
+//			if (GUILayout.Button (new GUIContent ("9", "Overcast2 Skybox")))
+//				LocCamera.GetComponent<Skybox> ().material = (Material)Resources.Load ("skybox/Overcast2 Skybox");
+//
+//			if (GUILayout.Button (new GUIContent ("10", "StarryNight Skybox")))
+//				LocCamera.GetComponent<Skybox> ().material = (Material)Resources.Load ("skybox/StarryNight Skybox");				
+//
+//			if (GUILayout.Button (new GUIContent ("11", "Sunny1 Skybox")))
+//				LocCamera.GetComponent<Skybox> ().material = (Material)Resources.Load ("skybox/Sunny1 Skybox");				
 
-			if (GUILayout.Button (new GUIContent ("13", "Sunny3 Skybox")))
-				LocCamera.GetComponent<Skybox> ().material = (Material)Resources.Load ("skybox/Sunny3 Skybox");				
+			GUILayout.EndHorizontal ();
+
+			GUILayout.BeginHorizontal ();
+			
+//			if (GUILayout.Button (new GUIContent ("12", "Sunny2 Skybox")))
+//				LocCamera.GetComponent<Skybox> ().material = (Material)Resources.Load ("skybox/Sunny2 Skybox");				
+//
+//			if (GUILayout.Button (new GUIContent ("13", "Sunny3 Skybox")))
+//				LocCamera.GetComponent<Skybox> ().material = (Material)Resources.Load ("skybox/Sunny3 Skybox");				
 
 			GUILayout.EndHorizontal ();
 
@@ -2262,117 +2262,117 @@ namespace UI{
 			GUILayout.BeginHorizontal ();
 			toggle_VE_SSAO = GUILayout.Toggle (toggle_VE_SSAO, new GUIContent ("SSAO", "Toggle screen space ambient occlusion effect"));
 			if (!toggle_VE_SSAO) { 
-				if (Camera.main.GetComponent<SSAOEffect> ().enabled) 
-					Camera.main.GetComponent<SSAOEffect> ().enabled = false;
+				if (GameObject.FindGameObjectWithTag("MainCamera").GetComponent<SSAOEffect> ().enabled) 
+					GameObject.FindGameObjectWithTag("MainCamera").GetComponent<SSAOEffect> ().enabled = false;
 			}
 			else { 
-				Camera.main.GetComponent<SSAOEffect>().enabled = true;
-				Camera.main.GetComponent<SSAOEffect>().m_Radius = 4f;
-				Camera.main.GetComponent<SSAOEffect>().m_OcclusionIntensity = 1f;
+				GameObject.FindGameObjectWithTag("MainCamera").GetComponent<SSAOEffect>().enabled = true;
+				GameObject.FindGameObjectWithTag("MainCamera").GetComponent<SSAOEffect>().m_Radius = 4f;
+				GameObject.FindGameObjectWithTag("MainCamera").GetComponent<SSAOEffect>().m_OcclusionIntensity = 1f;
 			}
 			GUILayout.EndHorizontal ();
 			
 			GUILayout.BeginHorizontal ();
 			// Make a toggle for BLUR ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 			toggle_VE_BLUR = GUILayout.Toggle (toggle_VE_BLUR, new GUIContent ("BLUR", "Toggle motion blur effect"));
-			if (!toggle_VE_BLUR && Camera.main.GetComponent<MotionBlur> ().enabled)
-				Camera.main.GetComponent<MotionBlur> ().enabled = false;
-			else if (toggle_VE_BLUR && !Camera.main.GetComponent<MotionBlur> ().enabled) { 
-				Camera.main.GetComponent<MotionBlur> ().shader = Shader.Find ("Hidden/MotionBlur");
-				Camera.main.GetComponent<MotionBlur> ().enabled = true;
+			if (!toggle_VE_BLUR && GameObject.FindGameObjectWithTag("MainCamera").GetComponent<MotionBlur> ().enabled)
+				GameObject.FindGameObjectWithTag("MainCamera").GetComponent<MotionBlur> ().enabled = false;
+			else if (toggle_VE_BLUR && !GameObject.FindGameObjectWithTag("MainCamera").GetComponent<MotionBlur> ().enabled) { 
+				GameObject.FindGameObjectWithTag("MainCamera").GetComponent<MotionBlur> ().shader = Shader.Find ("Hidden/MotionBlur");
+				GameObject.FindGameObjectWithTag("MainCamera").GetComponent<MotionBlur> ().enabled = true;
 			}
 			GUILayout.EndHorizontal ();
 			
 			GUILayout.BeginHorizontal ();
 			// Make a toggle for NOISE :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 			toggle_VE2_NOISE = GUILayout.Toggle (toggle_VE2_NOISE, new GUIContent ("NOISE", "Toggle noise effect"));
-			if (!toggle_VE2_NOISE && Camera.main.GetComponent<NoiseEffect> ().enabled)
-				Camera.main.GetComponent<NoiseEffect> ().enabled = false;
-			else if (toggle_VE2_NOISE && !Camera.main.GetComponent<NoiseEffect> ().enabled) { 
+			if (!toggle_VE2_NOISE && GameObject.FindGameObjectWithTag("MainCamera").GetComponent<NoiseEffect> ().enabled)
+				GameObject.FindGameObjectWithTag("MainCamera").GetComponent<NoiseEffect> ().enabled = false;
+			else if (toggle_VE2_NOISE && !GameObject.FindGameObjectWithTag("MainCamera").GetComponent<NoiseEffect> ().enabled) { 
 				GameObject.FindWithTag ("MainCamera").AddComponent <NoiseEffect>();
-				Camera.main.GetComponent<NoiseEffect> ().enabled = true;
-				Camera.main.GetComponent<NoiseEffect> ().shaderRGB = Shader.Find ("Hidden/Noise Shader RGB");
-				Camera.main.GetComponent<NoiseEffect> ().shaderYUV = Shader.Find ("Hidden/Noise Shader YUV");
-				Camera.main.GetComponent<NoiseEffect> ().grainTexture = Resources.Load ("NoiseEffectGrain") as Texture2D;
-				Camera.main.GetComponent<NoiseEffect> ().scratchTexture = Resources.Load ("NoiseEffectScratch") as Texture2D;
+				GameObject.FindGameObjectWithTag("MainCamera").GetComponent<NoiseEffect> ().enabled = true;
+				GameObject.FindGameObjectWithTag("MainCamera").GetComponent<NoiseEffect> ().shaderRGB = Shader.Find ("Hidden/Noise Shader RGB");
+				GameObject.FindGameObjectWithTag("MainCamera").GetComponent<NoiseEffect> ().shaderYUV = Shader.Find ("Hidden/Noise Shader YUV");
+				GameObject.FindGameObjectWithTag("MainCamera").GetComponent<NoiseEffect> ().grainTexture = Resources.Load ("NoiseEffectGrain") as Texture2D;
+				GameObject.FindGameObjectWithTag("MainCamera").GetComponent<NoiseEffect> ().scratchTexture = Resources.Load ("NoiseEffectScratch") as Texture2D;
 			}
 			GUILayout.EndHorizontal ();
 			
 			GUILayout.BeginHorizontal ();
 			// Make a toggle for BLUR2 :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 			toggle_VE2_BLUR2 = GUILayout.Toggle (toggle_VE2_BLUR2, new GUIContent ("BLUR2", "Toggle overall blur effect"));
-			if (!toggle_VE2_BLUR2 && Camera.main.GetComponent<BlurEffect> ().enabled)
-				Camera.main.GetComponent<BlurEffect> ().enabled = false;
-			else if (toggle_VE2_BLUR2 && !Camera.main.GetComponent<BlurEffect> ().enabled) { 
-				Camera.main.GetComponent<BlurEffect> ().blurShader = Shader.Find ("Hidden/BlurEffectConeTap");
-				Camera.main.GetComponent<BlurEffect> ().enabled = true;
+			if (!toggle_VE2_BLUR2 && GameObject.FindGameObjectWithTag("MainCamera").GetComponent<BlurEffect> ().enabled)
+				GameObject.FindGameObjectWithTag("MainCamera").GetComponent<BlurEffect> ().enabled = false;
+			else if (toggle_VE2_BLUR2 && !GameObject.FindGameObjectWithTag("MainCamera").GetComponent<BlurEffect> ().enabled) { 
+				GameObject.FindGameObjectWithTag("MainCamera").GetComponent<BlurEffect> ().blurShader = Shader.Find ("Hidden/BlurEffectConeTap");
+				GameObject.FindGameObjectWithTag("MainCamera").GetComponent<BlurEffect> ().enabled = true;
 			}
 			GUILayout.EndHorizontal ();
 
 			GUILayout.BeginHorizontal();
 			// Make a toggle for DOF :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 			toggle_VE_DOF = GUILayout.Toggle (toggle_VE_DOF, new GUIContent ("DOF", "Toggle depth of field effect."));
-			if (!toggle_VE_DOF && Camera.main.GetComponent<DepthOfFieldScatter>().enabled) {
-				Camera.main.GetComponent<DepthOfFieldScatter>().enabled = false;
-				Camera.main.GetComponent<SelectAtomFocus>().enabled = false;
-			} else if (toggle_VE_DOF && !Camera.main.GetComponent<DepthOfFieldScatter>().enabled) { 
+			if (!toggle_VE_DOF && GameObject.FindGameObjectWithTag("MainCamera").GetComponent<DepthOfFieldScatter>().enabled) {
+				GameObject.FindGameObjectWithTag("MainCamera").GetComponent<DepthOfFieldScatter>().enabled = false;
+				GameObject.FindGameObjectWithTag("MainCamera").GetComponent<SelectAtomFocus>().enabled = false;
+			} else if (toggle_VE_DOF && !GameObject.FindGameObjectWithTag("MainCamera").GetComponent<DepthOfFieldScatter>().enabled) { 
 				GameObject.FindWithTag ("MainCamera").AddComponent <DepthOfFieldScatter>();
-				Camera.main.GetComponent<DepthOfFieldScatter>().dofHdrShader = Shader.Find("Hidden/Dof/DepthOfFieldHdr");
-				Camera.main.GetComponent<DepthOfFieldScatter>().focalSize = 0;
-				Camera.main.GetComponent<DepthOfFieldScatter>().enabled = true ;
-				Camera.main.GetComponent<DepthOfFieldScatter>().aperture = 25f;
-				Debug.Log(Camera.main.GetComponent<DepthOfFieldScatter>().aperture);
-				Camera.main.GetComponent<SelectAtomFocus>().enabled = true;
+				GameObject.FindGameObjectWithTag("MainCamera").GetComponent<DepthOfFieldScatter>().dofHdrShader = Shader.Find("Hidden/Dof/DepthOfFieldHdr");
+				GameObject.FindGameObjectWithTag("MainCamera").GetComponent<DepthOfFieldScatter>().focalSize = 0;
+				GameObject.FindGameObjectWithTag("MainCamera").GetComponent<DepthOfFieldScatter>().enabled = true ;
+				GameObject.FindGameObjectWithTag("MainCamera").GetComponent<DepthOfFieldScatter>().aperture = 25f;
+				Debug.Log(GameObject.FindGameObjectWithTag("MainCamera").GetComponent<DepthOfFieldScatter>().aperture);
+				GameObject.FindGameObjectWithTag("MainCamera").GetComponent<SelectAtomFocus>().enabled = true;
 			}
 			GUILayout.EndHorizontal ();
 			
 			GUILayout.BeginHorizontal ();
 			// Make a toggle for Crease :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 			toggle_VE_CREASE = GUILayout.Toggle (toggle_VE_CREASE, new GUIContent ("CREASE", "Toggle crease effect"));
-			if (!toggle_VE_CREASE && Camera.main.GetComponent<Crease>().enabled)
-				Camera.main.GetComponent<Crease> ().enabled = false;
-			else if (toggle_VE_CREASE && !Camera.main.GetComponent<Crease> ().enabled) { 
+			if (!toggle_VE_CREASE && GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Crease>().enabled)
+				GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Crease> ().enabled = false;
+			else if (toggle_VE_CREASE && !GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Crease> ().enabled) { 
 				GameObject.FindWithTag ("MainCamera").AddComponent <Crease>();
-				Camera.main.GetComponent<Crease> ().creaseApplyShader = Shader.Find("Hidden/CreaseApply");
-				Camera.main.GetComponent<Crease> ().intensity = 20;
-				Camera.main.GetComponent<Crease> ().enabled = true ;
+				GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Crease> ().creaseApplyShader = Shader.Find("Hidden/CreaseApply");
+				GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Crease> ().intensity = 20;
+				GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Crease> ().enabled = true ;
 			}
 			GUILayout.EndHorizontal ();
 
 			GUILayout.BeginHorizontal ();
 			// Make a toggle for EDGE :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 			toggle_VE2_EDGE = GUILayout.Toggle (toggle_VE2_EDGE, new GUIContent ("EDGE", "Toggle edge detection effect"));
-			if (!toggle_VE2_EDGE && Camera.main.GetComponent<EdgeDetectEffect> ().enabled)
-				Camera.main.GetComponent<EdgeDetectEffect> ().enabled = false;
-			else if (toggle_VE2_EDGE && !Camera.main.GetComponent<EdgeDetectEffect> ().enabled) { 
+			if (!toggle_VE2_EDGE && GameObject.FindGameObjectWithTag("MainCamera").GetComponent<EdgeDetectEffect> ().enabled)
+				GameObject.FindGameObjectWithTag("MainCamera").GetComponent<EdgeDetectEffect> ().enabled = false;
+			else if (toggle_VE2_EDGE && !GameObject.FindGameObjectWithTag("MainCamera").GetComponent<EdgeDetectEffect> ().enabled) { 
 				GameObject.FindWithTag ("MainCamera").AddComponent <EdgeDetectEffect>();
-				Camera.main.GetComponent<EdgeDetectEffect> ().shader = Shader.Find ("Hidden/Edge Detect X");
-				Camera.main.GetComponent<EdgeDetectEffect> ().enabled = true;
+				GameObject.FindGameObjectWithTag("MainCamera").GetComponent<EdgeDetectEffect> ().shader = Shader.Find ("Hidden/Edge Detect X");
+				GameObject.FindGameObjectWithTag("MainCamera").GetComponent<EdgeDetectEffect> ().enabled = true;
 			}
 			GUILayout.EndHorizontal ();
 			
 			GUILayout.BeginHorizontal ();
 			// Make a toggle for VORTX :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 			toggle_VE2_VORTX = GUILayout.Toggle (toggle_VE2_VORTX, new GUIContent ("VORTX", "Toggle vortex deformation effect"));
-			if (!toggle_VE2_VORTX && Camera.main.GetComponent<VortexEffect> ().enabled)
-				Camera.main.GetComponent<VortexEffect> ().enabled = false;
-			else if (toggle_VE2_VORTX && !Camera.main.GetComponent<VortexEffect> ().enabled) { 
+			if (!toggle_VE2_VORTX && GameObject.FindGameObjectWithTag("MainCamera").GetComponent<VortexEffect> ().enabled)
+				GameObject.FindGameObjectWithTag("MainCamera").GetComponent<VortexEffect> ().enabled = false;
+			else if (toggle_VE2_VORTX && !GameObject.FindGameObjectWithTag("MainCamera").GetComponent<VortexEffect> ().enabled) { 
 				GameObject.FindWithTag ("MainCamera").AddComponent <VortexEffect>();
-				Camera.main.GetComponent<VortexEffect> ().shader = Shader.Find ("Hidden/Twist Effect");
-				Camera.main.GetComponent<VortexEffect> ().enabled = true;
+				GameObject.FindGameObjectWithTag("MainCamera").GetComponent<VortexEffect> ().shader = Shader.Find ("Hidden/Twist Effect");
+				GameObject.FindGameObjectWithTag("MainCamera").GetComponent<VortexEffect> ().enabled = true;
 			}
 			GUILayout.EndHorizontal ();
 
 			// Make a combined toggle+button for GRAYS ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 			GUILayout.BeginHorizontal ();
 			toggle_VE2_GRAYS = GUILayout.Toggle (toggle_VE2_GRAYS, new GUIContent ("GRAYS", "Toggle grayscale color effect"));
-			if (!toggle_VE2_GRAYS && Camera.main.GetComponent<GrayscaleEffect> ().enabled)
-				Camera.main.GetComponent<GrayscaleEffect> ().enabled = false;
-			else if (toggle_VE2_GRAYS && !Camera.main.GetComponent<GrayscaleEffect> ().enabled) { 
+			if (!toggle_VE2_GRAYS && GameObject.FindGameObjectWithTag("MainCamera").GetComponent<GrayscaleEffect> ().enabled)
+				GameObject.FindGameObjectWithTag("MainCamera").GetComponent<GrayscaleEffect> ().enabled = false;
+			else if (toggle_VE2_GRAYS && !GameObject.FindGameObjectWithTag("MainCamera").GetComponent<GrayscaleEffect> ().enabled) { 
 				GameObject.FindWithTag ("MainCamera").AddComponent <GrayscaleEffect>();
-				Camera.main.GetComponent<GrayscaleEffect> ().enabled = true;
-				Camera.main.GetComponent<GrayscaleEffect> ().shader = Shader.Find ("Hidden/Grayscale Effect");
-				Camera.main.GetComponent<GrayscaleEffect> ().textureRamp = Resources.Load (ve2_grays_ramps [ve2_grays_rampc]) as Texture2D;
+				GameObject.FindGameObjectWithTag("MainCamera").GetComponent<GrayscaleEffect> ().enabled = true;
+				GameObject.FindGameObjectWithTag("MainCamera").GetComponent<GrayscaleEffect> ().shader = Shader.Find ("Hidden/Grayscale Effect");
+				GameObject.FindGameObjectWithTag("MainCamera").GetComponent<GrayscaleEffect> ().textureRamp = Resources.Load (ve2_grays_ramps [ve2_grays_rampc]) as Texture2D;
 			}
 			GUILayout.EndHorizontal ();
 			
@@ -2383,19 +2383,19 @@ namespace UI{
 					ve2_grays_rampc = 0;
 
 				if (toggle_VE2_GRAYS)
-					Camera.main.GetComponent<GrayscaleEffect> ().textureRamp = Resources.Load (ve2_grays_ramps [ve2_grays_rampc]) as Texture2D;
+					GameObject.FindGameObjectWithTag("MainCamera").GetComponent<GrayscaleEffect> ().textureRamp = Resources.Load (ve2_grays_ramps [ve2_grays_rampc]) as Texture2D;
 			}
 			GUILayout.EndHorizontal ();
 			
 			GUILayout.BeginHorizontal ();
 			// Make a toggle for TWIRL :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 			toggle_VE2_TWIRL = GUILayout.Toggle (toggle_VE2_TWIRL, new GUIContent ("TWIRL", "Toggle twirl deformation effect"));
-			if (!toggle_VE2_TWIRL && Camera.main.GetComponent<TwirlEffect> ().enabled)
-				Camera.main.GetComponent<TwirlEffect> ().enabled = false;
-			else if (toggle_VE2_TWIRL && !Camera.main.GetComponent<TwirlEffect> ().enabled) { 
+			if (!toggle_VE2_TWIRL && GameObject.FindGameObjectWithTag("MainCamera").GetComponent<TwirlEffect> ().enabled)
+				GameObject.FindGameObjectWithTag("MainCamera").GetComponent<TwirlEffect> ().enabled = false;
+			else if (toggle_VE2_TWIRL && !GameObject.FindGameObjectWithTag("MainCamera").GetComponent<TwirlEffect> ().enabled) { 
 				GameObject.FindWithTag ("MainCamera").AddComponent <TwirlEffect>();
-				Camera.main.GetComponent<TwirlEffect> ().shader = Shader.Find ("Hidden/Twirt Effect Shader");
-				Camera.main.GetComponent<TwirlEffect> ().enabled = true;
+				GameObject.FindGameObjectWithTag("MainCamera").GetComponent<TwirlEffect> ().shader = Shader.Find ("Hidden/Twirt Effect Shader");
+				GameObject.FindGameObjectWithTag("MainCamera").GetComponent<TwirlEffect> ().enabled = true;
 			}
 			GUILayout.EndHorizontal ();
 			
@@ -2404,13 +2404,13 @@ namespace UI{
 			// Make a combined toggle+button for CCORR ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 			GUILayout.BeginHorizontal ();
 			toggle_VE2_CCORR = GUILayout.Toggle (toggle_VE2_CCORR, new GUIContent ("CCORR", "Toggle color correction effect"));
-			if (!toggle_VE2_CCORR && Camera.main.GetComponent<ColorCorrectionEffect> ().enabled)
-				Camera.main.GetComponent<ColorCorrectionEffect> ().enabled = false;
-			else if (toggle_VE2_CCORR && !Camera.main.GetComponent<ColorCorrectionEffect> ().enabled) { 
+			if (!toggle_VE2_CCORR && GameObject.FindGameObjectWithTag("MainCamera").GetComponent<ColorCorrectionEffect> ().enabled)
+				GameObject.FindGameObjectWithTag("MainCamera").GetComponent<ColorCorrectionEffect> ().enabled = false;
+			else if (toggle_VE2_CCORR && !GameObject.FindGameObjectWithTag("MainCamera").GetComponent<ColorCorrectionEffect> ().enabled) { 
 				GameObject.FindWithTag ("MainCamera").AddComponent ("ColorCorrectionEffect");
-				Camera.main.GetComponent<ColorCorrectionEffect> ().enabled = true;
-				Camera.main.GetComponent<ColorCorrectionEffect> ().shader = Shader.Find ("Hidden/Grayscale Effect");
-				Camera.main.GetComponent<ColorCorrectionEffect> ().textureRamp = Resources.Load (ve2_ccorr_ramps [ve2_ccorr_rampc]) as Texture2D;
+				GameObject.FindGameObjectWithTag("MainCamera").GetComponent<ColorCorrectionEffect> ().enabled = true;
+				GameObject.FindGameObjectWithTag("MainCamera").GetComponent<ColorCorrectionEffect> ().shader = Shader.Find ("Hidden/Grayscale Effect");
+				GameObject.FindGameObjectWithTag("MainCamera").GetComponent<ColorCorrectionEffect> ().textureRamp = Resources.Load (ve2_ccorr_ramps [ve2_ccorr_rampc]) as Texture2D;
 			}
 			if (GUILayout.Button (new GUIContent ("Ramp " + ve2_ccorr_rampc, "Choose among several color correction ramps"))) {
 				ve2_ccorr_rampc += 1;
@@ -2418,7 +2418,7 @@ namespace UI{
 					ve2_ccorr_rampc = 0;
 
 				if (toggle_VE2_CCORR)
-					Camera.main.GetComponent<ColorCorrectionEffect> ().textureRamp = Resources.Load (ve2_ccorr_ramps [ve2_ccorr_rampc]) as Texture2D;
+					GameObject.FindGameObjectWithTag("MainCamera").GetComponent<ColorCorrectionEffect> ().textureRamp = Resources.Load (ve2_ccorr_ramps [ve2_ccorr_rampc]) as Texture2D;
 			}
 			GUILayout.EndHorizontal ();
 */
@@ -2426,29 +2426,29 @@ namespace UI{
 			GUILayout.BeginHorizontal ();
 			// Make a toggle for SEPIA :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 			toggle_VE2_SEPIA = GUILayout.Toggle (toggle_VE2_SEPIA, new GUIContent ("SEPIA", "Toggle sepia tone color effect"));
-			if (!toggle_VE2_SEPIA && Camera.main.GetComponent<SepiaToneEffect> ().enabled)
-				Camera.main.GetComponent<SepiaToneEffect> ().enabled = false;
-			else if (toggle_VE2_SEPIA && !Camera.main.GetComponent<SepiaToneEffect> ().enabled) { 
+			if (!toggle_VE2_SEPIA && GameObject.FindGameObjectWithTag("MainCamera").GetComponent<SepiaToneEffect> ().enabled)
+				GameObject.FindGameObjectWithTag("MainCamera").GetComponent<SepiaToneEffect> ().enabled = false;
+			else if (toggle_VE2_SEPIA && !GameObject.FindGameObjectWithTag("MainCamera").GetComponent<SepiaToneEffect> ().enabled) { 
 				GameObject.FindWithTag ("MainCamera").AddComponent <SepiaToneEffect>();
-				Camera.main.GetComponent<SepiaToneEffect> ().shader = Shader.Find ("Hidden/Sepiatone Effect");
-				Camera.main.GetComponent<SepiaToneEffect> ().enabled = true;
+				GameObject.FindGameObjectWithTag("MainCamera").GetComponent<SepiaToneEffect> ().shader = Shader.Find ("Hidden/Sepiatone Effect");
+				GameObject.FindGameObjectWithTag("MainCamera").GetComponent<SepiaToneEffect> ().enabled = true;
 			}
 			GUILayout.EndHorizontal ();
 			
 			GUILayout.BeginHorizontal ();
 			// Make a toggle for GLOW :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 			toggle_VE2_GLOW = GUILayout.Toggle (toggle_VE2_GLOW, new GUIContent ("GLOW", "Toggle glow effect"));
-			if (!toggle_VE2_GLOW && Camera.main.GetComponent<GlowEffect> ().enabled)
-				Camera.main.GetComponent<GlowEffect> ().enabled = false;
-			else if (toggle_VE2_GLOW && !Camera.main.GetComponent<GlowEffect> ().enabled) { 
+			if (!toggle_VE2_GLOW && GameObject.FindGameObjectWithTag("MainCamera").GetComponent<GlowEffect> ().enabled)
+				GameObject.FindGameObjectWithTag("MainCamera").GetComponent<GlowEffect> ().enabled = false;
+			else if (toggle_VE2_GLOW && !GameObject.FindGameObjectWithTag("MainCamera").GetComponent<GlowEffect> ().enabled) { 
 				GameObject.FindWithTag ("MainCamera").AddComponent <GlowEffect>();
-				Camera.main.GetComponent<GlowEffect> ().compositeShader = Shader.Find ("Hidden/GlowCompose");
-				Camera.main.GetComponent<GlowEffect> ().blurShader = Shader.Find ("Hidden/GlowConeTap");
-				Camera.main.GetComponent<GlowEffect> ().downsampleShader = Shader.Find ("Hidden/Glow Downsample");
-//				Camera.main.GetComponent<GlowEffect>().blurspread = 0.7f;
-//				Camera.main.GetComponent<GlowEffect>().bluriterations = 3f;
-				Camera.main.GetComponent<GlowEffect> ().glowIntensity = 0.3f;
-				Camera.main.GetComponent<GlowEffect> ().enabled = true;
+				GameObject.FindGameObjectWithTag("MainCamera").GetComponent<GlowEffect> ().compositeShader = Shader.Find ("Hidden/GlowCompose");
+				GameObject.FindGameObjectWithTag("MainCamera").GetComponent<GlowEffect> ().blurShader = Shader.Find ("Hidden/GlowConeTap");
+				GameObject.FindGameObjectWithTag("MainCamera").GetComponent<GlowEffect> ().downsampleShader = Shader.Find ("Hidden/Glow Downsample");
+//				GameObject.FindGameObjectWithTag("MainCamera").GetComponent<GlowEffect>().blurspread = 0.7f;
+//				GameObject.FindGameObjectWithTag("MainCamera").GetComponent<GlowEffect>().bluriterations = 3f;
+				GameObject.FindGameObjectWithTag("MainCamera").GetComponent<GlowEffect> ().glowIntensity = 0.3f;
+				GameObject.FindGameObjectWithTag("MainCamera").GetComponent<GlowEffect> ().enabled = true;
 			}
 			GUILayout.EndHorizontal ();
 
@@ -2665,10 +2665,10 @@ namespace UI{
 			//TODO : LOD mode buggy with other representation than Hyperball
 
 			GUI.enabled = true;
-			if (!toggle_NA_MEASURE && Camera.main.GetComponent<MeasureDistance> ())
-				Camera.main.GetComponent<MeasureDistance> ().enabled = false;
-			else if (toggle_NA_MEASURE && Camera.main.GetComponent<MeasureDistance> ())
-				Camera.main.GetComponent<MeasureDistance> ().enabled = true;
+			if (!toggle_NA_MEASURE && GameObject.FindGameObjectWithTag("MainCamera").GetComponent<MeasureDistance> ())
+				GameObject.FindGameObjectWithTag("MainCamera").GetComponent<MeasureDistance> ().enabled = false;
+			else if (toggle_NA_MEASURE && GameObject.FindGameObjectWithTag("MainCamera").GetComponent<MeasureDistance> ())
+				GameObject.FindGameObjectWithTag("MainCamera").GetComponent<MeasureDistance> ().enabled = true;
 //			GUILayout.EndHorizontal();
 			
 
@@ -3661,10 +3661,10 @@ namespace UI{
 			toggle_NA_CAMLOCK = GUILayout.Toggle (toggle_NA_CAMLOCK, new GUIContent ("Lock camera", "Enable/Disable camera movements"));
 			GUILayout.EndHorizontal();
 			
-			if (!toggle_NA_CLICK && Camera.main.GetComponent<ClickAtom> ())
-				Camera.main.GetComponent<ClickAtom> ().enabled = false;
-			else if (toggle_NA_CLICK && Camera.main.GetComponent<ClickAtom> ())
-				Camera.main.GetComponent<ClickAtom> ().enabled = true;
+			if (!toggle_NA_CLICK && GameObject.FindGameObjectWithTag("MainCamera").GetComponent<ClickAtom> ())
+				GameObject.FindGameObjectWithTag("MainCamera").GetComponent<ClickAtom> ().enabled = false;
+			else if (toggle_NA_CLICK && GameObject.FindGameObjectWithTag("MainCamera").GetComponent<ClickAtom> ())
+				GameObject.FindGameObjectWithTag("MainCamera").GetComponent<ClickAtom> ().enabled = true;
 			
 			
 			int sliderWidth = (int) (Rectangles.atomMenuWidth * 0.5f);
@@ -3968,7 +3968,7 @@ namespace UI{
 			var newColor = e.Color;
 			if (newColor != sNullColor) {
 				BackgroundColor = new ColorObject (newColor);
-				Camera.main.backgroundColor = newColor;
+						Camera.main.backgroundColor = newColor;
 				DispatchMethodPerformedEvent ("ChangeBackgroundColor", e);
 			}
 		}

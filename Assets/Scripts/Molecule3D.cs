@@ -383,10 +383,10 @@ public class Molecule3D:MonoBehaviour {
 			}	
 		}
 		
-		if(UIData.Instance.backGroundIs)
-			LocCamera.GetComponent<Skybox>().enabled=true;
-		else
-			LocCamera.GetComponent<Skybox>().enabled=false;
+//		if(UIData.Instance.backGroundIs)
+//			LocCamera.GetComponent<Skybox>().enabled=true;
+//		else
+//			LocCamera.GetComponent<Skybox>().enabled=false;
 
 		UIData.Instance.EnableUpdate=true;
 		
@@ -618,7 +618,7 @@ public class Molecule3D:MonoBehaviour {
 		#endif
 		//Debug.Log("SDGFSDGSDGDSG");
 		GUIMoleculeController.showAtomMenu = true;
-		Camera.main.GetComponent<SplashScreen>().enabled = false;
+		GameObject.FindGameObjectWithTag("MainCamera").GetComponent<SplashScreen>().enabled = false;
 		Debug.Log("T.T ==> END OF LOADING");
 
 		// Luiz:

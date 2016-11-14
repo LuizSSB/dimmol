@@ -118,10 +118,10 @@ void  LateUpdate ()
 //    float distFromMainCam;
     if(vertices.Length > 1)
     {
-        Vector3 cur1 = Camera.main.WorldToScreenPoint(vertices[0].point);
+			Vector3 cur1 = Camera.main.WorldToScreenPoint(vertices[0].point);
 //        distFromMainCam = lastCameraPosition1.z;
         lastCameraPosition1.z = 0;
-        Vector3 cur2 = Camera.main.WorldToScreenPoint(vertices[vertices.Length - 1].point);
+			Vector3 cur2 = Camera.main.WorldToScreenPoint(vertices[vertices.Length - 1].point);
         lastCameraPosition2.z = 0;
 
         float distance = (lastCameraPosition1 - cur1).magnitude;

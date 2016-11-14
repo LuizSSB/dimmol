@@ -99,6 +99,9 @@ namespace UnityClusterPackage
 			[XmlAttribute("eye")]
 			public Eye ScreenEye { get; set; }
 
+			[XmlAttribute("googlevr")]
+			public bool UsesGoogleVr { get; set; }
+
 			[XmlElement("pa")]
 			public Point Pa { get; set; }
 

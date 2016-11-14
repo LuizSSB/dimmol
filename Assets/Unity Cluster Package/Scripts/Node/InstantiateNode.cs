@@ -22,12 +22,24 @@ namespace UnityClusterPackage {
 					transform.rotation,
 					0
 				) as GameObject;
-				networkedCamera.transform.parent = this.transform;
+				networkedCamera.transform.parent = transform;
 			}
 			else if ( Node.CurrentNode.IsSlave )
 			{
 				Network.Connect( Node.CurrentNode.NodeServer.Ip, Node.CurrentNode.NodeServer.Port );
+				Debug.Log("I WANT CAMERA");
+				StartCoroutine("AdoptSlaveCamera");
 			}			
+		}
+
+		IEnumerator AdoptSlaveCamera() {
+			GameObject camera;
+			while((camera = GameObject.FindGameObjectWithTag("MainCamera")) == null) {
+				Debug.Log("WHERE IS CAMERA");
+				yield return new WaitForEndOfFrame();
+			}
+			Debug.Log("HERE IS CAMERA");
+			camera.transform.parent = transform;
 		}
 		
 		void OnServerInitialized()
@@ -57,7 +69,7 @@ namespace UnityClusterPackage {
 			while (Camera.main == null)
 				yield return new WaitForEndOfFrame ();
 
-			Camera.main.transform.parent = transform;
+			GameObject.FindGameObjectWithTag("MainCamera").transform.parent = transform;
 			Camera.main.backgroundColor = Color.black;
 		}
 		

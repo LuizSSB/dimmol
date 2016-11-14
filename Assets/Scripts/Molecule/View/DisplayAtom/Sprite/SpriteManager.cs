@@ -904,7 +904,7 @@ public class SpriteManager : MonoBehaviour
     public void TransformBillboarded(Sprite sprite)
     {
         Vector3 pos = sprite.clientTransform.position;
-        Transform t = Camera.main.transform;
+        Transform t = GameObject.FindGameObjectWithTag("MainCamera").transform;
 
         vertices[sprite.mv1] = pos + t.TransformDirection(sprite.v1);
         vertices[sprite.mv2] = pos + t.TransformDirection(sprite.v2);

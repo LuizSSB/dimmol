@@ -89,10 +89,10 @@ public class InteractiveStructure : MonoBehaviour {
 			//	MonoBehaviour.print(Input.mousePosition);
 				Vector3 pos = Input.mousePosition;
 				pos.z = 1;
-				pos = Camera.main.ScreenToWorldPoint(pos);
+				Camera.main.ScreenToWorldPoint(pos);
 				pos.z = -8;
-	//			pos.x *= Camera.main.pixelWidth;
-	//			pos.y *= Camera.main.pixelHeight;
+	//			pos.x *= GameObject.FindGameObjectWithTag("MainCamera").pixelWidth;
+	//			pos.y *= GameObject.FindGameObjectWithTag("MainCamera").pixelHeight;
 	//			
 				MonoBehaviour.print(pos);
 				GameObject Atom;

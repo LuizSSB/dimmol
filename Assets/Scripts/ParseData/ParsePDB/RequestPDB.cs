@@ -200,7 +200,7 @@ namespace  ParseData.ParsePDB
 			if ( file.Exists){
 	//			ReadOBJ readObj =new ReadOBJ();
 	//			readObj.GetOBJ(url,id);
-	//			OBJ obj = Camera.main.GetComponent<OBJ>(path);
+	//			OBJ obj = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<OBJ>(path);
 //				var go = new GameObject("Your Script Container");
 //				var obj = go.AddComponent<OBJ>();
 				// THIS PRODUCES A WARNING:: You are trying to create a MonoBehaviour using the 'new' keyword.  This is not allowed.  MonoBehaviours can only be added using AddComponent().  Alternatively, your script can inherit from ScriptableObject or no base class at all
@@ -511,7 +511,6 @@ namespace  ParseData.ParsePDB
 						int resid = int.Parse(s.Substring(22,4));
 						residueIds.Add(resid);
 						currentRes = resid;
-						Debug.Log(atomsNumber);
 						atomsNumberList.Add (int.Parse(atomsNumber));
 
 
@@ -943,7 +942,7 @@ namespace  ParseData.ParsePDB
     		Vector3 centerPoint = minPoint + ((maxPoint - minPoint) / 2);
 			//MoleculeModel.target = centerPoint;
 			
-			Camera.main.transform.position=new Vector3(0,0,0);
+			GameObject.FindGameObjectWithTag("MainCamera").transform.position=new Vector3(0,0,0);
 			
 			MoleculeModel.Offset = -centerPoint;
 			MoleculeModel.MinValue = minPoint;

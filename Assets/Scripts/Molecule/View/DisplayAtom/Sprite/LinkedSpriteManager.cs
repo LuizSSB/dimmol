@@ -106,7 +106,7 @@ public class LinkedSpriteManager : SpriteManager
         // Handle any billboarded sprites:
         if(activeBillboards.Count > 0)
         {
-            t = Camera.main.transform;
+            t = GameObject.FindGameObjectWithTag("MainCamera").transform;
 
             for(int i=0; i<activeBillboards.Count; ++i)
             {

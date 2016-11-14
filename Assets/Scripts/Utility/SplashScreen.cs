@@ -161,7 +161,7 @@ public class SplashScreen : MonoBehaviour
 //            status = FadeStatus.Paused;
 //        }
         oldCam = Camera.main;
-//        oldCamGO = Camera.main.gameObject;
+//        oldCamGO = GameObject.FindGameObjectWithTag("MainCamera").gameObject;
 
         if (logoPositioning == LogoPositioning.Centered)
         {

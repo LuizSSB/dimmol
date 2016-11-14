@@ -40,7 +40,7 @@ public class MouseOverMDDriverMolecule : MonoBehaviour {
 			Vector3 worldCoords = Camera.main.ScreenToWorldPoint(p);
 			Vector3 force = worldCoords - transform.position;
 			mddriverScript.applyForces(new int[] {(int)script.number}, new float[] {force.x, force.y, force.z});
-//			transform.position = Camera.main.ScreenToWorldPoint(p);
+			//			transform.position = Camera.main.ScreenToWorldPoint(p);
 
 			float distance = Vector3.Distance(worldCoords, transform.position);
 			float arrowZScale = distance / 8.0f;

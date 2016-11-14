@@ -316,9 +316,9 @@ public class maxCamera : MonoBehaviour
 
 					/*if just one atom is selected, we center the camera (CAM TARGEt!!! THE CAMERA FOLLOW CAM TARGET)
 					on this atom*/
-					if (Camera.main.GetComponent<ClickAtom> ().objList.Count == 1) {
+					if (GameObject.FindGameObjectWithTag("MainCamera").GetComponent<ClickAtom> ().objList.Count == 1) {
 						
-						int atomnumber = (int)Camera.main.GetComponent<ClickAtom> ().objList [0].GetComponent<BallUpdate> ().number;
+						int atomnumber = (int)GameObject.FindGameObjectWithTag("MainCamera").GetComponent<ClickAtom> ().objList [0].GetComponent<BallUpdate> ().number;
 						newposition = new Vector3 (MoleculeModel.atomsLocationlist [atomnumber] [0],
 						                          MoleculeModel.atomsLocationlist [atomnumber] [1],
 						                          MoleculeModel.atomsLocationlist [atomnumber] [2]);
@@ -326,20 +326,20 @@ public class maxCamera : MonoBehaviour
 						cameraTranslation = true;
 						centerChanged = true;
 						/* if multiple atom is selected, we calcul the barycenter*/
-					} else if (Camera.main.GetComponent<ClickAtom> ().objList.Count > 1) {
+					} else if (GameObject.FindGameObjectWithTag("MainCamera").GetComponent<ClickAtom> ().objList.Count > 1) {
 
 						//barycenter of all atom selection calculation
 						Vector3 barycenter = new Vector3 ();
 						float xTot = 0.0f, yTot = 0.0f, zTot = 0.0f;
-						for (int i=0; i<Camera.main.GetComponent<ClickAtom>().objList.Count; i++) {
-							int atomnumber = (int)Camera.main.GetComponent<ClickAtom> ().objList [i].GetComponent<BallUpdate> ().number;
+						for (int i=0; i<GameObject.FindGameObjectWithTag("MainCamera").GetComponent<ClickAtom>().objList.Count; i++) {
+							int atomnumber = (int)GameObject.FindGameObjectWithTag("MainCamera").GetComponent<ClickAtom> ().objList [i].GetComponent<BallUpdate> ().number;
 							xTot = xTot + MoleculeModel.atomsLocationlist [atomnumber] [0];
 							yTot = yTot + MoleculeModel.atomsLocationlist [atomnumber] [1];
 							zTot = zTot + MoleculeModel.atomsLocationlist [atomnumber] [2];
 						}
-						barycenter.x = xTot / Camera.main.GetComponent<ClickAtom> ().objList.Count;
-						barycenter.y = yTot / Camera.main.GetComponent<ClickAtom> ().objList.Count;
-						barycenter.z = zTot / Camera.main.GetComponent<ClickAtom> ().objList.Count;
+						barycenter.x = xTot / GameObject.FindGameObjectWithTag("MainCamera").GetComponent<ClickAtom> ().objList.Count;
+						barycenter.y = yTot / GameObject.FindGameObjectWithTag("MainCamera").GetComponent<ClickAtom> ().objList.Count;
+						barycenter.z = zTot / GameObject.FindGameObjectWithTag("MainCamera").GetComponent<ClickAtom> ().objList.Count;
 					
 						newposition = barycenter;
 

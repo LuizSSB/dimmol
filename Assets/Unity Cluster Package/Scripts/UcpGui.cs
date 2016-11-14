@@ -107,9 +107,16 @@ namespace UnityClusterPackage {
 					// Which eye stereo uses
 					m_Node.NodeScreen.ScreenEye = GUILayout.Toggle(
 						m_Node.NodeScreen.ScreenEye == Node.Eye.right,
-						"Unchecked: left eye / Checked: right eye",
+						"Right eye?",
 						MakeWidthOption(.5f)
 					) ? Node.Eye.right : Node.Eye.left;
+
+					// Whether it is using Google VR
+					m_Node.NodeScreen.UsesGoogleVr = GUILayout.Toggle(
+						m_Node.NodeScreen.UsesGoogleVr,
+						"Google VR",
+						MakeWidthOption(.33f)
+					);
 				} GUILayout.EndHorizontal();
 
 				// Points

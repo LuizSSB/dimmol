@@ -238,7 +238,7 @@ namespace UI {
 					}
 					else{
 						Debug.Log ("h4lp");
-						foreach(GameObject obj in Camera.main.GetComponent<ClickAtom>().objList)
+						foreach(GameObject obj in GameObject.FindGameObjectWithTag("MainCamera").GetComponent<ClickAtom>().objList)
 							manager.SetRadii((int)obj.GetComponent<BallUpdate>().number);	
 
 						oldScale = newScale;
@@ -1163,12 +1163,12 @@ namespace UI {
 				}
 				else {
 					if(!UIData.Instance.grayscalemode){
-						foreach(GameObject obj in Camera.main.GetComponent<ClickAtom>().objList)
+						foreach(GameObject obj in GameObject.FindGameObjectWithTag("MainCamera").GetComponent<ClickAtom>().objList)
 							hbManager.SetTexture(www.texture, (int)obj.GetComponent<BallUpdate>().number);
 					}
 					else{
 						grayTexture = hbManager.ToGray(www.texture);
-						foreach(GameObject obj in Camera.main.GetComponent<ClickAtom>().objList)
+						foreach(GameObject obj in GameObject.FindGameObjectWithTag("MainCamera").GetComponent<ClickAtom>().objList)
 							hbManager.SetTexture(grayTexture, (int)obj.GetComponent<BallUpdate>().number);
 					}
 				}
@@ -1592,7 +1592,7 @@ namespace UI {
 			GUIMoleculeController.pdbGen = false;
 			UIData.Instance.hasMoleculeDisplay = false;
 			GUIMoleculeController.toggle_NA_INTERACTIVE = false; // causes all sorts of headaches otherwise
-			Camera.main.GetComponent<ClickAtom>().ClearSelection(); // so the halos don't stay after clearing
+			GameObject.FindGameObjectWithTag("MainCamera").GetComponent<ClickAtom>().ClearSelection(); // so the halos don't stay after clearing
 			// Delete all the Parents to start again on a clear ground
 			GameObject.Destroy(Molecule.View.DisplayAtom.AtomCubeStyle.AtomCubeParent);
 			GameObject.Destroy(Molecule.View.DisplayAtom.AtomSphereStyle.AtomCubeParent);
@@ -1664,7 +1664,7 @@ namespace UI {
 			if(!UI.GUIMoleculeController.toggle_NA_CLICK) {
 				manager.SetColor(args.Color, args.Atoms, args.Residue, args.Chain);
 			} else { 
-				foreach(GameObject obj in Camera.main.GetComponent<ClickAtom>().objList){
+				foreach(GameObject obj in GameObject.FindGameObjectWithTag("MainCamera").GetComponent<ClickAtom>().objList){
 					manager.SetColor(args.Color, (int)obj.GetComponent<BallUpdate>().number);
 				}
 			}
@@ -1691,7 +1691,7 @@ namespace UI {
 				hbManager.SetTexture(texture, applyToAtoms, applyToRes, applyToChain);
 			}
 			else {
-				foreach(GameObject obj in Camera.main.GetComponent<ClickAtom>().objList)
+				foreach(GameObject obj in GameObject.FindGameObjectWithTag("MainCamera").GetComponent<ClickAtom>().objList)
 					hbManager.SetTexture(texture, (int)obj.GetComponent<BallUpdate>().number);
 			}
 

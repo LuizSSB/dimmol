@@ -204,7 +204,7 @@ public class ClickAtom : MonoBehaviour
         if(/*clicked &&*/ atominfoList.Count > 0)
         {
 			for(int i=0; i < atominfoList.Count; i++){
-        		Vector3 pos = Camera.main.WorldToScreenPoint(objList[i].transform.position);
+				Vector3 pos = Camera.main.WorldToScreenPoint(objList[i].transform.position);
 				GUI.Box(new Rect (pos.x + 5, Screen.height - pos.y + 20, width, height),atominfoList[i]);}
         }
 

@@ -72,7 +72,7 @@ namespace GamessOutput
 			var trueString = trueNumber.ToString("#.#################");
 
 			if (trueString.Length == 0)
-				return "000000000";
+				return "00000000";
 
 			if (trueString.Length > maxLength)
 				trueString = trueString.Substring(0, maxLength);

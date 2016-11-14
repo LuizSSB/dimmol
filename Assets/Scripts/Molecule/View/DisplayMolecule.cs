@@ -843,10 +843,15 @@ namespace Molecule.View {
 		}
 		
 		public static void ClearMemory() {
-			MoleculeModel.atomsLocationlist=null;
-			MoleculeModel.atomsTypelist=null;
-			MoleculeModel.atomsResnamelist=null;
 			MoleculeModel.CSidList=null;
+			MoleculeModel.atomsLocationlist.Clear();
+			MoleculeModel.atomsTypelist.Clear();
+			MoleculeModel.atomsNamelist.Clear();
+			MoleculeModel.atomsResnamelist.Clear();
+			MoleculeModel.residueIds.Clear();
+			MoleculeModel.splits.Clear();
+			MoleculeModel.atomsChainList.Clear();
+			MoleculeModel.atomsColorList.Clear();
 			//MoleculeModel.sortedResIndexByList = null;
 
 			MoleculeModel.CSLabelList=null;

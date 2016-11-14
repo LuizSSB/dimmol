@@ -124,7 +124,6 @@ public class maxCamera : MonoBehaviour
 	{
 		get {
 			if (_LocCamera == null) {
-				Debug.Log("foo ba");
 				_LocCamera = GameObject.FindGameObjectWithTag("MainCamera");
 			}
 

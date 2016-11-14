@@ -790,6 +790,10 @@ public class HBallManager : GenericManager {
 	/// Identifier.
 	/// </param>
 	public override GameObject GetBall(int id){
+		if (id >= hballs.Length) {
+			Molecule.View.DisplayMolecule.ResetDisplay();
+		}
+
 		return hballs[id].gameObject;
 	}
 	

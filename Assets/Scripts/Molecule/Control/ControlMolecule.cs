@@ -74,26 +74,28 @@ namespace Molecule.Control {
 	using UI;
 	
 	public class ControlMolecule {
+		public const float MinimumDistanceFromCamera = -5f;
 	
 		public ControlMolecule() {}
 		
 		public static void CreateMolecule(TextReader sr) {
-			List<float[]>	alist			=	new List<float[]>();
-			List<float[]>	calist			=	new List<float[]>();
-			
-			List<float>		BFactorList		=	new List<float>();
-         	
-         	List<string>	resnamelist		=	new List<string>();
-         	List<string>	atomsNameList	=	new List<string>();
-         	List<string>	caChainlist		=	new List<string>();
-			
-			List<AtomModel>	typelist		=	new List<AtomModel>();
-			List<string>	chainlist		= 	new List<string>();
-			
-			List<Color>		colorList		= new List<Color>();
 
-			List<float[]>   sshelixlist     = new List<float[]> ();
-			List<float[]>   sssheetlist     = new List<float[]> ();
+			List<float[]>	alist			=	MoleculeModel.atomsLocationlist ?? new List<float[]>();
+			List<float[]>	calist			=	MoleculeModel.CatomsLocationlist ?? new List<float[]>();
+			
+			List<float>		BFactorList		=	MoleculeModel.BFactorList ?? new List<float>();
+         	
+			List<string>	resnamelist		=	MoleculeModel.atomsResnamelist ?? new List<string>();
+			List<string>	atomsNameList	=	MoleculeModel.atomsNamelist ?? new List<string>();
+			List<string>	caChainlist		=	MoleculeModel.CaSplineChainList ?? new List<string>();
+			
+			List<AtomModel>	typelist		=	MoleculeModel.atomsTypelist ?? new List<AtomModel>();
+			List<string>	chainlist		= 	MoleculeModel.atomsChainList ?? new List<string>();
+			
+			List<Color>		colorList		= MoleculeModel.atomsColorList ?? new List<Color>();
+
+			List<float[]>   sshelixlist     = MoleculeModel.ssHelixList ?? new List<float[]> ();
+			List<float[]>   sssheetlist     = MoleculeModel.ssStrandList ?? new List<float[]> ();
 			
 			RequestPDB.ReadPDB(sr, alist, calist, BFactorList, resnamelist, atomsNameList, caChainlist, typelist, chainlist, colorList, sshelixlist, sssheetlist);
 			
@@ -296,8 +298,7 @@ namespace Molecule.Control {
 			Vector3 centerPoint = bary/alist.Count;
 			MoleculeModel.target = Vector3.zero;
 			Debug.Log("centerPoint:"+centerPoint + " min/max " + minPoint + "/" + maxPoint);
-			
-			MoleculeModel.Offset = -centerPoint;
+			MoleculeModel.Offset = Vector3.zero;//-centerPoint;
 
 			bary = Vector3.zero;
 			Debug.Log("alist.Count:"+alist.Count);
@@ -339,13 +340,16 @@ namespace Molecule.Control {
 				calist[i]=vect;
 			}
 			
-			MoleculeModel.atomsLocationlist			=	alist;
-			MoleculeModel.atomsSugarLocationlist	=	alistSugar;
-			MoleculeModel.CatomsLocationlist		=	calist;
+			MoleculeModel.atomsLocationlist = alist;
+			MoleculeModel.atomsSugarLocationlist = alistSugar;
+			MoleculeModel.CatomsLocationlist = calist;
 			
-			MoleculeModel.cameraLocation.x=0;
-			MoleculeModel.cameraLocation.y=0;
-			MoleculeModel.cameraLocation.z=MoleculeModel.target.z-(Vector3.Distance(maxPoint,minPoint));
+			MoleculeModel.cameraLocation.x = 0;
+			MoleculeModel.cameraLocation.y = 0;
+			MoleculeModel.cameraLocation.z = Mathf.Min(
+				MoleculeModel.target.z - Vector3.Distance(maxPoint, minPoint),
+				ControlMolecule.MinimumDistanceFromCamera
+			);
 		} // End of BuildMoleculeComponents
 
 		/// <summary>

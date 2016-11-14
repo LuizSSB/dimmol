@@ -310,6 +310,34 @@ namespace  ParseData.ParsePDB
 		{
 			ControlMolecule.CreateMolecule (new StringReader (pdbContents));
 		}
+
+		// Luiz:
+		public void MakePDBFromXYZ(string xyzFileName)
+		{
+			var state = new GamessOutput.OutputState();
+
+			using (var reader = File.OpenText(xyzFileName + ".xyz"))
+			{
+				string line;
+				for (int idx = 0; (line = reader.ReadLine()) != null; ++idx)
+				{
+					if (idx >= 2 && line.Trim().Length > 0) {
+						var lineParts = line.Split(' ');
+						if(lineParts.Length != 4)
+							throw new ArgumentException("xyzFilename too many/few data on line " + (idx + 1));
+						state.Atoms.Add(new GamessOutput.Atom() {
+							Id = lineParts[0],
+							X = lineParts[1],
+							Y = lineParts[2],
+							Z = lineParts[3]
+						});
+					}
+				}
+
+				string pdb = GamessOutput.PDBMaker.MakePDB(state);
+				ControlMolecule.CreateMolecule(new StringReader(pdb));
+			}
+		}
 	
 		public void LoadPDBRequest(string file_base_name, bool withData = true) {
 			StreamReader sr ;
@@ -377,9 +405,9 @@ namespace  ParseData.ParsePDB
 													List<float[]>   sshelixlist,
 													List<float[]>   sssheetlist){
 			string[] dnaBackboneAtoms = new string[] {"C5'"};
-			List<int> residueIds = new List<int>();
-			List<int> splits = new List<int>();
-			List<int> atomsNumberList = new List<int>();
+			List<int> residueIds = MoleculeModel.residueIds ?? new List<int>();
+			List<int> splits = MoleculeModel.splits ?? new List<int>();
+			List<int> atomsNumberList = MoleculeModel.atomsNumberList ?? new List<int>();
 
 			int resNb = 0;
 			int prevRes = int.MinValue;
@@ -483,6 +511,7 @@ namespace  ParseData.ParsePDB
 						int resid = int.Parse(s.Substring(22,4));
 						residueIds.Add(resid);
 						currentRes = resid;
+						Debug.Log(atomsNumber);
 						atomsNumberList.Add (int.Parse(atomsNumber));
 
 

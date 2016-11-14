@@ -424,10 +424,10 @@ public class Molecule3D:MonoBehaviour {
 	//this fonction is used to synchronise the file loading and the Display
 	//Otherwise Display is execute before the end of the loading.
 	public IEnumerator loadLoadFile(){
-			UIData.Instance.isOpenFile = false;
-			yield return StartCoroutine(loadFile());
-			Debug.Log ("T.T ==> BEFORE DISPLAY");
-			Display();
+		UIData.Instance.isOpenFile = false;
+		yield return StartCoroutine(loadFile());
+		Debug.Log ("T.T ==> BEFORE DISPLAY");
+		Display();
 	}
 
 	// Luiz:
@@ -579,6 +579,8 @@ public class Molecule3D:MonoBehaviour {
 		// if we laod a pdb file launch the reading of file
 			else if(GUIDisplay.Instance.file_extension=="pdb")
 				requestPDB.LoadPDBRequest(GUIDisplay.Instance.file_base_name);
+			else if(GUIDisplay.Instance.file_extension == "xyz")
+				requestPDB.MakePDBFromXYZ(GUIDisplay.Instance.file_base_name);
 
 		// check the format of xgmml	
 			else if(UI.GUIDisplay.Instance.file_extension=="xgmml") {

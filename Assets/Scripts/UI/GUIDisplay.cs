@@ -475,10 +475,15 @@ namespace UI {
 					GUILayout.BeginArea (Rectangles.openRect);
 					#if !UNITY_WEBPLAYER
 					{
-						//id != "" if a molecule is already open
+						// Luiz:
 
-						if (!UIData.Instance.hasMoleculeDisplay) {
-							// Luiz:
+						int menuWidth = Rectangles.openWidth;
+						float pPortWidth = menuWidth * 0.30f;
+						float pServerWidth = menuWidth * 0.65f;
+
+						//id != "" if a molecule is already open
+						if(GUIDisplay.Instance.StateFiles == null || GUIDisplay.Instance.StateFiles.Length == 0)
+						{
 							if (GUILayout.Button (new GUIContent ("Open File From Disk", "Load a PDB file from disk"))) {
 								m_fileBrowser = new ImprovedFileBrowser (Rectangles.fileBrowserRect, "", OpenFileCallback, m_lastOpenDir);
 //							m_fileBrowser.SelectionPattern = "*.pdb|*.xgmml";
@@ -487,33 +492,22 @@ namespace UI {
 								GUIMoleculeController.showOpenMenu = false;
 								GUIMoleculeController.showSecStructMenu = false;
 							}
-						} else {
-							if (GUILayout.Button (new GUIContent ("Clear", "Clear the scene"))) {
-								// Luiz:
-								Clear ();
-							}
-						}
-					
-						if (!UIData.Instance.hasMoleculeDisplay) {
-							int menuWidth = Rectangles.openWidth;
-							float pServerWidth = menuWidth * 0.65f;
-							float pPortWidth = menuWidth * 0.30f;
-					
+
 							GUILayout.BeginHorizontal ();
 							GUILayout.Label ("Proxy Server", GUILayout.Width (pServerWidth));
 							GUILayout.Label ("Proxy Port", GUILayout.Width (pPortWidth));
 							GUILayout.EndHorizontal ();
-						
+
 							GUILayout.BeginHorizontal ();
 							PdbRequest.ProxyServer = GUILayout.TextField (PdbRequest.ProxyServer, 256, GUILayout.Width (pServerWidth));
-//						proxyServer = MyTextField.FixedTextField(proxyServer, 256, 150f) ;
+							//						proxyServer = MyTextField.FixedTextField(proxyServer, 256, 150f) ;
 							// Validate the proxyPort : only digits
 							proxyPortValidate = new StringBuilder ();
-						
+
 							foreach (char c in PdbRequest.ProxyPort)
 								if (char.IsDigit (c))
 									proxyPortValidate.Append (c);
-						
+
 							PdbRequest.ProxyPort = GUILayout.TextField (proxyPortValidate.ToString (), 4);
 							GUILayout.EndHorizontal ();
 
@@ -521,7 +515,7 @@ namespace UI {
 							GUILayout.Label ("Please input a PDB ID");
 							GUILayout.BeginHorizontal ();
 							PdbRequest.PdbId = GUILayout.TextField (PdbRequest.PdbId, 4, GUILayout.Width (pPortWidth));
-//						pdbID=GUILayout.TextField(pdbID,4);
+							//						pdbID=GUILayout.TextField(pdbID,4);
 							if (GUILayout.Button (new GUIContent ("Fetch PDB", "Fetch a PDB file from the PDB server"))) {
 								id = PdbRequest.PdbId;
 								UIData.Instance.fetchPDBFile = true;
@@ -531,20 +525,9 @@ namespace UI {
 								UIData.Instance.bondtype = UIData.BondType.nobond;
 							}
 							GUILayout.EndHorizontal ();	
+						}
 
-							// Luiz:
-//							GUILayout.Label("Web address to PDB file");
-//							GUILayout.BeginHorizontal(); {
-//								PdbWebAddress = GUILayout.TextField(PdbWebAddress, GUILayout.Width(pServerWidth));
-//								if(GUILayout.Button(new GUIContent("Fetch", "Fetch PDB file from the web"))) {
-//									UIData.Instance.fetchPDBFile = UIData.PDBFetchingType.PDBServer;
-//									UIData.Instance.isOpenFile = true;
-//									GUIMoleculeController.showOpenMenu = false;
-//									UIData.Instance.atomtype = UIData.AtomType.particleball;
-//									UIData.Instance.bondtype = UIData.BondType.nobond;
-//
-//								}
-//							} GUILayout.EndHorizontal();
+						if(id == "") {
 							if(GUILayout.Button(new GUIContent("Open GAMESS optimization output", "Load a GAMESS optimization output file from disk"))) {
 								m_fileBrowser = new ImprovedFileBrowser(Rectangles.fileBrowserRect, "", OpenGamessOutputCallback, m_lastOpenDir);
 								m_fileBrowser.DirectoryImage = directoryimage; 
@@ -570,24 +553,29 @@ namespace UI {
 
 								}
 							} GUILayout.EndHorizontal();
+
+							GUILayout.BeginHorizontal ();
+
+							UIData.Instance.readHetAtom = GUILayout.Toggle (UIData.Instance.readHetAtom, "Read Hetero Atoms?");
+
+							UIData.Instance.readWater = GUILayout.Toggle (UIData.Instance.readWater, "Read Water?");
+
+							GUILayout.EndHorizontal ();
+
+							GUILayout.BeginHorizontal ();
+							GUILayout.Label ("Connectivity :");
+							UIData.Instance.connectivity_calc = GUILayout.Toggle (UIData.Instance.connectivity_calc, "Calculed?");
+							UIData.Instance.connectivity_PDB = GUILayout.Toggle (UIData.Instance.connectivity_PDB, "from PDB?");
+
+
+							GUILayout.EndHorizontal ();
 						}
-					}
-					if (id == "") {
-						GUILayout.BeginHorizontal ();
-
-						UIData.Instance.readHetAtom = GUILayout.Toggle (UIData.Instance.readHetAtom, "Read Hetero Atoms?");
-
-						UIData.Instance.readWater = GUILayout.Toggle (UIData.Instance.readWater, "Read Water?");
-				
-						GUILayout.EndHorizontal ();
-
-						GUILayout.BeginHorizontal ();
-						GUILayout.Label ("Connectivity :");
-						UIData.Instance.connectivity_calc = GUILayout.Toggle (UIData.Instance.connectivity_calc, "Calculed?");
-						UIData.Instance.connectivity_PDB = GUILayout.Toggle (UIData.Instance.connectivity_PDB, "from PDB?");
-				
-
-						GUILayout.EndHorizontal ();
+						else {
+							if (GUILayout.Button (new GUIContent ("Clear", "Clear the scene"))) {
+								// Luiz:
+								Clear ();
+							}
+						}
 					}
 					#endif
 					

@@ -15,7 +15,7 @@ namespace Config
 			set;
 		}
 
-		[XmlElement("has-camera-control")]
+		[XmlElement("camera-control")]
 		public bool CameraControl {
 			get;
 			set;
@@ -23,26 +23,18 @@ namespace Config
 
 		private const string ConfigFileName = "slave-config.xml";
 		static SlaveConfig() {
-			if (UnityClusterPackage.Node.CurrentNode.IsSlave) {
-				try {
-					var filePath = Path.Combine(Application.streamingAssetsPath, ConfigFileName);
-					using(var reader = new StreamReader(filePath)) {
-						var serializer = new XmlSerializer(typeof(SlaveConfig));
-						CurrentConfig = (SlaveConfig)serializer.Deserialize(reader);
-					}
-				} catch (Exception e) {
-					UnityEngine.Debug.Log("Failed to load slave-config.xml: " + e);
-
-					CurrentConfig = new SlaveConfig() {
-						CameraControl = false,
-						ShowEnergy = false
-					};
+			try {
+				var filePath = Path.Combine(Application.streamingAssetsPath, ConfigFileName);
+				using(var reader = new StreamReader(filePath)) {
+					var serializer = new XmlSerializer(typeof(SlaveConfig));
+					CurrentConfig = (SlaveConfig)serializer.Deserialize(reader);
 				}
-			} else {
-				// Luiz: In case this is the master node, everything must be enabled
+			} catch (Exception e) {
+				UnityEngine.Debug.Log("Failed to load slave-config.xml: " + e);
+
 				CurrentConfig = new SlaveConfig() {
-					CameraControl = true,
-					ShowEnergy = true
+					CameraControl = false,
+					ShowEnergy = false
 				};
 			}
 		}

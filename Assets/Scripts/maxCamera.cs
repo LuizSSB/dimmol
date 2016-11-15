@@ -77,6 +77,9 @@ using Molecule.Model;
 using System;
 
 //[AddComponentMenu("Camera-Control/3dsMax Camera Style")]
+using Config;
+
+
 public class maxCamera : MonoBehaviour
 {
 	public static bool cameraStop = false;
@@ -217,8 +220,8 @@ public class maxCamera : MonoBehaviour
 	
 	public void Init ()
 	{
-		if (UnityClusterPackage.Node.CurrentNode.IsSlave) {
-			if (Config.SlaveConfig.CurrentConfig.CameraControl) {
+		if (UnityClusterPackage.Node.CurrentNode.HasPermission(NodePermission.Slave)) {
+			if (UnityClusterPackage.Node.CurrentNode.HasPermission(NodePermission.CameraControl)) {
 				// Luiz: the purpose of the instruction below is to stop the synchronization for this specific node.
 				// While the end-result is pretty much the intended one, it also causes a lot of errors to be
 				// constantly logged, probably because the recipient of the synchronized data sent by the
@@ -630,6 +633,9 @@ public class maxCamera : MonoBehaviour
      */
 	void LateUpdate ()
 	{
+		var oldTransform = TransformData.FromTransform(transform);
+		var oldLocTransform = TransformData.FromTransform(LocCamera.transform);
+
 		if (cameraStop == false) {
 			keyboardOperate ();
 			if (!guiControl)
@@ -908,6 +914,17 @@ public class maxCamera : MonoBehaviour
 				next_right = false;
 				rotation_done = 0.0f;
 			}*/
+		}
+
+		// Luiz:
+		if (UnityClusterPackage.Node.CurrentNode.HasPermission(NodePermission.Client)) {
+			if (!oldTransform.Equals(transform) || !oldLocTransform.Equals(LocCamera.transform)) {
+				GetComponent<NetworkView>().RPC(
+					"AdjustCamera", RPCMode.Server,
+					transform.position, transform.rotation,
+					LocCamera.transform.position, LocCamera.transform.rotation
+				);
+			}
 		}
 	}
 	
@@ -1607,5 +1624,29 @@ public class maxCamera : MonoBehaviour
 			ResetChainsPos ();
 		UIData.Instance.spread_tree = false;
 	}
-	
+
+	// Luiz:
+	[RPC]
+	public void AdjustCamera(Vector3 position, Quaternion rotation, Vector3 locPosition, Quaternion locRotation)
+	{
+		transform.position = position;
+		transform.rotation = rotation;
+		LocCamera.transform.position = locPosition;
+		LocCamera.transform.rotation = locRotation;
+	}
+	private class TransformData
+	{
+		public Vector3 Position { get; set; }
+		public Quaternion Rotation { get; set; }
+		public static TransformData FromTransform(Transform transform)
+		{
+			return new TransformData {
+				Position = transform.position,
+				Rotation = transform.rotation
+			};
+		}
+		public bool Equals(Transform transform) {
+			return Position.Equals(transform.position) && Rotation.Equals(transform.rotation);
+		}
+	}
 }

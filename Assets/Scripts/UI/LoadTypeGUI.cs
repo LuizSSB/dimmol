@@ -62,6 +62,7 @@
 /// using HyperBalls, a unified algorithm for balls, sticks and hyperboloids",
 /// J. Comput. Chem., 2011, 32, 2924
 ///
+using Config;
 
 
 namespace UI{
@@ -332,7 +333,8 @@ namespace UI{
 			
 			GUILayout.EndHorizontal();
 			
-			return UnityClusterPackage.Node.CurrentNode.IsSlave ? false : keepOpen;
+			return UnityClusterPackage.Node.CurrentNode.HasPermission(NodePermission.MenuControl) &&
+				keepOpen;
 		}
 		
 		

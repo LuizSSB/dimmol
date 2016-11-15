@@ -470,7 +470,7 @@ namespace UI {
 			directoryimage = (Texture2D)Resources.Load("FileBrowser/dossier");
 			fileimage=(Texture2D)Resources.Load("FileBrowser/fichiers");
 
-			if (!UnityClusterPackage.Node.CurrentNode.IsSlave) {
+			if (UnityClusterPackage.Node.CurrentNode.HasPermission(NodePermission.MenuControl)) {
 				if (GUIMoleculeController.showOpenMenu) {
 					GUILayout.BeginArea (Rectangles.openRect);
 					#if !UNITY_WEBPLAYER
@@ -646,11 +646,14 @@ namespace UI {
 				}
 			}
 
-			gUIMoleculeController.CameraStop();		
+			gUIMoleculeController.CameraStop();
+
+			// Luiz: this method must remain here, because it performs stuff related to drawing the molecule correctly 
+			// when it's first loaded.
 			gUIMoleculeController.SetAtomMenu();
 
 			// Luiz:
-			if (!UnityClusterPackage.Node.CurrentNode.IsSlave) {
+			if (UnityClusterPackage.Node.CurrentNode.HasPermission(NodePermission.MenuControl)) {
 				gUIMoleculeController.SetSecStructMenu();
 				gUIMoleculeController.SetSurfaceMenu();
 				gUIMoleculeController.SetBfactorMenu();
@@ -683,7 +686,7 @@ namespace UI {
 				UnityEngine.SceneManagement.SceneManager.LoadScene("UCPSetup", UnityEngine.SceneManagement.LoadSceneMode.Single);
 			}
 
-			if(Config.SlaveConfig.CurrentConfig.CameraControl) {
+			if(UnityClusterPackage.Node.CurrentNode.HasPermission(NodePermission.CameraControl)) {
 				gUIMoleculeController.SetMnipulatormove ();
 			}
 

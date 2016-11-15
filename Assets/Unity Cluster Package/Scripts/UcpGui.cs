@@ -26,9 +26,9 @@ namespace UnityClusterPackage {
 
 		protected static readonly Rect MainAreaFrame = new Rect(
 			Screen.width / 2 / 2,
-			(int) (Screen.height / 1.5 / 2),
+			5,
 			Screen.width / 2,
-			(int)(Screen.height / 1.5)
+			Screen.height - 5
 		);
 
 		// Use this for initialization
@@ -41,6 +41,7 @@ namespace UnityClusterPackage {
 			m_Pc = ConvertNodePoint(m_Node.NodeScreen.Pc);
 			m_Pe = ConvertNodePoint(m_Node.NodeScreen.Pe);
 		}
+		Node.Type foo;
 
 		protected void OnGUI() {
 			GUILayout.BeginArea(MainAreaFrame); {
@@ -75,12 +76,15 @@ namespace UnityClusterPackage {
 
 				// Server Data
 				GUILayout.BeginHorizontal(); {
-					// Is master node?
-					m_Node.NodeType = GUILayout.Toggle(
-						m_Node.NodeType == Node.Type.master,
-						new GUIContent("Is master node", "Indicantes whether this instance is the master node"),
-						MakeWidthOption(.33f)
-					) ? Node.Type.master : Node.Type.slave;
+					// Node type
+					GUILayout.BeginVertical(MakeWidthOption(.33f)); {
+						GUILayout.Label("Node type");
+						m_Node.NodeType = (Node.Type)GUILayout.SelectionGrid(
+							(int)m_Node.NodeType,
+							Enum.GetNames(typeof(Node.Type)),
+							2
+						);
+					} GUILayout.EndVertical();
 
 					// Server Address
 					GUILayout.BeginVertical(MakeWidthOption(.33f)); {
@@ -196,15 +200,19 @@ namespace UnityClusterPackage {
 			}
 
 			if (valid) {
-				if (action != null)
-					action();
+				try {
+					if (action != null)
+						action();
 
-				if (DoAfterSetUp != null) {
-					DoAfterSetUp.NodeSetUp();
-				}
+					if (DoAfterSetUp != null) {
+						DoAfterSetUp.NodeSetUp();
+					}
 
-				if (NodeSetUp != null) {
-					NodeSetUp(m_Node);
+					if (NodeSetUp != null) {
+						NodeSetUp(m_Node);
+					}
+				} catch (Exception e) {
+					m_ErrorMessages = e.ToString();
 				}
 			} else {
 				m_ErrorMessages = msgs.ToString();

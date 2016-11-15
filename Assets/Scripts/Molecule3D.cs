@@ -83,6 +83,7 @@ using Molecule.Model;
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
+using UnityClusterPackage;
 
 public class Molecule3D:MonoBehaviour {
 
@@ -195,15 +196,16 @@ public class Molecule3D:MonoBehaviour {
 		scenecontroller = GameObject.Find("LoadBox");
 		scenecontroller.AddComponent<ReadDX>();
 
-		// Luiz:
-		if (!UnityClusterPackage.Node.CurrentNode.IsSlave) {
+		// Luiz: Configuring RPC calls for when stuff changes
+		if (UnityClusterPackage.Node.CurrentNode.HasPermission(NodePermission.MenuControl)) {
 			mNetworkView = GetComponent<NetworkView>();
-			GUIDisplay.Instance.Cleared += (sender, e) => mNetworkView.RPC("Clear", RPCMode.All);
+			GUIDisplay.Instance.Cleared += (sender, e) => mNetworkView.RPC("Clear", RPCMode.All, Node.CurrentNode.Id);
 			ChangeManager.MethodInvoked += (sender, e) => {
 				var rpcData = GetRPCData(e.Param, "Method");
 				mNetworkView.RPC(
 					rpcData.HandlerName,
 					RPCMode.All,
+					Node.CurrentNode.Id,
 					e.TypeName,
 					e.MethodName,
 					(e.Param ?? new object()).GetType().FullName,
@@ -215,6 +217,7 @@ public class Molecule3D:MonoBehaviour {
 				mNetworkView.RPC(
 					rpcData.HandlerName,
 					RPCMode.All,
+					Node.CurrentNode.Id,
 					e.TypeName,
 					e.PropertyName,
 					e.NewValue.GetType().FullName,
@@ -461,11 +464,13 @@ public class Molecule3D:MonoBehaviour {
 			}	
 		}
 
-		if (!UnityClusterPackage.Node.CurrentNode.IsSlave) {
+		// Luiz: this will probably start an infinite loop, but let's see.
+		if (UnityClusterPackage.Node.CurrentNode.HasPermission(NodePermission.MenuControl)) {
 			var newLocations = MiniJSON.JsonEncode(MoleculeModel.atomsLocationlist.ToArray());
 			var networkinson = GetComponent<NetworkView> ();
 			networkinson.RPC(
 				"LoadStateRPC", RPCMode.All,
+				Node.CurrentNode.Id,
 				newLocations,
 				GUIDisplay.Instance.StateEnergyMinMax.min,
 				GUIDisplay.Instance.StateEnergyMinMax.max,
@@ -622,10 +627,11 @@ public class Molecule3D:MonoBehaviour {
 		Debug.Log("T.T ==> END OF LOADING");
 
 		// Luiz:
-		if (!UnityClusterPackage.Node.CurrentNode.IsSlave) {
+		if (UnityClusterPackage.Node.CurrentNode.HasPermission(NodePermission.MenuControl)) {
 			var networkinson = GetComponent<NetworkView> ();
 			foreach (var part in UIData.Instance.SerializeInParts ()) {
-				networkinson.RPC ("Synchronize", RPCMode.All, part);
+				Debug.Log("DUDE");
+				networkinson.RPC ("Synchronize", RPCMode.All, Node.CurrentNode.Id, part);
 			}
 		}
 	}
@@ -1238,10 +1244,9 @@ public class Molecule3D:MonoBehaviour {
 	// Luiz:
 	private NetworkView mNetworkView;
 	[RPC]
-	public void LoadStateRPC(string serializedPositions, float minEnergy, float maxEnergy, float currentEnergy)
+	public void LoadStateRPC(int senderNodeId, string serializedPositions, float minEnergy, float maxEnergy, float currentEnergy)
 	{
-		Debug.Log("%%%%%%% disco bus " + minEnergy + " " + maxEnergy + " " + currentEnergy);
-//		if(UnityClusterPackage.Node.CurrentNode.IsSlave)
+//		if(Node.CurrentNode.Id != senderNodeId)
 		{
 			var deserialized = (System.Collections.ArrayList)MiniJSON.JsonDecode(serializedPositions);
 
@@ -1256,17 +1261,15 @@ public class Molecule3D:MonoBehaviour {
 				});
 			}
 
-			if (UnityClusterPackage.Node.CurrentNode.IsSlave) {
-				GUIDisplay.Instance.SetEnergyData(minEnergy, maxEnergy, currentEnergy);
-			}
+			GUIDisplay.Instance.SetEnergyData(minEnergy, maxEnergy, currentEnergy);
 
 			StartCoroutine(UpdateVisualState());
 		}
 	}
 	[RPC]
-	public void Synchronize(string serializedData)
+	public void Synchronize(int senderNodeId, string serializedData)
 	{
-		if (UnityClusterPackage.Node.CurrentNode.IsSlave) {
+		if (Node.CurrentNode.Id != senderNodeId) {
 			if (UIData.DeserializePart (serializedData)) {
 				UIData.Instance.isOpenFile = true;
 
@@ -1279,90 +1282,106 @@ public class Molecule3D:MonoBehaviour {
 		}
 	}
 	[RPC]
-	public void Clear()
+	public void Clear(int senderNodeId)
 	{
-		if (UnityClusterPackage.Node.CurrentNode.IsSlave) {
+		if (Node.CurrentNode.Id != senderNodeId) {
 			GUIDisplay.Instance.Clear ();
 		}
 	}
 	[RPC]
-	public void HandleInt32Method(string typeName, string methodName, string paramTypeName, int param)
+	public void HandleInt32Method(int senderNodeId, string typeName, string methodName, string paramTypeName, int param)
 	{
-		HandleMethodInvoked (typeName, methodName, param);
+		HandleMethodInvoked (senderNodeId, typeName, methodName, param);
 	}
 	[RPC]
-	public void HandleSingleMethod(string typeName, string methodName, string paramTypeName, float param)
+	public void HandleSingleMethod(int senderNodeId, string typeName, string methodName, string paramTypeName, float param)
 	{
-		HandleMethodInvoked (typeName, methodName, param);
+		HandleMethodInvoked (senderNodeId, typeName, methodName, param);
 	}
 	[RPC]
-	public void HandleBooleanMethod(string typeName, string methodName, string paramTypeName, bool param)
+	public void HandleBooleanMethod(int senderNodeId, string typeName, string methodName, string paramTypeName, bool param)
 	{
-		HandleMethodInvoked (typeName, methodName, param);
+		HandleMethodInvoked (senderNodeId, typeName, methodName, param);
 	}
 	[RPC]
-	public void HandleStringMethod(string typeName, string methodName, string paramTypeName, string param)
+	public void HandleStringMethod(int senderNodeId, string typeName, string methodName, string paramTypeName, string param)
 	{
-		HandleMethodInvoked (typeName, methodName, param);
+		HandleMethodInvoked (senderNodeId, typeName, methodName, param);
 	}
 	[RPC]
-	public void HandleObjectMethod(string typeName, string methodName, string paramTypeName, string paramSerialized)
+	public void HandleObjectMethod(int senderNodeId, string typeName, string methodName, string paramTypeName, string paramSerialized)
 	{
 		var param = paramSerialized == null ? null : JsonUtility.FromJson (paramSerialized, Type.GetType (paramTypeName));
-		HandleMethodInvoked (typeName, methodName, param);
+		HandleMethodInvoked (senderNodeId, typeName, methodName, param);
 	}
-	private void HandleMethodInvoked(string typeName, string methodName, object param)
+	private void HandleMethodInvoked(int senderNodeId, string typeName, string methodName, object param)
 	{
 		Debug.Log ("### Method " + typeName + "." + methodName + "(" + param + ")");
 
-		if (UnityClusterPackage.Node.CurrentNode.IsSlave) {
+		if (senderNodeId != Node.CurrentNode.Id) {
 			var type = Type.GetType (typeName);
 			var method = type.GetMethod (methodName);
+			var singleton = GetTypeSingletonIfAny(type, method);
 			if (param != null) {
-				method.Invoke (null, new [] { param });
+				method.Invoke (singleton, new [] { param });
 			} else {
-				method.Invoke (null, null);
+				method.Invoke (singleton, null);
 			}
 		}
 	}
 	[RPC]
-	public void HandleInt32Property(string typeName, string propertyName, string newValueTypeName, int param)
+	public void HandleInt32Property(int senderNodeId, string typeName, string propertyName, string newValueTypeName, int param)
 	{
-		HandlePropertyChanged (typeName, propertyName, param);
+		HandlePropertyChanged (senderNodeId, typeName, propertyName, param);
 	}
 	[RPC]
-	public void HandleSingleProperty(string typeName, string propertyName, string newValueTypeName, float param)
+	public void HandleSingleProperty(int senderNodeId, string typeName, string propertyName, string newValueTypeName, float param)
 	{
-		HandlePropertyChanged (typeName, propertyName, param);
+		HandlePropertyChanged (senderNodeId, typeName, propertyName, param);
 	}
 	[RPC]
-	public void HandleBooleanProperty(string typeName, string propertyName, string newValueTypeName, bool param)
+	public void HandleBooleanProperty(int senderNodeId, string typeName, string propertyName, string newValueTypeName, bool param)
 	{
-		HandlePropertyChanged (typeName, propertyName, param);
+		HandlePropertyChanged (senderNodeId, typeName, propertyName, param);
 	}
 	[RPC]
-	public void HandleStringProperty(string typeName, string propertyName, string newValueTypeName, string param)
+	public void HandleStringProperty(int senderNodeId, string typeName, string propertyName, string newValueTypeName, string param)
 	{
-		HandlePropertyChanged (typeName, propertyName, param);
+		HandlePropertyChanged (senderNodeId, typeName, propertyName, param);
 	}
 	[RPC]
-	public void HandleObjectProperty(string typeName, string propertyName, string newValueTypeName, string newValueSerialized)
+	public void HandleObjectProperty(int senderNodeId, string typeName, string propertyName, string newValueTypeName, string newValueSerialized)
 	{
 		var param = JsonUtility.FromJson (newValueSerialized, Type.GetType (newValueTypeName));
-		HandlePropertyChanged (typeName, propertyName, param);
+		HandlePropertyChanged (senderNodeId, typeName, propertyName, param);
 	}
-	private void HandlePropertyChanged(string typeName, string propertyName, object newValue ) {
+	private void HandlePropertyChanged(int senderNodeId, string typeName, string propertyName, object newValue) {
 		Debug.Log (string.Format ("### Property changed - {0}:{1} = {2}", typeName, propertyName, newValue));
 
-		if (UnityClusterPackage.Node.CurrentNode.IsSlave) {
+		if (Node.CurrentNode.Id != senderNodeId) {
 			var type = Type.GetType (typeName);
 			var property = type.GetProperty (propertyName);
-			property.SetValue (null, newValue, null);
+			var singleton = GetTypeSingletonIfAny(type, property.GetGetMethod());
+			property.SetValue (singleton, newValue, null);
 		}
 	}
 	private static HashSet<Type> sRPCHandledTypes = new HashSet<Type> {
 		typeof(int), typeof(float), typeof(bool), typeof(string)
 	};
+
+	private object GetTypeSingletonIfAny(Type ofType, System.Reflection.MethodInfo forMethod)
+	{
+		if (forMethod.IsStatic) {
+			return null;
+		} else {
+			var instanceField = ofType.GetField("Instance");
+			if (instanceField == null) {
+				throw new ArgumentException("Type of parameter 'ofType' has no singleton field named 'Instance'");
+			}
+			return instanceField.GetValue(null);
+		}
+	}
+
 	private static RPCData GetRPCData(object forValue, string handlerSuffix)
 	{
 		var valueType = (forValue ?? new object()).GetType ();

@@ -11,7 +11,7 @@ namespace UnityClusterPackage {
 		void Awake() {
 			Network.sendRate = 100;
 
-			if ( Node.CurrentNode.NodeType == Node.Type.master )
+			if ( Node.CurrentNode.IsParentNode)
 			{
 				Network.proxyIP = Node.CurrentNode.NodeServer.Ip;
 				bool useNat = Network.HavePublicAddress();
@@ -24,10 +24,9 @@ namespace UnityClusterPackage {
 				) as GameObject;
 				networkedCamera.transform.parent = transform;
 			}
-			else if ( Node.CurrentNode.IsSlave )
+			else if ( Node.CurrentNode.IsChildNode )
 			{
 				Network.Connect( Node.CurrentNode.NodeServer.Ip, Node.CurrentNode.NodeServer.Port );
-				Debug.Log("I WANT CAMERA");
 				StartCoroutine("AdoptSlaveCamera");
 			}			
 		}
@@ -35,10 +34,8 @@ namespace UnityClusterPackage {
 		IEnumerator AdoptSlaveCamera() {
 			GameObject camera;
 			while((camera = GameObject.FindGameObjectWithTag("MainCamera")) == null) {
-				Debug.Log("WHERE IS CAMERA");
 				yield return new WaitForEndOfFrame();
 			}
-			Debug.Log("HERE IS CAMERA");
 			camera.transform.parent = transform;
 		}
 		
@@ -80,11 +77,11 @@ namespace UnityClusterPackage {
 		
 		void OnDestroy() {
 			Debug.Log ("Destroying node: " + Node.CurrentNode.Name);
-			if ( Node.CurrentNode.NodeType == Node.Type.master )
+			if ( Node.CurrentNode.IsParentNode )
 			{
 				Network.Disconnect();
 			}
-			else if ( Node.CurrentNode.IsSlave )
+			else if ( Node.CurrentNode.IsChildNode )
 			{
 				Network.CloseConnection( Network.player, true );                
 			}

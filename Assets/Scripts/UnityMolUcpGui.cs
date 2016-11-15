@@ -22,11 +22,13 @@ public class UnityMolUcpGui : UnityClusterPackage.UcpGui {
 				"Has camera control",
 				MakeWidthOption(.33f)
 			);
+
 			m_SlaveConfig.ShowEnergy = GUILayout.Toggle(
 				m_SlaveConfig.ShowEnergy,
 				"Displays energy meter",
 				MakeWidthOption(.33f)
 			);
+
 			if (GUILayout.Button("Save slave settings", MakeWidthOption(.32f))) {
 				SlaveConfig.SetSlaveConfigData(m_SlaveConfig);
 			}

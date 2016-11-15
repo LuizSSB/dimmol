@@ -63,6 +63,7 @@
 /// J. Comput. Chem., 2011, 32, 2924
 ///
 using System;
+using Config;
 
 namespace UI {
 	using UnityEngine;
@@ -864,7 +865,7 @@ namespace UI {
 		}
 
 		public void SetEnergyWindow() {
-			if((Config.SlaveConfig.CurrentConfig.ShowEnergy && UnityClusterPackage.Node.CurrentNode.IsSlave && GUIDisplay.Instance.CurrentState != null)
+			if((UnityClusterPackage.Node.CurrentNode.HasPermission(NodePermission.Energy) && GUIDisplay.Instance.CurrentState != null)
 				|| (GUIDisplay.Instance.StateFiles != null && GUIDisplay.Instance.StateFiles.Length > 0))
 			{
 				Rectangles.EnergyRect = GUI.Window(666, Rectangles.EnergyRect, LoadTypeGUI.Energy, emptyContent);

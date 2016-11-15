@@ -25,7 +25,17 @@ namespace UnityClusterPackage
 		[XmlElement("screen")]
 		public Screen NodeScreen { get; set; }
 
-		public bool IsSlave { get { return NodeType == Type.slave; } }
+		public bool IsParentNode {
+			get {
+				return NodeType == Type.master || NodeType == Type.server;
+			}
+		}
+
+		public bool IsChildNode {
+			get {
+				return NodeType == Type.client || NodeType == Type.slave;
+			}
+		}
 
 		private static string NodeInformationFilePath {
 			get {
@@ -77,9 +87,23 @@ namespace UnityClusterPackage
 			CurrentNode = node;
 		}
 
+		// Values in lower case for us to not have a problem when deserializing
 		public enum Type {
-			// Lower case for us to not have a problem when deserializing
-			master, slave
+			// Used when a node gets to be a host while presenting the GUI.
+			// Designed to work as the only node or accompanied by N slaves.
+			master,
+
+			// Used when a node gets to be the host, but control is relegated to another node (client).
+			// Designed to work alongside a client node. May be accompanied by N slaves.
+			server,
+
+			// Used when a node is responsible for controlling the app, but the cluster host is in another node.
+			// Designed to connect only to a server node. Should not be connected to master nodes.
+			client,
+
+			// Used when the node merely presents information and does nothing else.
+			// Designed to connect to server or master nodes.
+			slave
 		}
 
 		[System.Serializable]

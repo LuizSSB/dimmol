@@ -183,6 +183,9 @@ public class Molecule3D:MonoBehaviour {
 		}
 	}
 
+	// Luiz: Properties removed from GUIMoleculeController
+//	public bool toggle_HB_TRANS = true;
+
 	void Awake() {
 		System.Threading.Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-US");
 	}
@@ -199,31 +202,9 @@ public class Molecule3D:MonoBehaviour {
 		// Luiz: Configuring RPC calls for when stuff changes
 		if (UnityClusterPackage.Node.CurrentNode.HasPermission(NodePermission.MenuControl)) {
 			mNetworkView = GetComponent<NetworkView>();
-			GUIDisplay.Instance.Cleared += (sender, e) => mNetworkView.RPC("Clear", RPCMode.All, Node.CurrentNode.Id);
-			ChangeManager.MethodInvoked += (sender, e) => {
-				var rpcData = GetRPCData(e.Param, "Method");
-				mNetworkView.RPC(
-					rpcData.HandlerName,
-					RPCMode.All,
-					Node.CurrentNode.Id,
-					e.TypeName,
-					e.MethodName,
-					(e.Param ?? new object()).GetType().FullName,
-					rpcData.Data
-				);
-			};
-			ChangeManager.PropertyChanged += (sender, e) => {
-				var rpcData = GetRPCData(e.NewValue, "Property");
-				mNetworkView.RPC(
-					rpcData.HandlerName,
-					RPCMode.All,
-					Node.CurrentNode.Id,
-					e.TypeName,
-					e.PropertyName,
-					e.NewValue.GetType().FullName,
-					rpcData.Data
-				);
-			};
+			GUIDisplay.Instance.Cleared += HandleUICleared;
+			ChangeManager.MethodInvoked += HandleChangeManagerMethodInvoked;
+			ChangeManager.PropertyChanged += HandleChangeManagerPropertyChanged;
 		}
 
 		DebugStreamer.message = "new GUIDisplay()";
@@ -241,13 +222,57 @@ public class Molecule3D:MonoBehaviour {
 		SendMessage("InitScene",requestPDB,SendMessageOptions.DontRequireReceiver);
 	}
 
+	void HandleChangeManagerPropertyChanged (object sender, PropertyEventArgs e)
+	{
+		var rpcData = GetRPCData(e.NewValue, "Property");
+		mNetworkView.RPC(
+			rpcData.HandlerName,
+			RPCMode.All,
+			Node.CurrentNode.Id,
+			e.TypeName,
+			e.PropertyName,
+			e.NewValue.GetType().FullName,
+			rpcData.Data
+		);
+	}
+
+	void HandleChangeManagerMethodInvoked (object sender, MethodParamEventArgs e)
+	{
+		var rpcData = GetRPCData(e.Param, "Method");
+		mNetworkView.RPC(
+			rpcData.HandlerName,
+			RPCMode.All,
+			Node.CurrentNode.Id,
+			e.TypeName,
+			e.MethodName,
+			(e.Param ?? new object()).GetType().FullName,
+			rpcData.Data
+		);
+	}
+
+	void HandleUICleared (object sender, ClearingEventArgs e)
+	{
+		if(e.ExitingScene) {
+			Debug.Log("WAT");
+			ChangeManager.MethodInvoked -= HandleChangeManagerMethodInvoked;
+			ChangeManager.PropertyChanged -= HandleChangeManagerPropertyChanged;
+			GUIDisplay.Instance.Cleared -= HandleUICleared;
+
+			if (UnityClusterPackage.Node.CurrentNode.IsHostNode) {
+				mNetworkView.RPC("DieHard", RPCMode.All, Node.CurrentNode.Id);
+			}
+		} else {
+			mNetworkView.RPC("Clear", RPCMode.All, Node.CurrentNode.Id);
+		}
+	}
+
 	public void Display() {
 		DisplayMolecule.Display();
 		DisplayMolecule.DisplayFieldLine();
 //		Deta=MoleculeModel.target;
 		isControl=true;
 
-		GUIMoleculeController.InitMoleculeParameters();
+		GUIMoleculeController.Instance.InitMoleculeParameters();
 		SetCenter(0);
 	}
 
@@ -276,40 +301,43 @@ public class Molecule3D:MonoBehaviour {
 			fontInitialized = true;
 		}
 	
-		if(GUIMoleculeController.m_fileBrowser != null)
-			GUIMoleculeController.m_fileBrowser.OnGUI();
+		if(GUIMoleculeController.Instance.m_fileBrowser != null)
+			GUIMoleculeController.Instance.m_fileBrowser.OnGUI();
 
 
 
 		if(GUIDisplay.Instance.m_fileBrowser != null) {
-			GUIMoleculeController.FileBrowser_show=true;
+			GUIMoleculeController.Instance.FileBrowser_show=true;
 			GUIDisplay.Instance.m_fileBrowser.OnGUI();
 		} else
-			GUIMoleculeController.FileBrowser_show=false;
-		
+			GUIMoleculeController.Instance.FileBrowser_show=false;
+
+		// Luiz:
 		UIData.Instance.EnableUpdate=false;
-		if((!UIData.Instance.hiddenUI)&&(!UIData.Instance.hiddenUIbutFPS))
-			GUIDisplay.Instance.Display();
+		if ((!UIData.Instance.hiddenUI) && (!UIData.Instance.hiddenUIbutFPS)) {
+			if (!GUIDisplay.Instance.Display())
+				return;
+		}
 		
 		if((!UIData.Instance.hiddenUI)&&(UIData.Instance.hiddenUIbutFPS)){
-			GUIMoleculeController.toggle_INFOS = true;
+			GUIMoleculeController.Instance.toggle_INFOS = true;
 		}
 		
 		if(!UIData.Instance.hiddenUI)
-			if(GUIMoleculeController.showPanelsMenu)
-				GUIMoleculeController.SetPanels();
+			if(GUIMoleculeController.Instance.showPanelsMenu)
+				GUIMoleculeController.Instance.SetPanels();
 		
 		if(!UIData.Instance.hiddenUI)
-			if (GUIMoleculeController.showResiduesMenu)
-				GUIMoleculeController.SetResidues();
+			if (GUIMoleculeController.Instance.showResiduesMenu)
+				GUIMoleculeController.Instance.SetResidues();
 		
 		if(!UIData.Instance.hiddenUI)
-			if (GUIMoleculeController.showAtomsExtendedMenu)
-				GUIMoleculeController.SetAtomsExtended();
+			if (GUIMoleculeController.Instance.showAtomsExtendedMenu)
+				GUIMoleculeController.Instance.SetAtomsExtended();
 		
 		if(!UIData.Instance.hiddenUI)
-			if (GUIMoleculeController.showChainsMenu)
-				GUIMoleculeController.SetChains();
+			if (GUIMoleculeController.Instance.showChainsMenu)
+				GUIMoleculeController.Instance.SetChains();
 
 		if(UIData.Instance.changeStructure) {
 			DisplayMolecule.ResetDisplay();
@@ -332,17 +360,17 @@ public class Molecule3D:MonoBehaviour {
 			UIData.Instance.isCubeLoaded = false;
 			UIData.Instance.isSphereLoaded = false;
 			UIData.Instance.isHBallLoaded = false;
-			LoadTypeGUI.buildSurfaceDone = false;
-			LoadTypeGUI.surfaceTextureDone = false;
-			LoadTypeGUI.toggle_RING_BLENDING = false;
-			LoadTypeGUI.toggle_NA_HIDE = false;
-			LoadTypeGUI.toggle_TWISTER= false;
-			LoadTypeGUI.toggle_HIDE_HYDROGEN = false;
-			LoadTypeGUI.toggle_OXYGEN = false;
-			LoadTypeGUI.ColorationModeBond=0;
-			LoadTypeGUI.ColorationModeRing=0;
+			GUIMoleculeController.Instance.buildSurfaceDone = false;
+			GUIMoleculeController.Instance.surfaceTextureDone = false;
+			LoadTypeGUI.Instance.toggle_RING_BLENDING = false;
+			GUIMoleculeController.Instance.toggle_NA_HIDE = false;
+			LoadTypeGUI.Instance.toggle_TWISTER= false;
+			LoadTypeGUI.Instance.toggle_HIDE_HYDROGEN = false;
+			GUIMoleculeController.Instance.toggle_OXYGEN = false;
+			LoadTypeGUI.Instance.ColorationModeBond=0;
+			LoadTypeGUI.Instance.ColorationModeRing=0;
 			UIData.Instance.isParticlesInitialized=false;
-			GUIMoleculeController.globalRadius = 1.0f;
+			GUIMoleculeController.Instance.globalRadius = 1.0f;
 			UIData.Instance.secondarystruct = false;
 			UIData.Instance.atomtype = UIData.AtomType.noatom;
 			UIData.Instance.bondtype = UIData.BondType.nobond;
@@ -554,7 +582,7 @@ public class Molecule3D:MonoBehaviour {
 		BallUpdateCube.resetBondColors = true;
 		BallUpdate.bondsReadyToBeReset = true;
 		var diff = 1e-6f;
-		GUIMoleculeController.linkScale -= diff;
+		GUIMoleculeController.Instance.linkScale -= diff;
 
 		yield return new WaitForSeconds(0);
 
@@ -596,15 +624,15 @@ public class Molecule3D:MonoBehaviour {
 					}
 					UIData.Instance.atomtype=UIData.AtomType.hyperball;
 					UIData.Instance.bondtype=UIData.BondType.hyperstick;
-					GUIMoleculeController.globalRadius = 0.22f;
-					GUIMoleculeController.shrink = 0.0001f;
-					GUIMoleculeController.linkScale = 0.70f;
+					GUIMoleculeController.Instance.globalRadius = 0.22f;
+					GUIMoleculeController.Instance.shrink = 0.0001f;
+					GUIMoleculeController.Instance.linkScale = 0.70f;
 					SendMessage("Display",SendMessageOptions.DontRequireReceiver);
 			}
 			else if(UI.GUIDisplay.Instance.file_extension=="obj") {
 					requestPDB.LoadOBJRequest(GUIDisplay.Instance.file_base_name+"."+GUIDisplay.Instance.file_extension);
 					MoleculeModel.surfaceFileExists=true;
-					GUIMoleculeController.modif=true;
+					GUIMoleculeController.Instance.modif=true;
 			}	
 //				requestPDB.GetTypelist();
 		}
@@ -622,7 +650,7 @@ public class Molecule3D:MonoBehaviour {
 		}			
 		#endif
 		//Debug.Log("SDGFSDGSDGDSG");
-		GUIMoleculeController.showAtomMenu = true;
+		GUIMoleculeController.Instance.showAtomMenu = true;
 		GameObject.FindGameObjectWithTag("MainCamera").GetComponent<SplashScreen>().enabled = false;
 		Debug.Log("T.T ==> END OF LOADING");
 
@@ -630,10 +658,11 @@ public class Molecule3D:MonoBehaviour {
 		if (UnityClusterPackage.Node.CurrentNode.HasPermission(NodePermission.MenuControl)) {
 			var networkinson = GetComponent<NetworkView> ();
 			foreach (var part in UIData.Instance.SerializeInParts ()) {
-				Debug.Log("DUDE");
 				networkinson.RPC ("Synchronize", RPCMode.All, Node.CurrentNode.Id, part);
 			}
 		}
+
+		GUIMoleculeController.Instance.toggle_NA_HBALLSMOOTH = true;
 	}
 
 	// Update is called once per frame
@@ -657,53 +686,54 @@ public class Molecule3D:MonoBehaviour {
 		}
 		
 		// Always false ?
-		/*if (GUIMoleculeController.toggle_HB_SANIM) {
-			GUIMoleculeController.shrink +=  Time.deltaTime * GUIMoleculeController.hb_sanim * GUIMoleculeController.hb_ssign;
-			if (GUIMoleculeController.shrink > 0.95f )
-				GUIMoleculeController.hb_ssign = -1.0f;
-			if (GUIMoleculeController.shrink < 0.05f )
-				GUIMoleculeController.hb_ssign = 1.0f;
+		/*if (GUIMoleculeController.Instance.toggle_HB_SANIM) {
+			GUIMoleculeController.Instance.shrink +=  Time.deltaTime * GUIMoleculeController.Instance.hb_sanim * GUIMoleculeController.Instance.hb_ssign;
+			if (GUIMoleculeController.Instance.shrink > 0.95f )
+				GUIMoleculeController.Instance.hb_ssign = -1.0f;
+			if (GUIMoleculeController.Instance.shrink < 0.05f )
+				GUIMoleculeController.Instance.hb_ssign = 1.0f;
 		}*/
 		
 		// Always false ?
-		/*if (GUIMoleculeController.toggle_HB_RANIM) {
-			GUIMoleculeController.globalRadius +=  Time.deltaTime * GUIMoleculeController.hb_ranim * GUIMoleculeController.hb_rsign;
-			if (GUIMoleculeController.globalRadius > 0.95f )
-				GUIMoleculeController.hb_rsign = -1.0f;
-			if (GUIMoleculeController.globalRadius < 0.05f )
-				GUIMoleculeController.hb_rsign = 1.0f;
+		/*if (GUIMoleculeController.Instance.toggle_HB_RANIM) {
+			GUIMoleculeController.Instance.globalRadius +=  Time.deltaTime * GUIMoleculeController.Instance.hb_ranim * GUIMoleculeController.Instance.hb_rsign;
+			if (GUIMoleculeController.Instance.globalRadius > 0.95f )
+				GUIMoleculeController.Instance.hb_rsign = -1.0f;
+			if (GUIMoleculeController.Instance.globalRadius < 0.05f )
+				GUIMoleculeController.Instance.hb_rsign = 1.0f;
 		}*/
 	
-		if(GUIMoleculeController.toggle_HB_TRANS) // Always true ?
-			GUIMoleculeController.transDelta = 25.0f;
-		else
-			GUIMoleculeController.transDelta = 1.0f;
+//		if(toggle_HB_TRANS) // Always true ?
+			// Luiz: Yes
+			GUIMoleculeController.Instance.transDelta = 25.0f;
+//		else
+//			GUIMoleculeController.Instance.transDelta = 1.0f;
 	
-		if (GUIMoleculeController.transMETAPHOR) {
-			GUIMoleculeController.globalRadius = transition(GUIMoleculeController.globalRadius, GUIMoleculeController.newGlobalRadius, GUIMoleculeController.deltaRadius);
-			GUIMoleculeController.linkScale = transition(GUIMoleculeController.linkScale, GUIMoleculeController.newScale, GUIMoleculeController.deltaScale);
-			GUIMoleculeController.shrink = transition(GUIMoleculeController.shrink, GUIMoleculeController.newShrink, GUIMoleculeController.deltaShrink);
-			if(GUIMoleculeController.globalRadius == GUIMoleculeController.newGlobalRadius && GUIMoleculeController.linkScale == GUIMoleculeController.newScale && GUIMoleculeController.shrink == GUIMoleculeController.newShrink) 			
-				GUIMoleculeController.transMETAPHOR = false;
+		if (GUIMoleculeController.Instance.transMETAPHOR) {
+			GUIMoleculeController.Instance.globalRadius = transition(GUIMoleculeController.Instance.globalRadius, GUIMoleculeController.Instance.newGlobalRadius, GUIMoleculeController.Instance.deltaRadius);
+			GUIMoleculeController.Instance.linkScale = transition(GUIMoleculeController.Instance.linkScale, GUIMoleculeController.Instance.newScale, GUIMoleculeController.Instance.deltaScale);
+			GUIMoleculeController.Instance.shrink = transition(GUIMoleculeController.Instance.shrink, GUIMoleculeController.Instance.newShrink, GUIMoleculeController.Instance.deltaShrink);
+			if(GUIMoleculeController.Instance.globalRadius == GUIMoleculeController.Instance.newGlobalRadius && GUIMoleculeController.Instance.linkScale == GUIMoleculeController.Instance.newScale && GUIMoleculeController.Instance.shrink == GUIMoleculeController.Instance.newShrink) 			
+				GUIMoleculeController.Instance.transMETAPHOR = false;
 		}
 		
-		LineUpdate.scale=GUIMoleculeController.linkScale;
+		LineUpdate.scale= GUIMoleculeController.Instance.linkScale;
 		
-		StickUpdate.radiusFactor = GUIMoleculeController.globalRadius;
-		StickUpdate.shrink      = GUIMoleculeController.shrink;
-		StickUpdate.scale 		= GUIMoleculeController.linkScale;
-		BallUpdateHB.radiusFactor = GUIMoleculeController.globalRadius;
-//		BallUpdateHB.depthfactor = GUIMoleculeController.depthfactor;
-		HBallManager.depthFactor = GUIMoleculeController.depthfactor;
-		HStickManager.depthFactor = GUIMoleculeController.depthfactor;
-		BallUpdateSphere.radiusFactor = GUIMoleculeController.globalRadius;
-		BallUpdateCube.radiusFactor = GUIMoleculeController.globalRadius;
-		BallUpdateRC.radiusFactor = GUIMoleculeController.globalRadius;
+		StickUpdate.radiusFactor = GUIMoleculeController.Instance.globalRadius;
+		StickUpdate.shrink      = GUIMoleculeController.Instance.shrink;
+		StickUpdate.scale 		= GUIMoleculeController.Instance.linkScale;
+		BallUpdateHB.radiusFactor = GUIMoleculeController.Instance.globalRadius;
+//		BallUpdateHB.depthfactor = GUIMoleculeController.Instance.depthfactor;
+		HBallManager.depthFactor = GUIMoleculeController.Instance.depthfactor;
+		HStickManager.depthFactor = GUIMoleculeController.Instance.depthfactor;
+		BallUpdateSphere.radiusFactor = GUIMoleculeController.Instance.globalRadius;
+		BallUpdateCube.radiusFactor = GUIMoleculeController.Instance.globalRadius;
+		BallUpdateRC.radiusFactor = GUIMoleculeController.Instance.globalRadius;
 		
-		BallUpdateHB.drag = GUIMoleculeController.drag;
-		BallUpdateHB.spring = GUIMoleculeController.spring;
+		BallUpdateHB.drag = GUIMoleculeController.Instance.drag;
+		BallUpdateHB.spring = GUIMoleculeController.Instance.spring;
 		
-		BallUpdateHB.EnergyGrayColor = GUIMoleculeController.EnergyGrayColor.color;		
+		BallUpdateHB.EnergyGrayColor = GUIMoleculeController.Instance.EnergyGrayColor.color;		
 		
 		// TODO: This is gross. Should be fixed.
 		GameObject[] FieldLines = GameObject.FindGameObjectsWithTag("FieldLineManager");
@@ -713,29 +743,29 @@ public class Molecule3D:MonoBehaviour {
 			curLineRenderer.material.SetFloat("_timeOff",Time.time);
 			
 			// for benoist video comment next line
-			curLineRenderer.material.SetColor("_Color", GUIMoleculeController.EnergyGrayColor.color);
+			curLineRenderer.material.SetColor("_Color", GUIMoleculeController.Instance.EnergyGrayColor.color);
 			
-			if (GUIMoleculeController.fieldLineColorGradient)
+			if (GUIMoleculeController.Instance.fieldLineColorGradient)
 				curLineRenderer.material.SetFloat("_colormode", 0f);
 			else
 				curLineRenderer.material.SetFloat("_colormode", 1f);
 
-			curLineRenderer.material.SetFloat("_Speed",GUIMoleculeController.speed);
-			curLineRenderer.material.SetFloat("_Density",GUIMoleculeController.density);
-			curLineRenderer.material.SetFloat("_Length", GUIMoleculeController.linelength);
-			curLineRenderer.SetWidth(GUIMoleculeController.linewidth,GUIMoleculeController.linewidth);
-			curLineRenderer.material.SetFloat("_depthcut", (GUIMoleculeController.depthCut-maxCamera.currentDistance));
-			curLineRenderer.material.SetFloat("_adjust",(GUIMoleculeController.adjustFieldLineCut));
+			curLineRenderer.material.SetFloat("_Speed", GUIMoleculeController.Instance.speed);
+			curLineRenderer.material.SetFloat("_Density", GUIMoleculeController.Instance.density);
+			curLineRenderer.material.SetFloat("_Length", GUIMoleculeController.Instance.linelength);
+			curLineRenderer.SetWidth(GUIMoleculeController.Instance.linewidth, GUIMoleculeController.Instance.linewidth);
+			curLineRenderer.material.SetFloat("_depthcut", (GUIMoleculeController.Instance.depthCut-maxCamera.currentDistance));
+			curLineRenderer.material.SetFloat("_adjust",(GUIMoleculeController.Instance.adjustFieldLineCut));
 			curLineRenderer.material.SetVector("_SurfacePos", FieldLine.transform.position);
 
-			if (GUIMoleculeController.surfaceMobileCut)
+			if (GUIMoleculeController.Instance.surfaceMobileCut)
 				curLineRenderer.material.SetFloat("_cut", 2f);
-			else if ( GUIMoleculeController.surfaceStaticCut){
+			else if (GUIMoleculeController.Instance.surfaceStaticCut){
 				curLineRenderer.material.SetFloat("_cut", 1f);
-				curLineRenderer.material.SetVector("_cutplane",new Vector4(GUIMoleculeController.cutX,
-																			GUIMoleculeController.cutY,
-																			GUIMoleculeController.cutZ,
-																			GUIMoleculeController.depthCut));
+				curLineRenderer.material.SetVector("_cutplane",new Vector4(GUIMoleculeController.Instance.cutX,
+																			GUIMoleculeController.Instance.cutY,
+																			GUIMoleculeController.Instance.cutZ,
+																			GUIMoleculeController.Instance.depthCut));
 			}
 		}
 
@@ -743,51 +773,51 @@ public class Molecule3D:MonoBehaviour {
 			
 		foreach (GameObject Surface in Surfaces) {
 			
-			if ((GUIMoleculeController.surfaceTexture || GUIMoleculeController.externalSurfaceTexture) && !GUIMoleculeController.surfaceTextureDone) {
-				if(GUIMoleculeController.externalSurfaceTexture){
+			if ((GUIMoleculeController.Instance.surfaceTexture || GUIMoleculeController.Instance.externalSurfaceTexture) && !GUIMoleculeController.Instance.surfaceTextureDone) {
+				if(GUIMoleculeController.Instance.externalSurfaceTexture){
 					if(!UIData.Instance.grayscalemode)
-						Surface.GetComponent<Renderer>().material.SetTexture("_MatCap",GUIMoleculeController.extSurf);
+						Surface.GetComponent<Renderer>().material.SetTexture("_MatCap", GUIMoleculeController.Instance.extSurf);
 					else{
 						GameObject hbManagerObj = GameObject.FindGameObjectWithTag("HBallManager");
 						HBallManager hbManager = hbManagerObj.GetComponent<HBallManager>();
-						Surface.GetComponent<Renderer>().material.SetTexture("_MatCap",hbManager.ToGray(GUIMoleculeController.extSurf));
+						Surface.GetComponent<Renderer>().material.SetTexture("_MatCap",hbManager.ToGray(GUIMoleculeController.Instance.extSurf));
 					}
 					Debug.Log("File choose surface texture");
 				}
 				else{
 					if(!UIData.Instance.grayscalemode)
-						Surface.GetComponent<Renderer>().material.SetTexture("_MatCap",(Texture)Resources.Load(GUIMoleculeController.surfaceTextureName)); // do not do that every frame!
+						Surface.GetComponent<Renderer>().material.SetTexture("_MatCap",(Texture)Resources.Load(GUIMoleculeController.Instance.surfaceTextureName)); // do not do that every frame!
 					else{
 						GameObject hbManagerObj = GameObject.FindGameObjectWithTag("HBallManager");
 						HBallManager hbManager = hbManagerObj.GetComponent<HBallManager>();
-						Surface.GetComponent<Renderer>().material.SetTexture("_MatCap",hbManager.ToGray((Texture)Resources.Load(GUIMoleculeController.surfaceTextureName)));
+						Surface.GetComponent<Renderer>().material.SetTexture("_MatCap",hbManager.ToGray((Texture)Resources.Load(GUIMoleculeController.Instance.surfaceTextureName)));
 					}
 					Debug.Log("Quick choose surface texture");
 				}
 			}
-			else if ((GUIMoleculeController.buildSurface || GUIMoleculeController.dxRead) && !GUIMoleculeController.buildSurfaceDone) {
+			else if ((GUIMoleculeController.Instance.buildSurface || GUIMoleculeController.Instance.dxRead) && !GUIMoleculeController.Instance.buildSurfaceDone) {
 				Surface.GetComponent<Renderer>().material.SetTexture("_MatCap",(Texture)Resources.Load("lit_spheres/divers/daphz1"));
 				Debug.Log("Default surface texture");
 			}
 			
 			// send all the paramter to the surface shader
-			// Surface.renderer.material.SetFloat("_Shininess", GUIMoleculeController.intensity);
+			// Surface.renderer.material.SetFloat("_Shininess", GUIMoleculeController.Instance.intensity);
 			// if (Input.GetKey("n")) // uncoment for benoist
 			
-			Surface.GetComponent<Renderer>().material.SetColor("_Color", GUIMoleculeController.SurfaceGrayColor.color);
-			Surface.GetComponent<Renderer>().material.SetColor("_ColorIN", GUIMoleculeController.SurfaceInsideColor.color);
+			Surface.GetComponent<Renderer>().material.SetColor("_Color", GUIMoleculeController.Instance.SurfaceGrayColor.color);
+			Surface.GetComponent<Renderer>().material.SetColor("_ColorIN", GUIMoleculeController.Instance.SurfaceInsideColor.color);
 			//Surface.renderer.material.SetColor("_Color", new Color(1f,1f,1f)); // couleur blanche fixé
-			Surface.GetComponent<Renderer>().material.SetFloat("_depthcut", GUIMoleculeController.depthCut);
-			Surface.GetComponent<Renderer>().material.SetFloat("_cutX", GUIMoleculeController.cutX);
-			Surface.GetComponent<Renderer>().material.SetFloat("_cutY", GUIMoleculeController.cutY);
-			Surface.GetComponent<Renderer>().material.SetFloat("_cutZ", GUIMoleculeController.cutZ);
+			Surface.GetComponent<Renderer>().material.SetFloat("_depthcut", GUIMoleculeController.Instance.depthCut);
+			Surface.GetComponent<Renderer>().material.SetFloat("_cutX", GUIMoleculeController.Instance.cutX);
+			Surface.GetComponent<Renderer>().material.SetFloat("_cutY", GUIMoleculeController.Instance.cutY);
+			Surface.GetComponent<Renderer>().material.SetFloat("_cutZ", GUIMoleculeController.Instance.cutZ);
 			Surface.GetComponent<Renderer>().material.SetVector("_SurfacePos", Surface.transform.position);
 			
-			if (GUIMoleculeController.surfaceMobileCut && Surface.GetComponent<Renderer>().material.shader.name == "Mat Cap Cut"){	// set the cutting mode
+			if (GUIMoleculeController.Instance.surfaceMobileCut && Surface.GetComponent<Renderer>().material.shader.name == "Mat Cap Cut"){	// set the cutting mode
 				if(Surface.GetComponent<Renderer>().material.GetFloat("_cut") != 2f)
 					Surface.GetComponent<Renderer>().material.SetFloat("_cut", 2f);
 			}
-			else if (GUIMoleculeController.surfaceStaticCut && Surface.GetComponent<Renderer>().material.shader.name == "Mat Cap Cut"){
+			else if (GUIMoleculeController.Instance.surfaceStaticCut && Surface.GetComponent<Renderer>().material.shader.name == "Mat Cap Cut"){
 				if(Surface.GetComponent<Renderer>().material.GetFloat("_cut") != 1f)
 					Surface.GetComponent<Renderer>().material.SetFloat("_cut", 1f);
 			}
@@ -796,8 +826,8 @@ public class Molecule3D:MonoBehaviour {
 					Surface.GetComponent<Renderer>().material.SetFloat("_cut", 0f);
 			}
 		}
-		GUIMoleculeController.surfaceTextureDone = true;
-		GUIMoleculeController.buildSurfaceDone = true;
+		GUIMoleculeController.Instance.surfaceTextureDone = true;
+		GUIMoleculeController.Instance.buildSurfaceDone = true;
 
 		//FPS Count
 		
@@ -1108,7 +1138,7 @@ public class Molecule3D:MonoBehaviour {
 		Vector3 vv=new Vector3();
 		vv=LocCamera.transform.localPosition;		
 		
-		if(!GUIMoleculeController.toggle_NA_MAXCAM)
+		if(!GUIMoleculeController.Instance.toggle_NA_MAXCAM)
 			vv.z+=Input.GetAxis("Mouse ScrollWheel")*5;
 
 		LocCamera.transform.localPosition=vv;		
@@ -1141,7 +1171,7 @@ public class Molecule3D:MonoBehaviour {
 		Vector3 v=new Vector3();
 		v=LocCamera.transform.localPosition;
 	
-		if(!GUIMoleculeController.toggle_NA_MAXCAM) {
+		if(!GUIMoleculeController.Instance.toggle_NA_MAXCAM) {
 //			if (Input.GetMouseButton(1) )
 //				v=LocCamera.transform.localPosition;
 
@@ -1202,7 +1232,7 @@ public class Molecule3D:MonoBehaviour {
 	/// Sets the volumetric density.
 	/// </summary>
 	public void SetVolumetricDensity () {
-		if( (GUIMoleculeController.showVolumetricDensity || GUIMoleculeController.showVolumetricFields) && !UIData.Instance.hasMoleculeDisplay) {
+		if( (GUIMoleculeController.Instance.showVolumetricDensity || GUIMoleculeController.Instance.showVolumetricFields) && !UIData.Instance.hasMoleculeDisplay) {
 			GameObject volumObj;
 			volumObj = GameObject.FindGameObjectWithTag("Volumetric");
 			Volumetric volumetric;
@@ -1212,8 +1242,8 @@ public class Molecule3D:MonoBehaviour {
 			volumetric = volumObj.GetComponent<VolumetricFields>();
 			if (volumetric)
 				volumetric.Clear();
-			GUIMoleculeController.showVolumetricDensity = false;
-			GUIMoleculeController.showVolumetricFields = false;
+			GUIMoleculeController.Instance.showVolumetricDensity = false;
+			GUIMoleculeController.Instance.showVolumetricFields = false;
 		}
 	}
 	
@@ -1269,23 +1299,31 @@ public class Molecule3D:MonoBehaviour {
 	[RPC]
 	public void Synchronize(int senderNodeId, string serializedData)
 	{
+		Debug.Log("Synchronizing molecule");
 		if (Node.CurrentNode.Id != senderNodeId) {
 			if (UIData.DeserializePart (serializedData)) {
 				UIData.Instance.isOpenFile = true;
-
 				if(UIData.Instance.ChosenPdbContents.IndexOf("ProxyPort") > -1) {
 					GUIDisplay.Instance.PdbRequest = JsonUtility.FromJson<GUIDisplay.PdbRequestData>(UIData.Instance.ChosenPdbContents);
 				} else {
 					requestPDB.LoadPDB (UIData.Instance.ChosenPdbContents);
 				}
+				GUIMoleculeController.Instance.toggle_NA_HBALLSMOOTH = true;
 			}
+		}
+	}
+	[RPC]
+	public void DieHard(int senderNodeId)
+	{
+		if (Node.CurrentNode.Id != senderNodeId) {
+			GUIDisplay.Instance.DieHard();
 		}
 	}
 	[RPC]
 	public void Clear(int senderNodeId)
 	{
 		if (Node.CurrentNode.Id != senderNodeId) {
-			GUIDisplay.Instance.Clear ();
+			GUIDisplay.Instance.Clear (false);
 		}
 	}
 	[RPC]
@@ -1374,11 +1412,11 @@ public class Molecule3D:MonoBehaviour {
 		if (forMethod.IsStatic) {
 			return null;
 		} else {
-			var instanceField = ofType.GetField("Instance");
-			if (instanceField == null) {
-				throw new ArgumentException("Type of parameter 'ofType' has no singleton field named 'Instance'");
+			var instanceMember = ofType.GetProperty("Instance");
+			if (instanceMember == null) {
+				throw new ArgumentException("Type " + ofType.Name + " has no singleton property named 'Instance'");
 			}
-			return instanceField.GetValue(null);
+			return instanceMember.GetValue(null, null);
 		}
 	}
 

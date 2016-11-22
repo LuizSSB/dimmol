@@ -77,6 +77,7 @@ namespace UI
 	 * <A HREF="http://docs.unity3d.com/Documentation/ScriptReference/Color.html">Color</A>
 	 */
 	[System.Serializable]
+	[ClearableSingleton]
 	public class UIData {
 //		public bool standalone=true;
 		
@@ -140,8 +141,17 @@ namespace UI
 		public bool cameraStop2 = false;
 
 		public bool loginSucess=false;
-		
-		public AtomType atomtype=AtomType.particleball;
+
+		public AtomType _atomtype=AtomType.particleball;
+		public AtomType atomtype {
+			get {
+				return _atomtype;
+			}
+			set {
+				Debug.Log("H4LP " + value);
+				_atomtype = value;
+			}
+		}
 
 		public BondType bondtype=BondType.nobond;
 		
@@ -241,10 +251,10 @@ namespace UI
 		public FFType ffType = FFType.atomic;
 
 		// Luiz:
-		private static UIData sInstance = new UIData();
+		private static UIData sInstance;
 		public static UIData Instance {
 			get {
-				return sInstance;
+				return sInstance = sInstance ?? new UIData();
 			}
 		}
 		public string ChosenPdbContents; //{ get; set; }

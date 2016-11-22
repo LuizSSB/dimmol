@@ -15,9 +15,8 @@ using System.Collections.Generic;
 using BenTools.Mathematics;
 using System.Linq;
 using System.IO;
-using UI;
 
-namespace OptimalView
+namespace UI
 {
 		public class OptimalView
 		{

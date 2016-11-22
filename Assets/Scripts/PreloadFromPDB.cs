@@ -111,8 +111,8 @@ public class PreloadFromPDB : MonoBehaviour {
 		pdb_progress = 1.0f;
 		UIData.Instance.atomtype = UIData.AtomType.particleball;
 		UIData.Instance.bondtype = UIData.BondType.nobond;
-		GUIMoleculeController.showOpenMenu=false;
-		GUIMoleculeController.showAtomMenu=true;
+		GUIMoleculeController.Instance.showOpenMenu=false;
+		GUIMoleculeController.Instance.showAtomMenu=true;
 		SendMessage("Display",SendMessageOptions.DontRequireReceiver);	
 	}
 	

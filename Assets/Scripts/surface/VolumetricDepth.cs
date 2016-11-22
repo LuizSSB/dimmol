@@ -13,7 +13,7 @@ public class VolumetricDepth : Volumetric {
 	
 	public override void Init() {
 		// We get the ReadDX object and from it, the values we need.
-		readDx = GUIMoleculeController.readdx;
+		readDx = GUIMoleculeController.Instance.readdx;
 		density = readDx._grid;
 		delta = readDx.GetDelta();
 		origin = readDx.GetOrigin();

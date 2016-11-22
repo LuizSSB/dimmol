@@ -101,7 +101,7 @@ public class BallUpdateRC : BallUpdate {
 		}
 		
 		
-		if(GUIMoleculeController.toggle_NA_INTERACTIVE)
+		if(GUIMoleculeController.Instance.toggle_NA_INTERACTIVE)
 		{
 			if(!GetComponent<MouseOverMolecule>())
 			{

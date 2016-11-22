@@ -25,7 +25,7 @@ namespace UnityClusterPackage
 		[XmlElement("screen")]
 		public Screen NodeScreen { get; set; }
 
-		public bool IsParentNode {
+		public bool IsHostNode {
 			get {
 				return NodeType == Type.master || NodeType == Type.server;
 			}

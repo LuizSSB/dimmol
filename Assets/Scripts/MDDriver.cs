@@ -83,7 +83,7 @@ public class MDDriver : MonoBehaviour {
 		
 		MDDriver_init(host, port);
 		Debug.Log("MDD start: " + MDDriver_start());
-//		 GUIMoleculeController.toggle_NA_INTERACTIVE = true;
+//		GUIMoleculeController.Instance.toggle_NA_INTERACTIVE = true;
 	}
 	
 	public void applyForces(int[] atoms, float[] forces)
@@ -175,13 +175,13 @@ public class MDDriver : MonoBehaviour {
 	}
 	
 	void OnDisable () {
-		GUIMoleculeController.toggle_MDDRIVER = false;
+		GUIMoleculeController.Instance.toggle_MDDRIVER = false;
 		Debug.Log("Exiting sim Disable");
 		Debug.Log("Stop: " + MDDriver_stop());
 	}
 	
 	public static void MDDriverM(int a) {
-		GUIMoleculeController.showMDDriverMenu = LoadTypeGUI.SetTitleExit("MDDriver Client");
+		GUIMoleculeController.Instance.showMDDriverMenu = LoadTypeGUI.Instance.SetTitleExit("MDDriver Client");
 		
 		GameObject go = GameObject.FindGameObjectWithTag("MDDriver");
 		
@@ -194,7 +194,7 @@ public class MDDriver : MonoBehaviour {
 //			GUILayout.BeginHorizontal();
 //			if (GUILayout.Button (new GUIContent("Disconnect", "Disconnect from simulation server"))) {
 //				Debug.Log("Stop: " + MDDriver_stop());
-//				GUIMoleculeController.toggle_MDDRIVER = false;
+//				GUIMoleculeController.Instance.toggle_MDDRIVER = false;
 //			}
 //			GUILayout.EndHorizontal();
 
@@ -293,9 +293,9 @@ public class MDDriver : MonoBehaviour {
 		if (go != null) {
 			MDDriver_stop();
 			GameObject.Destroy(go);
-			GUIMoleculeController.toggle_MDDRIVER = false;
+			GUIMoleculeController.Instance.toggle_MDDRIVER = false;
 		}
 		GameObject.Instantiate(Resources.Load("MDDriver/MDDriver"));
-		GUIMoleculeController.toggle_MDDRIVER = true;
+		GUIMoleculeController.Instance.toggle_MDDRIVER = true;
 	}
 }

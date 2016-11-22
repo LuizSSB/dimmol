@@ -78,7 +78,7 @@ namespace Molecule.View.DisplayBond {
 		public List<int[]> bondList;
 		public List<int[]> bondEPList;
 
-		public static GameObject BondCubeParent = new GameObject("BondCubeParent");
+		public GameObject BondCubeParent = new GameObject("BondCubeParent");
 		
 		public BondCubeStyle() {
 			number=FunctionConfig.number;

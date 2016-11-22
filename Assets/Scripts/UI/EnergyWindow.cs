@@ -45,7 +45,7 @@ namespace UI
 		}
 
 		public static void Draw(float value, float maxValue, float minValue) {
-			LoadTypeGUI.SetTitle("Geom. Energy");
+			LoadTypeGUI.Instance.SetTitle("Geom. Energy");
 
 			GUILayout.BeginVertical(); {
 				GUILayout.Label(maxValue.ToString(NumberToStringFormat), sPoleStyle);

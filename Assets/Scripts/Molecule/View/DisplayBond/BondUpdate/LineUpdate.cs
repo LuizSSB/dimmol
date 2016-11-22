@@ -86,8 +86,8 @@ public class LineUpdate : MonoBehaviour {
 	public float oldradius1 = 1.0f;
 	public float oldradius2 = 1.0f;
 		
-	public static float width = GUIMoleculeController.bondWidth ;
-	public static float oldWidth = GUIMoleculeController.bondWidth ;
+	public static float width = GUIMoleculeController.Instance.bondWidth ;
+	public static float oldWidth = GUIMoleculeController.Instance.bondWidth ;
 		
 	public LineRenderer lineRenderer;
 	
@@ -148,7 +148,7 @@ public class LineUpdate : MonoBehaviour {
 				else
 				{
 					
-					width = GUIMoleculeController.bondWidth ;
+					width = GUIMoleculeController.Instance.bondWidth ;
 					if (width != oldWidth) {
 						lineRenderer.SetWidth(width, width);
 					}

@@ -131,7 +131,7 @@ public class VRPNAtomSelector : MonoBehaviour
 	}
 	
 	void Update () {
-		if (GUIMoleculeController.toggle_MDDRIVER && mddriverScript == null)
+		if (GUIMoleculeController.Instance.toggle_MDDRIVER && mddriverScript == null)
 		{
 			mddriverScript = GameObject.FindObjectOfType<MDDriver>();
 		}
@@ -211,7 +211,7 @@ public class VRPNAtomSelector : MonoBehaviour
 //				}
 
 				ffScript.setLinearForceForVector(-diff);
-				if (GUIMoleculeController.toggle_MDDRIVER && mddriverScript != null)
+				if (GUIMoleculeController.Instance.toggle_MDDRIVER && mddriverScript != null)
 				{
 					forces = new float[atomNumberList.Count * 3];
 					

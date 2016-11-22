@@ -209,6 +209,7 @@
      <Compile Include="Assets\Scripts\UI\AlphaChainSmoother.cs" />
      <Compile Include="Assets\Scripts\UI\AtomAttribution.cs" />
      <Compile Include="Assets\Scripts\UI\BFactorRep.cs" />
+     <Compile Include="Assets\Scripts\UI\ClearableSingletonAttribute.cs" />
      <Compile Include="Assets\Scripts\UI\EnergyWindow.cs" />
      <Compile Include="Assets\Scripts\UI\GUIDisplay.cs" />
      <Compile Include="Assets\Scripts\UI\GUIMoleculeController.cs" />

@@ -1,4 +1,4 @@
-/// @file GUIMoleculeController.cs
+/// @file GUIMoleculeController.Instance.cs
 /// @brief Details to be specified
 /// @author FvNano/LBT team
 /// @author Marc Baaden <baaden@smplinux.de>
@@ -47,7 +47,7 @@
 /// The fact that you are presently reading this means that you have had 
 /// knowledge of the CeCILL-C license and that you accept its terms.
 ///
-/// $Id: GUIMoleculeController.cs 213 2013-04-06 21:13:42Z baaden $
+/// $Id: GUIMoleculeController.Instance.cs 213 2013-04-06 21:13:42Z baaden $
 ///
 /// References : 
 /// If you use this code, please cite the following reference : 	
@@ -64,78 +64,76 @@
 ///
 using System;
 using Config;
+using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
+using Molecule.Model;
+using Molecule.View;
+using Molecule.View.DisplayAtom;
 
 namespace UI {
-	using UnityEngine;
-	using System.Collections;
-	using System.Collections.Generic;
-	using Molecule.Model;
-	using Molecule.View;
-	using Molecule.View.DisplayAtom;
 
-//	using System;
-
-
+	[ClearableSingleton]
 	public class GUIMoleculeController {
 
-		private static string umolversion = "v0.9.2X (RX1)";
+		private string umolversion = "v0.9.3X (RX1)";
 		
-//		public static int texSet_max=30; /*!< Maximum number of full texture pages */
-//		public static int besttexSet_min=-5; /*!< Maximum number of condensed texture pages (negative value!) */
-		public static bool onlyBestTextures = true; /*!< Toggle condensed set of textures vs. full set */
-		public static int texture_set=0;
+//		public int texSet_max=30; /*!< Maximum number of full texture pages */
+//		public int besttexSet_min=-5; /*!< Maximum number of condensed texture pages (negative value!) */
+		public bool onlyBestTextures = true; /*!< Toggle condensed set of textures vs. full set */
+		public int texture_set=0;
 	
+		// Luiz:
 		//bool for default visualisation with Hyperballs
-		public static bool HYPERBALLSDEFAULT = true;
-
+//		public bool HYPERBALLSDEFAULT = true;
 
 		// bool for showing windows
-		public static bool showOpenMenu = true;
-		public static bool showAtomMenu = false;
-		public static bool showSecStructMenu = false;
-		public static bool showSurfaceMenu = false;
-		public static bool showHydroMenu = false;
-		public static bool showBfactorMenu = false;
-		public static bool showElectrostaticsMenu = false;
-		public static bool showManipulatorMenu = false; // Careful! This boolean and all associated behavior are backwards!
+		public bool showOpenMenu = true;
+		public bool showAtomMenu = false;
+		public bool showSecStructMenu = false;
+		public bool showSurfaceMenu = false;
+		public bool showHydroMenu = false;
+		public bool showBfactorMenu = false;
+		public bool showElectrostaticsMenu = false;
+		public bool showManipulatorMenu = false; // Careful! This boolean and all associated behavior are backwards!
 
-//		public static bool showSetAtomScales = false;
-		public static string structType = "All atoms";
-		public static bool showAdvMenu = false;
-		public static bool showGuidedMenu = false;
-//		public static bool showResiduesMenu = false;
-//		public static bool showAtomsExtendedMenu = false;
-//		public static bool showChainsMenu = false;
-		public static bool showPanelsMenu = false;
-		public static bool showSugarChainMenu = false; // T.T Sugar menu
-//		public static bool showSugarRibbonsTuneMenu = false;
-		public static bool showColorTuneMenu = false;
-		public static bool showVRPNMenu = false;
-		public static bool showMDDriverMenu = false;
+//		public bool showSetAtomScales = false;
+		public string structType = "All atoms";
+		public bool showAdvMenu = false;
+		public bool showGuidedMenu = false;
+//		public bool showResiduesMenu = false;
+//		public bool showAtomsExtendedMenu = false;
+//		public bool showChainsMenu = false;
+		public bool showPanelsMenu = false;
+		public bool showSugarChainMenu = false; // T.T Sugar menu
+//		public bool showSugarRibbonsTuneMenu = false;
+		public bool showColorTuneMenu = false;
+		public bool showVRPNMenu = false;
+		public bool showMDDriverMenu = false;
 
 		// Luiz:
-		private static bool _showSugarRibbonsTuneMenu = false;
-		public static bool showSugarRibbonsTuneMenu {
+		private bool _showSugarRibbonsTuneMenu = false;
+		public bool showSugarRibbonsTuneMenu {
 			get { return _showSugarRibbonsTuneMenu; }
 			set { _showSugarRibbonsTuneMenu = ChangeManager.ProcessPropertyChanged (typeof(GUIMoleculeController), "showsSugarRibbonsTuneMenu", _showSugarRibbonsTuneMenu, value); }
 		}
-		private static bool _showSetAtomScales = false;
-		public static bool showSetAtomScales {
+		private bool _showSetAtomScales = false;
+		public bool showSetAtomScales {
 			get { return _showSetAtomScales; }
 			set { _showSetAtomScales = ProcessPropertyChanged ("showSetAtomScales", _showSetAtomScales, value); }
 		}
-		private static bool _showAtomsExtendedMenu = false;
-		public static bool showAtomsExtendedMenu {
+		private bool _showAtomsExtendedMenu = false;
+		public bool showAtomsExtendedMenu {
 			get { return _showAtomsExtendedMenu; }
 			set { _showAtomsExtendedMenu = ProcessPropertyChanged ("showAtomsExtendedMenu", _showAtomsExtendedMenu, value); }
 		}
-		private static bool _showResiduesMenu = false;
-		public static bool showResiduesMenu {
+		private bool _showResiduesMenu = false;
+		public bool showResiduesMenu {
 			get { return _showResiduesMenu; }
 			set { _showResiduesMenu = ProcessPropertyChanged ("showResiduesMenu", _showResiduesMenu, value); }
 		}
-		private static bool _showChainsMenu = false;
-		public static bool showChainsMenu {
+		private bool _showChainsMenu = false;
+		public bool showChainsMenu {
 			get { return _showChainsMenu; }
 			set { _showChainsMenu = ProcessPropertyChanged ("showChainsMenu", _showChainsMenu, value);  }
 		}
@@ -143,254 +141,220 @@ namespace UI {
 			
 		// Generic toggles
 		// DISTRIBUTION
-		public static bool toggle_HELP = false;
-		public static bool toggle_INFOS = true;
-		public static bool toggle_VE_COPYR = true;
-		public static bool toggle_HB_SANIM = false;
-		public static float hb_sanim = 0.7f;
-		public static float hb_ssign = 1.0f;
-		public static bool toggle_HB_RANIM = false;
-		public static float hb_ranim = 0.4f;
-		public static float hb_rsign = 1.0f;
+		public bool toggle_HELP = false;
+		public bool toggle_INFOS = true;
+		public bool toggle_VE_COPYR = true;
+//		public bool toggle_HB_SANIM = false;
+//		public float hb_sanim = 0.7f;
+//		public float hb_ssign = 1.0f;
+//		public bool toggle_HB_RANIM = false;
+//		public float hb_ranim = 0.4f;
+//		public float hb_rsign = 1.0f;
 
-//		public static float shrink = 0.1f;
-//		public static float linkScale = 1.0f;
-//		public static float depthfactor = -1.0f;
-//		public static float globalRadius = 1.0f;
-//		public static float drag = 0.6f;
-//		public static float spring = 5;
-//		public static float bondWidth = 0.15f ; // default bond width for cube/line
-//		public static float highBFradius = 1.0f;
+//		public float shrink = 0.1f;
+//		public float linkScale = 1.0f;
+//		public float depthfactor = -1.0f;
+//		public float globalRadius = 1.0f;
+//		public float drag = 0.6f;
+//		public float spring = 5;
+//		public float bondWidth = 0.15f ; // default bond width for cube/line
+//		public float highBFradius = 1.0f;
 
 		// Luiz:
-		private static float _shrink = .1f;
-		public static float shrink {
+		private float _shrink = .1f;
+		public float shrink {
 			get { return _shrink; }
 			set { _shrink = ProcessPropertyChanged ("shrink", _shrink, value); }
 		}
-		private static float _linkScale = 1f;
-		public static float linkScale {
+		private float _linkScale = 1f;
+		public float linkScale {
 			get { return _linkScale; }
 			set { _linkScale = ProcessPropertyChanged ("linkScale", _linkScale, value); }
 		}
-		private static float _depthfactor = -1f;
-		public static float depthfactor {
+		private float _depthfactor = -1f;
+		public float depthfactor {
 			get { return _depthfactor; }
 			set { _depthfactor = ProcessPropertyChanged ("depthfactor", _depthfactor, value); }
 		}
-		private static float _globalRadius = 1.0f;
-		public static float globalRadius {
+		private float _globalRadius = 1.0f;
+		public float globalRadius {
 			get { return _globalRadius; }
 			set { _globalRadius = ProcessPropertyChanged ("globalRadius", _globalRadius, value); }
 		}
-		private static float _bondWidth = 0.15f; // default bond width for cube/line
-		public static float bondWidth {
+		private float _bondWidth = 0.15f; // default bond width for cube/line
+		public float bondWidth {
 			get { return _bondWidth; }
 			set { _bondWidth = ProcessPropertyChanged ("bondWidth", _bondWidth, value); }
 		}
-		private static float _drag = .6f;
-		public static float drag {
+		private float _drag = .6f;
+		public float drag {
 			get { return _drag; }
 			set { _drag = ProcessPropertyChanged ("drag", _drag, value); }
 		}
-		private static float _spring = 5f;
-		public static float spring {
+		private float _spring = 5f;
+		public float spring {
 			get { return _spring; }
 			set { _spring = ProcessPropertyChanged ("spring", _spring, value); }
 		}
-		private static float _highBFradius = 1f;
-		public static float highBFradius {
+		private float _highBFradius = 1f;
+		public float highBFradius {
 			get { return _highBFradius; }
 			set { _highBFradius = ProcessPropertyChanged ("highBFradius", _highBFradius, value); }
 		}
 		
 		//Electric field line symbol radius
-		public  static float symbolradius = 1.0f;
+		public  float symbolradius = 1.0f;
 
 		//CPK Licorice
-		public	static	 bool transMETAPHOR = false;
-		public	static	 float deltaShrink;
-		public	static	 float deltaScale;
-		public	static	 float deltaRadius;
-		public	static	 float newShrink;
-		public	static	 float newScale;
-		public	static	 float newGlobalRadius = 1.0f;
-		public	static	 float transDelta = 25.0f;
+		public bool transMETAPHOR = false;
+		public float deltaShrink;
+		public float deltaScale;
+		public float deltaRadius;
+		public float newShrink;
+		public float newScale;
+		public float newGlobalRadius = 1.0f;
+		public float transDelta = 25.0f;
 
 		// Luiz
-		private static bool _toggle_NA_HIDE = false;
-		public static bool toggle_NA_HIDE {
+		private bool _toggle_NA_HIDE = false;
+		public bool toggle_NA_HIDE {
 			get { return _toggle_NA_HIDE; }
 			set { _toggle_NA_HIDE = ProcessPropertyChanged ("toggle_NA_HIDE", _toggle_NA_HIDE, value); }
 		}
-		
-		public	static	 bool toggle_HB_TRANS = true;
-		public 	static	 bool toggle_NA_INTERACTIVE = false;
-		public  static   bool toggle_MDDRIVER = false;
-//		public 	static 	 bool toggle_NA_HIDE = false;
-		public 	static	 bool toggle_NA_SWITCH = false;
-		public 	static	 bool toggle_NA_HBALLSMOOTH = false;
-		public 	static 	 bool LOD_INITIALIZED = false;
-		public 	static	 bool toggle_NA_MEASURE = false;
-		public 	static	 bool toggle_NA_CLICK = false;
-		public  static   bool toggle_NA_MAXCAM = true;
-		public  static   bool toggle_NA_AUTOMOVE = false;
-		public	static	 bool toggle_NA_CAMLOCK = false;
-		public  static   bool toggle_MESHCOMBINE = false;
-		protected static GameObject scenecontroller = null;
-		protected static Molecule3D Molecule3DComp = null;
-		protected static Quaternion NA_SCCROT = new Quaternion (-0.1f, 0.1f, 0.0f, -1.0f);
-		protected static Vector3 NA_SCCPOS = new Vector3 (0.4f, 1.8f, -12.0f);
-		protected static bool toggle_VE_BLUR = false;
-		protected static bool toggle_VE_SSAO = false;
-		protected static bool toggle_VE_DOF = false;
-		protected static bool toggle_VE_CREASE = false;
-		protected static bool toggle_VE2_VORTX = false;
-		protected static bool toggle_VE2_TWIRL = false;
-		protected static bool toggle_VE2_SEPIA = false;
-		protected static bool toggle_VE2_NOISE = false;
-		protected static bool toggle_VE2_GRAYS = false;
-		protected static bool toggle_VE2_GLOW = false;
-		protected static bool toggle_VE2_EDGE = false;
-		protected static bool toggle_VE2_CONTR = false;
-		protected static bool toggle_VE2_CCORR = false;
-		protected static bool toggle_VE2_BLUR2 = false;
-		protected static bool toggle_VE2_DREAM = false;
 
-//		protected static bool toggle_DISTANCE_CUEING = false;
-//		public static bool toggle_SEC_STRUCT = false;
-//		public static bool toggle_RING_BLENDING=false; //T.T RingBlending visu - public for remove visu when CLEAR (reset to false)
-//		public static bool toggle_SUGAR_ONLY=true; 
-//		public static bool toggle_TWISTER=false;
-//		public static bool toggle_HIDE_HYDROGEN=false;
-//		public static bool toggle_SHOW_HB_W_SR=false;
-//		public static bool toggle_SHOW_HB_NOT_SUGAR=false;
-//		public static bool oxyToggled = false;
-//		public static bool toggle_OXYGEN=false;
-//		protected static bool distanceCueingEnabled = false;
-//		protected static bool cutPlaneIsDraggable = true;
+		public bool toggle_NA_INTERACTIVE = false;
+		public bool toggle_MDDRIVER = false;
+//		public bool toggle_NA_HIDE = false;
+		public bool toggle_NA_HBALLSMOOTH = false;
+		public bool toggle_NA_CLICK = false;
+		public bool toggle_NA_MAXCAM = true;
+		public bool toggle_NA_AUTOMOVE = false;
+		public bool toggle_NA_CAMLOCK = false;
+		internal GameObject scenecontroller = null;
+		internal Molecule3D Molecule3DComp = null;
+
+//		protected bool toggle_DISTANCE_CUEING = false;
+//		public bool toggle_SEC_STRUCT = false;
+//		public bool toggle_RING_BLENDING=false; //T.T RingBlending visu - public for remove visu when CLEAR (reset to false)
+//		public bool toggle_SUGAR_ONLY=true; 
+//		public bool toggle_TWISTER=false;
+//		public bool toggle_HIDE_HYDROGEN=false;
+//		public bool toggle_SHOW_HB_W_SR=false;
+//		public bool toggle_SHOW_HB_NOT_SUGAR=false;
+//		public bool oxyToggled = false;
+//		public bool toggle_OXYGEN=false;
+//		protected bool distanceCueingEnabled = false;
+//		protected bool cutPlaneIsDraggable = true;
 
 		// Luiz:
-		private static bool _toggle_DISTANCE_CUEING = false;
-		public static bool toggle_DISTANCE_CUEING {
+		private bool _toggle_DISTANCE_CUEING = false;
+		public bool toggle_DISTANCE_CUEING {
 			get { return _toggle_DISTANCE_CUEING; }
 			set { _toggle_DISTANCE_CUEING = ProcessPropertyChanged ("toggle_DISTANCE_CUEING", _toggle_DISTANCE_CUEING, value); }
 		}
-		private static bool _toggle_SEC_STRUCT = false;
-		public static bool toggle_SEC_STRUCT {
+		private bool _toggle_SEC_STRUCT = false;
+		public bool toggle_SEC_STRUCT {
 			get { return _toggle_SEC_STRUCT; }
 			set { _toggle_SEC_STRUCT = ChangeManager.ProcessPropertyChanged (typeof(GUIMoleculeController), "toggle_SEC_STRUCT", _toggle_SEC_STRUCT, value); }
 		}
-		private static bool _toggle_SUGAR_ONLY = false;
-		public static bool toggle_SUGAR_ONLY {
+		private bool _toggle_SUGAR_ONLY = false;
+		public bool toggle_SUGAR_ONLY {
 			get { return _toggle_SUGAR_ONLY; }
 			set { _toggle_SUGAR_ONLY = ChangeManager.ProcessPropertyChanged (typeof(GUIMoleculeController), "toggle_SUGAR_ONLY", _toggle_SUGAR_ONLY, value); }
 		}
-		private static bool _oxyToggled = false;
-		public static bool oxyToggled {
+		private bool _oxyToggled = false;
+		public bool oxyToggled {
 			get { return _oxyToggled; }
 			set { _oxyToggled = ChangeManager.ProcessPropertyChanged (typeof(GUIMoleculeController), "oxyToggled", _oxyToggled, value); }
 		}
-		private static bool _toggle_OXYGEN = false;
-		public static bool toggle_OXYGEN {
+		private bool _toggle_OXYGEN = false;
+		public bool toggle_OXYGEN {
 			get { return _toggle_OXYGEN; }
 			set { _toggle_OXYGEN = ChangeManager.ProcessPropertyChanged (typeof(GUIMoleculeController), "toggle_OXYGEN", _toggle_OXYGEN, value); }
 		}
-		private static bool _distanceCueingEnabled = false;
-		public static bool distanceCueingEnabled {
+		private bool _distanceCueingEnabled = false;
+		public bool distanceCueingEnabled {
 			get { return _distanceCueingEnabled; }
 			set { _distanceCueingEnabled = ChangeManager.ProcessPropertyChanged (typeof(GUIMoleculeController), "distanceCueingEnabled", _distanceCueingEnabled, value);  }
 		}
-		private static bool _cutPlaneIsDraggable = true;
-		public static bool cutPlaneIsDraggable {
+		private bool _cutPlaneIsDraggable = true;
+		public bool cutPlaneIsDraggable {
 			get { return _cutPlaneIsDraggable; }
 			set { _cutPlaneIsDraggable = ChangeManager.ProcessPropertyChanged (typeof(GUIMoleculeController), "cutPlaneIsDraggable", _cutPlaneIsDraggable, value); }
 		}
 		
-		private GUIContent[] listatom;
-		private GUIContent[] listbond;
+//		private GUIContent[] listatom;
+//		private GUIContent[] listbond;
 		private GUIStyle listStyle;
 	
 		// Bottom left UnityMol icon and link to helptext (currently local file, to be updated).
-		private static Texture2D guicon = Resources.Load ("Artwork/guicon") as Texture2D;
-//		private static string umolbase = "file:///opt/Unity3D/UnityMol";
-//		private static string umolbase = "http://www.shaman.ibpc.fr";
-		private static string umolbase = "http://www.baaden.ibpc.fr/umol";
-
-		// Ramps for grayscale effect
-		protected static string[] ve2_grays_ramps = {"grayscale ramp", "grayscale ramp inverse"};
-		protected static int ve2_grays_rampn = 1;
-		protected static int ve2_grays_rampc = 1;
-
-		// Ramps for color correction effect
-		protected static string[] ve2_ccorr_ramps = {"oceangradient", "nightgradient"};
-		protected static int ve2_ccorr_rampn = 1;
-		protected static int ve2_ccorr_rampc = 0;
+		private Texture2D guicon = Resources.Load ("Artwork/guicon") as Texture2D;
+//		private string umolbase = "file:///opt/Unity3D/UnityMol";
+//		private string umolbase = "http://www.shaman.ibpc.fr";
+		private string umolbase = "http://www.baaden.ibpc.fr/umol";
 
 		// bool for showing windows
-		public static bool showAtomType = false;
-		public static bool showBondType = false;
-		public static bool showEffectType = false;
-		public static bool showGrayColor = false;
-		public static bool showHyperballsMenu = false;
-		public static bool showCubeLineBondMenu = false ;
+		public bool showAtomType = false;
+		public bool showBondType = false;
+		public bool showEffectType = false;
+//		public bool showGrayColor = false;
+		public bool showHyperballsMenu = false;
+		public bool showCubeLineBondMenu = false ;
 //		public bool surfacecolor_show= false;
-		public static bool showSurfaceButton = false;
-		public static bool showBackgroundType = false;
-		public static bool showMetaphorType = false;
+//		public bool showSurfaceButton = false;
+		public bool showBackgroundType = false;
+		public bool showMetaphorType = false;
 //		public bool ParamshowFieldLine=false;
-		public static bool showFieldLines = false;
-		public static bool showSurface = false;
-		public static bool fieldLineColorGradient = true;
-		public static bool showVolumetricDensity = false;
-		public static bool showVolumetricFields = false; // volumetric electrostatic fields
-		public static bool showVolumetricDepth = false;
-		public static bool electroIsoSurfaceTransparency = false;
+		public bool showFieldLines = false;
+//		public bool showSurface = false;
+		public bool fieldLineColorGradient = true;
+		public bool showVolumetricDensity = false;
+		public bool showVolumetricFields = false; // volumetric electrofields
+//		public bool showVolumetricDepth = false;
+//		public bool electroIsoSurfaceTransparency = false;
 	
 		
 		// variable for the surface and field lines cutting
-		public static float depthCut = 40f;
-		public static bool surfaceMobileCut = false;
-		public static bool surfaceStaticCut = false;
-		public static bool showSurfaceCut = false;
-		public static bool showSurfaceMobileCut 	= false;
-		public static float depthCutMin = 0;
-		public static float depthCutMax = 0;
+		public float depthCut = 40f;
+		public bool surfaceMobileCut = false;
+		public bool surfaceStaticCut = false;
+		public bool showSurfaceCut = false;
+		public bool showSurfaceMobileCut = false;
+		public float depthCutMin = 0;
+		public float depthCutMax = 0;
 
-		public static bool surfaceTexture = false;
-		public static bool externalSurfaceTexture = false;
-		public static bool showSurfaceTexture = false;
-		public static string surfaceTextureName;
-		public static bool surfaceTextureDone = false;
-		public static float cutX = 1f;
-		public static float cutY = 0f;
-		public static float cutZ = 0f;
-		public static float adjustFieldLineCut = 40f;
-		public static float generateThreshold = 0.5f;
-		public static float generateThresholdDx_pos = 0f;
-		public static float generateThresholdDx_neg = 0f;
-		public static bool modif = false;
-		public static bool pdbGen = false; // bool of density grid. true when density was calculated
-		public static bool dxRead = false; // true when dx read
-		public static bool buildSurface = false;
-		public static bool buildSurfaceDone = false;
-		public static bool FileBrowser_show = false;
-		public static bool FileBrowser_show2 = false;
-		public static ImprovedFileBrowser m_fileBrowser;
-		public static string m_textPath;
-		public static string m_last_extSurf_Path = null;
-		public static Texture2D extSurf;
+		public bool surfaceTexture = false;
+		public bool externalSurfaceTexture = false;
+		public bool showSurfaceTexture = false;
+		public string surfaceTextureName;
+		public bool surfaceTextureDone = false;
+		public float cutX = 1f;
+		public float cutY = 0f;
+		public float cutZ = 0f;
+		public float adjustFieldLineCut = 40f;
+		public float generateThreshold = 0.5f;
+		public float generateThresholdDx_pos = 0f;
+		public float generateThresholdDx_neg = 0f;
+		public bool modif = false;
+		public bool pdbGen = false; // bool of density grid. true when density was calculated
+		public bool dxRead = false; // true when dx read
+		public bool buildSurface = false;
+		public bool buildSurfaceDone = false;
+		public bool FileBrowser_show = false;
+		public bool FileBrowser_show2 = false;
+		public ImprovedFileBrowser m_fileBrowser;
+		public string m_textPath;
+		public string m_last_extSurf_Path = null;
+		public Texture2D extSurf;
 		
-		protected static bool showAtoms = true ; // whether atoms are displayed
-		protected static float prevRadius; // previous radius, needed to save the radius when hiding atoms
-		protected static DepthCueing depthCueing;
-		protected static AmbientOcclusion ambientOcclusion;
+		protected bool showAtoms = true ; // whether atoms are displayed
+		protected float prevRadius; // previous radius, needed to save the radius when hiding atoms
 		
-		private static GUIContent emptyContent = new GUIContent() ; // We create our own titles, we don't want to use Unity's, because they force window top padding.
+		private GUIContent emptyContent = new GUIContent() ; // We create our own titles, we don't want to use Unity's, because they force window top padding.
 		
 		
 		// MB for centered text		
-		protected static GUIStyle CentredText {
+		protected GUIStyle CentredText {
 			get {
 				if (m_centredText == null) {
 					m_centredText = new GUIStyle (GUI.skin.label);
@@ -400,64 +364,69 @@ namespace UI {
 			}
 		}
 
-		protected static GUIStyle m_centredText;
+		protected GUIStyle m_centredText;
 
 //		pos = mul (UNITY_MATRIX_MVP, float4(IN.worldPos,0f));
 //		clip (frac(-(-5+pos.z)/500) - 0.2);
 		
-		public static ReadDX readdx;// = new ReadDX ();
+		public ReadDX readdx;// = new ReadDX ();
 		
 		// 
 		public Texture2D aTexture;
-		protected static float colorRed = 0.0f;
-		protected static float colorGreen = 0.0f;
-		protected static float colorBlue = 0.0f;    
+		protected float colorRed = 0.0f;
+		protected float colorGreen = 0.0f;
+		protected float colorBlue = 0.0f;    
 
 		
 		// Field line paramter: 
-		public static float speed = 0.13333333f;
-		public static float density = 3.4f;
-		public static float linewidth = 0.2f;
-//		public static float intensity = 0.1f;
-		public static float linelength = 0.7f;
-		public static ColorObject EnergyGrayColor = new ColorObject(Color.white);
-		public static ColorObject SurfaceGrayColor = new ColorObject(Color.white); // color of surface
-		public static ColorObject SurfaceInsideColor = new ColorObject(Color.gray); // color of the inside of the surface	
-		public static ColorObject BackgroundColor = new ColorObject(Color.black);
-		public static ColorObject BondColor  = new ColorObject(Color.black);
-		public static ColorObject BondColorcheck  = new ColorObject(Color.black);
-		public static ColorObject RingColor  = new ColorObject(Color.black);
-		public static ColorObject OxySphereColor  = new ColorObject(Color.red);
-		public static ColorObject OxySphereColorCheck  = new ColorObject(Color.red);
-		public static ColorObject RingColorcheck  = new ColorObject(Color.black);
-		public static ColorPicker m_colorPicker = null;
+		public float speed = 0.13333333f;
+		public float density = 3.4f;
+		public float linewidth = 0.2f;
+//		public float intensity = 0.1f;
+		public float linelength = 0.7f;
+		public ColorObject EnergyGrayColor = new ColorObject(Color.white);
+		public ColorObject SurfaceGrayColor = new ColorObject(Color.white); // color of surface
+		public ColorObject SurfaceInsideColor = new ColorObject(Color.gray); // color of the inside of the surface	
+		public ColorObject BackgroundColor = new ColorObject(Color.black);
+//		public ColorObject BondColor  = new ColorObject(Color.black);
+//		public ColorObject BondColorcheck  = new ColorObject(Color.black);
+//		public ColorObject RingColor  = new ColorObject(Color.black);
+//		public ColorObject OxySphereColor  = new ColorObject(Color.red);
+//		public ColorObject OxySphereColorCheck  = new ColorObject(Color.red);
+//		public ColorObject RingColorcheck  = new ColorObject(Color.black);
+		public ColorPicker m_colorPicker = null;
 
-		
-		public static Material electricsymbol = (Material)Resources.Load ("Materials/electricparticle");
+//		public Material electricsymbol = (Material)Resources.Load ("Materials/electricparticle");
 		private bool firstpass = true;
 
-		//Electrostatic iso-surface parameters
-		public static bool showElectroIsoPositive = false;
-		public static bool showElectroIsoNegative = false;
-		public static bool electroIsoPositiveInitialized = false;
-		public static bool electroIsoNegativeInitialized = false;
+		//Electroiso-surface parameters
+		public bool showElectroIsoPositive = false;
+		public bool showElectroIsoNegative = false;
+		public bool electroIsoPositiveInitialized = false;
+		public bool electroIsoNegativeInitialized = false;
 
 
 		// Luiz:
-		public static ColorPicker CreateColorPicker(ColorObject col, string title, List<string> atomTarget, string residueTarget = "All", string chainTarget = "All")
+		public ColorPicker CreateColorPicker(ColorObject col, string title, List<string> atomTarget, string residueTarget = "All", string chainTarget = "All")
 		{
 			if(m_colorPicker != null)
 				m_colorPicker = null;
 			return m_colorPicker = new ColorPicker(Rectangles.colorPickerRect, col, atomTarget, residueTarget, chainTarget, title);
 		}
-		
-		public GUIMoleculeController ()
+
+		// Luiz: singleton pattern
+		private static GUIMoleculeController sInstance;
+		public static GUIMoleculeController Instance {
+			get {
+				return sInstance = sInstance ?? new GUIMoleculeController();
+			}
+		}
+		private GUIMoleculeController ()
 		{
 			#if !UNITY_WEBPLAYER
 				m_last_extSurf_Path = System.IO.Directory.GetCurrentDirectory();
 			#endif
 
-			Debug.Log("new scene controller");
 			scenecontroller = GameObject.Find ("LoadBox");
 			Molecule3DComp = scenecontroller.GetComponent<Molecule3D> ();
 /*
@@ -506,7 +475,7 @@ namespace UI {
 			aTexture = (Texture2D)Resources.Load ("EnergyGrayColorAlpha");
 		}
 
-		public static void InitMoleculeParameters()
+		public void InitMoleculeParameters()
 		{
 			depthCutMin = -5 + Mathf.Min(new float[]{MoleculeModel.MinValue.x,
 												MoleculeModel.MinValue.y,
@@ -621,7 +590,7 @@ namespace UI {
 		public void DisplayGUI () {
 			int padding = GUI.skin.window.padding.top ;
 			GUI.skin.window.padding.top = 5;
-			GUI.Window (1, Rectangles.mainRect, LoadTypeGUI.MainFun, "");
+			GUI.Window (1, Rectangles.mainRect, LoadTypeGUI.Instance.MainFun, "");
 			GUI.skin.window.padding.top = padding;
 //			GUI.Window (1, Rectangles.mainRect, loadGUI, "");			
 			if (firstpass) {
@@ -645,7 +614,7 @@ namespace UI {
 
 
 
-		private static void VisualControl (){
+		private void VisualControl (){
 			GUILayout.BeginHorizontal ();
 			GUILayout.Label ("Visual", GUILayout.MaxWidth (50));
 			
@@ -657,7 +626,7 @@ namespace UI {
 			GUILayout.EndHorizontal ();
 		}
 			
-		public static float LabelSlider (float sliderValue, float sliderMinValue, float sliderMaxValue, string labelText, 
+		public float LabelSlider (float sliderValue, float sliderMinValue, float sliderMaxValue, string labelText, 
 			string toolTip, bool enable, int sliderwidth, int labelwidth=100, bool newLine = false) {
 			GUI.enabled = enable;
 			
@@ -684,49 +653,49 @@ namespace UI {
 		
 		public void SetAdvMenu () {
 			if(showAdvMenu)		
-				Rectangles.advOptionsRect = GUILayout.Window(142, Rectangles.advOptionsRect, LoadTypeGUI.AdvOptions, emptyContent);
+				Rectangles.advOptionsRect = GUILayout.Window(142, Rectangles.advOptionsRect, LoadTypeGUI.Instance.AdvOptions, emptyContent);
 		}
 
 		public void SetGuidedMenu () {
 			if(showGuidedMenu)		
-				Rectangles.GuidedNavRect = GUILayout.Window(143, Rectangles.GuidedNavRect, LoadTypeGUI.GuidedOptions, emptyContent);
+				Rectangles.GuidedNavRect = GUILayout.Window(143, Rectangles.GuidedNavRect, LoadTypeGUI.Instance.GuidedOptions, emptyContent);
 		}
 		
 		public void SetAtomMenu () {
 			if (showAtomMenu)
-			    Rectangles.atomMenuRect = GUI.Window (10, Rectangles.atomMenuRect, LoadTypeGUI.AtomMenu, emptyContent);
+			    Rectangles.atomMenuRect = GUI.Window (10, Rectangles.atomMenuRect, LoadTypeGUI.Instance.AtomMenu, emptyContent);
 		}
 		
 		public void SetSecStructMenu () {
 			if(showSecStructMenu)
-				Rectangles.secStructMenuRect = GUI.Window(587, Rectangles.secStructMenuRect, LoadTypeGUI.SecStructMenu, emptyContent);			
+				Rectangles.secStructMenuRect = GUI.Window(587, Rectangles.secStructMenuRect, LoadTypeGUI.Instance.SecStructMenu, emptyContent);			
 		}
 		
-		//public static void SetAtomScales() {
+		//public void SetAtomScales() {
 		//	Rectangles.atomScalesRect = GUI.Window( 40, Rectangles.atomScalesRect, GUIDisplay.Instance.AtomScales, emptyContent);
 		//}
 		
-		public static void SetPanels () {
+		public void SetPanels () {
 			Rectangles.panelsMenuRect = GUILayout.Window (44, Rectangles.panelsMenuRect, GUIDisplay.Instance.PanelsMenu, emptyContent);
 		}
 		
-		public static void SetAtomsExtended () {
+		public void SetAtomsExtended () {
 			//Rectangles.atomsExtendedMenuRect = GUI.Window (45, Rectangles.atomsExtendedMenuRect, GUIDisplay.Instance.AtomsExtendedMenu, emptyContent);
 			Rectangles.atomsExtendedMenuRect = GUILayout.Window(45, Rectangles.atomsExtendedMenuRect, GUIDisplay.Instance.AtomsExtendedMenu, emptyContent);
 		}
 		
-		public static void SetResidues () {
+		public void SetResidues () {
 			Rectangles.residuesMenuRect = GUILayout.Window (46, Rectangles.residuesMenuRect, GUIDisplay.Instance.ResiduesMenu, emptyContent);
 		}
 		
-		public static void SetChains () {
+		public void SetChains () {
 			Rectangles.chainsMenuRect = GUILayout.Window (47, Rectangles.chainsMenuRect, GUIDisplay.Instance.ChainsMenu, emptyContent);
 		}
 		
 		public void SetAtomType () {
 			if (showAtomType && showAtomMenu) {
 //				GUIContent c = new GUIContent ("Set Atom Type", "Set the atom type");
-				Rectangles.atomStyleRect = GUI.Window (11, Rectangles.atomStyleRect, LoadTypeGUI.AtomStyle, emptyContent);
+				Rectangles.atomStyleRect = GUI.Window (11, Rectangles.atomStyleRect, LoadTypeGUI.Instance.AtomStyle, emptyContent);
 //				Debug.Log(Screen.width-195);
 			}
 		}
@@ -734,39 +703,38 @@ namespace UI {
 		public void SetBfactorMenu () {
 			if (showBfactorMenu) {
 //				GUIContent c=new GUIContent("Set Atom Type","Set the atom type");
-				Rectangles.surfaceMenuRect = GUI.Window (20, Rectangles.surfaceMenuRect, LoadTypeGUI.Surface, emptyContent);
+				Rectangles.surfaceMenuRect = GUI.Window (20, Rectangles.surfaceMenuRect, LoadTypeGUI.Instance.Surface, emptyContent);
 //				Debug.Log(Screen.width-195);
 				if (GameObject.FindGameObjectWithTag ("SurfaceManager"))
-					Rectangles.surfaceParametersRect = GUI.Window (25, Rectangles.surfaceParametersRect, LoadTypeGUI.SurfaceParams, emptyContent);	
+					Rectangles.surfaceParametersRect = GUI.Window (25, Rectangles.surfaceParametersRect, LoadTypeGUI.Instance.SurfaceParams, emptyContent);	
 			}
 		}
 		
 		
 		public void SetBondType () {
 			if (showBondType && showAtomMenu)
-				Rectangles.bondTypeRect = GUI.Window (11, Rectangles.bondTypeRect, LoadTypeGUI.Bond, emptyContent);
+				Rectangles.bondTypeRect = GUI.Window (11, Rectangles.bondTypeRect, LoadTypeGUI.Instance.Bond, emptyContent);
 		}
 		
 		// T.T Sugar Menu
 		public void setSugarMenu(){
 			if (showSugarChainMenu)
-				Rectangles.SugarMenuRect = GUI.Window(454654, Rectangles.SugarMenuRect, LoadTypeGUI.SugarM, emptyContent);
+				Rectangles.SugarMenuRect = GUI.Window(454654, Rectangles.SugarMenuRect, LoadTypeGUI.Instance.SugarM, emptyContent);
 		}
-
 
 		public void setSugarRibbonsTuneMenu(){
 			if (showSugarRibbonsTuneMenu)
-				Rectangles.SugarRibbonsTuneRect = GUI.Window(4554, Rectangles.SugarRibbonsTuneRect, LoadTypeGUI.SugarRibbonsTune, emptyContent);
+				Rectangles.SugarRibbonsTuneRect = GUI.Window(4554, Rectangles.SugarRibbonsTuneRect, LoadTypeGUI.Instance.SugarRibbonsTune, emptyContent);
 		}
 
 		public void setColorTuneMenu(){
 			if (showColorTuneMenu)
-				Rectangles.ColorTuneRect = GUI.Window(45154, Rectangles.ColorTuneRect, LoadTypeGUI.ColorTuneMenu, emptyContent);
+				Rectangles.ColorTuneRect = GUI.Window(45154, Rectangles.ColorTuneRect, LoadTypeGUI.Instance.ColorTuneMenu, emptyContent);
 		}
 		public void SetCubeLineBond() {
 			if	(((UIData.Instance.bondtype == UIData.BondType.cube) || (UIData.Instance.bondtype == UIData.BondType.line))
 					&& !showBondType && !showAtomType && showAtomMenu) {
-				Rectangles.cubeLineBondRect = GUI.Window (13, Rectangles.cubeLineBondRect, LoadTypeGUI.CubeLineBond, emptyContent) ;
+				Rectangles.cubeLineBondRect = GUI.Window (13, Rectangles.cubeLineBondRect, LoadTypeGUI.Instance.CubeLineBond, emptyContent) ;
 				showCubeLineBondMenu = true ;
 			} else
 				showCubeLineBondMenu = false ;
@@ -775,15 +743,15 @@ namespace UI {
 		
 		public void SetEffectType () {
 			if (showEffectType)
-				Rectangles.effectTypeRect = GUI.Window (125, Rectangles.effectTypeRect, LoadTypeGUI.Effects, emptyContent);
+				Rectangles.effectTypeRect = GUI.Window (125, Rectangles.effectTypeRect, LoadTypeGUI.Instance.Effects, emptyContent);
 		}
 		
 		public void SetFieldMenu () {
 			if (showElectrostaticsMenu)
-				Rectangles.electroMenuRect = GUI.Window (30, Rectangles.electroMenuRect, LoadTypeGUI.Electrostatics, emptyContent);
+				Rectangles.electroMenuRect = GUI.Window (30, Rectangles.electroMenuRect, LoadTypeGUI.Instance.Electrostatics, emptyContent);
 
 			if (showFieldLines && showElectrostaticsMenu)
-				Rectangles.fieldLinesRect = GUI.Window (31, Rectangles.fieldLinesRect, LoadTypeGUI.FieldLines, emptyContent);
+				Rectangles.fieldLinesRect = GUI.Window (31, Rectangles.fieldLinesRect, LoadTypeGUI.Instance.FieldLines, emptyContent);
 		}
 
 		public void SetSurfaceMenu () {
@@ -791,34 +759,34 @@ namespace UI {
 //			Debug.Log("test 42000");
 //			GUIContent c=new GUIContent("Set Surface Params");
 				
-			    Rectangles.surfaceMenuRect = GUI.Window (20, Rectangles.surfaceMenuRect, LoadTypeGUI.Surface, emptyContent);
+			    Rectangles.surfaceMenuRect = GUI.Window (20, Rectangles.surfaceMenuRect, LoadTypeGUI.Instance.Surface, emptyContent);
 //			Debug.Log(Screen.width-195);
 				
 				if (GameObject.FindGameObjectWithTag ("SurfaceManager")) {
-					Rectangles.surfaceParametersRect = GUI.Window (25, Rectangles.surfaceParametersRect, LoadTypeGUI.SurfaceParams, emptyContent);	
+					Rectangles.surfaceParametersRect = GUI.Window (25, Rectangles.surfaceParametersRect, LoadTypeGUI.Instance.SurfaceParams, emptyContent);	
 				}
 			}
 		}
 
 		public void SetHydroMenu(){
 			if (showHydroMenu && showSurfaceMenu )
-				Rectangles.hydroMenuRect = GUI.Window (2001, Rectangles.hydroMenuRect, LoadTypeGUI.HydroMenu, emptyContent);
+				Rectangles.hydroMenuRect = GUI.Window (2001, Rectangles.hydroMenuRect, LoadTypeGUI.Instance.HydroMenu, emptyContent);
 		}
 		
 		
 		public void SetManipulatorMenu () {
 			if (showManipulatorMenu)
-				Rectangles.manipulatorRect = GUI.Window (42, Rectangles.manipulatorRect, LoadTypeGUI.Display, emptyContent);
+				Rectangles.manipulatorRect = GUI.Window (42, Rectangles.manipulatorRect, LoadTypeGUI.Instance.Display, emptyContent);
 		}
 		
 		public void SetMnipulatormove () {
 			if (!showManipulatorMenu)
-				Rectangles.manipulatorMoveRect = GUI.Window (42, Rectangles.manipulatorMoveRect, LoadTypeGUI.Manipulator, emptyContent);
+				Rectangles.manipulatorMoveRect = GUI.Window (42, Rectangles.manipulatorMoveRect, LoadTypeGUI.Instance.Manipulator, emptyContent);
 		}
 		
 		public void SetHyperBall ()	{
 			if ((/*UIData.Instance.atomtype == UIData.AtomType.hyperball || */UIData.Instance.bondtype == UIData.BondType.hyperstick) && (!showBondType && !showAtomType) && showAtomMenu) {
-				Rectangles.hyperballRect = GUI.Window (12, Rectangles.hyperballRect, LoadTypeGUI.HyperballStyle, emptyContent);
+				Rectangles.hyperballRect = GUI.Window (12, Rectangles.hyperballRect, LoadTypeGUI.Instance.HyperballStyle, emptyContent);
 				showHyperballsMenu = true;
 			} else
 				showHyperballsMenu = false;
@@ -828,30 +796,30 @@ namespace UI {
 			if (showSurfaceTexture && (showSurfaceMenu || showBfactorMenu)) {	
 				GUIDisplay.Instance.m_texture = false;		
 //				GUI.Window(41, new Rect(texturetypexstart,texturetypeystart,texturewidth,textureheight),loadSurfaceTexture, "Surface texture parameters");
-				Rectangles.textureRect = GUI.Window (41, Rectangles.textureRect, LoadTypeGUI.SurfaceTexture, emptyContent);
+				Rectangles.textureRect = GUI.Window (41, Rectangles.textureRect, LoadTypeGUI.Instance.SurfaceTexture, emptyContent);
 			}
 		}
 
 		public void SetSurtfaceMobileCut () {
 			if (showSurfaceMobileCut && (showSurfaceMenu || showBfactorMenu))
-			    Rectangles.surfaceMobileCutRect = GUI.Window (21, Rectangles.surfaceMobileCutRect, LoadTypeGUI.SurfaceMobileCut, emptyContent);
+			    Rectangles.surfaceMobileCutRect = GUI.Window (21, Rectangles.surfaceMobileCutRect, LoadTypeGUI.Instance.SurfaceMobileCut, emptyContent);
 		}
 		
 		public void SetSurfaceCut () {
 			if (showSurfaceCut && (showSurfaceMenu || showBfactorMenu)) {
-				Rectangles.surfaceCutRect = GUI.Window (21, Rectangles.surfaceCutRect, LoadTypeGUI.SurfaceCut, emptyContent);
-				Rectangles.movePlaneRect = GUI.Window (22, Rectangles.movePlaneRect, LoadTypeGUI.MoveCutPlane, emptyContent);
+				Rectangles.surfaceCutRect = GUI.Window (21, Rectangles.surfaceCutRect, LoadTypeGUI.Instance.SurfaceCut, emptyContent);
+				Rectangles.movePlaneRect = GUI.Window (22, Rectangles.movePlaneRect, LoadTypeGUI.Instance.MoveCutPlane, emptyContent);
 			}
 		}
 	
 		public void SetBackGroundType () {
 			if (showBackgroundType) 
-				Rectangles.backTypeRect = GUI.Window (43, Rectangles.backTypeRect, LoadTypeGUI.Background, emptyContent);
+				Rectangles.backTypeRect = GUI.Window (43, Rectangles.backTypeRect, LoadTypeGUI.Instance.Background, emptyContent);
 		}
 		
 		public void SetMetaphorType () {
 			if (showMetaphorType && showAtomMenu)
-				Rectangles.metaphorRect = GUI.Window (23, Rectangles.metaphorRect, LoadTypeGUI.Metaphor, emptyContent);
+				Rectangles.metaphorRect = GUI.Window (23, Rectangles.metaphorRect, LoadTypeGUI.Instance.Metaphor, emptyContent);
 		}
 		
 		public void SetVRPNMenu () {
@@ -868,7 +836,7 @@ namespace UI {
 			if((UnityClusterPackage.Node.CurrentNode.HasPermission(NodePermission.Energy) && GUIDisplay.Instance.CurrentState != null)
 				|| (GUIDisplay.Instance.StateFiles != null && GUIDisplay.Instance.StateFiles.Length > 0))
 			{
-				Rectangles.EnergyRect = GUI.Window(666, Rectangles.EnergyRect, LoadTypeGUI.Energy, emptyContent);
+				Rectangles.EnergyRect = GUI.Window(666, Rectangles.EnergyRect, LoadTypeGUI.Instance.Energy, emptyContent);
 			}
 		}
 			
@@ -876,15 +844,8 @@ namespace UI {
 // end of windows functions =============================================================================================		
 
 		public  void MinLoadTypeGUIAtom (int b) {}
-
-		protected static string queryBestTextures(){
-			if (onlyBestTextures)
-				return("On");
-			else
-				return("Off");
-		}
 		
-		public static void FileSelectedCallback (string path) {
+		public void FileSelectedCallback (string path) {
 			#if !UNITY_WEBPLAYER
 				m_fileBrowser = null;
 				if (path != null) {
@@ -895,8 +856,8 @@ namespace UI {
 				}
 //				FileBrowser_show = false;
 				surfaceTexture = false;
-				GUIMoleculeController.FileBrowser_show2 = false;
-				WWW www = new WWW ("file://" + GUIMoleculeController.m_textPath);
+				GUIMoleculeController.Instance.FileBrowser_show2 = false;
+				WWW www = new WWW ("file://" + GUIMoleculeController.Instance.m_textPath);
 				extSurf = www.texture;
 				Debug.Log (m_textPath);
 			#endif
@@ -975,9 +936,18 @@ namespace UI {
 		} // End of RenderHelp
 
 		// Luiz:
-		private static T ProcessPropertyChanged<T> (string propertyName, T oldValue, T newValue)
+		private T ProcessPropertyChanged<T> (string propertyName, T oldValue, T newValue)
 		{
 			return ChangeManager.ProcessPropertyChanged(typeof(GUIMoleculeController), propertyName, oldValue, newValue);
+		}
+		public void ChangeMetaphor(float aGlobalRadius, float aShrink, float aScale) {
+			newGlobalRadius = aGlobalRadius;
+			deltaRadius = (newGlobalRadius - globalRadius) / transDelta;
+			newShrink = aShrink;
+			deltaShrink = (newShrink - shrink) / transDelta;
+			newScale = aScale;
+			deltaScale = (newScale - linkScale) / transDelta;
+			transMETAPHOR = true;
 		}
 	}
 }

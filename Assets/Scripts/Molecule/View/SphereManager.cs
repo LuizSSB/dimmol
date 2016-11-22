@@ -390,7 +390,7 @@ public class SphereManager : GenericManager {
 		if(UIData.Instance.atomtype == UIData.AtomType.sphere){
 			foreach(BallUpdateSphere sp in balls) {
 				float buffer = Molecule.Model.MoleculeModel.atomsTypelist[(int)sp.number].radius
-								* (GUIMoleculeController.globalRadius)
+								* (GUIMoleculeController.Instance.globalRadius)
 								* (Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)sp.number]/100);
 				sp.transform.localScale = new Vector3(	buffer, buffer, buffer);
 				sp.oldrayonFactor = sp.rayonFactor;
@@ -434,7 +434,7 @@ public class SphereManager : GenericManager {
 		if(BallUpdate.resetRadii ||  (BallUpdate.oldRadiusFactor != BallUpdate.radiusFactor))
 			ResetRadii();
 		
-		if(GUIMoleculeController.toggle_MDDRIVER) {
+		if(GUIMoleculeController.Instance.toggle_MDDRIVER) {
 			if(!mouseOvers)
 			{
 				CreateMouseOversMDDriver();
@@ -444,7 +444,7 @@ public class SphereManager : GenericManager {
 		{
 			if(mouseOvers)
 			{
-				if (GUIMoleculeController.toggle_MDDRIVER)
+				if (GUIMoleculeController.Instance.toggle_MDDRIVER)
 				{
 					DestroyMouseOversMDDriver();
 				}

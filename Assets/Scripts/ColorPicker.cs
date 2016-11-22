@@ -206,7 +206,7 @@ public class ColorPicker{
 	public void loadColor(int a){
 		
 		if(GUI.Button(m_close_area, "Close"))
-			UI.GUIMoleculeController.m_colorPicker = null;
+			UI.GUIMoleculeController.Instance.m_colorPicker = null;
 		string temp;
 		temp = GUI.TextField(m_r_area, m_r_value.ToString());
 		int.TryParse(temp, out m_r_value);

@@ -170,7 +170,7 @@ public class HBallManager : GenericManager {
 	/// Switch the shader of the HyperSticks : Single texture shader when Atom Texture is disabled, Double textures shader when Atom Texture is enabled.
 	/// </summary>
 	public void SetStickShader(){
-		if(!GUIMoleculeController.toggle_NA_TEXATOM)
+		if(!GUIMoleculeController.Instance.toggle_NA_TEXATOM)
 		{
 			if(UIData.Instance.bondtype == UIData.BondType.hyperstick)
 				foreach(StickUpdate stu in sticks)
@@ -856,26 +856,26 @@ public class HBallManager : GenericManager {
 			 
 			for (int i=0; i<hballs.Length; i++) {
 				if (UIData.Instance.secondarystruct){
-					if(GUIMoleculeController.structType == "B Factor"){
+					if(GUIMoleculeController.Instance.structType == "B Factor"){
 						if (hballs[i].rayon == 3.7f){
 							hballs[i].GetComponent<Renderer>().material.SetFloat("_Rayon", hballs[i].rayon 
-							                              * (GUIMoleculeController.highBFradius)
-							                              * (GUIMoleculeController.globalRadius)
+							                              * (GUIMoleculeController.Instance.highBFradius)
+							                              * (GUIMoleculeController.Instance.globalRadius)
 							                              * (Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)hballs[i].number]/100));}
 						else{
 							hballs[i].GetComponent<Renderer>().material.SetFloat("_Rayon", hballs[i].rayon 
-							                              * (GUIMoleculeController.globalRadius)
+							                              * (GUIMoleculeController.Instance.globalRadius)
 							                              * (Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)hballs[i].number]/100));
 						}
 					}
 					else
 					hballs[i].GetComponent<Renderer>().material.SetFloat("_Rayon", hballs[i].rayon 
-					                              * (GUIMoleculeController.globalRadius)
+					                              * (GUIMoleculeController.Instance.globalRadius)
 					                              * (Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)hballs[i].number]/100));
 				}
 				else{
 				hballs[i].GetComponent<Renderer>().material.SetFloat("_Rayon", Molecule.Model.MoleculeModel.atomsTypelist[(int)hballs[i].number].radius 
-												  * (GUIMoleculeController.globalRadius)
+												  * (GUIMoleculeController.Instance.globalRadius)
 					                              * (Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)hballs[i].number]/100));
 				}
 			}
@@ -1021,14 +1021,14 @@ public class HBallManager : GenericManager {
 			oldDepthFactor=depthFactor;
 		}
 		
-		if(GUIMoleculeController.toggle_NA_INTERACTIVE) {
+		if(GUIMoleculeController.Instance.toggle_NA_INTERACTIVE) {
 			if(!mouseOvers)
 			{
 				CreateMouseOvers();
 			}
 			ManagePhysics();
 		}
-		else if(GUIMoleculeController.toggle_MDDRIVER) {
+		else if(GUIMoleculeController.Instance.toggle_MDDRIVER) {
 			if(!mouseOvers)
 			{
 				CreateMouseOversMDDriver();
@@ -1038,11 +1038,11 @@ public class HBallManager : GenericManager {
 		{
 			if(mouseOvers)
 			{
-				if (GUIMoleculeController.toggle_NA_INTERACTIVE)
+				if (GUIMoleculeController.Instance.toggle_NA_INTERACTIVE)
 				{
 					DestroyMouseOvers();
 				}
-				if (GUIMoleculeController.toggle_MDDRIVER)
+				if (GUIMoleculeController.Instance.toggle_MDDRIVER)
 				{
 					DestroyMouseOversMDDriver();
 				}
@@ -1058,7 +1058,7 @@ public class HBallManager : GenericManager {
 			}
 		}
 		
-		if (GUIMoleculeController.toggle_MDDRIVER && ellipsoidView)
+		if (GUIMoleculeController.Instance.toggle_MDDRIVER && ellipsoidView)
 		{
 //			Debug.Log(">>>>>>>>>>>>>>>Update Ellipsoids");
 			UpdateEllipsoids();

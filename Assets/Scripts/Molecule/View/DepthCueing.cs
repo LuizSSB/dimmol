@@ -87,7 +87,7 @@ public class DepthCueing {
 	/// </summary>
 	public DepthCueing() {
 		// We get the ReadDX object and from it, the values we need.
-		readDx = GUIMoleculeController.readdx;
+		readDx = GUIMoleculeController.Instance.readdx;
 		depth = readDx._grid;
 		xDim = depth.GetLength(0);
 		yDim = depth.GetLength(1);

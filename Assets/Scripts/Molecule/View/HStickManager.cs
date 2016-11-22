@@ -173,7 +173,7 @@ public class HStickManager : GenericManager {
 		if(resetBrightness)
 			ResetBrightness();
 		
-		if(GUIMoleculeController.toggle_NA_INTERACTIVE && UIData.Instance.toggleGray)
+		if(GUIMoleculeController.Instance.toggle_NA_INTERACTIVE && UIData.Instance.toggleGray)
 			ResetColors();
 		
 		if (xgmml && (oldDepthFactor!=depthFactor)) {
@@ -182,7 +182,7 @@ public class HStickManager : GenericManager {
 			oldDepthFactor=depthFactor;
 		}
 		
-		if(GUIMoleculeController.toggle_NA_INTERACTIVE) 
+		if(GUIMoleculeController.Instance.toggle_NA_INTERACTIVE) 
 //			ResetBondVectors();
 			ResetPositions();
 		

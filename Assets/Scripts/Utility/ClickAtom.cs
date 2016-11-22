@@ -103,7 +103,7 @@ public class ClickAtom : MonoBehaviour
             {
 				Vector3 mousePos = Input.mousePosition;
 				mousePos.y = Screen.height - mousePos.y;
-            	if(GUIMoleculeController.m_colorPicker != null && GUIMoleculeController.m_colorPicker.enabled 
+            	if(GUIMoleculeController.Instance.m_colorPicker != null && GUIMoleculeController.Instance.m_colorPicker.enabled 
 					&& Rectangles.colorPickerRect.Contains (mousePos))
 					return;
 				

@@ -11,7 +11,7 @@ namespace UnityClusterPackage {
 		void Awake() {
 			Network.sendRate = 100;
 
-			if ( Node.CurrentNode.IsParentNode)
+			if ( Node.CurrentNode.IsHostNode)
 			{
 				Network.proxyIP = Node.CurrentNode.NodeServer.Ip;
 				bool useNat = Network.HavePublicAddress();
@@ -77,13 +77,17 @@ namespace UnityClusterPackage {
 		
 		void OnDestroy() {
 			Debug.Log ("Destroying node: " + Node.CurrentNode.Name);
-			if ( Node.CurrentNode.IsParentNode )
+			if ( Node.CurrentNode.IsHostNode )
 			{
 				Network.Disconnect();
 			}
 			else if ( Node.CurrentNode.IsChildNode )
 			{
-				Network.CloseConnection( Network.player, true );                
+				// Luiz: Gotta be inside a try/catch because if the server disconnects before this object is destroyed
+				// there will be no connection to be closed.
+				try {
+					Network.CloseConnection( Network.player, true );
+				} catch { }
 			}
 		}
 		

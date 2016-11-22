@@ -344,7 +344,7 @@ namespace  ParseData.ParsePDB
 				
 //			FileInfo file=new FileInfo(file_base_name+".pdb");
 			using (sr =new StreamReader(file_base_name+".pdb")) {
-				// Luiz
+				// Luiz:
 				string pdbContents = sr.ReadToEnd();
 				UIData.Instance.ChosenPdbContents = pdbContents;
 
@@ -375,7 +375,7 @@ namespace  ParseData.ParsePDB
 				if(Surfacefile.Exists || Surfacefile0.Exists) {
 					LoadOBJRequest(file_base_name);
 					MoleculeModel.surfaceFileExists=true;
-					GUIMoleculeController.modif=true;
+					GUIMoleculeController.Instance.modif=true;
 				} else {
 					MoleculeModel.surfaceFileExists=false;
 				}
@@ -851,7 +851,7 @@ namespace  ParseData.ParsePDB
 
 					}
 					//Take the opposite for z to make the node pop out toward the user
-					vect[2]=-GUIMoleculeController.depthfactor*intarrayw[0];
+					vect[2]=- GUIMoleculeController.Instance.depthfactor*intarrayw[0];
 					alist.Add(vect);
 					typelist.Add(AtomModel.GetModel("S"));
 	//				modellist.Add(model);

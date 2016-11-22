@@ -97,11 +97,11 @@ public class ScenePreload_1KX2 : MonoBehaviour {
 		//requestPDB.LoadPDBResource("1KX2");
 		UIData.Instance.atomtype = UIData.AtomType.hyperball;
 		UIData.Instance.bondtype = UIData.BondType.hyperstick;
-		GUIMoleculeController.showOpenMenu = false;
-		GUIMoleculeController.showAtomMenu = false;
-		GUIMoleculeController.globalRadius = 0.3f;
-		GUIMoleculeController.shrink = 0.0001f;
-		GUIMoleculeController.linkScale = 0.4f;
+		GUIMoleculeController.Instance.showOpenMenu = false;
+		GUIMoleculeController.Instance.showAtomMenu = false;
+		GUIMoleculeController.Instance.globalRadius = 0.3f;
+		GUIMoleculeController.Instance.shrink = 0.0001f;
+		GUIMoleculeController.Instance.linkScale = 0.4f;
 		SendMessage("Display",SendMessageOptions.DontRequireReceiver);	
 	}
 	

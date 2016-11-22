@@ -14,9 +14,8 @@ using Molecule.Model;
 using System.Collections.Generic;
 using UI;
 using Molecule.Control;
-using OptimalView;
 
-namespace Reorient
+namespace UI
 {
 		public class Reorient
 		{

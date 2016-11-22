@@ -100,9 +100,9 @@ public class ScenePreload_RNA : MonoBehaviour {
 		UIData.Instance.ffType = UIData.FFType.HiRERNA;
 		UIData.Instance.atomtype = UIData.AtomType.hyperball;
 		UIData.Instance.bondtype = UIData.BondType.hyperstick;
-		GUIMoleculeController.shrink = 0.8f;
-		GUIMoleculeController.showOpenMenu =false;
-		GUIMoleculeController.showAtomMenu =true;
+		GUIMoleculeController.Instance.shrink = 0.8f;
+		GUIMoleculeController.Instance.showOpenMenu =false;
+		GUIMoleculeController.Instance.showAtomMenu =true;
 		SendMessage("Display",SendMessageOptions.DontRequireReceiver);	
 	}
 	

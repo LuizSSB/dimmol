@@ -180,7 +180,7 @@ public class StickUpdate : MonoBehaviour {
 			//if(resetColors)
 			//	ResetColors();
 			
-			if(GUIMoleculeController.toggle_NA_INTERACTIVE)
+			if(GUIMoleculeController.Instance.toggle_NA_INTERACTIVE)
 			{
 				renderer.material.SetVector("_TexPos1", atompointer1.transform.position);
 				transform.position = atompointer1.transform.position;

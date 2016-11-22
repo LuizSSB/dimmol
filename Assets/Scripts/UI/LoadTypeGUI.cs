@@ -1,5 +1,5 @@
-/// @file LoadTypeGUI.cs
-/// @brief This static class contains a collection of functions that define GUI windows.
+/// @file LoadTypeGUI.Instance.cs
+/// @brief This class contains a collection of functions that define GUI windows.
 /// @author FvNano/LBT team
 /// @author Marc Baaden <baaden@smplinux.de>
 /// @date   2013-4
@@ -47,7 +47,7 @@
 /// The fact that you are presently reading this means that you have had 
 /// knowledge of the CeCILL-C license and that you accept its terms.
 ///
-/// $Id: LoadTypeGUI.cs 213 2013-04-06 21:13:42Z baaden $
+/// $Id: LoadTypeGUI.Instance.cs 213 2013-04-06 21:13:42Z baaden $
 ///
 /// References : 
 /// If you use this code, please cite the following reference : 	
@@ -63,119 +63,133 @@
 /// J. Comput. Chem., 2011, 32, 2924
 ///
 using Config;
+using UnityEngine;
+using System.Collections;
+using Molecule.Model;
+using Molecule.View;
 
-
-namespace UI{
-	using UnityEngine;
-	using System.Collections;
-	using Molecule.Model;
-	using Molecule.View;
-	using Reorient;
-	using OptimalView;
+namespace UI {
 	
 	// Can't be static because GUIMoleculeController isn't, thought it probably ought to be.
-	public class LoadTypeGUI : GUIMoleculeController{
+	// 
+	// Luiz: well, check this out: the only reason this class inherited from GUIMoleculeController was because, due to
+	// the variable/if-driven aspect of this source-code, it would save up some words when accessing static variables 
+	// from GUIMoleculeController. Both classes were almost pretty much static and shared almost nothing in common.
+	// To put it simply: noobs in action.
+	// Luiz: had to cut-off this inheritance shit, because I needed both classes to be singletons. The reason for this 
+	// is that we're dealing with the possibility of the user traversing through scenes and the infinite static
+	// variables here hindered the possibility of going back to the Molecule3D scene, since the static variables would 
+	// fuck up something somewhere. With singletons, I can "reset" these variables, effectively reseting the scene.
+	[ClearableSingleton]
+	public class LoadTypeGUI {
+		//Luiz: singleton pattern
+		private static LoadTypeGUI sInstance;
+		public static LoadTypeGUI Instance {
+			get {
+				return sInstance = sInstance ?? new LoadTypeGUI();
+			}
+		}
 		
 		// Size values for the orthographic camera
-		public static float minOrthoSize = 1f ;
-		public static float maxOrthoSize = 60f ;
-		public static float orthoSize = 10f; // size of the orthographic camera
+		public float minOrthoSize = 1f ;
+		public float maxOrthoSize = 60f ;
+		public float orthoSize = 10f; // size of the orthographic camera
 
 		//Parameters for SugarRibbons
-		public static float RibbonsThickness = 0.15f;
-		public static float OxySphereSize = 1f;
-		public static float OxySphereSizeCheck = 1f;
-		public static float thickness_Little=1.8f;
-		public static float thickness_BIG=1f;
-		public static float thickness_bond_6_C1_C4=0.2f; 
-		public static float thickness_6_other=0.16f; 
-		public static float thickness_bond_5=0.2f;
-		public static float lighter_color_factor_bond=0.35f;
-		public static float lighter_color_factor_bond_check=0.35f;
-		public static float lighter_color_factor_ring=0.35f;
-		public static float lighter_color_factor_ring_check=0.35f;
-		public static int ColorationModeRing=0;
-		public static int ColorationModeBond=0;
+		public float RibbonsThickness = 0.15f;
+		public float OxySphereSize = 1f;
+		public float OxySphereSizeCheck = 1f;
+		public float thickness_Little=1.8f;
+		public float thickness_BIG=1f;
+		public float thickness_bond_6_C1_C4=0.2f; 
+		public float thickness_6_other=0.16f; 
+		public float thickness_bond_5=0.2f;
+		public float lighter_color_factor_bond=0.35f;
+		public float lighter_color_factor_bond_check=0.35f;
+		public float lighter_color_factor_ring=0.35f;
+		public float lighter_color_factor_ring_check=0.35f;
+		public int ColorationModeRing=0;
+		public int ColorationModeBond=0;
 
 		//definition of sugarRibons and RingBlending, to avoid create them to each frame
-		public static SugarRibbons SR;
-		public static RingBlending ringblending;
+		public SugarRibbons SR;
+		public RingBlending ringblending;
 		
 		// Colors for buttons in secondary structure menu
 		// Note : LoadTypeGUI and GUIDisplay are separated randomly. Don't know why some UI features are in one or another. Here, it forces us to set this public.
 		// TODO : Fusion LoadTypeGUI and GUIDisplay ? (and GUIMoleculeController ???) or at least do some cleaning in those
-		public static Color[] helixButtonNew = new Color[200];
-		public static Texture2D helixButton = new Texture2D(20,10,TextureFormat.ARGB32,false);
-		public static Color[] sheetButtonNew = new Color[200];
-		public static Texture2D sheetButton = new Texture2D(20,10,TextureFormat.ARGB32,false);
-		public static Color[] coilButtonNew = new Color[200];
-		public static Texture2D coilButton = new Texture2D(20,10,TextureFormat.ARGB32,false);
+		public Color[] helixButtonNew = new Color[200];
+		public Texture2D helixButton = new Texture2D(20,10,TextureFormat.ARGB32,false);
+		public Color[] sheetButtonNew = new Color[200];
+		public Texture2D sheetButton = new Texture2D(20,10,TextureFormat.ARGB32,false);
+		public Color[] coilButtonNew = new Color[200];
+		public Texture2D coilButton = new Texture2D(20,10,TextureFormat.ARGB32,false);
 
-		public static Texture2D chainbuttonA = new Texture2D(20,10,TextureFormat.ARGB32,false);
-		public static Color[] chainbuttonAnew = new Color[200];
-		public static Texture2D chainbuttonB = new Texture2D(20,10,TextureFormat.ARGB32,false);
-		public static Color[] chainbuttonBnew = new Color[200];
-		public static Texture2D chainbuttonC = new Texture2D(20,10,TextureFormat.ARGB32,false);
-		public static Color[] chainbuttonCnew = new Color[200];
-		public static Texture2D chainbuttonD = new Texture2D(20,10,TextureFormat.ARGB32,false);
-		public static Color[] chainbuttonDnew = new Color[200];
-		public static Texture2D chainbuttonE = new Texture2D(20,10,TextureFormat.ARGB32,false);
-		public static Color[] chainbuttonEnew = new Color[200];
+		public Texture2D chainbuttonA = new Texture2D(20,10,TextureFormat.ARGB32,false);
+		public Color[] chainbuttonAnew = new Color[200];
+		public Texture2D chainbuttonB = new Texture2D(20,10,TextureFormat.ARGB32,false);
+		public Color[] chainbuttonBnew = new Color[200];
+		public Texture2D chainbuttonC = new Texture2D(20,10,TextureFormat.ARGB32,false);
+		public Color[] chainbuttonCnew = new Color[200];
+		public Texture2D chainbuttonD = new Texture2D(20,10,TextureFormat.ARGB32,false);
+		public Color[] chainbuttonDnew = new Color[200];
+		public Texture2D chainbuttonE = new Texture2D(20,10,TextureFormat.ARGB32,false);
+		public Color[] chainbuttonEnew = new Color[200];
 		
 		// TODO : Make C-Alpha trace and his color/texture work again
 /*		// Textures for buttons in AdvOptions 
-		private static Texture2D chainATex;
-		private static Texture2D chainBTex;
-		private static Texture2D chainCTex;
-		private static Texture2D chainDTex;
-		private static Texture2D chainETex;
-		private static Texture2D chainFTex;
-		private static Texture2D chainGTex;
-		private static Texture2D chainHTex;
+		private Texture2D chainATex;
+		private Texture2D chainBTex;
+		private Texture2D chainCTex;
+		private Texture2D chainDTex;
+		private Texture2D chainETex;
+		private Texture2D chainFTex;
+		private Texture2D chainGTex;
+		private Texture2D chainHTex;
 		
 		// Colors for the chains
-		private static ColorObject chainAColor = new ColorObject(Color.white);
-		private static ColorObject chainBColor = new ColorObject(Color.white);
-		private static ColorObject chainCColor = new ColorObject(Color.white);
-		private static ColorObject chainDColor = new ColorObject(Color.white);
-		private static ColorObject chainEColor = new ColorObject(Color.white);
-		private static ColorObject chainFColor = new ColorObject(Color.white);
-		private static ColorObject chainGColor = new ColorObject(Color.white);
-		private static ColorObject chainHColor = new ColorObject(Color.white);
+		private ColorObject chainAColor = new ColorObject(Color.white);
+		private ColorObject chainBColor = new ColorObject(Color.white);
+		private ColorObject chainCColor = new ColorObject(Color.white);
+		private ColorObject chainDColor = new ColorObject(Color.white);
+		private ColorObject chainEColor = new ColorObject(Color.white);
+		private ColorObject chainFColor = new ColorObject(Color.white);
+		private ColorObject chainGColor = new ColorObject(Color.white);
+		private ColorObject chainHColor = new ColorObject(Color.white);
 		
 		
 		// Color arrays for the button Textures
-		private static Color[] chainAColors = new Color[200];
-		private static Color[] chainBColors = new Color[200];
-		private static Color[] chainCColors = new Color[200];
-		private static Color[] chainDColors = new Color[200];
-		private static Color[] chainEColors = new Color[200];
-		private static Color[] chainFColors = new Color[200];
-		private static Color[] chainGColors = new Color[200];
-		private static Color[] chainHColors = new Color[200];
+		private Color[] chainAColors = new Color[200];
+		private Color[] chainBColors = new Color[200];
+		private Color[] chainCColors = new Color[200];
+		private Color[] chainDColors = new Color[200];
+		private Color[] chainEColors = new Color[200];
+		private Color[] chainFColors = new Color[200];
+		private Color[] chainGColors = new Color[200];
+		private Color[] chainHColors = new Color[200];
 		
 		// Set to true when the chainXColors arrays have been initalized
-		private static bool chainColorsInit = false ;
+		private bool chainColorsInit = false ;
 */
 		
 		
-		public static string SymmetryOriginX = "34.3444";
-		public static string SymmetryOriginY = "4.29016";
-		public static string SymmetryOriginZ = "69.0832";
-		public static string SymmetryDirectionX = "0.446105";
-		public static string SymmetryDirectionY = "0.00135695";
-		public static string SymmetryDirectionZ = "-0.894949";
-		public static string TargetX = "16.32";
-		public static string TargetY = "-1.42";
-		public static string TargetZ = "-18.17";
-		public static string CameraDistance = "20.0";
+		public string SymmetryOriginX = "34.3444";
+		public string SymmetryOriginY = "4.29016";
+		public string SymmetryOriginZ = "69.0832";
+		public string SymmetryDirectionX = "0.446105";
+		public string SymmetryDirectionY = "0.00135695";
+		public string SymmetryDirectionZ = "-0.894949";
+		public string TargetX = "16.32";
+		public string TargetY = "-1.42";
+		public string TargetZ = "-18.17";
+		public string CameraDistance = "20.0";
 		
-		public static bool showOriginAxe = true;
-		public static bool originThere = true;
+		public bool showOriginAxe = true;
+		public bool originThere = true;
 
 		// Luiz:
-		private static bool _toggle_RING_BLENDING = false;
-		public static bool toggle_RING_BLENDING {
+		private bool _toggle_RING_BLENDING = false;
+		public bool toggle_RING_BLENDING {
 			get { return _toggle_RING_BLENDING; }
 			set {
 				if (toggle_RING_BLENDING == value)
@@ -196,8 +210,8 @@ namespace UI{
 				}
 			}
 		}
-		private static bool _toggle_TWISTER = false;
-		public static bool toggle_TWISTER {
+		private bool _toggle_TWISTER = false;
+		public bool toggle_TWISTER {
 			get { return _toggle_TWISTER; }
 			set {
 				if (value == _toggle_TWISTER)
@@ -208,13 +222,13 @@ namespace UI{
 				_toggle_TWISTER = ChangeManager.ProcessPropertyChanged (typeof(LoadTypeGUI), "toggle_TWISTER", _toggle_TWISTER, value);
 
 				if (!twToggled && toggle_TWISTER) { // enabling the ribbons
-					SR = new SugarRibbons (toggle_SUGAR_ONLY);
+					SR = new SugarRibbons (GUIMoleculeController.Instance.toggle_SUGAR_ONLY);
 					//Twister twisters = new Twister();
 					//twisters.CreateTwister();
-					SR.createSugarRibs (RibbonsThickness, toggle_SUGAR_ONLY, thickness_Little, thickness_BIG, 
+					SR.createSugarRibs (RibbonsThickness, GUIMoleculeController.Instance.toggle_SUGAR_ONLY, thickness_Little, thickness_BIG, 
 						thickness_bond_6_C1_C4, thickness_6_other, thickness_bond_5, lighter_color_factor_ring, lighter_color_factor_bond,
 						ColorationModeRing, ColorationModeBond, BondColor, RingColor, OxySphereSize, OxySphereColor);
-					toggle_NA_HIDE = !toggle_NA_HIDE;
+					GUIMoleculeController.Instance.toggle_NA_HIDE = !GUIMoleculeController.Instance.toggle_NA_HIDE;
 					toggle_SHOW_HB_NOT_SUGAR = false;
 					toggle_SHOW_HB_W_SR = false;
 					toggle_HIDE_HYDROGEN = false;
@@ -227,7 +241,7 @@ namespace UI{
 					OxySphereColorCheck.color = Color.red;
 
 				} else if (twToggled && !toggle_TWISTER) { // destroying the ribbons
-					toggle_NA_HIDE = !toggle_NA_HIDE;
+					GUIMoleculeController.Instance.toggle_NA_HIDE = !GUIMoleculeController.Instance.toggle_NA_HIDE;
 					GameObject[] SugarRibbons;
 					SugarRibbons = GameObject.FindGameObjectsWithTag ("SugarRibbons_RING_BIG");
 					foreach (GameObject SugarRibbon in SugarRibbons)
@@ -241,8 +255,8 @@ namespace UI{
 				}
 			}
 		}
-		private static bool _toggle_HIDE_HYDROGEN = false;
-		public static bool toggle_HIDE_HYDROGEN {
+		private bool _toggle_HIDE_HYDROGEN = false;
+		public bool toggle_HIDE_HYDROGEN {
 			get { return _toggle_HIDE_HYDROGEN; }
 			set {
 				if (value == _toggle_HIDE_HYDROGEN)
@@ -256,8 +270,8 @@ namespace UI{
 					showHydrogens(true);
 			}
 		}
-		private static bool _toggle_SHOW_HB_W_SR = false;
-		public static bool toggle_SHOW_HB_W_SR {
+		private bool _toggle_SHOW_HB_W_SR = false;
+		public bool toggle_SHOW_HB_W_SR {
 			get { return _toggle_SHOW_HB_W_SR; }
 			set {
 				if (value == toggle_SHOW_HB_W_SR)
@@ -272,8 +286,8 @@ namespace UI{
 					show_HyperBalls_Sugar(true);
 			}
 		}
-		private static bool _toggle_SHOW_HB_NOT_SUGAR = false;
-		public static bool toggle_SHOW_HB_NOT_SUGAR {
+		private bool _toggle_SHOW_HB_NOT_SUGAR = false;
+		public bool toggle_SHOW_HB_NOT_SUGAR {
 			get { return _toggle_SHOW_HB_NOT_SUGAR; }
 			set {
 				if (toggle_SHOW_HB_NOT_SUGAR == value)
@@ -288,6 +302,45 @@ namespace UI{
 					Hide_No_Sugar_Hiperballs(true);
 			}
 		}
+		private Quaternion NA_SCCROT = new Quaternion (-0.1f, 0.1f, 0.0f, -1.0f);
+		private Vector3 NA_SCCPOS = new Vector3 (0.4f, 1.8f, -12.0f);
+		private bool toggle_VE_BLUR = false;
+		private bool toggle_VE_SSAO = false;
+		private bool toggle_VE_DOF = false;
+		private bool toggle_VE_CREASE = false;
+		private bool toggle_VE2_VORTX = false;
+		private bool toggle_VE2_TWIRL = false;
+		private bool toggle_VE2_SEPIA = false;
+		private bool toggle_VE2_NOISE = false;
+		private bool toggle_VE2_GRAYS = false;
+		private bool toggle_VE2_GLOW = false;
+		private bool toggle_VE2_EDGE = false;
+		private bool toggle_VE2_CONTR = false;
+		private bool toggle_VE2_CCORR = false;
+		private bool toggle_VE2_BLUR2 = false;
+		private bool toggle_VE2_DREAM = false;
+		private string[] ve2_grays_ramps = {"grayscale ramp", "grayscale ramp inverse"}; // Ramps for grayscale effect
+		private int ve2_grays_rampn = 1;
+		private int ve2_grays_rampc = 1;
+		private string[] ve2_ccorr_ramps = {"oceangradient", "nightgradient"}; // Ramps for color correction effect
+		private int ve2_ccorr_rampn = 1;
+		private int ve2_ccorr_rampc = 0;
+		private DepthCueing depthCueing;
+		private AmbientOcclusion ambientOcclusion;
+		private bool toggle_NA_SWITCH = false;
+		private	static bool toggle_NA_MEASURE = false;
+		private bool toggle_MESHCOMBINE = false;
+		public bool showGrayColor = false;
+		public bool showSurfaceButton = false;
+		public bool showSurface = false;
+		public bool showVolumetricDepth = false;
+		public bool electroIsoSurfaceTransparency = false;
+		public ColorObject BondColor  = new ColorObject(Color.black);
+		public ColorObject BondColorcheck  = new ColorObject(Color.black);
+		public ColorObject RingColor  = new ColorObject(Color.black);
+		public ColorObject OxySphereColor  = new ColorObject(Color.red);
+		public ColorObject OxySphereColorCheck  = new ColorObject(Color.red);
+		public ColorObject RingColorcheck  = new ColorObject(Color.black);
 
 		/// <summary>
 		/// Sets the title of the current window.
@@ -296,7 +349,7 @@ namespace UI{
 		/// <param name='s'>
 		/// The title you wish to set for the window. String.
 		/// </param>
-		public static void SetTitle(string s) {
+		public void SetTitle(string s) {
 			GUILayout.BeginHorizontal();
 			GUILayout.FlexibleSpace();
 			GUILayout.Label(s);
@@ -320,7 +373,7 @@ namespace UI{
 		/// <param name='s'>
 		/// A string, the title to set for the current window.
 		/// </param>
-		public static bool SetTitleExit(string s) {
+		public bool SetTitleExit(string s) {
 			GUILayout.BeginHorizontal();
 			GUILayout.FlexibleSpace();
 			
@@ -345,7 +398,7 @@ namespace UI{
 		/// <param name='a'>
 		/// Window identifier.
 		/// </param>
-		public static void AtomStyle (int a) {
+		public void AtomStyle (int a) {
 			SetTitle("Choose Atom Style");
 			
 			GUILayout.BeginHorizontal();
@@ -379,8 +432,8 @@ namespace UI{
 					Debug.Log ("UIData.Instance.resetDisplay:" + UIData.Instance.resetDisplay);
 					Debug.Log ("UIData.Instance.isCubeToSphere:" + UIData.Instance.isCubeToSphere);
 					Debug.Log ("UIData.Instance.isSphereToCube:" + UIData.Instance.isSphereToCube);
-					showAtomType = false;
-					toggle_NA_HIDE = false;
+					GUIMoleculeController.Instance.showAtomType = false;
+					GUIMoleculeController.Instance.toggle_NA_HIDE = false;
 				}
 				GUILayout.EndHorizontal ();
 			}
@@ -395,8 +448,8 @@ namespace UI{
 					Debug.Log ("UIData.Instance.resetDisplay:" + UIData.Instance.resetDisplay);
 					Debug.Log ("UIData.Instance.isCubeToSphere:" + UIData.Instance.isCubeToSphere);
 					Debug.Log ("UIData.Instance.isSphereToCube:" + UIData.Instance.isSphereToCube);
-					showAtomType = false;
-					toggle_NA_HIDE = false;
+					GUIMoleculeController.Instance.showAtomType = false;
+					GUIMoleculeController.Instance.toggle_NA_HIDE = false;
 				}
 				GUILayout.EndHorizontal ();
 				
@@ -409,8 +462,8 @@ namespace UI{
 					Debug.Log ("UIData.Instance.resetDisplay:" + UIData.Instance.resetDisplay);
 					Debug.Log ("UIData.Instance.isCubeToSphere:" + UIData.Instance.isCubeToSphere);
 					Debug.Log ("UIData.Instance.isSphereToCube:" + UIData.Instance.isSphereToCube);
-					showAtomType = false;
-					toggle_NA_HIDE = false;
+					GUIMoleculeController.Instance.showAtomType = false;
+					GUIMoleculeController.Instance.toggle_NA_HIDE = false;
 				}				
 				GUILayout.EndHorizontal ();
 				
@@ -423,8 +476,8 @@ namespace UI{
 					Debug.Log ("UIData.Instance.resetDisplay:" + UIData.Instance.resetDisplay);
 					Debug.Log ("UIData.Instance.isCubeToSphere:" + UIData.Instance.isCubeToSphere);
 					Debug.Log ("UIData.Instance.isSphereToCube:" + UIData.Instance.isSphereToCube);
-					showAtomType = false;
-					toggle_NA_HIDE = false;
+					GUIMoleculeController.Instance.showAtomType = false;
+					GUIMoleculeController.Instance.toggle_NA_HIDE = false;
 				}						
 				GUILayout.EndHorizontal ();
 			}
@@ -463,8 +516,8 @@ namespace UI{
 		
 		
 		//Sugar Menu
-		public static void SugarM (int a){
-			showSugarChainMenu = SetTitleExit("Sugar");
+		public void SugarM (int a){
+			GUIMoleculeController.Instance.showSugarChainMenu = SetTitleExit("Sugar");
 
 			/*************************************************/
 			// Luiz:
@@ -509,7 +562,7 @@ namespace UI{
 			/*************************************************/
 			GUILayout.BeginHorizontal();
 			if(GUILayout.Button(new GUIContent("Tune Menu"))) {
-				showSugarRibbonsTuneMenu = !showSugarRibbonsTuneMenu;
+				GUIMoleculeController.Instance.showSugarRibbonsTuneMenu = !GUIMoleculeController.Instance.showSugarRibbonsTuneMenu;
 			}
 			
 			GUI.enabled = true;
@@ -519,7 +572,7 @@ namespace UI{
 			// Bugs otherwise.
 			/*
 			if(!UIData.Instance.hasMoleculeDisplay) {
-				showSecStructMenu = false;
+				GUIMoleculeController.Instance.showSecStructMenu = false;
 				return;
 			}
 */
@@ -528,42 +581,42 @@ namespace UI{
 		}
 
 
-		public static void SugarRibbonsTune(int a){
-			showSugarRibbonsTuneMenu = SetTitleExit("Tune Menu");
-			if (!showSugarChainMenu)
-				showSugarRibbonsTuneMenu = false;
+		public void SugarRibbonsTune(int a){
+			GUIMoleculeController.Instance.showSugarRibbonsTuneMenu = SetTitleExit("Tune Menu");
+			if (!GUIMoleculeController.Instance.showSugarChainMenu)
+				GUIMoleculeController.Instance.showSugarRibbonsTuneMenu = false;
 
 			int labelWidth = (int) (0.2f * Rectangles.SugarRibbonsTuneWidth);
 			int sliderWidth = (int) (0.73f * Rectangles.SugarRibbonsTuneWidth);
 
 			/*************************************************/
 			GUILayout.BeginHorizontal();
-			bool oxyToggled = toggle_OXYGEN; //to avoid to create all sphere to each frames
-			toggle_OXYGEN = UIData.Instance.hasMoleculeDisplay && GUILayout.Toggle(toggle_OXYGEN,
+			bool oxyToggled = GUIMoleculeController.Instance.toggle_OXYGEN; //to avoid to create all sphere to each frames
+			GUIMoleculeController.Instance.toggle_OXYGEN = UIData.Instance.hasMoleculeDisplay && GUILayout.Toggle(GUIMoleculeController.Instance.toggle_OXYGEN,
 			                                                              new GUIContent("Show Oxygens", "show ring oxygens with a red sphere"));
 			
-			if (toggle_TWISTER && toggle_OXYGEN && !oxyToggled) {
+			if (toggle_TWISTER && GUIMoleculeController.Instance.toggle_OXYGEN && !oxyToggled) {
 				SR.ShowOxySphere ();		
 				oxyToggled = true;
-			} else if (toggle_RING_BLENDING && toggle_OXYGEN && !oxyToggled) {
+			} else if (toggle_RING_BLENDING && GUIMoleculeController.Instance.toggle_OXYGEN && !oxyToggled) {
 				ringblending.ShowOxySphere();
 				oxyToggled = true;
 			}else{
-				if (oxyToggled && !toggle_OXYGEN){
+				if (oxyToggled && !GUIMoleculeController.Instance.toggle_OXYGEN){
 					GameObject[] OxySpheres = GameObject.FindGameObjectsWithTag("OxySphere");
 					foreach(GameObject OxySphere in OxySpheres)
 						GameObject.Destroy(OxySphere);
 				}
 			}
 			
-			toggle_SUGAR_ONLY = UIData.Instance.hasMoleculeDisplay && GUILayout.Toggle(toggle_SUGAR_ONLY,
+			GUIMoleculeController.Instance.toggle_SUGAR_ONLY = UIData.Instance.hasMoleculeDisplay && GUILayout.Toggle(GUIMoleculeController.Instance.toggle_SUGAR_ONLY,
 			                                                                  new GUIContent("Sugar Only?", "use only sugar for RingBlending and SugarRibbons"));
 			
 			GUILayout.EndHorizontal();
 			/*************************************************/
 			GUILayout.BeginHorizontal();
 			if(GUILayout.Button(new GUIContent("Change Coloration"))) {
-				showColorTuneMenu = !showColorTuneMenu;
+				GUIMoleculeController.Instance.showColorTuneMenu = !GUIMoleculeController.Instance.showColorTuneMenu;
 			}
 			
 			GUI.enabled = true;
@@ -574,7 +627,7 @@ namespace UI{
 			GUILayout.Label("Oxygen Sphere Size");
 			GUILayout.EndHorizontal();
 			GUILayout.BeginHorizontal();
-			OxySphereSize = LabelSlider(OxySphereSize, 0.01f, 2f,
+			OxySphereSize = GUIMoleculeController.Instance.LabelSlider(OxySphereSize, 0.01f, 2f,
 			                            OxySphereSize.ToString("0.00"), "", true, sliderWidth, labelWidth, true);
 			if (OxySphereSizeCheck!=OxySphereSize){
 				OxySphereSizeCheck=OxySphereSize;
@@ -592,7 +645,7 @@ namespace UI{
 			GUILayout.Label("Ribbons Thickness");
 			GUILayout.EndHorizontal();
 			GUILayout.BeginHorizontal();
-			RibbonsThickness = LabelSlider(RibbonsThickness, 0.02f, 2f,
+			RibbonsThickness = GUIMoleculeController.Instance.LabelSlider(RibbonsThickness, 0.02f, 2f,
 			                               RibbonsThickness.ToString("0.00"), "", true, sliderWidth, labelWidth, true);
 			GUILayout.EndHorizontal();
 			/*************************************************/
@@ -601,7 +654,7 @@ namespace UI{
 			GUILayout.Label("Inner Ring Thickness");
 			GUILayout.EndHorizontal();
 			GUILayout.BeginHorizontal();
-			thickness_Little = LabelSlider(thickness_Little, 0f, 3f,
+			thickness_Little = GUIMoleculeController.Instance.LabelSlider(thickness_Little, 0f, 3f,
 			                               thickness_Little.ToString("0.00"), "", true, sliderWidth, labelWidth, true);
 			GUILayout.EndHorizontal();
 			/*************************************************/
@@ -610,7 +663,7 @@ namespace UI{
 			GUILayout.Label("Outer Ring Thickness");
 			GUILayout.EndHorizontal();
 			GUILayout.BeginHorizontal();
-			thickness_BIG = LabelSlider(thickness_BIG, 0.00f, 3f,
+			thickness_BIG = GUIMoleculeController.Instance.LabelSlider(thickness_BIG, 0.00f, 3f,
 			                            thickness_BIG.ToString("0.00"), "", true, sliderWidth, labelWidth, true);
 			GUILayout.EndHorizontal();
 			/*************************************************/
@@ -619,7 +672,7 @@ namespace UI{
 			GUILayout.Label("Pyranose (6) : C1,C4 Bond Thickness");
 			GUILayout.EndHorizontal();
 			GUILayout.BeginHorizontal();
-			thickness_bond_6_C1_C4 = LabelSlider(thickness_bond_6_C1_C4, 0.0f, 1f,
+			thickness_bond_6_C1_C4 = GUIMoleculeController.Instance.LabelSlider(thickness_bond_6_C1_C4, 0.0f, 1f,
 			                                     thickness_bond_6_C1_C4.ToString("0.00"), "", true, sliderWidth, labelWidth, true);
 			GUILayout.EndHorizontal();
 			/*************************************************/
@@ -628,7 +681,7 @@ namespace UI{
 			GUILayout.Label("Pyranose (6) : Other Bond Thickness");
 			GUILayout.EndHorizontal();
 			GUILayout.BeginHorizontal();
-			thickness_6_other = LabelSlider(thickness_6_other, 0.01f, 0.3f,
+			thickness_6_other = GUIMoleculeController.Instance.LabelSlider(thickness_6_other, 0.01f, 0.3f,
 			                                thickness_6_other.ToString("0.00"), "", true, sliderWidth, labelWidth, true);
 			GUILayout.EndHorizontal();
 			/*************************************************/
@@ -637,7 +690,7 @@ namespace UI{
 			GUILayout.Label("Furanose (5) : Bond Thickness");
 			GUILayout.EndHorizontal();
 			GUILayout.BeginHorizontal();
-			thickness_bond_5 = LabelSlider(thickness_bond_5, 0.01f, 0.3f,
+			thickness_bond_5 = GUIMoleculeController.Instance.LabelSlider(thickness_bond_5, 0.01f, 0.3f,
 			                               thickness_bond_5.ToString("0.00"), "", true, sliderWidth, labelWidth, true);
 			GUILayout.EndHorizontal();
 			/*************************************************/
@@ -666,10 +719,10 @@ namespace UI{
 		}
 
 		//FOR SUGAR RIBBONS ONLY
-		public static void ColorTuneMenu(int a){
-			showColorTuneMenu = SetTitleExit("ColorTune Menu");
-			if (!showSugarChainMenu)
-				showColorTuneMenu = false;
+		public void ColorTuneMenu(int a){
+			GUIMoleculeController.Instance.showColorTuneMenu = SetTitleExit("ColorTune Menu");
+			if (!GUIMoleculeController.Instance.showSugarChainMenu)
+				GUIMoleculeController.Instance.showColorTuneMenu = false;
 			int labelWidth = (int) (0.2f * Rectangles.ColorTuneWidth);
 			int sliderWidth = (int) (0.73f * Rectangles.ColorTuneWidth);
 
@@ -680,30 +733,30 @@ namespace UI{
 			GUILayout.EndHorizontal();
 			GUILayout.BeginHorizontal ();
 			if (GUILayout.Button (new GUIContent ("Sugar", "Coloration by sugar Type"))) {
-				oxyToggled = true;
+				GUIMoleculeController.Instance.oxyToggled = true;
 				GameObject[] OxySpheres = GameObject.FindGameObjectsWithTag("OxySphere");
 				foreach(GameObject OxySphere in OxySpheres)
 					GameObject.Destroy(OxySphere);
 
 				SR.ShowOxySphere(1);
-				toggle_OXYGEN=true;
+				GUIMoleculeController.Instance.toggle_OXYGEN=true;
 			}
 			if (GUILayout.Button (new GUIContent ("Chain", "Coloration by Chain"))) {
-				oxyToggled = true;
+				GUIMoleculeController.Instance.oxyToggled = true;
 				GameObject[] OxySpheres = GameObject.FindGameObjectsWithTag("OxySphere");
 				foreach(GameObject OxySphere in OxySpheres)
 					GameObject.Destroy(OxySphere);
 				
 				SR.ShowOxySphere(2);
-				toggle_OXYGEN=true;
+				GUIMoleculeController.Instance.toggle_OXYGEN=true;
 			}
 			GUILayout.EndHorizontal();
 			GUILayout.BeginHorizontal ();
 			if (GUILayout.Button (new GUIContent ("Custom", "Choose a custom Color"))) {
-				if (m_colorPicker != null)
-					m_colorPicker = null;
+				if (GUIMoleculeController.Instance.m_colorPicker != null)
+					GUIMoleculeController.Instance.m_colorPicker = null;
 				
-				m_colorPicker = new ColorPicker(Rectangles.colorPickerRect,	OxySphereColor, null, "All", "All", "Color Picket");
+				GUIMoleculeController.Instance.m_colorPicker = new ColorPicker(Rectangles.colorPickerRect,	OxySphereColor, null, "All", "All", "Color Picket");
 			}
 			GUILayout.EndHorizontal ();
 			if (OxySphereColorCheck.color != OxySphereColor.color){
@@ -715,7 +768,7 @@ namespace UI{
 						OxySphere.GetComponent<Renderer>().material.color = OxySphereColor.color;
 				}else{
 					SR.ShowOxySphere();
-					toggle_OXYGEN=true;
+					GUIMoleculeController.Instance.toggle_OXYGEN=true;
 				}
 				
 			}
@@ -743,10 +796,10 @@ namespace UI{
 			/*************************************************/
 			GUILayout.BeginHorizontal ();
 			if (GUILayout.Button (new GUIContent ("Custom Color", "Choose a custom Color"))) {
-				if (m_colorPicker != null)
-					m_colorPicker = null;
+				if (GUIMoleculeController.Instance.m_colorPicker != null)
+					GUIMoleculeController.Instance.m_colorPicker = null;
 				
-				m_colorPicker = new ColorPicker(Rectangles.colorPickerRect,	RingColor, null, "All", "All", "Color Picket");
+				GUIMoleculeController.Instance.m_colorPicker = new ColorPicker(Rectangles.colorPickerRect,	RingColor, null, "All", "All", "Color Picket");
 
 			}
 			GUILayout.EndHorizontal ();
@@ -755,7 +808,7 @@ namespace UI{
 				RingColorcheck.color = RingColor.color;
 				ColorationModeRing=2;
 
-				SR.updateColor("SugarRibbons_RING_BIG",RingColor);
+				SR.updateColor("SugarRibbons_RING_BIG", RingColor);
 			}
 			/*************************************************/
 			/*************************************************/
@@ -763,7 +816,7 @@ namespace UI{
 			GUILayout.Label("Lighter Color Factor");
 			GUILayout.EndHorizontal();
 			GUILayout.BeginHorizontal();
-			lighter_color_factor_ring = LabelSlider(lighter_color_factor_ring, -1f, 1f,
+			lighter_color_factor_ring = GUIMoleculeController.Instance.LabelSlider(lighter_color_factor_ring, -1f, 1f,
 			                                       lighter_color_factor_ring.ToString("0.00"), "", true, sliderWidth, labelWidth, true);
 			GUILayout.EndHorizontal();
 
@@ -801,17 +854,17 @@ namespace UI{
 			/*************************************************/
 			GUILayout.BeginHorizontal ();
 			if (GUILayout.Button (new GUIContent ("Custom Color", "Choose a custom Color"))) {
-				if (m_colorPicker != null)
-					m_colorPicker = null;
+				if (GUIMoleculeController.Instance.m_colorPicker != null)
+					GUIMoleculeController.Instance.m_colorPicker = null;
 				
-				m_colorPicker = new ColorPicker(Rectangles.colorPickerRect,	BondColor, null, "All", "All", "Color Picket");
+				GUIMoleculeController.Instance.m_colorPicker = new ColorPicker(Rectangles.colorPickerRect,	BondColor, null, "All", "All", "Color Picket");
 			}
 			GUILayout.EndHorizontal ();
 			if (BondColorcheck.color != BondColor.color){
 				BondColorcheck.color = BondColor.color;
 
 				ColorationModeBond=2;
-				SR.updateColor("SugarRibbons_BOND",BondColor);
+				SR.updateColor("SugarRibbons_BOND", BondColor);
 			}
 			/*************************************************/
 			/*************************************************/
@@ -819,7 +872,7 @@ namespace UI{
 			GUILayout.Label("Lighter Color Factor");
 			GUILayout.EndHorizontal();
 			GUILayout.BeginHorizontal();
-			lighter_color_factor_bond = LabelSlider(lighter_color_factor_bond, -1f, 1f,
+			lighter_color_factor_bond = GUIMoleculeController.Instance.LabelSlider(lighter_color_factor_bond, -1f, 1f,
 			                                        lighter_color_factor_bond.ToString("0.00"), "", true, sliderWidth, labelWidth, true);
 			GUILayout.EndHorizontal();
 
@@ -840,8 +893,8 @@ namespace UI{
 			GUI.DragWindow();
 		}
 
-		public static void ResetSugarRibbons(){
-			toggle_NA_HIDE = !toggle_NA_HIDE;
+		public void ResetSugarRibbons(){
+			GUIMoleculeController.Instance.toggle_NA_HIDE = !GUIMoleculeController.Instance.toggle_NA_HIDE;
 
 			GameObject[] objs; 
 			objs= GameObject.FindGameObjectsWithTag("SugarRibbons_RING_BIG");
@@ -857,13 +910,13 @@ namespace UI{
 			//We flush all the previous list.
 			SR.cleanup();
 			// Recreating them
-			SR.createSugarRibs(RibbonsThickness, toggle_SUGAR_ONLY, thickness_Little, thickness_BIG, 
+			SR.createSugarRibs(RibbonsThickness, GUIMoleculeController.Instance.toggle_SUGAR_ONLY, thickness_Little, thickness_BIG, 
 			                   thickness_bond_6_C1_C4, thickness_6_other, thickness_bond_5, lighter_color_factor_ring, lighter_color_factor_bond, 
-			                   ColorationModeRing, ColorationModeBond, BondColor, RingColor, OxySphereSize,OxySphereColor);
-			toggle_NA_HIDE = true;
+			                   ColorationModeRing, ColorationModeBond, BondColor, RingColor, OxySphereSize, OxySphereColor);
+			GUIMoleculeController.Instance.toggle_NA_HIDE = true;
 
 
-			if (toggle_OXYGEN){
+			if (GUIMoleculeController.Instance.toggle_OXYGEN){
 				GameObject[] OxySpheres = GameObject.FindGameObjectsWithTag("OxySphere");
 				foreach(GameObject OxySphere in OxySpheres)
 					GameObject.Destroy(OxySphere);
@@ -872,7 +925,7 @@ namespace UI{
 			}
 		}
 
-		public static void show_HyperBalls_Sugar(bool show){
+		public void show_HyperBalls_Sugar(bool show){
 			int i=0;
 			for (i=0; i<HBallManager.hballs.Length; i++){
 				int atom_number =(int) HBallManager.hballs[i].GetComponent<BallUpdate>().number;
@@ -901,7 +954,7 @@ namespace UI{
 		}
 
 		/*This fonction is made to hide hyperballs which are not Sugar Atoms*/
-		public static void Hide_No_Sugar_Hiperballs(bool show){
+		public void Hide_No_Sugar_Hiperballs(bool show){
 			int i=0;
 			for (i=0; i<HBallManager.hballs.Length; i++){
 				int atom_number =(int) HBallManager.hballs[i].GetComponent<BallUpdate>().number;
@@ -929,7 +982,7 @@ namespace UI{
 			}
 		}
 
-		public static void showHydrogens(bool show){
+		public void showHydrogens(bool show){
 			int i=0;
 			for (i=0; i<HBallManager.hballs.Length; i++){
 				if (HBallManager.hballs[i].tag=="H"){
@@ -955,7 +1008,7 @@ namespace UI{
 
 
 		
-		public static void ResetDefaultParametersSugarRibbons(){
+		public void ResetDefaultParametersSugarRibbons(){
 
 			RibbonsThickness=0.15f;
 			thickness_Little=1.8f;
@@ -981,7 +1034,7 @@ namespace UI{
 		/// <param name='a'>
 		/// Window identifier.
 		/// </param>
-		public static void Bond (int a)	{
+		public void Bond (int a)	{
 			SetTitle("Bond Style");
 			
 //			if(UIData.Instance.atomtype==UIData.AtomType.particleball&&!UIData.Instance.openAllMenu)GUI.enabled=false;
@@ -1016,7 +1069,7 @@ namespace UI{
 				if (GUILayout.Button (new GUIContent ("Tube Stick", "Use the Tube Stick renderer to represent bonds"))) {
 					UIData.Instance.resetBondDisplay = true;
 					UIData.Instance.bondtype = UIData.BondType.tubestick;
-					showBondType = false;
+					GUIMoleculeController.Instance.showBondType = false;
 				}
 
 				GUILayout.EndHorizontal ();
@@ -1035,7 +1088,7 @@ namespace UI{
 				if (GUILayout.Button (new GUIContent ("Particle Stick", "Use the Particle Stick shader to represent bonds"))) {
 					UIData.Instance.resetBondDisplay = true;
 					UIData.Instance.bondtype = UIData.BondType.particlestick;
-					showBondType = false;
+					GUIMoleculeController.Instance.showBondType = false;
 				}
 
 				GUILayout.EndHorizontal ();
@@ -1052,75 +1105,49 @@ namespace UI{
 		
 		/// <summary>
 		/// Defines the Metaphor menu window, which is launched by the Metaphor button in the  Hperball Style window
+		///
+		/// Luiz: Good lord, the unprofessiolism of this code was raping my college degree with its infinite repetition of the same code.
+		/// Luckly, the great hero here made it far better than before.
 		/// </summary>
 		/// <param name='a'>
 		/// Window identifier.
 		/// </param>
-		public static void Metaphor (int a) {
-			showMetaphorType = SetTitleExit("Metaphor");
-			
+		public void Metaphor (int a) {
+			GUIMoleculeController.Instance.showMetaphorType = SetTitleExit("Metaphor");
 			GUILayout.BeginHorizontal ();
 			if (GUILayout.Button (new GUIContent ("CPK", "CPK representation as balls and sticks"))) {
-				newGlobalRadius = 0.2f;
-				deltaRadius = (newGlobalRadius - globalRadius) / transDelta;
-				newShrink = 0.0001f;
-				deltaShrink = (newShrink - shrink) / transDelta;
-				newScale = 0.3f;
-				deltaScale = (newScale - linkScale) / transDelta;
-				transMETAPHOR = true;
+				GUIMoleculeController.Instance.ChangeMetaphor(.2f, .0001f, .3f);
 			}
 			GUILayout.EndHorizontal ();
 			
-			GUILayout.BeginHorizontal ();
-			
+			GUILayout.BeginHorizontal ();			
 			if (GUILayout.Button (new GUIContent ("Licorice", "Licorice representation of the molecule"))) {
-				newGlobalRadius = 0.1f;
-				deltaRadius = (newGlobalRadius - globalRadius) / transDelta;
-				newShrink = 0.0001f;
-				deltaShrink = (newShrink - shrink) / transDelta;
-				newScale = 1.0f;
-				deltaScale = (newScale - linkScale) / transDelta;
-				transMETAPHOR = true;
+				GUIMoleculeController.Instance.ChangeMetaphor(.1f, .0001f, 1f);
 			}						
 			GUILayout.EndHorizontal ();
+
 			GUILayout.BeginHorizontal ();
 			
 			if (GUILayout.Button (new GUIContent ("VdW", "van der Waals representation as spacefilling spheres"))) {
-				newGlobalRadius = 1.0f;
-				deltaRadius = (newGlobalRadius - globalRadius) / transDelta;
-				newShrink = 0.8f;
-				deltaShrink = (newShrink - shrink) / transDelta;
-				newScale = 1.0f;
-				deltaScale = (newScale - linkScale) / transDelta;
-				transMETAPHOR = true;
+				GUIMoleculeController.Instance.ChangeMetaphor(1f, .8f, 1f);
 			}
 			GUILayout.EndHorizontal ();
-			GUILayout.BeginHorizontal ();
-			
+
+			GUILayout.BeginHorizontal ();			
 			if (GUILayout.Button (new GUIContent ("Smooth", "Smooth HyperBalls metaphor representation"))) {
-				newGlobalRadius = 0.35f;
-				deltaRadius = (newGlobalRadius - globalRadius) / transDelta;
-				newShrink = 0.4f;
-				deltaShrink = (newShrink - shrink) / transDelta;
-				newScale = 1.0f;
-				deltaScale = (newScale - linkScale) / transDelta;
-				transMETAPHOR = true;	
+				GUIMoleculeController.Instance.ChangeMetaphor(.35f, .4f, 1f);
 			}						
 			GUILayout.EndHorizontal ();
-			GUILayout.BeginHorizontal ();
-			
+
+			GUILayout.BeginHorizontal ();			
 			if (GUILayout.Button (new GUIContent ("SmoothLink", "SmoothLink HyperBalls representation"))) {
-				newGlobalRadius = 0.4f;
-				deltaRadius = (newGlobalRadius - globalRadius) / transDelta;
-				newShrink = 0.5f;
-				deltaShrink = (newShrink - shrink) / transDelta;
-				newScale = 1.0f;
-				deltaScale = (newScale - linkScale) / transDelta;
-				transMETAPHOR = true;	
+				GUIMoleculeController.Instance.ChangeMetaphor(.4f, .5f, 1f);
 			}						
 			GUILayout.EndHorizontal ();
+
 			if (Event.current.type == EventType.Repaint)
 				MoleculeModel.newtooltip = GUI.tooltip;
+			
 			GUI.DragWindow();
 		} // End of Metaphor
 		
@@ -1132,19 +1159,19 @@ namespace UI{
 		/// <param name='a'>
 		/// Window identifier.
 		/// </param>
-		public static void Electrostatics (int a) {
+		public void Electrostatics (int a) {
 			#if UNITY_WEBPLAYER
 			GUI.enabled = false;
 			#endif
-			showElectrostaticsMenu = SetTitleExit("Electrostatics");
+			GUIMoleculeController.Instance.showElectrostaticsMenu = SetTitleExit("Electrostatics");
 			GUILayout.BeginHorizontal ();
 				electroIsoSurfaceTransparency = GUILayout.Toggle(electroIsoSurfaceTransparency, new GUIContent("Transparency", "Toggle transparent isosurfaces."));
 			GUILayout.EndHorizontal ();		
 			
 			GUILayout.BeginHorizontal ();
 			int sliderWidth = (int) (Rectangles.electroMenuWidth * 0.60f);
-			generateThresholdDx_neg = LabelSlider (generateThresholdDx_neg, -10f, 0f, 
-							"T: " + Mathf.Round (generateThresholdDx_neg * 10f) / 10f, "Ramp value used for surface generation",GUI.enabled , sliderWidth, 1);
+			GUIMoleculeController.Instance.generateThresholdDx_neg = GUIMoleculeController.Instance.LabelSlider (GUIMoleculeController.Instance.generateThresholdDx_neg, -10f, 0f, 
+							"T: " + Mathf.Round (GUIMoleculeController.Instance.generateThresholdDx_neg * 10f) / 10f, "Ramp value used for surface generation",GUI.enabled , sliderWidth, 1);
 			GUILayout.EndHorizontal ();
 			
 			if (!MoleculeModel.dxFileExists)
@@ -1155,25 +1182,25 @@ namespace UI{
 			if (GUILayout.Button (new GUIContent ("Load Neg.", "Read an OpenDx format electrostatic field and generate a surface"))) {
 				MoleculeModel.surfaceFileExists = true;
 				
-				readdx.ReadFile(GUIDisplay.Instance.file_base_name+".dx",MoleculeModel.Offset);
-				dxRead = true;
+				GUIMoleculeController.Instance.readdx.ReadFile(GUIDisplay.Instance.file_base_name+".dx",MoleculeModel.Offset);
+				GUIMoleculeController.Instance.dxRead = true;
 				
 				string tag = "Elect_iso_negative";
-				electroIsoNegativeInitialized = true;
-				showElectroIsoNegative = true;
+				GUIMoleculeController.Instance.electroIsoNegativeInitialized = true;
+				GUIMoleculeController.Instance.showElectroIsoNegative = true;
 
 				GameObject[] IsoSurfaces = GameObject.FindGameObjectsWithTag(tag);
 				foreach(GameObject iso in IsoSurfaces)
 					Object.Destroy(iso);
-				readdx.isoSurface (generateThresholdDx_neg,Color.red,tag, electroIsoSurfaceTransparency);
+				GUIMoleculeController.Instance.readdx.isoSurface (GUIMoleculeController.Instance.generateThresholdDx_neg,Color.red,tag, electroIsoSurfaceTransparency);
 			}
 			
 			GUI.enabled = true ;
 			GUILayout.EndHorizontal ();
 
 			GUILayout.BeginHorizontal ();
-			generateThresholdDx_pos = LabelSlider (generateThresholdDx_pos, 0f, 10f, 
-							"T: " + Mathf.Round (generateThresholdDx_pos * 10f) / 10f, "Ramp value used for surface generation", GUI.enabled, sliderWidth, 1);
+			GUIMoleculeController.Instance.generateThresholdDx_pos = GUIMoleculeController.Instance.LabelSlider (GUIMoleculeController.Instance.generateThresholdDx_pos, 0f, 10f, 
+							"T: " + Mathf.Round (GUIMoleculeController.Instance.generateThresholdDx_pos * 10f) / 10f, "Ramp value used for surface generation", GUI.enabled, sliderWidth, 1);
 			GUILayout.EndHorizontal ();
 			
 			if (!MoleculeModel.dxFileExists)
@@ -1182,22 +1209,22 @@ namespace UI{
 			GUILayout.BeginHorizontal ();
 			if (GUILayout.Button (new GUIContent ("Load Pos.", "Read an OpenDx format electrostatic field and generate a surface"))) {
 				MoleculeModel.surfaceFileExists = true;	
-				readdx.ReadFile(GUIDisplay.Instance.file_base_name+".dx",MoleculeModel.Offset);
-				dxRead = true;
+				GUIMoleculeController.Instance.readdx.ReadFile(GUIDisplay.Instance.file_base_name+".dx",MoleculeModel.Offset);
+				GUIMoleculeController.Instance.dxRead = true;
 				string tag = "Elect_iso_positive";
-				showElectroIsoPositive = true;
-				electroIsoPositiveInitialized = true;
+				GUIMoleculeController.Instance.showElectroIsoPositive = true;
+				GUIMoleculeController.Instance.electroIsoPositiveInitialized = true;
 
 				GameObject[] IsoSurfaces = GameObject.FindGameObjectsWithTag(tag);
 				foreach(GameObject iso in IsoSurfaces)
 					Object.Destroy(iso);
-				readdx.isoSurface (generateThresholdDx_pos,Color.blue,tag, electroIsoSurfaceTransparency);
+				GUIMoleculeController.Instance.readdx.isoSurface (GUIMoleculeController.Instance.generateThresholdDx_pos,Color.blue,tag, electroIsoSurfaceTransparency);
 			}
 			
 			GUI.enabled = true ;
 			GUILayout.EndHorizontal ();
 
-			if (dxRead && electroIsoNegativeInitialized)
+			if (GUIMoleculeController.Instance.dxRead && GUIMoleculeController.Instance.electroIsoNegativeInitialized)
 				GUI.enabled = true;
 			else 
 				GUI.enabled = false;
@@ -1205,16 +1232,16 @@ namespace UI{
 			GUILayout.BeginHorizontal();
 			if (GUILayout.Button (new GUIContent ("Toggle Neg.", "Toggles negative iso-surface  from visible to hidden and vice versa"))) {
 				string tag = "Elect_iso_negative";
-				if (showElectroIsoNegative) {
+				if (GUIMoleculeController.Instance.showElectroIsoNegative) {
 					showSurface = false;
-					showSurfaceCut = false;
-					showSurfaceMobileCut = false;
-					showElectroIsoNegative = false;
+					GUIMoleculeController.Instance.showSurfaceCut = false;
+					GUIMoleculeController.Instance.showSurfaceMobileCut = false;
+					GUIMoleculeController.Instance.showElectroIsoNegative = false;
 					GameObject[] IsoSurfaces = GameObject.FindGameObjectsWithTag(tag);
 					foreach(GameObject iso in IsoSurfaces)
 						iso.GetComponent<Renderer>().enabled = false;
 				} else {
-					showElectroIsoNegative = true;
+					GUIMoleculeController.Instance.showElectroIsoNegative = true;
 					GameObject[] IsoSurfaces = GameObject.FindGameObjectsWithTag(tag);
 					foreach(GameObject iso in IsoSurfaces)
 						iso.GetComponent<Renderer>().enabled = true;
@@ -1223,21 +1250,21 @@ namespace UI{
 			}
 			GUILayout.EndHorizontal ();
 			
-			GUI.enabled = (dxRead && electroIsoPositiveInitialized);
+			GUI.enabled = (GUIMoleculeController.Instance.dxRead && GUIMoleculeController.Instance.electroIsoPositiveInitialized);
 			
 			GUILayout.BeginHorizontal();
 			if (GUILayout.Button (new GUIContent ("Toggle Pos.", "Toggles positive iso-surface from visible to hidden and vice versa"))) {
 				string tag = "Elect_iso_positive";
-				if (showElectroIsoPositive) {
+				if (GUIMoleculeController.Instance.showElectroIsoPositive) {
 					showSurface = false;
-					showSurfaceCut = false;
-					showSurfaceMobileCut = false;
-					showElectroIsoPositive = false;
+					GUIMoleculeController.Instance.showSurfaceCut = false;
+					GUIMoleculeController.Instance.showSurfaceMobileCut = false;
+					GUIMoleculeController.Instance.showElectroIsoPositive = false;
 					GameObject[] IsoSurfaces = GameObject.FindGameObjectsWithTag(tag);
 					foreach(GameObject iso in IsoSurfaces)
 						iso.GetComponent<Renderer>().enabled = false;
 				} else {
-					showElectroIsoPositive = true;
+					GUIMoleculeController.Instance.showElectroIsoPositive = true;
 					GameObject[] IsoSurfaces = GameObject.FindGameObjectsWithTag(tag);
 					foreach(GameObject iso in IsoSurfaces)
 						iso.GetComponent<Renderer>().enabled = true;
@@ -1256,14 +1283,14 @@ namespace UI{
 			
 			GUILayout.BeginHorizontal();
 			if(GUILayout.Button(new GUIContent("Volumetric Fields", "Toggles volumetric rendering of electrostatic fields"))) {
-				showVolumetricFields = !showVolumetricFields;
-				readdx.ReadFile(GUIDisplay.Instance.file_base_name+".dx",MoleculeModel.Offset);
-				dxRead = true;
+				GUIMoleculeController.Instance.showVolumetricFields = !GUIMoleculeController.Instance.showVolumetricFields;
+				GUIMoleculeController.Instance.readdx.ReadFile(GUIDisplay.Instance.file_base_name+".dx",MoleculeModel.Offset);
+				GUIMoleculeController.Instance.dxRead = true;
 				GameObject volumObj;
 				volumObj = GameObject.FindGameObjectWithTag("Volumetric");
 				VolumetricFields volumetricFields = null;
 				
-				if(showVolumetricFields) {
+				if(GUIMoleculeController.Instance.showVolumetricFields) {
 					volumObj.AddComponent<VolumetricFields>(); // adding the script
 					volumetricFields = volumObj.GetComponent<VolumetricFields>();
 					volumetricFields.Init();
@@ -1279,14 +1306,14 @@ namespace UI{
 			if (!MoleculeModel.fieldLineFileExists)
 				GUI.enabled = false ;
 			if (GUILayout.Button (new GUIContent ("Field Lines", "Toggles animated field lines from visible to hidden and vice versa"))) {
-				if (showFieldLines) {
-					showFieldLines = false;
-					m_colorPicker = null ;
+				if (GUIMoleculeController.Instance.showFieldLines) {
+					GUIMoleculeController.Instance.showFieldLines = false;
+					GUIMoleculeController.Instance.m_colorPicker = null ;
 					GameObject FieldLineManager = GameObject.Find ("FieldLineManager");
 					FieldLineModel Line = FieldLineManager.transform.GetComponent<FieldLineModel> ();
 					Line.killCurrentEffects ();
 				} else {
-					showFieldLines = true;
+					GUIMoleculeController.Instance.showFieldLines = true;
 					if(GameObject.FindGameObjectsWithTag("FieldLineManager").Length == 0)
 						FieldLineStyle.DisplayFieldLine ();
 				}				
@@ -1307,7 +1334,7 @@ namespace UI{
 		/// <returns>
 		/// A Texture2D.
 		/// </returns>
-		private static Texture2D MakeButtonTex(Texture2D tex) {
+		private Texture2D MakeButtonTex(Texture2D tex) {
 			if (tex)
 				return(tex);
 			else
@@ -1322,8 +1349,8 @@ namespace UI{
 		/// <param name='a'>
 		/// Window identifier.
 		/// </param>
-		public static void AdvOptions(int a){
-			showAdvMenu = SetTitleExit("Advanced Options");
+		public void AdvOptions(int a){
+			GUIMoleculeController.Instance.showAdvMenu = SetTitleExit("Advanced Options");
 			
 			GUILayout.BeginHorizontal();
 			GUILayout.Label (new GUIContent ("GUI Scale: " + GUIDisplay.Instance.guiScale.ToString("0.00"), "Adjusts the scale of the GUI windows"), GUILayout.MinWidth ((int)(Rectangles.advOptWidth * 0.4f)));
@@ -1348,7 +1375,7 @@ namespace UI{
 			GUILayout.EndHorizontal();
 			
 			GUILayout.BeginHorizontal();
-			orthoSize = LabelSlider(Camera.main.orthographicSize, minOrthoSize, maxOrthoSize, 
+			orthoSize = GUIMoleculeController.Instance.LabelSlider(Camera.main.orthographicSize, minOrthoSize, maxOrthoSize, 
 				"Camera Size", "This slider changes the size of the orthographic camera.", Camera.main.orthographic, 100, 20);
 			GUI.enabled = true; // LabeLSlider can disable the entire GUI. I don't like that at all, but it's expected in some parts of the GUI.
 			// Still needs changing, methinks. ---Alexandre
@@ -1357,19 +1384,19 @@ namespace UI{
 				Camera.main.orthographicSize = orthoSize ;
 			
 			GUILayout.BeginHorizontal();
-			if (GUILayout.Button(new GUIContent("Best Textures: "+ queryBestTextures(), 
+			if (GUILayout.Button(new GUIContent("Best Textures: " + (GUIMoleculeController.Instance.onlyBestTextures ? "On" : "Off"), 
 												"This switches between the complete set of textures and a selection of the best ones"))){
-				onlyBestTextures = !onlyBestTextures;
-				if(onlyBestTextures)
-					texture_set = 0;
+				GUIMoleculeController.Instance.onlyBestTextures = !GUIMoleculeController.Instance.toggle_OXYGEN;
+				if(GUIMoleculeController.Instance.onlyBestTextures)
+					GUIMoleculeController.Instance.texture_set = 0;
 				else
-					texture_set = 5;
+					GUIMoleculeController.Instance.texture_set = 5;
 			}
 			
 			if (GUILayout.Button(new GUIContent("Depth Cueing", "Depth Cueing"))) {
-				if (!dxRead) {
-					readdx.ReadFile(GUIDisplay.Instance.file_base_name+".dx",MoleculeModel.Offset);
-					dxRead = true;
+				if (!GUIMoleculeController.Instance.dxRead) {
+					GUIMoleculeController.Instance.readdx.ReadFile(GUIDisplay.Instance.file_base_name+".dx",MoleculeModel.Offset);
+					GUIMoleculeController.Instance.dxRead = true;
 				}
 				if(DepthCueing.isEnabled && !DepthCueing.reset)
 					depthCueing.Revert();
@@ -1384,9 +1411,9 @@ namespace UI{
 			if (GUILayout.Button(new GUIContent("Volumetric Depth Cueing", "Volumetric Depth Cueing"))) {
 				showVolumetricDepth = !showVolumetricDepth;
 				
-				if (!dxRead) {
-					readdx.ReadFile(GUIDisplay.Instance.file_base_name+".dx",MoleculeModel.Offset);
-					dxRead = true;
+				if (!GUIMoleculeController.Instance.dxRead) {
+					GUIMoleculeController.Instance.readdx.ReadFile(GUIDisplay.Instance.file_base_name+".dx",MoleculeModel.Offset);
+					GUIMoleculeController.Instance.dxRead = true;
 				}
 				
 				GameObject volumObj;
@@ -1501,56 +1528,56 @@ namespace UI{
 			GUILayout.BeginHorizontal();
 			GUILayout.Label("Chain A color");
 			if(GUILayout.Button(chainATex,GUILayout.MinWidth(50),GUILayout.MinHeight(20)))
-				CreateColorPicker(chainAColor, "Chain A Color", "chainA");
+				GUIMoleculeController.Instance.CreateColorPicker(chainAColor, "Chain A Color", "chainA");
 			GUILayout.EndHorizontal();
 			
 			// New Layout line
 			GUILayout.BeginHorizontal();
 			GUILayout.Label("Chain B color");
 			if(GUILayout.Button(chainBTex,GUILayout.MinWidth(50),GUILayout.MinHeight(20)))
-				CreateColorPicker(chainBColor, "Chain B color", "chainB");
+				GUIMoleculeController.Instance.CreateColorPicker(chainBColor, "Chain B color", "chainB");
 			GUILayout.EndHorizontal();
 			
 			// New Layout line
 			GUILayout.BeginHorizontal();
 			GUILayout.Label("Chain C color");
 			if(GUILayout.Button(chainCTex,GUILayout.MinWidth(50),GUILayout.MinHeight(20)))
-				CreateColorPicker(chainCColor, "Chain C color", "chainC");
+				GUIMoleculeController.Instance.CreateColorPicker(chainCColor, "Chain C color", "chainC");
 			GUILayout.EndHorizontal();
 			
 			// New Layout line
 			GUILayout.BeginHorizontal();
 			GUILayout.Label("Chain D color");
 			if(GUILayout.Button(chainDTex,GUILayout.MinWidth(50),GUILayout.MinHeight(20)))
-				CreateColorPicker(chainDColor, "Chain D color", "chainD");
+				GUIMoleculeController.Instance.CreateColorPicker(chainDColor, "Chain D color", "chainD");
 			GUILayout.EndHorizontal();
 			
 			// New Layout line
 			GUILayout.BeginHorizontal();
 			GUILayout.Label("Chain E color");
 			if(GUILayout.Button(chainETex,GUILayout.MinWidth(50),GUILayout.MinHeight(20)))
-				CreateColorPicker(chainEColor, "Chain E color", "chainE");
+				GUIMoleculeController.Instance.CreateColorPicker(chainEColor, "Chain E color", "chainE");
 			GUILayout.EndHorizontal();
 			
 			// New Layout line
 			GUILayout.BeginHorizontal();
 			GUILayout.Label("Chain F color");
 			if(GUILayout.Button(chainFTex,GUILayout.MinWidth(50),GUILayout.MinHeight(20)))
-				CreateColorPicker(chainFColor, "Chain F color", "chainF");
+				GUIMoleculeController.Instance.CreateColorPicker(chainFColor, "Chain F color", "chainF");
 			GUILayout.EndHorizontal();
 			
 			// New Layout line
 			GUILayout.BeginHorizontal();
 			GUILayout.Label("Chain G color");
 			if(GUILayout.Button(chainGTex,GUILayout.MinWidth(50),GUILayout.MinHeight(20)))
-				CreateColorPicker(chainGColor, "Chain G color", "chainG");
+				GUIMoleculeController.Instance.CreateColorPicker(chainGColor, "Chain G color", "chainG");
 			GUILayout.EndHorizontal();
 			
 			// New Layout line
 			GUILayout.BeginHorizontal();
 			GUILayout.Label("Chain H color");
 			if(GUILayout.Button(chainHTex,GUILayout.MinWidth(50),GUILayout.MinHeight(20)))
-				CreateColorPicker(chainHColor, "Chain H color", "chainH");
+				GUIMoleculeController.Instance.CreateColorPicker(chainHColor, "Chain H color", "chainH");
 			GUILayout.EndHorizontal();		
 			
 			// New Layout line
@@ -1575,9 +1602,9 @@ namespace UI{
 			GUI.DragWindow();
 		} // End of AdvOptions
 
-		public static void GuidedOptions(int a){
+		public void GuidedOptions(int a){
 			//Debug.Log ("GUIDED ACTIVE");
-			showGuidedMenu = SetTitleExit("Guided Navigation");
+			GUIMoleculeController.Instance.showGuidedMenu = SetTitleExit("Guided Navigation");
 			
 //			if(!SymmetryLoaded)
 //			{
@@ -1670,24 +1697,24 @@ namespace UI{
 		/// <param name='a'>
 		/// A.
 		/// </param>
-		public static void FieldLines (int a) {
+		public void FieldLines (int a) {
 			
 			if (GUILayout.Button (new GUIContent ("Energy/Field Color", "Choose color to represent potential energy or field lines"))) 
-				CreateColorPicker(EnergyGrayColor, "Field Lines Color", null);
+				GUIMoleculeController.Instance.CreateColorPicker(GUIMoleculeController.Instance.EnergyGrayColor, "Field Lines Color", null);
 
 			if (GUILayout.Button (new GUIContent ("Color Gradient", "Display field lines with a color gradient")))
-				fieldLineColorGradient = true;
+				GUIMoleculeController.Instance.fieldLineColorGradient = true;
 			
 			int sliderWidth = (int) (Rectangles.fieldLinesWidth * 0.8f);
 			
-			speed = LabelSlider (speed, 0.001f, 1.0f, 
-				"Speed  " + speed, "Determines field lines animation speed", true, sliderWidth, 1, true);
-			density = LabelSlider (density, 1.0f, 8.0f, 
-				"Density  " + density, "Determines field lines density", true, sliderWidth, 1, true);
-			linewidth = LabelSlider (linewidth, 0.01f, 5.0f, 
-				"Width  " + linewidth, "Determines field lines width", true, sliderWidth, 1, true);
-			linelength = LabelSlider (linelength, 0.8f, 0.1f, 
-				"Length " + (1 - linelength), "Determines field lines length", true, sliderWidth, 1, true);
+			GUIMoleculeController.Instance.speed = GUIMoleculeController.Instance.LabelSlider (GUIMoleculeController.Instance.speed, 0.001f, 1.0f, 
+				"Speed  " + GUIMoleculeController.Instance.speed, "Determines field lines animation speed", true, sliderWidth, 1, true);
+			GUIMoleculeController.Instance.density = GUIMoleculeController.Instance.LabelSlider (GUIMoleculeController.Instance.density, 1.0f, 8.0f, 
+				"Density  " + GUIMoleculeController.Instance.density, "Determines field lines density", true, sliderWidth, 1, true);
+			GUIMoleculeController.Instance.linewidth = GUIMoleculeController.Instance.LabelSlider (GUIMoleculeController.Instance.linewidth, 0.01f, 5.0f, 
+				"Width  " + GUIMoleculeController.Instance.linewidth, "Determines field lines width", true, sliderWidth, 1, true);
+			GUIMoleculeController.Instance.linelength = GUIMoleculeController.Instance.LabelSlider (GUIMoleculeController.Instance.linelength, 0.8f, 0.1f, 
+				"Length " + (1 - GUIMoleculeController.Instance.linelength), "Determines field lines length", true, sliderWidth, 1, true);
 			if (Event.current.type == EventType.Repaint)
 				MoleculeModel.newtooltip = GUI.tooltip;
 			
@@ -1702,11 +1729,11 @@ namespace UI{
 		/// <param name='a'>
 		/// Window identifier.
 		/// </param>
-		public static void Surface (int a) {
-			showSurfaceMenu = SetTitleExit("Surface");
+		public void Surface (int a) {
+			GUIMoleculeController.Instance.showSurfaceMenu = SetTitleExit("Surface");
 			
 			GUILayout.BeginHorizontal ();
-			generateThreshold = LabelSlider (generateThreshold, 0.002f, 4f, "T:" + Mathf.Round (generateThreshold * 10f) / 10f,
+			GUIMoleculeController.Instance.generateThreshold = GUIMoleculeController.Instance.LabelSlider (GUIMoleculeController.Instance.generateThreshold, 0.002f, 4f, "T:" + Mathf.Round (GUIMoleculeController.Instance.generateThreshold * 10f) / 10f,
 									"Determines ramp value for surface generation", true, (int) (0.5 * Rectangles.surfaceMenuWidth), 1);
 			GUILayout.EndHorizontal ();
 			
@@ -1716,7 +1743,7 @@ namespace UI{
 
 				if(UIData.Instance.toggleBfac || showSurface){
 					UIData.Instance.toggleBfac = false;
-					pdbGen = false;
+					GUIMoleculeController.Instance.pdbGen = false;
 					showSurface = false;
 					GameObject[] Existpdbden = GameObject.FindGameObjectsWithTag("pdb2den");
 					GameObject[] ExistSurf = GameObject.FindGameObjectsWithTag ("SurfaceManager");
@@ -1726,7 +1753,7 @@ namespace UI{
 						GameObject.Destroy(s);					
 				}
 
-				if (!pdbGen) {	
+				if (!GUIMoleculeController.Instance.pdbGen) {	
 					MoleculeModel.surfaceFileExists = true;
 					
 					GameObject pdb2den = new GameObject("pdb2den OBJ");
@@ -1735,12 +1762,12 @@ namespace UI{
 					PDBtoDEN generatedensity = pdb2den.GetComponent<PDBtoDEN>();
 					
 					generatedensity.TranPDBtoDEN ();
-					pdbGen = true;
-					buildSurface = true;
+					GUIMoleculeController.Instance.pdbGen = true;
+					GUIMoleculeController.Instance.buildSurface = true;
 				}
 
 				if(!showSurface) {
-					PDBtoDEN.ProSurface (generateThreshold);
+					PDBtoDEN.ProSurface (GUIMoleculeController.Instance.generateThreshold);
 					showSurface = true;
 				}
 			}
@@ -1751,7 +1778,7 @@ namespace UI{
 			if (GUILayout.Button (new GUIContent ("BFactor", "Generate a new surface mesh using b-factors"))) {
 				if(showSurface){
 					showSurface = false;
-					pdbGen = false;
+					GUIMoleculeController.Instance.pdbGen = false;
 					GameObject[] ExistSurf = GameObject.FindGameObjectsWithTag ("SurfaceManager");
 					GameObject[] Existpdbden = GameObject.FindGameObjectsWithTag ("pdb2den");
 					foreach(GameObject s in ExistSurf) 
@@ -1760,7 +1787,7 @@ namespace UI{
 						GameObject.Destroy(s);	
 				}
 				
-				if (!pdbGen) {	
+				if (!GUIMoleculeController.Instance.pdbGen) {	
 					MoleculeModel.surfaceFileExists = true;
 					UIData.Instance.toggleBfac = true;
 					
@@ -1769,11 +1796,11 @@ namespace UI{
 					pdb2den.AddComponent<PDBtoDEN>();
 					PDBtoDEN generatedensity = pdb2den.GetComponent<PDBtoDEN>();
 					generatedensity.TranPDBtoDEN ();
-					pdbGen = true;
-					buildSurface = true;
+					GUIMoleculeController.Instance.pdbGen = true;
+					GUIMoleculeController.Instance.buildSurface = true;
 				}
 				if(!showSurface) {
-					PDBtoDEN.ProSurface (generateThreshold);
+					PDBtoDEN.ProSurface (GUIMoleculeController.Instance.generateThreshold);
 					showSurface = true;
 				}
 			}
@@ -1781,13 +1808,13 @@ namespace UI{
 
 			GUILayout.BeginHorizontal ();
 			if (GUILayout.Button (new GUIContent("Volumetric", "Display volumetric density"))) {
-				showVolumetricDensity = !showVolumetricDensity;
+				GUIMoleculeController.Instance.showVolumetricDensity = !GUIMoleculeController.Instance.showVolumetricDensity;
 				
 				GameObject volumObj;
 				volumObj = GameObject.FindGameObjectWithTag("Volumetric");
 				VolumetricDensity volumetric = null;
 				
-				if (showVolumetricDensity) {
+				if (GUIMoleculeController.Instance.showVolumetricDensity) {
 					volumObj.AddComponent<VolumetricDensity>(); // adding the script
 					volumetric = volumObj.GetComponent<VolumetricDensity>();
 					volumetric.Init();
@@ -1801,14 +1828,14 @@ namespace UI{
 			GUILayout.EndHorizontal ();
 
 			GUILayout.BeginHorizontal();
-			GUI.enabled = (buildSurface || MoleculeModel.surfaceFileExists);			
+			GUI.enabled = (GUIMoleculeController.Instance.buildSurface || MoleculeModel.surfaceFileExists);			
 			if (GUILayout.Button (new GUIContent ("Toggle surface", "Toggles surface from visible to hidden and vice versa"))) {
 				if (showSurface) {
 					showSurface = false;
-					showSurfaceCut = false;
-					showSurfaceMobileCut = false;
-					buildSurfaceDone = false;
-					surfaceTextureDone = false;
+					GUIMoleculeController.Instance.showSurfaceCut = false;
+					GUIMoleculeController.Instance.showSurfaceMobileCut = false;
+					GUIMoleculeController.Instance.buildSurfaceDone = false;
+					GUIMoleculeController.Instance.surfaceTextureDone = false;
 					GameObject[] SurfaceManager = GameObject.FindGameObjectsWithTag ("SurfaceManager");
 					foreach (GameObject Surface in SurfaceManager) {
 //						Surface.SetActiveRecursively (false);
@@ -1851,17 +1878,17 @@ namespace UI{
 		/// <param name='a'>
 		/// Window identifier.
 		/// </param>
-		public static void SurfaceParams (int a) {
+		public void SurfaceParams (int a) {
 			SetTitle("Parameters");
 
 			
 			if (GUILayout.Button (new GUIContent ("Color", "Choose the color of the surface")))
-				CreateColorPicker(SurfaceGrayColor,"Surface Color", null);
+				GUIMoleculeController.Instance.CreateColorPicker(GUIMoleculeController.Instance.SurfaceGrayColor,"Surface Color", null);
 			
 			if (GUILayout.Button (new GUIContent ("Inside color", "Choose the color of the inside of the surface")))
-				CreateColorPicker(SurfaceInsideColor, "Surface inside color", null);
+				GUIMoleculeController.Instance.CreateColorPicker(GUIMoleculeController.Instance.SurfaceInsideColor, "Surface inside color", null);
 	
-			if(toggle_NA_HIDE)
+			if(GUIMoleculeController.Instance.toggle_NA_HIDE)
 				GUI.enabled = false;
 			if (GUILayout.Button (new GUIContent ("Use atom color", "Enable/Disable the colors of the atoms on the surface (\"Hide\" must be off)"))) {
 				GameObject surfaceManagerObj = GameObject.FindGameObjectWithTag("NewSurfaceManager");
@@ -1912,7 +1939,7 @@ namespace UI{
 			}
 
 			if (GUILayout.Button (new GUIContent ("Hydrophobic scale", "Open Hydrophobic scales Menu"))) {
-				UI.GUIMoleculeController.showHydroMenu = !UI.GUIMoleculeController.showHydroMenu;
+				UI.GUIMoleculeController.Instance.showHydroMenu = !UI.GUIMoleculeController.Instance.showHydroMenu;
 			}
 
 			if (GUILayout.Button (new GUIContent ("Use properties color", "Show amino acids properties (red/acid ; blue/basic ; green/polar ; white/apolar) (\"Hide\" must be off)"))) {
@@ -1972,29 +1999,29 @@ namespace UI{
 
 				
 			if (GUILayout.Button (new GUIContent ("Texture", "Choose the texture of the surface"))) 
-				showSurfaceTexture = !showSurfaceTexture;
+				GUIMoleculeController.Instance.showSurfaceTexture = !GUIMoleculeController.Instance.showSurfaceTexture;
 			
-			if (GUILayout.Button (new GUIContent ("Static cut", "Activate a static cut plane on the surface"))) {
-				if (surfaceStaticCut) {
-					surfaceStaticCut = false;
-					showSurfaceCut = false;
+			if (GUILayout.Button (new GUIContent ("Static cut", "Activate a cut plane on the surface"))) {
+				if (GUIMoleculeController.Instance.surfaceStaticCut) {
+					GUIMoleculeController.Instance.surfaceStaticCut = false;
+					GUIMoleculeController.Instance.showSurfaceCut = false;
 				} else {
-					surfaceMobileCut = false;
-					showSurfaceMobileCut = false;
-					surfaceStaticCut = true;
-					showSurfaceCut = true;
+					GUIMoleculeController.Instance.surfaceMobileCut = false;
+					GUIMoleculeController.Instance.showSurfaceMobileCut = false;
+					GUIMoleculeController.Instance.surfaceStaticCut = true;
+					GUIMoleculeController.Instance.showSurfaceCut = true;
 				}
 			}
 			
 			if (GUILayout.Button (new GUIContent ("Mobile cut", "Activate a mobile cut plane on the surface"))) {
-				if (surfaceMobileCut) {
-					surfaceMobileCut = false;
-					showSurfaceMobileCut = false;
+				if (GUIMoleculeController.Instance.surfaceMobileCut) {
+					GUIMoleculeController.Instance.surfaceMobileCut = false;
+					GUIMoleculeController.Instance.showSurfaceMobileCut = false;
 				} else {
-					surfaceStaticCut = false;
-					showSurfaceCut = false;
-					surfaceMobileCut = true;
-					showSurfaceMobileCut = true;
+					GUIMoleculeController.Instance.surfaceStaticCut = false;
+					GUIMoleculeController.Instance.showSurfaceCut = false;
+					GUIMoleculeController.Instance.surfaceMobileCut = true;
+					GUIMoleculeController.Instance.showSurfaceMobileCut = true;
 				}
 			}
 			
@@ -2004,7 +2031,7 @@ namespace UI{
 			
 			GUILayout.BeginHorizontal();
 			int sliderWidth = (int) (Rectangles.surfaceMenuWidth * 0.9f);
-			SurfaceManager.brightness = LabelSlider(SurfaceManager.brightness, 0.33f, 2.0f, "",
+			SurfaceManager.brightness = GUIMoleculeController.Instance.LabelSlider(SurfaceManager.brightness, 0.33f, 2.0f, "",
 										"Adjust the brightness of the surface", true, sliderWidth, 0, false);
 			if(GUI.changed)
 				SurfaceManager.resetBrightness = true;			
@@ -2016,7 +2043,7 @@ namespace UI{
 			GUILayout.EndHorizontal();
 			
 			GUILayout.BeginHorizontal();
-			SurfaceManager.colorWeight = LabelSlider(SurfaceManager.colorWeight, 0f, 1f, "",
+			SurfaceManager.colorWeight = GUIMoleculeController.Instance.LabelSlider(SurfaceManager.colorWeight, 0f, 1f, "",
 										"Adjust the weight of the vertex colors of the surface", true, sliderWidth, 0, false);
 			if(GUI.changed)
 				SurfaceManager.resetColorWeight = true;			
@@ -2028,7 +2055,7 @@ namespace UI{
 			GUI.DragWindow();
 		} // End of Surface Params
 
-		public static void HydroMenu (int a) {
+		public void HydroMenu (int a) {
 			SetTitle("Hydrophobic scales");
 
 			if (GUILayout.Button (new GUIContent ("Kyte & Doolittle", "Surface coloring by using Kyte and Doolittle hydrophobic scale"))) {
@@ -2142,9 +2169,9 @@ namespace UI{
 		/// <param name='a'>
 		/// Window identifier.
 		/// </param>
-		public static void Background (int a) {
-			showBackgroundType = SetTitleExit("Background");
-			GameObject LocCamera = GameObject.Find ("Camera");
+		public void Background (int a) {
+			GUIMoleculeController.Instance.showBackgroundType = SetTitleExit("Background");
+//			GameObject LocCamera = GameObject.Find ("Camera");
 
 			GUILayout.BeginHorizontal ();
 
@@ -2209,23 +2236,23 @@ namespace UI{
 		
 
 		/// <summary>
-		/// Defines the static surface cut window, which is opened from the Surface parameters menu.
+		/// Defines the surface cut window, which is opened from the Surface parameters menu.
 		/// </summary>
 		/// <param name='a'>
 		/// Window identifier.
 		/// </param>
-		public static void SurfaceCut (int a) {
-			showSurfaceCut = SetTitleExit("Cut Parameters");
-			surfaceStaticCut = showSurfaceCut; // To disable the cut along with the window.
+		public void SurfaceCut (int a) {
+			GUIMoleculeController.Instance.showSurfaceCut = SetTitleExit("Cut Parameters");
+			GUIMoleculeController.Instance.surfaceStaticCut = GUIMoleculeController.Instance.showSurfaceCut; // To disable the cut along with the window.
 			int sliderWidth = (int) (Rectangles.surfaceCutWidth * 0.80f);
 			
-			depthCut = LabelSlider (depthCut, depthCutMin, depthCutMax, "Depth " + depthCut.ToString("0.00"), 
+			GUIMoleculeController.Instance.depthCut = GUIMoleculeController.Instance.LabelSlider (GUIMoleculeController.Instance.depthCut, GUIMoleculeController.Instance.depthCutMin, GUIMoleculeController.Instance.depthCutMax, "Depth " + GUIMoleculeController.Instance.depthCut.ToString("0.00"), 
 									"Determines cut plane depth position", true, sliderWidth, 1, true); 
-			cutX = LabelSlider (cutX, -1f, 1f, " X: " + cutX.ToString("0.00"),
+			GUIMoleculeController.Instance.cutX = GUIMoleculeController.Instance.LabelSlider (GUIMoleculeController.Instance.cutX, -1f, 1f, " X: " + GUIMoleculeController.Instance.cutX.ToString("0.00"),
 									"Determines cut plane X position", true, sliderWidth, 1, true); 
-			cutY = LabelSlider (cutY, -1f, 1f, " Y: " + cutY.ToString("0.00"),
+			GUIMoleculeController.Instance.cutY = GUIMoleculeController.Instance.LabelSlider (GUIMoleculeController.Instance.cutY, -1f, 1f, " Y: " + GUIMoleculeController.Instance.cutY.ToString("0.00"),
 									"Determines cut plane Y position", true, sliderWidth, 1, true); 
-			cutZ = LabelSlider (cutZ, -1f, 1f, " Z: " + cutZ.ToString("0.00"),
+			GUIMoleculeController.Instance.cutZ = GUIMoleculeController.Instance.LabelSlider (GUIMoleculeController.Instance.cutZ, -1f, 1f, " Z: " + GUIMoleculeController.Instance.cutZ.ToString("0.00"),
 									"Determines cut plane Z position", true, sliderWidth, 1, true);
 			
 			GUI.enabled = true;
@@ -2240,12 +2267,12 @@ namespace UI{
 		/// <param name='a'>
 		/// Window identifier.
 		/// </param>
-		public static void SurfaceMobileCut (int a) {
+		public void SurfaceMobileCut (int a) {
 			int sliderWidth = (int) (Rectangles.surfaceCutWidth * 0.45f);
 			SetTitle("Surface Mobile Cut");
-			depthCut = LabelSlider (depthCut, -40f, 40f, "Cutting depth " + depthCut,
+			GUIMoleculeController.Instance.depthCut = GUIMoleculeController.Instance.LabelSlider (GUIMoleculeController.Instance.depthCut, -40f, 40f, "Cutting depth " + GUIMoleculeController.Instance.depthCut,
 									"Determines mobile cut plane depth position", true, sliderWidth, 1); 
-			adjustFieldLineCut = LabelSlider (adjustFieldLineCut, -100f, 100f, " FL cut :" + adjustFieldLineCut,
+			GUIMoleculeController.Instance.adjustFieldLineCut = GUIMoleculeController.Instance.LabelSlider (GUIMoleculeController.Instance.adjustFieldLineCut, -100f, 100f, " FL cut :" + GUIMoleculeController.Instance.adjustFieldLineCut,
 									"Determines field line cut position", true, sliderWidth, 1); 
 			GUI.DragWindow();
 		}
@@ -2258,8 +2285,8 @@ namespace UI{
 		/// <param name='a'>
 		/// A.
 		/// </param>
-		public static void Effects (int a) {
-			showEffectType = SetTitleExit("Visual Effects");
+		public void Effects (int a) {
+			GUIMoleculeController.Instance.showEffectType = SetTitleExit("Visual Effects");
 			
 			GUILayout.BeginHorizontal ();
 			toggle_VE_SSAO = GUILayout.Toggle (toggle_VE_SSAO, new GUIContent ("SSAO", "Toggle screen space ambient occlusion effect"));
@@ -2454,7 +2481,7 @@ namespace UI{
 			}
 			GUILayout.EndHorizontal ();
 
-			showBackgroundType = false;
+			GUIMoleculeController.Instance.showBackgroundType = false;
 			showGrayColor = false;
 //			ParamshowFieldLine=false;
 			showSurfaceButton = false;
@@ -2476,13 +2503,13 @@ namespace UI{
 		/// <param name='a'>
 		/// Window identifier.
 		/// </param>
-		public static void CubeLineBond (int a){
+		public void CubeLineBond (int a){
 			SetTitle("Bond Width");
 
-			bondWidth = LabelSlider(bondWidth, 0.00001f, 0.5f, "Width: " + bondWidth.ToString("0.00"), 
+			GUIMoleculeController.Instance.bondWidth = GUIMoleculeController.Instance.LabelSlider(GUIMoleculeController.Instance.bondWidth, 0.00001f, 0.5f, "Width: " + GUIMoleculeController.Instance.bondWidth.ToString("0.00"), 
 					"Determines width of bonds for Cubes and Lines", true, (int)(0.90 * Rectangles.cubeLineBondTypeWidth), 1, true);
-			BondCubeUpdate.width = bondWidth;
-			LineUpdate.width = bondWidth;
+			BondCubeUpdate.width = GUIMoleculeController.Instance.bondWidth;
+			LineUpdate.width = GUIMoleculeController.Instance.bondWidth;
 			GUI.enabled = true;
 			GUI.DragWindow();
 		}
@@ -2505,15 +2532,15 @@ namespace UI{
 		/// and increase to maxW,maxH in the bottom right corner.
 		/// So it's a Vector3, and the y axis must be flipped before mpos is fed to this function.
 		/// </param>
-		private static bool InDeadZone(Rect rect, Vector3 mpos)
+		private bool InDeadZone(Rect rect, Vector3 mpos)
 		{
 			GUIStyle currentStyle = GUI.skin.label;
 			GUIContent strContent = new GUIContent("str"); // Creating a GUIContent of type string. Probably not the cleanest way.
 			float deadZone = currentStyle.CalcSize(strContent).y; // Getting its height in pixels.
 			deadZone *= 3.0f ; // Making it a bit bigger. After all, the title label doesn't start right at the top of the window.
 			
-			cutPlaneIsDraggable = (mpos.y - rect.yMin < deadZone); // if true, we're in the dead zone
-			return cutPlaneIsDraggable;
+			GUIMoleculeController.Instance.cutPlaneIsDraggable = (mpos.y - rect.yMin < deadZone); // if true, we're in the dead zone
+			return GUIMoleculeController.Instance.cutPlaneIsDraggable;
 		}
 		
 		/// <summary>
@@ -2523,34 +2550,34 @@ namespace UI{
 		/// <param name='a'>
 		/// Window identifier.
 		/// </param>
-		public static void MoveCutPlane (int a) {
+		public void MoveCutPlane (int a) {
 			SetTitle("Move cut plane");
-			if(cutPlaneIsDraggable)
+			if(GUIMoleculeController.Instance.cutPlaneIsDraggable)
 				GUI.DragWindow();
 			
 			Vector3 mousePos = Input.mousePosition;
 			mousePos.y = Screen.height - mousePos.y;
-			if (Rectangles.movePlaneRect.Contains(mousePos) && showSurfaceCut && showSurfaceMenu 
+			if (Rectangles.movePlaneRect.Contains(mousePos) && GUIMoleculeController.Instance.showSurfaceCut && GUIMoleculeController.Instance.showSurfaceMenu 
 				&& !InDeadZone(Rectangles.movePlaneRect, mousePos) && GUIUtility.hotControl == 0) 
 			{
 				if (Input.GetMouseButton (0)) {
-					GUIMoleculeController.cutX += Input.GetAxis ("Mouse X") * 1 * 0.02f;
-					GUIMoleculeController.cutY -= Input.GetAxis ("Mouse Y") * 1 * 0.02f;
-					GUIMoleculeController.cutZ -= Input.GetAxis ("Mouse X") * 1 * 0.02f;
+					GUIMoleculeController.Instance.cutX += Input.GetAxis ("Mouse X") * 1 * 0.02f;
+					GUIMoleculeController.Instance.cutY -= Input.GetAxis ("Mouse Y") * 1 * 0.02f;
+					GUIMoleculeController.Instance.cutZ -= Input.GetAxis ("Mouse X") * 1 * 0.02f;
 				}
-				if (GUIMoleculeController.cutX < -1)
-					GUIMoleculeController.cutX = -1;
-				if (GUIMoleculeController.cutX > 1)
-					GUIMoleculeController.cutX = 1;
-				if (GUIMoleculeController.cutY < -1)
-					GUIMoleculeController.cutY = -1;
-				if (GUIMoleculeController.cutY > 1)
-					GUIMoleculeController.cutY = 1;
-				if (GUIMoleculeController.cutZ < -1)
-					GUIMoleculeController.cutZ = -1;
-				if (GUIMoleculeController.cutZ > 1)
-					GUIMoleculeController.cutZ = 1;
-				GUIMoleculeController.depthCut -= Input.GetAxis ("Mouse ScrollWheel");
+				if (GUIMoleculeController.Instance.cutX < -1)
+					GUIMoleculeController.Instance.cutX = -1;
+				if (GUIMoleculeController.Instance.cutX > 1)
+					GUIMoleculeController.Instance.cutX = 1;
+				if (GUIMoleculeController.Instance.cutY < -1)
+					GUIMoleculeController.Instance.cutY = -1;
+				if (GUIMoleculeController.Instance.cutY > 1)
+					GUIMoleculeController.Instance.cutY = 1;
+				if (GUIMoleculeController.Instance.cutZ < -1)
+					GUIMoleculeController.Instance.cutZ = -1;
+				if (GUIMoleculeController.Instance.cutZ > 1)
+					GUIMoleculeController.Instance.cutZ = 1;
+				GUIMoleculeController.Instance.depthCut -= Input.GetAxis ("Mouse ScrollWheel");
 //				cutZ +=Input.GetAxis("Mouse X") * 1 * 0.02f;
 //				cutZ -=Input.GetAxis("Mouse Y") * 1 * 0.02f;
 			}
@@ -2560,10 +2587,10 @@ namespace UI{
 		/// <summary>
 		/// Just triggers the metaphor menu. Part of the Hyperball Style window.
 		/// </summary>
-		private static void MetaphorControl () {
+		private void MetaphorControl () {
 			GUILayout.BeginHorizontal ();
 			if (GUILayout.Button (new GUIContent ("Metaphor", "Change HyperBalls parameters to values for standard representations")))
-				showMetaphorType = !showMetaphorType;
+				GUIMoleculeController.Instance.showMetaphorType = !GUIMoleculeController.Instance.showMetaphorType;
 			GUILayout.EndHorizontal ();
 			
 			if (Event.current.type == EventType.Repaint)
@@ -2576,7 +2603,7 @@ namespace UI{
 		/// When in interactive mode, toggling 'Gray' will turn the molecule gray, and the higher the velocity
 		/// of an atom/bond, the darker it will be.
 		/// </summary>
-		private static void PhysicalChoice () {
+		private void PhysicalChoice () {
 			GUILayout.BeginHorizontal ();
 			GUILayout.Label ("Velocity Colors:");
 			GUILayout.EndHorizontal ();
@@ -2607,17 +2634,17 @@ namespace UI{
 		/// <param name='a'>
 		/// Window identifier.
 		/// </param>
-		public static void HyperballStyle (int a) {
+		public void HyperballStyle (int a) {
 			int sliderWidth = (int)(0.40 * Rectangles.hyperballWidth);
 			SetTitle("Hyperball Style");
-			shrink = LabelSlider (shrink, 0.00001f, 0.99f, "Shrink " + shrink.ToString("0.00"),
+			GUIMoleculeController.Instance.shrink = GUIMoleculeController.Instance.LabelSlider (GUIMoleculeController.Instance.shrink, 0.00001f, 0.99f, "Shrink " + GUIMoleculeController.Instance.shrink.ToString("0.00"),
 				"Determines shrink factor parameter for HyperBalls", true, sliderWidth, 1);
 			
 //			toggle_HB_RANIM = GUILayout.Toggle (toggle_HB_RANIM, new GUIContent ("HB_RANIM", "Animate radius parameter"));
-			linkScale = LabelSlider (linkScale, 0.00001f, 1.0f, "Scale " + linkScale.ToString("0.00"),
+			GUIMoleculeController.Instance.linkScale = GUIMoleculeController.Instance.LabelSlider (GUIMoleculeController.Instance.linkScale, 0.00001f, 1.0f, "Scale " + GUIMoleculeController.Instance.linkScale.ToString("0.00"),
 				"Determines scale parameter", true, sliderWidth, 1);
 			
-			depthfactor = LabelSlider (depthfactor, -3.0f, 3.0f, "DFactor " + depthfactor.ToString("0.00"),
+			GUIMoleculeController.Instance.depthfactor = GUIMoleculeController.Instance.LabelSlider (GUIMoleculeController.Instance.depthfactor, -3.0f, 3.0f, "DFactor " + GUIMoleculeController.Instance.depthfactor.ToString("0.00"),
 				"Determines depth factor for network visualization", MoleculeModel.networkLoaded, sliderWidth, 1);
 			GUI.enabled = true;
 			
@@ -2625,18 +2652,18 @@ namespace UI{
 			
 			if(UIData.Instance.atomtype != UIData.AtomType.hyperball){
 				GUI.enabled = false;
-				toggle_NA_INTERACTIVE = false;
+				GUIMoleculeController.Instance.toggle_NA_INTERACTIVE = false;
 			}
-			toggle_NA_INTERACTIVE = GUILayout.Toggle (toggle_NA_INTERACTIVE, new GUIContent ("Interactive mode", "Toggle interactive mode, the physics engine will be used"));
+			GUIMoleculeController.Instance.toggle_NA_INTERACTIVE = GUILayout.Toggle (GUIMoleculeController.Instance.toggle_NA_INTERACTIVE, new GUIContent ("Interactive mode", "Toggle interactive mode, the physics engine will be used"));
 			GUI.enabled = true;
-			drag = LabelSlider (drag, 0.00001f, 5f, "Drag " + drag.ToString("0.00"), "Determines PhysX engine drag value", 
+			GUIMoleculeController.Instance.drag = GUIMoleculeController.Instance.LabelSlider (GUIMoleculeController.Instance.drag, 0.00001f, 5f, "Drag " + GUIMoleculeController.Instance.drag.ToString("0.00"), "Determines PhysX engine drag value", 
 									UIData.Instance.interactive, sliderWidth, 1);
-			spring = LabelSlider (spring, 0.00001f, 20, "Spring " + spring.ToString("0.00"), "Determines PhysX engine spring constant",
+			GUIMoleculeController.Instance.spring = GUIMoleculeController.Instance.LabelSlider (GUIMoleculeController.Instance.spring, 0.00001f, 20, "Spring " + GUIMoleculeController.Instance.spring.ToString("0.00"), "Determines PhysX engine spring constant",
 									UIData.Instance.interactive, sliderWidth, 1);
 			PhysicalChoice();
 
 			// Luiz FIXME: gotta find a way to synchronize this before enabling it
-			toggle_NA_INTERACTIVE=false;
+			GUIMoleculeController.Instance.toggle_NA_INTERACTIVE=false;
 
 			GUI.enabled = true;	
 			
@@ -2648,18 +2675,18 @@ namespace UI{
 			toggle_NA_MEASURE = false;
 			
 			GUILayout.BeginHorizontal();
-			toggle_DISTANCE_CUEING = GUILayout.Toggle (toggle_DISTANCE_CUEING, new GUIContent ("Dist. cueing", "Toggle distance cueing, which darkens distant objects"));
+			GUIMoleculeController.Instance.toggle_DISTANCE_CUEING = GUILayout.Toggle (GUIMoleculeController.Instance.toggle_DISTANCE_CUEING, new GUIContent ("Dist. cueing", "Toggle distance cueing, which darkens distant objects"));
 			GUILayout.EndHorizontal();
 			
-			if(toggle_DISTANCE_CUEING) {
-				if(!distanceCueingEnabled)
+			if(GUIMoleculeController.Instance.toggle_DISTANCE_CUEING) {
+				if(!GUIMoleculeController.Instance.distanceCueingEnabled)
 					DisplayMolecule.ToggleDistanceCueing(true);
-					distanceCueingEnabled = true;
+					GUIMoleculeController.Instance.distanceCueingEnabled = true;
 				}
 			else
-				if(distanceCueingEnabled) {
+				if(GUIMoleculeController.Instance.distanceCueingEnabled) {
 					DisplayMolecule.ToggleDistanceCueing(false);
-					distanceCueingEnabled = false;
+					GUIMoleculeController.Instance.distanceCueingEnabled = false;
 				}
 
 
@@ -2677,7 +2704,7 @@ namespace UI{
 
 			//////////////////////modify///////////////////////
 			
-			if (toggle_NA_INTERACTIVE && UIData.Instance.atomtype == UIData.AtomType.hyperball) {
+			if (GUIMoleculeController.Instance.toggle_NA_INTERACTIVE && UIData.Instance.atomtype == UIData.AtomType.hyperball) {
 				UIData.Instance.interactive = true;
 				UIData.Instance.resetInteractive = true;
 			} else {
@@ -2712,43 +2739,43 @@ namespace UI{
 		/// <param name='a'>
 		/// Window identifier.
 		/// </param>
-		public static void MainFun (int a) {
-			if(toggle_NA_HIDE)
-				Molecule3DComp.HideAtoms();
+		public void MainFun (int a) {
+			if(GUIMoleculeController.Instance.toggle_NA_HIDE)
+				GUIMoleculeController.Instance.Molecule3DComp.HideAtoms();
 			else
-				Molecule3DComp.ShowAtoms();
+				GUIMoleculeController.Instance.Molecule3DComp.ShowAtoms();
 			
 //			GUILayout.BeginVertical();
 			
 			GUILayout.BeginHorizontal();
 //			if (GUI.Button (new Rect(300,5,40,10),new GUIContent ("Open", "Open the File Open dialogue"))) {
 			if (GUILayout.Button (new GUIContent ("File", "Open the File Open dialogue"))) {
-				if (showOpenMenu)
-					showOpenMenu = false;
+				if (GUIMoleculeController.Instance.showOpenMenu)
+					GUIMoleculeController.Instance.showOpenMenu = false;
 				else {
-					showOpenMenu = true;
-					showAtomMenu = false;
-					showSurfaceMenu = false;
-					showBfactorMenu = false;
-					showElectrostaticsMenu = false;
-					fieldLineColorGradient = false;
-					showManipulatorMenu = false;
-					showSetAtomScales = false;
-					showPanelsMenu = false;
+					GUIMoleculeController.Instance.showOpenMenu = true;
+					GUIMoleculeController.Instance.showAtomMenu = false;
+					GUIMoleculeController.Instance.showSurfaceMenu = false;
+					GUIMoleculeController.Instance.showBfactorMenu = false;
+					GUIMoleculeController.Instance.showElectrostaticsMenu = false;
+					GUIMoleculeController.Instance.fieldLineColorGradient = false;
+					GUIMoleculeController.Instance.showManipulatorMenu = false;
+					GUIMoleculeController.Instance.showSetAtomScales = false;
+					GUIMoleculeController.Instance.showPanelsMenu = false;
 					GUIDisplay.Instance.m_texture = false;
-					m_colorPicker = null;
+					GUIMoleculeController.Instance.m_colorPicker = null;
 					showSurfaceButton = false;
-					showBackgroundType = false;
-					showSurfaceCut = false;
-					showSurfaceMobileCut = false;
-					showSurfaceTexture = false;
-					showAtomsExtendedMenu = false;
-					showResiduesMenu = false;
-					showChainsMenu = false;
-					GUIMoleculeController.toggle_NA_SWITCH = false;
-					showSugarChainMenu=false; //T TEST
-					showVRPNMenu = false;
-					showMDDriverMenu = false;
+					GUIMoleculeController.Instance.showBackgroundType = false;
+					GUIMoleculeController.Instance.showSurfaceCut = false;
+					GUIMoleculeController.Instance.showSurfaceMobileCut = false;
+					GUIMoleculeController.Instance.showSurfaceTexture = false;
+					GUIMoleculeController.Instance.showAtomsExtendedMenu = false;
+					GUIMoleculeController.Instance.showResiduesMenu = false;
+					GUIMoleculeController.Instance.showChainsMenu = false;
+					toggle_NA_SWITCH = false;
+					GUIMoleculeController.Instance.showSugarChainMenu=false; //T TEST
+					GUIMoleculeController.Instance.showVRPNMenu = false;
+					GUIMoleculeController.Instance.showMDDriverMenu = false;
 				}
 
 			}
@@ -2756,71 +2783,71 @@ namespace UI{
 			if(!UIData.Instance.hasMoleculeDisplay)
 				GUI.enabled = false;
 			if (GUILayout.Button (new GUIContent ("Atoms", "Open the Atom appearance dialogue"))) {
-				if (showAtomMenu) { // already open, we close it
-					showAtomMenu = false;
+				if (GUIMoleculeController.Instance.showAtomMenu) { // already open, we close it
+					GUIMoleculeController.Instance.showAtomMenu = false;
 					GUIDisplay.Instance.m_texture = false ; // this is pointless when the atom menu is closed
-					showSetAtomScales = false;
+					GUIMoleculeController.Instance.showSetAtomScales = false;
 				} else {
-					showAtomMenu = true;
-					showOpenMenu = false;
+					GUIMoleculeController.Instance.showAtomMenu = true;
+					GUIMoleculeController.Instance.showOpenMenu = false;
 				}
 			}
 			
 			if(GUILayout.Button(new GUIContent("Sec. Structures", "Open the secondary structures dialogue")))
-				showSecStructMenu = !showSecStructMenu;
+				GUIMoleculeController.Instance.showSecStructMenu = !GUIMoleculeController.Instance.showSecStructMenu;
 			
 			if (GUILayout.Button (new GUIContent ("Surface", "Open the Surface rendering dialogue"))) {
-				if (showSurfaceMenu) {
-					showSurfaceMenu = false;
-//					showSurfaceCut=false;
-//					showSurfaceMobileCut=false;
-					showSurfaceTexture = false;
+				if (GUIMoleculeController.Instance.showSurfaceMenu) {
+					GUIMoleculeController.Instance.showSurfaceMenu = false;
+//					GUIMoleculeController.Instance.showSurfaceCut=false;
+//					GUIMoleculeController.Instance.showSurfaceMobileCut=false;
+					GUIMoleculeController.Instance.showSurfaceTexture = false;
 				} else {
-					showSurfaceMenu = true;
-					showBfactorMenu = false;
-					showOpenMenu = false;
+					GUIMoleculeController.Instance.showSurfaceMenu = true;
+					GUIMoleculeController.Instance.showBfactorMenu = false;
+					GUIMoleculeController.Instance.showOpenMenu = false;
 
 				}
 				if (!UIData.Instance.toggleSurf) {
 					UIData.Instance.toggleBfac = false;
 					UIData.Instance.toggleSurf = true;
-					pdbGen = false;
+					GUIMoleculeController.Instance.pdbGen = false;
 				}
 			}
 			//No bfactor option in this version
 /*			if (GUI.Button (new Rect (240 + 23, 2, 80, 20), new GUIContent ("Bfactor", "Open the Bfactor settings dialogue"))) 
 			{
-				if (showBfactorMenu) {
-					showBfactorMenu = false;
-			 		showSurfaceCut = false;
-			 		showSurfaceMobileCut = false;
+				if (GUIMoleculeController.Instance.showBfactorMenu) {
+					GUIMoleculeController.Instance.showBfactorMenu = false;
+			 		GUIMoleculeController.Instance.showSurfaceCut = false;
+			 		GUIMoleculeController.Instance.showSurfaceMobileCut = false;
 			 		m_colorpick_fieldline = null;	
-			 		showSurfaceTexture = false;
+			 		GUIMoleculeController.Instance.showSurfaceTexture = false;
 			 		;
 			 		m_colorpick_Surface = null;
 				} else {
-			 		showBfactorMenu = true;
-			 		showSurfaceMenu = false;	
-			 		showOpenMenu = false;
+			 		GUIMoleculeController.Instance.showBfactorMenu = true;
+			 		GUIMoleculeController.Instance.showSurfaceMenu = false;	
+			 		GUIMoleculeController.Instance.showOpenMenu = false;
 
 				}
 			 	if (!UIData.Instance.toggleBfac) {
 			 		UIData.Instance.toggleBfac = true;
 			 		UIData.Instance.toggleSurf = false;
-			 		pdbGen = false;
+			 		GUIMoleculeController.Instance.pdbGen = false;
 			 	}
 			}
 */
 			if(!MoleculeModel.dxFileExists)
 				GUI.enabled = false;
 			if (GUILayout.Button (new GUIContent ("Electrostat.", "Open the electrostatics field lines dialogue"))) {
-				if (showElectrostaticsMenu) {
-					showElectrostaticsMenu = false;
+				if (GUIMoleculeController.Instance.showElectrostaticsMenu) {
+					GUIMoleculeController.Instance.showElectrostaticsMenu = false;
 					showGrayColor = false;
-					m_colorPicker = null ;
+					GUIMoleculeController.Instance.m_colorPicker = null ;
 				} else {
-					showElectrostaticsMenu = true;
-					showOpenMenu = false;
+					GUIMoleculeController.Instance.showElectrostaticsMenu = true;
+					GUIMoleculeController.Instance.showOpenMenu = false;
 
 				}
 			}
@@ -2830,19 +2857,19 @@ namespace UI{
 				GUI.enabled = false;
 
 			if (GUILayout.Button (new GUIContent ("Display", "Open display configuration menu")))
-				showManipulatorMenu = !showManipulatorMenu;
+				GUIMoleculeController.Instance.showManipulatorMenu = !GUIMoleculeController.Instance.showManipulatorMenu;
 			
 			if (GUILayout.Button(new GUIContent("Advanced", "Opens the advanced options menu")))
-				showAdvMenu = !showAdvMenu ;
+				GUIMoleculeController.Instance.showAdvMenu = !GUIMoleculeController.Instance.showAdvMenu ;
 
 			if (GUILayout.Button (new GUIContent ("Guided Nav.", "Opens the guided navigation menu")))
-				showGuidedMenu = !showGuidedMenu ;
+				GUIMoleculeController.Instance.showGuidedMenu = !GUIMoleculeController.Instance.showGuidedMenu ;
 			
 			if (GUILayout.Button(new GUIContent("Sugar", "Opens the Sugar visualisation menu"))) //T TEST
-				showSugarChainMenu = !showSugarChainMenu ;
+				GUIMoleculeController.Instance.showSugarChainMenu = !GUIMoleculeController.Instance.showSugarChainMenu ;
 			
 			if (GUILayout.Button (new GUIContent("VRPN", "Configure and run a VRPN client"))) {
-				showVRPNMenu = !showVRPNMenu;
+				GUIMoleculeController.Instance.showVRPNMenu = !GUIMoleculeController.Instance.showVRPNMenu;
 				if(VRPNManager.vrpnManager == null) {
 					Debug.Log ("Creating VRPN Manager");
 					VRPNManager.vrpnManager = (GameObject) GameObject.Instantiate(Resources.Load("VRPN/VRPNManager", typeof(GameObject)), Vector3.zero, Quaternion.identity);
@@ -2851,12 +2878,12 @@ namespace UI{
 			}
 			
 			if (GUILayout.Button (new GUIContent("MDDriver", "Configure and run a molecular dynamics simulation"))) {
-				showMDDriverMenu = !showMDDriverMenu;
+				GUIMoleculeController.Instance.showMDDriverMenu = !GUIMoleculeController.Instance.showMDDriverMenu;
 			}
 			
 			if (GUILayout.Button (new GUIContent("Reset", "Resets the molecule to its original position"))) {
 				maxCamera fixeCam;
-				fixeCam = scenecontroller.GetComponent<maxCamera> ();
+				fixeCam = GUIMoleculeController.Instance.scenecontroller.GetComponent<maxCamera> ();
 				fixeCam.ToCenter();
 				if(UIData.Instance.atomtype == UIData.AtomType.hyperball){
 					GameObject hbManagerObj = GameObject.FindGameObjectWithTag("HBallManager");
@@ -2871,20 +2898,20 @@ namespace UI{
 			
 			//GUILayout.EndVertical();
 			
-			// generate the cam target.			
-			if (!toggle_NA_MAXCAM && scenecontroller.GetComponent<maxCamera> ().enabled) {
-				scenecontroller.GetComponent<maxCamera> ().enabled = false;
-				scenecontroller.transform.rotation = NA_SCCROT;
-				scenecontroller.transform.position = NA_SCCPOS;
-			} else if (toggle_NA_MAXCAM && !scenecontroller.GetComponent<maxCamera> ().enabled)
-				scenecontroller.GetComponent<maxCamera> ().enabled = true;				
+			// generate the cam target.
+			if (!GUIMoleculeController.Instance.toggle_NA_MAXCAM && GUIMoleculeController.Instance.scenecontroller.GetComponent<maxCamera> ().enabled) {
+				GUIMoleculeController.Instance.scenecontroller.GetComponent<maxCamera> ().enabled = false;
+				GUIMoleculeController.Instance.scenecontroller.transform.rotation = NA_SCCROT;
+				GUIMoleculeController.Instance.scenecontroller.transform.position = NA_SCCPOS;
+			} else if (GUIMoleculeController.Instance.toggle_NA_MAXCAM && !GUIMoleculeController.Instance.scenecontroller.GetComponent<maxCamera> ().enabled)
+				GUIMoleculeController.Instance.scenecontroller.GetComponent<maxCamera> ().enabled = true;				
 				
-			if (!toggle_NA_AUTOMOVE && scenecontroller.GetComponent<maxCamera> ().automove) {
-				scenecontroller.GetComponent<maxCamera> ().automove = false;	
-			 	Molecule3DComp.toggleFPSLog ();
-			} else if (toggle_NA_AUTOMOVE && !scenecontroller.GetComponent<maxCamera> ().automove) {
-			 	scenecontroller.GetComponent<maxCamera> ().automove = true;
-			 	Molecule3DComp.toggleFPSLog ();
+			if (!GUIMoleculeController.Instance.toggle_NA_AUTOMOVE && GUIMoleculeController.Instance.scenecontroller.GetComponent<maxCamera> ().automove) {
+				GUIMoleculeController.Instance.scenecontroller.GetComponent<maxCamera> ().automove = false;	
+			 	GUIMoleculeController.Instance.Molecule3DComp.toggleFPSLog ();
+			} else if (GUIMoleculeController.Instance.toggle_NA_AUTOMOVE && !GUIMoleculeController.Instance.scenecontroller.GetComponent<maxCamera> ().automove) {
+			 	GUIMoleculeController.Instance.scenecontroller.GetComponent<maxCamera> ().automove = true;
+			 	GUIMoleculeController.Instance.Molecule3DComp.toggleFPSLog ();
 			}
 			if (Event.current.type == EventType.Repaint)
 				MoleculeModel.newtooltip = GUI.tooltip;
@@ -2897,24 +2924,24 @@ namespace UI{
 		/// <param name='a'>
 		/// Window identifier
 		/// </param>
-		public static void SecStructMenu(int a) {
-			showSecStructMenu = SetTitleExit("Secondary Structures");
-			bool ssToggled = toggle_SUGAR_ONLY;
+		public void SecStructMenu(int a) {
+			GUIMoleculeController.Instance.showSecStructMenu = SetTitleExit("Secondary Structures");
+			bool ssToggled = GUIMoleculeController.Instance.toggle_SUGAR_ONLY;
 
 			GUILayout.BeginHorizontal();
 			GUILayout.Box("Secondary structures");
 			GUILayout.EndHorizontal();
 			
 			GUILayout.BeginHorizontal();
-			toggle_SUGAR_ONLY = UIData.Instance.hasMoleculeDisplay && GUILayout.Toggle(toggle_SUGAR_ONLY,
+			GUIMoleculeController.Instance.toggle_SUGAR_ONLY = UIData.Instance.hasMoleculeDisplay && GUILayout.Toggle(GUIMoleculeController.Instance.toggle_SUGAR_ONLY,
 				new GUIContent("Enable Secondary structures", "Switch between all-atoms and secondary structures representation"));
-			if(!ssToggled && toggle_SUGAR_ONLY) { // enabling the ribbons
+			if(!ssToggled && GUIMoleculeController.Instance.toggle_SUGAR_ONLY) { // enabling the ribbons
 				Ribbons ribbons = new Ribbons();
 				ribbons.CreateRibbons();
-				toggle_NA_HIDE = !toggle_NA_HIDE;
+				GUIMoleculeController.Instance.toggle_NA_HIDE = !GUIMoleculeController.Instance.toggle_NA_HIDE;
 			} else {
-				if (ssToggled && !toggle_SUGAR_ONLY) { // destroying the ribbons
-					toggle_NA_HIDE = !toggle_NA_HIDE;
+				if (ssToggled && !GUIMoleculeController.Instance.toggle_SUGAR_ONLY) { // destroying the ribbons
+					GUIMoleculeController.Instance.toggle_NA_HIDE = !GUIMoleculeController.Instance.toggle_NA_HIDE;
 					GameObject[] Objs = Object.FindObjectsOfType(typeof(GameObject)) as GameObject[];;
 					foreach(GameObject ribObj in Objs){
 						if(ribObj.name == "Ribbons")
@@ -2927,7 +2954,7 @@ namespace UI{
 
 			// Bugs otherwise.
 			if(!UIData.Instance.hasMoleculeDisplay) {
-				showSecStructMenu = false;
+				GUIMoleculeController.Instance.showSecStructMenu = false;
 				return;
 			}
 			
@@ -2935,34 +2962,34 @@ namespace UI{
 			int sliderWidth = (int) (0.50f * Rectangles.secStructMenuWidth);
 			
 			GUILayout.BeginHorizontal();
-			Ribbons.ribbonWidth[0] = LabelSlider(Ribbons.ribbonWidth[0], 0.375f, 3.0f,
+			Ribbons.ribbonWidth[0] = GUIMoleculeController.Instance.LabelSlider(Ribbons.ribbonWidth[0], 0.375f, 3.0f,
 				"Helix Width: " + Ribbons.ribbonWidth[0].ToString("0.00"), "", true, sliderWidth, labelWidth, true);
 			GUILayout.EndHorizontal();
 
 		
 
 			GUILayout.BeginHorizontal();
-			Ribbons.ribbonWidth[1] = LabelSlider(Ribbons.ribbonWidth[1], 0.425f, 3.4f,
+			Ribbons.ribbonWidth[1] = GUIMoleculeController.Instance.LabelSlider(Ribbons.ribbonWidth[1], 0.425f, 3.4f,
 				"Sheet Width: " + Ribbons.ribbonWidth[1].ToString("0.00"), "", true, sliderWidth, labelWidth, true);
 			GUILayout.EndHorizontal();
 			
 			GUILayout.BeginHorizontal();
-			Ribbons.ribbonWidth[2] = LabelSlider(Ribbons.ribbonWidth[2], 0.075f, 0.6f,
+			Ribbons.ribbonWidth[2] = GUIMoleculeController.Instance.LabelSlider(Ribbons.ribbonWidth[2], 0.075f, 0.6f,
 				"Coil Width: " + Ribbons.ribbonWidth[2].ToString("0.00"), "", true, sliderWidth, labelWidth, true);
 			GUILayout.EndHorizontal();
 			
 			GUILayout.BeginHorizontal();
-			Ribbons.THICKNESS = LabelSlider(Ribbons.THICKNESS, 0.075f, 0.6f,
+			Ribbons.THICKNESS = GUIMoleculeController.Instance.LabelSlider(Ribbons.THICKNESS, 0.075f, 0.6f,
 				"Thickness: " + Ribbons.THICKNESS.ToString("0.00"), "", true, sliderWidth, labelWidth, true);
 			GUILayout.EndHorizontal();
 			
 			GUILayout.BeginHorizontal();
-			Ribbons.HELIX_DIAM = LabelSlider(Ribbons.HELIX_DIAM, 0.45f, 3.6f,
+			Ribbons.HELIX_DIAM = GUIMoleculeController.Instance.LabelSlider(Ribbons.HELIX_DIAM, 0.45f, 3.6f,
 				"Helix diameter: " + Ribbons.HELIX_DIAM.ToString("0.00"), "", true, sliderWidth, labelWidth, true);
 			GUILayout.EndHorizontal();
 			
 			GUILayout.BeginHorizontal();
-			Ribbons.ARROW_WIDTH = LabelSlider(Ribbons.ARROW_WIDTH, 0f, 3.6f,
+			Ribbons.ARROW_WIDTH = GUIMoleculeController.Instance.LabelSlider(Ribbons.ARROW_WIDTH, 0f, 3.6f,
 				"Arrow width: " + Ribbons.ARROW_WIDTH.ToString("0.00"), "", true, sliderWidth, labelWidth, true);
 			GUILayout.EndHorizontal();
 
@@ -2978,7 +3005,7 @@ namespace UI{
 			GUILayout.Label("Helix Color :");
 			GUILayout.FlexibleSpace();
 			if(GUILayout.Button(helixButton,GUILayout.MinWidth(100),GUILayout.MinHeight(20))){
-				CreateColorPicker(Ribbons.HELIX_COLOR, "Helix color", null);
+				GUIMoleculeController.Instance.CreateColorPicker(Ribbons.HELIX_COLOR, "Helix color", null);
 			}
 			GUILayout.EndHorizontal();
 			
@@ -2986,7 +3013,7 @@ namespace UI{
 			GUILayout.Label("Sheet Color :");
 			GUILayout.FlexibleSpace();
 			if(GUILayout.Button(sheetButton,GUILayout.MinWidth(100),GUILayout.MinHeight(20))){
-				CreateColorPicker(Ribbons.STRAND_COLOR, "Sheet color", null);
+				GUIMoleculeController.Instance.CreateColorPicker(Ribbons.STRAND_COLOR, "Sheet color", null);
 			}
 			GUILayout.EndHorizontal();
 			
@@ -2994,7 +3021,7 @@ namespace UI{
 			GUILayout.Label("Coil Color :");
 			GUILayout.FlexibleSpace();
 			if(GUILayout.Button(coilButton,GUILayout.MinWidth(100),GUILayout.MinHeight(20))){
-				CreateColorPicker(Ribbons.COIL_COLOR, "Coil color", null);
+				GUIMoleculeController.Instance.CreateColorPicker(Ribbons.COIL_COLOR, "Coil color", null);
 			}
 			GUILayout.EndHorizontal();
 			}
@@ -3018,44 +3045,44 @@ namespace UI{
 				GUILayout.BeginHorizontal();
 				GUILayout.Label("Chain A :");
 				if(GUILayout.Button(chainbuttonA,GUILayout.MinWidth(100),GUILayout.MinHeight(20))){
-					CreateColorPicker(Ribbons.ChainColorA, "Chain A color", null);
+					GUIMoleculeController.Instance.CreateColorPicker(Ribbons.ChainColorA, "Chain A color", null);
 				}
 				GUILayout.EndHorizontal();
 
 				GUILayout.BeginHorizontal();
 				GUILayout.Label("Chain B :");
 				if(GUILayout.Button(chainbuttonB,GUILayout.MinWidth(100),GUILayout.MinHeight(20))){
-					CreateColorPicker(Ribbons.ChainColorB, "Chain B color", null);
+					GUIMoleculeController.Instance.CreateColorPicker(Ribbons.ChainColorB, "Chain B color", null);
 				}
 				GUILayout.EndHorizontal();
 				
 				GUILayout.BeginHorizontal();
 				GUILayout.Label("Chain C :");
 				if(GUILayout.Button(chainbuttonC,GUILayout.MinWidth(100),GUILayout.MinHeight(20))){
-					CreateColorPicker(Ribbons.ChainColorC, "Chain C color", null);
+					GUIMoleculeController.Instance.CreateColorPicker(Ribbons.ChainColorC, "Chain C color", null);
 				}
 				GUILayout.EndHorizontal();
 				
 				GUILayout.BeginHorizontal();
 				GUILayout.Label("Chain D :");
 				if(GUILayout.Button(chainbuttonD,GUILayout.MinWidth(100),GUILayout.MinHeight(20))){
-					CreateColorPicker(Ribbons.ChainColorD, "Chain D color", null);
+					GUIMoleculeController.Instance.CreateColorPicker(Ribbons.ChainColorD, "Chain D color", null);
 				}
 				GUILayout.EndHorizontal();
 				
 				GUILayout.BeginHorizontal();
 				GUILayout.Label("Chain E :");
 				if(GUILayout.Button(chainbuttonE,GUILayout.MinWidth(100),GUILayout.MinHeight(20))){
-					CreateColorPicker(Ribbons.ChainColorE, "Chain E color", null);
+					GUIMoleculeController.Instance.CreateColorPicker(Ribbons.ChainColorE, "Chain E color", null);
 				}
 				GUILayout.EndHorizontal();
 			}
 			
 			GUILayout.BeginHorizontal();
-			GUI.enabled = toggle_SUGAR_ONLY;
+			GUI.enabled = GUIMoleculeController.Instance.toggle_SUGAR_ONLY;
 			if(GUILayout.Button(new GUIContent("Apply changes"))) {
 				// Destroying the ribbons
-				toggle_NA_HIDE = !toggle_NA_HIDE;
+				GUIMoleculeController.Instance.toggle_NA_HIDE = !GUIMoleculeController.Instance.toggle_NA_HIDE;
 				GameObject[] Objs = Object.FindObjectsOfType(typeof(GameObject)) as GameObject[];;
 				foreach(GameObject ribObj in Objs){
 					if(ribObj.name == "Ribbons")
@@ -3065,7 +3092,7 @@ namespace UI{
 				// Recreating them
 				Ribbons ribbons = new Ribbons();
 				ribbons.CreateRibbons();
-				toggle_NA_HIDE = !toggle_NA_HIDE;
+				GUIMoleculeController.Instance.toggle_NA_HIDE = !GUIMoleculeController.Instance.toggle_NA_HIDE;
 			}
 			GUI.enabled = true;
 			GUILayout.EndHorizontal();
@@ -3117,9 +3144,9 @@ namespace UI{
 		/// <param name='texDescr'>
 		/// Texture description.
 		/// </param>
-		private static void textureMenu (string texDir, string[] texList, string texDescr) {
+		private void textureMenu (string texDir, string[] texList, string texDescr) {
 //			GUI.Label (new Rect (0, 0, 290, 20), "Surface Texture - " + texDescr, CentredText);
-			showSurfaceTexture = SetTitleExit("Surface Texture - " + texDescr); //, CentredText);
+			GUIMoleculeController.Instance.showSurfaceTexture = SetTitleExit("Surface Texture - " + texDescr); //, CentredText);
 			
 			GUILayout.BeginHorizontal();
 			GUILayout.FlexibleSpace();
@@ -3128,39 +3155,39 @@ namespace UI{
 			
 			GUILayout.BeginHorizontal ();
 			if (GUILayout.Button (new GUIContent ("<<", "Go to previous series of textures"))) { // cycle through texture sets 
-				texture_set--; 
+				GUIMoleculeController.Instance.texture_set--; 
 					
-				if(onlyBestTextures){
-					if(texture_set < 0)
-						texture_set = 4; // First 5 pages are best textures (0-4)
+				if(GUIMoleculeController.Instance.onlyBestTextures){
+					if(GUIMoleculeController.Instance.texture_set < 0)
+						GUIMoleculeController.Instance.texture_set = 4; // First 5 pages are best textures (0-4)
 				}
 				else{
-					if(texture_set < 5)
-						texture_set = GUIDisplay.Instance.textureMenuList.Count - 1;
+					if(GUIMoleculeController.Instance.texture_set < 5)
+						GUIMoleculeController.Instance.texture_set = GUIDisplay.Instance.textureMenuList.Count - 1;
 				}
 			}			
 
 //			if(GUILayout.Button(new GUIContent("Confirm","Confirm all the modification of the molecule.")))
 			if (GUILayout.Button (new GUIContent ("Open", "Open custom texture image from disk"))) {	
-				FileBrowser_show2 = true;
-				m_fileBrowser = new ImprovedFileBrowser (
+				GUIMoleculeController.Instance.FileBrowser_show2 = true;
+				GUIMoleculeController.Instance.m_fileBrowser = new ImprovedFileBrowser (
 	                new Rect (400, 100, 600, 500),
 	                "Choose Image File",
-	                FileSelectedCallback,
-	                m_last_extSurf_Path
+	                GUIMoleculeController.Instance.FileSelectedCallback,
+	                GUIMoleculeController.Instance.m_last_extSurf_Path
 	            );
 			}
 			
 			if (GUILayout.Button (new GUIContent (">>", "Go to next series of textures"))) { // cycle through texture sets 
-				texture_set++; 
+				GUIMoleculeController.Instance.texture_set++; 
 
-				if (onlyBestTextures) {
-					if(texture_set>4) // First 5 pages are best textures (0-4)
-						texture_set = 0;
+				if (GUIMoleculeController.Instance.onlyBestTextures) {
+					if(GUIMoleculeController.Instance.texture_set > 4) // First 5 pages are best textures (0-4)
+						GUIMoleculeController.Instance.texture_set = 0;
 				}
 				else{
-					if (texture_set > GUIDisplay.Instance.textureMenuList.Count - 1)
-						texture_set = 5;
+					if (GUIMoleculeController.Instance.texture_set > GUIDisplay.Instance.textureMenuList.Count - 1)
+						GUIMoleculeController.Instance.texture_set = 5;
 				}
 			}			
 			GUILayout.EndHorizontal ();
@@ -3182,17 +3209,17 @@ namespace UI{
 				int buttonHeight = (int) (Rectangles.textureHeight / 4f);
 				if (GUILayout.Button (new GUIContent ((Texture2D)Resources.Load (texDir + texFil), texFil), GUILayout.Width (buttonWidth), GUILayout.Height (buttonHeight))) { 
 					if(texFil != "None") {
-						surfaceTexture = true;
-						externalSurfaceTexture = false;
-						surfaceTextureDone = false;
-						surfaceTextureName = texDir + texFil;
+						GUIMoleculeController.Instance.surfaceTexture = true;
+						GUIMoleculeController.Instance.externalSurfaceTexture = false;
+						GUIMoleculeController.Instance.surfaceTextureDone = false;
+						GUIMoleculeController.Instance.surfaceTextureName = texDir + texFil;
 					}
 					else {
-						surfaceTexture = true;
-						externalSurfaceTexture = false;
-						buildSurfaceDone = false;
-						surfaceTextureDone = false;
-						surfaceTextureName = "lit_spheres/divers/daphz1";
+						GUIMoleculeController.Instance.surfaceTexture = true;
+						GUIMoleculeController.Instance.externalSurfaceTexture = false;
+						GUIMoleculeController.Instance.buildSurfaceDone = false;
+						GUIMoleculeController.Instance.surfaceTextureDone = false;
+						GUIMoleculeController.Instance.surfaceTextureName = "lit_spheres/divers/daphz1";
 					}
 				}	
 			}
@@ -3204,14 +3231,14 @@ namespace UI{
 		
 		/// <summary>
 		/// Defines the texture selection window.
-		/// Negative values of texture_set are used to represent the "best" sets.
+		/// Negative values of GUIMoleculeController.Instance.texture_set are used to represent the "best" sets.
 		/// </summary>
 		/// <param name='a'>
 		/// Window identifier.
 		/// </param>
-		public static void SurfaceTexture (int a) {
+		public void SurfaceTexture (int a) {
 			
-			textureMenu ("lit_spheres/", GUIDisplay.Instance.textureMenuList[texture_set], GUIDisplay.Instance.textureMenuTitles[texture_set]);
+			textureMenu ("lit_spheres/", GUIDisplay.Instance.textureMenuList[ GUIMoleculeController.Instance.texture_set], GUIDisplay.Instance.textureMenuTitles[ GUIMoleculeController.Instance.texture_set]);
 			
 			GUI.DragWindow();
 		}	// End of SurfaceTexture				
@@ -3220,7 +3247,7 @@ namespace UI{
 		/// <summary>
 		/// Defines the rendering parameters, in the atom appearance menu.
 		/// </summary>
-		private static void RenderingParameters () {
+		private void RenderingParameters () {
 //			toggle_HB_SANIM = GUILayout.Toggle (toggle_HB_SANIM, new GUIContent ("HB_SANIM", "Animate shrink parameter"));
 			
 			GUILayout.BeginHorizontal();
@@ -3230,15 +3257,15 @@ namespace UI{
 			GUILayout.BeginHorizontal ();
 			GUILayout.FlexibleSpace(); // so as to center the buttons
 			if (GUILayout.Button (new GUIContent ("Renderer", "Choose the color, texture and scale of each atom"), GUILayout.Width(Rectangles.atomButtonWidth))){
-				showSetAtomScales = !showSetAtomScales;
-				showAtomsExtendedMenu = false;
-				showResiduesMenu = false;
-				showChainsMenu = false;
+				GUIMoleculeController.Instance.showSetAtomScales = !GUIMoleculeController.Instance.showSetAtomScales;
+				GUIMoleculeController.Instance.showAtomsExtendedMenu = false;
+				GUIMoleculeController.Instance.showResiduesMenu = false;
+				GUIMoleculeController.Instance.showChainsMenu = false;
 				GUIDisplay.Instance.applyToAtoms.Add("All");
 			}
 			
 			if (GUILayout.Button (new GUIContent ("Panels", "Open colors and textures panels menu"), GUILayout.Width(Rectangles.atomButtonWidth))) {
-				showPanelsMenu = !showPanelsMenu;
+				GUIMoleculeController.Instance.showPanelsMenu = !GUIMoleculeController.Instance.showPanelsMenu;
 			}
 			
 			GUILayout.FlexibleSpace();
@@ -3246,14 +3273,14 @@ namespace UI{
 			
 			GUILayout.BeginHorizontal();
 			GUI.enabled = true;
-			toggle_NA_HIDE = GUILayout.Toggle (toggle_NA_HIDE, new GUIContent ("Hide", "Hide/Display atoms")); // && !carbon_alpha?
+			GUIMoleculeController.Instance.toggle_NA_HIDE = GUILayout.Toggle (GUIMoleculeController.Instance.toggle_NA_HIDE, new GUIContent ("Hide", "Hide/Display atoms")); // && !carbon_alpha?
 			GUILayout.EndHorizontal();
 			
-			globalRadius = LabelSlider (globalRadius, 0.00001f, 2.0f, "Radius " + globalRadius.ToString("0.00"), "Determines radius value", true, (int)(0.90 * Rectangles.atomMenuWidth), 1, true);
+			GUIMoleculeController.Instance.globalRadius = GUIMoleculeController.Instance.LabelSlider (GUIMoleculeController.Instance.globalRadius, 0.00001f, 2.0f, "Radius " + GUIMoleculeController.Instance.globalRadius.ToString("0.00"), "Determines radius value", true, (int)(0.90 * Rectangles.atomMenuWidth), 1, true);
 			
 			
-			if (toggle_NA_HBALLSMOOTH) {
-				m_colorPicker = null;
+			if (GUIMoleculeController.Instance.toggle_NA_HBALLSMOOTH) {
+				GUIMoleculeController.Instance.m_colorPicker = null;
 				UIData.Instance.resetDisplay = true;
 				UIData.Instance.isCubeToSphere = false;
 				UIData.Instance.isSphereToCube = true;
@@ -3262,33 +3289,33 @@ namespace UI{
 				Debug.Log ("UIData.Instance.resetDisplay :: " + UIData.Instance.resetDisplay);
 				Debug.Log ("UIData.Instance.isCubeToSphere :: " + UIData.Instance.isCubeToSphere);
 				Debug.Log ("UIData.Instance.isSphereToCube :: " + UIData.Instance.isSphereToCube);
-				showAtomType = false;
+				GUIMoleculeController.Instance.showAtomType = false;
 				
 				BallUpdate.resetColors = true;
 				BallUpdate.resetRadii = true;
 				UIData.Instance.resetBondDisplay = true;
 				UIData.Instance.bondtype = UIData.BondType.hyperstick;
-				showBondType = false;
+				GUIMoleculeController.Instance.showBondType = false;
 				
-				globalRadius = 0.4f;
-				shrink = 0.5f;
-				linkScale = 1.0f;
+				GUIMoleculeController.Instance.globalRadius = 0.4f;
+				GUIMoleculeController.Instance.shrink = 0.5f;
+				GUIMoleculeController.Instance.linkScale = 1.0f;
 				
-				toggle_NA_HBALLSMOOTH = false;
+				GUIMoleculeController.Instance.toggle_NA_HBALLSMOOTH = false;
 				UIData.Instance.hballsmoothmode = false;
 			}
 			
 
 			GUILayout.BeginHorizontal();
-			if(toggle_NA_HIDE || UIData.Instance.atomtype == UIData.AtomType.particleball)
+			if(GUIMoleculeController.Instance.toggle_NA_HIDE || UIData.Instance.atomtype == UIData.AtomType.particleball)
 				GUI.enabled = false;
 			toggle_NA_SWITCH = GUILayout.Toggle (toggle_NA_SWITCH, new GUIContent 
 				("LOD mode", "Toggle LOD.  When this is enabled and the molecule is moving, hyperboloids are replaced by particle balls for smoother framerates."));
 			UIData.Instance.switchmode = toggle_NA_SWITCH;
 			GUI.enabled = true;
-			if(toggle_NA_HIDE)
+			if(GUIMoleculeController.Instance.toggle_NA_HIDE)
 				GUI.enabled = false;
-			toggle_NA_AUTOMOVE = GUILayout.Toggle (toggle_NA_AUTOMOVE, new GUIContent ("Automove", "Camera auto rotation"));
+			GUIMoleculeController.Instance.toggle_NA_AUTOMOVE = GUILayout.Toggle (GUIMoleculeController.Instance.toggle_NA_AUTOMOVE, new GUIContent ("Automove", "Camera auto rotation"));
 			GUI.enabled = true;
 			GUILayout.EndHorizontal();
 			
@@ -3298,14 +3325,14 @@ namespace UI{
 
 		}
 		
-		private static string structTypeButtonLabel(string st) {
+		private string structTypeButtonLabel(string st) {
 			if(st == "All atoms")
 				return("C-alpha trace");
 			else
 				return("All atoms");
 		}
 
-		private static string structTypeButtonLabel_BF(string st) {
+		private string structTypeButtonLabel_BF(string st) {
 			if(st == "All atoms")
 				return("B Factor");
 			else
@@ -3315,29 +3342,29 @@ namespace UI{
 		/// <summary>
 		/// Induces switch between all-atom and carbon alpha trace representations, as necessary.
 		/// </summary>
-		private static void ChooseStructure () {
+		private void ChooseStructure () {
 			GUILayout.BeginHorizontal ();
 			
 			GUI.enabled = (MoleculeModel.CatomsLocationlist.Count > 2);
-			if (GUILayout.Button (new GUIContent (structTypeButtonLabel(structType), "Switch to " + structTypeButtonLabel(structType)))) {
+			if (GUILayout.Button (new GUIContent (structTypeButtonLabel(GUIMoleculeController.Instance.structType), "Switch to " + structTypeButtonLabel(GUIMoleculeController.Instance.structType)))) {
 
 				if (UIData.Instance.secondarystruct) {
 					UIData.Instance.secondarystruct = false;
-					structType = "All atoms";
+					GUIMoleculeController.Instance.structType = "All atoms";
 					UIData.Instance.changeStructure = true;
-					globalRadius = 0.40f;
-					shrink = 0.50f;
+					GUIMoleculeController.Instance.globalRadius = 0.40f;
+					GUIMoleculeController.Instance.shrink = 0.50f;
 				} else {
 					UIData.Instance.secondarystruct = true;
-					structType = "C-alpha trace";
+					GUIMoleculeController.Instance.structType = "C-alpha trace";
 					if (UIData.Instance.toggle_bf){
 						AlphaChainSmoother.ReSpline ();
 						DisplayMolecule.InitManagers();
 						UIData.Instance.toggle_bf = false;
 					}
 					UIData.Instance.changeStructure = true;
-					globalRadius = 0.25f;
-					shrink = 0.0001f;
+					GUIMoleculeController.Instance.globalRadius = 0.25f;
+					GUIMoleculeController.Instance.shrink = 0.0001f;
 				}
 				DisplayMolecule.DestroyAtomsAndBonds();
 				UIData.Instance.resetDisplay = true ;
@@ -3353,27 +3380,27 @@ namespace UI{
 		/// <summary>
 		/// Induces switch between all-atom and Bfactor color/radius representation
 		/// </summary>
-		private static void ChooseStructure_BF () {
+		private void ChooseStructure_BF () {
 			GUILayout.BeginHorizontal ();
 			
 			GUI.enabled = (MoleculeModel.CatomsLocationlist.Count > 2);
-			if (GUILayout.Button (new GUIContent (structTypeButtonLabel_BF(structType), "Switch to " + structTypeButtonLabel_BF(structType)))) {
+			if (GUILayout.Button (new GUIContent (structTypeButtonLabel_BF(GUIMoleculeController.Instance.structType), "Switch to " + structTypeButtonLabel_BF(GUIMoleculeController.Instance.structType)))) {
 				if (UIData.Instance.secondarystruct) {
 					UIData.Instance.secondarystruct = false;
-					structType = "All atoms";
+					GUIMoleculeController.Instance.structType = "All atoms";
 					UIData.Instance.changeStructure = true;
-					globalRadius = 0.40f;
-					shrink = 0.50f;
+					GUIMoleculeController.Instance.globalRadius = 0.40f;
+					GUIMoleculeController.Instance.shrink = 0.50f;
 				} else {
 					UIData.Instance.secondarystruct = true;
-					structType = "B Factor";
+					GUIMoleculeController.Instance.structType = "B Factor";
 				//	DisplayMolecule.DestroyAtomsAndBonds();
 					UIData.Instance.toggle_bf = true;
 					BFactorRep.CreateBFRep();
 					DisplayMolecule.InitManagers();
 					UIData.Instance.changeStructure = true;
-					globalRadius = 0.15f;
-					shrink = 0.0001f;
+					GUIMoleculeController.Instance.globalRadius = 0.15f;
+					GUIMoleculeController.Instance.shrink = 0.0001f;
 
 				//	UIData.Instance.resetDisplay = true;
 				}
@@ -3393,12 +3420,12 @@ namespace UI{
 		/// <summary>
 		/// Chooses the smoothness of the carbon alpha trace(s).
 		/// </summary>
-		private static void ChooseSmoothness () {
-			bool isChain = (structType == "C-alpha trace");
+		private void ChooseSmoothness () {
+			bool isChain = (GUIMoleculeController.Instance.structType == "C-alpha trace");
 			int labelWidth = (int) (0.35f * Rectangles.secStructMenuWidth);
 			int sliderWidth = (int) (0.55f * Rectangles.secStructMenuWidth);
 			int newSmooth;
-			newSmooth = (int) LabelSlider(GenInterpolationPoint.smoothnessFactor, 1f, 15f,
+			newSmooth = (int) GUIMoleculeController.Instance.LabelSlider(GenInterpolationPoint.smoothnessFactor, 1f, 15f,
 					"Smoothness", "Smoothness of the carbon alpha chain spline", isChain, sliderWidth, labelWidth, true);
 			GUI.enabled = true;
 			
@@ -3418,12 +3445,12 @@ namespace UI{
 		/// <summary>
 		/// Chooses the smoothness of the BFactor color/radius Representation.
 		/// </summary>
-		private static void ChooseSmoothness_BF () {
-			bool isChain = (structType == "B Factor");
+		private void ChooseSmoothness_BF () {
+			bool isChain = (GUIMoleculeController.Instance.structType == "B Factor");
 			int labelWidth = (int) (0.35f * Rectangles.secStructMenuWidth);
 			int sliderWidth = (int) (0.55f * Rectangles.secStructMenuWidth);
 			int newSmooth;
-			newSmooth = (int) LabelSlider(GenInterpolationPoint_BF.smoothnessFactor, 1f, 15f,
+			newSmooth = (int) GUIMoleculeController.Instance.LabelSlider(GenInterpolationPoint_BF.smoothnessFactor, 1f, 15f,
 			                              "Smoothness", "Smoothness of the Bfactor color/radius Representation", isChain, sliderWidth, labelWidth, true);
 			GUI.enabled = true;
 			
@@ -3443,15 +3470,15 @@ namespace UI{
 		/// <summary>
 		/// Display slider setting the radius value for the highest Bfactor
 		/// </summary>
-		private static void SetHighBFSlider(){
+		private void SetHighBFSlider(){
 
-			bool isChain = (structType == "B Factor");
+			bool isChain = (GUIMoleculeController.Instance.structType == "B Factor");
 			int labelWidth = (int) (0.35f * Rectangles.secStructMenuWidth);
 			int sliderWidth = (int) (0.55f * Rectangles.secStructMenuWidth);
 
 			GUI.enabled = true;
 
-			highBFradius = LabelSlider(highBFradius, 1.0f, 2.0f, "High value radius", "Set highest Bfactor radius value", isChain, sliderWidth, labelWidth, true);
+			GUIMoleculeController.Instance.highBFradius = GUIMoleculeController.Instance.LabelSlider(GUIMoleculeController.Instance.highBFradius, 1.0f, 2.0f, "High value radius", "Set highest Bfactor radius value", isChain, sliderWidth, labelWidth, true);
 			
 			if (GUI.changed) {
 				BallUpdate.resetRadii = true;
@@ -3461,9 +3488,9 @@ namespace UI{
 		/// <summary>
 		/// Chooses min and max values to use for BFactor Representation
 		/// </summary>
-		public static void MinMaxChoice(){
+		public void MinMaxChoice(){
 
-			bool isChain = (structType == "B Factor");
+			bool isChain = (GUIMoleculeController.Instance.structType == "B Factor");
 			int textWidth = (int) (0.18f * Rectangles.secStructMenuWidth);
 			int buttonWidth = (int) (0.47 * Rectangles.secStructMenuWidth);
 			GUI.enabled = isChain;
@@ -3499,7 +3526,7 @@ namespace UI{
 		}
 
 /*	
-		private static string hideOrShowAtoms() {
+		private string hideOrShowAtoms() {
 			if (showAtoms)
 				return("Hide atoms");
 			else
@@ -3510,7 +3537,7 @@ namespace UI{
 		/// <summary>
 		/// Toggles the atoms (by modifying their radius, which is less than ideal).
 		/// </summary>
-		private static void ToggleAtoms() {
+		private void ToggleAtoms() {
 			GUILayout.BeginHorizontal();
 			if (GUILayout.Button(new GUIContent(hideOrShowAtoms(), "This button enables/disables atoms"))) {
 				showAtoms = !showAtoms;
@@ -3529,7 +3556,7 @@ namespace UI{
 		/// <summary>
 		/// Sets the atom style. Calls a few sub-functions that define GUI elements for structure, smoothness, etc.
 		/// </summary>
-		private static void SetAtomStyle () {			
+		private void SetAtomStyle () {			
 			
 			GUILayout.BeginHorizontal ();
 			GUILayout.FlexibleSpace();
@@ -3543,7 +3570,7 @@ namespace UI{
 			string atomtype = "";
 			UIData.AtomType atype = UIData.Instance.atomtype;
 			if(atype == UIData.AtomType.noatom)
-				atype = Molecule3DComp.PreviousAtomType;
+				atype = GUIMoleculeController.Instance.Molecule3DComp.PreviousAtomType;
 			switch (atype) {
 			case UIData.AtomType.cube:
 				atomtype = "Cube";
@@ -3589,9 +3616,9 @@ namespace UI{
 			else
 				displayAtomType = atomtype;
 			if (GUILayout.Button (new GUIContent (displayAtomType, "Change the atom appearance style or rendering method"), GUILayout.Width(Rectangles.atomButtonWidth))) {
-				showAtomType = !showAtomType;
-				showBondType = false;
-				m_colorPicker = null;
+				GUIMoleculeController.Instance.showAtomType = !GUIMoleculeController.Instance.showAtomType;
+				GUIMoleculeController.Instance.showBondType = false;
+				GUIMoleculeController.Instance.m_colorPicker = null;
 			}
 
 
@@ -3622,14 +3649,14 @@ namespace UI{
 
 			
 			if (GUILayout.Button (new GUIContent (bondtype, "Change the bond appearance style or rendering method"), GUILayout.Width(Rectangles.atomButtonWidth))) {	
-				showBondType = !showBondType;
-				showAtomType = false;
+				GUIMoleculeController.Instance.showBondType = !GUIMoleculeController.Instance.showBondType;
+				GUIMoleculeController.Instance.showAtomType = false;
 			}
 			GUILayout.FlexibleSpace();
 			GUILayout.EndHorizontal ();
 			
 			GUILayout.BeginHorizontal();
-			if(toggle_NA_HIDE)
+			if(GUIMoleculeController.Instance.toggle_NA_HIDE)
 				GUI.enabled = false;
 			if(GUILayout.Button(new GUIContent("Smooth HyperBalls", "Set a parameter combo for HyperBalls and Sticks with SmoothLinks once"))) {
 				SmoothHyperBalls ();
@@ -3647,25 +3674,25 @@ namespace UI{
 		/// <param name='a'>
 		/// Window identifier.
 		/// </param>
-		public static void AtomMenu (int a) {
-			showAtomMenu = SetTitleExit("Atom appearance");
+		public void AtomMenu (int a) {
+			GUIMoleculeController.Instance.showAtomMenu = SetTitleExit("Atom appearance");
 			SetAtomStyle ();
 			RenderingParameters ();
 			
 			GUILayout.BeginHorizontal();
-			toggle_NA_CLICK = GUILayout.Toggle (toggle_NA_CLICK, new GUIContent ("Atom selection", "Toggles mouse clicking to select/deselect atoms (left click/right click)"));
+			GUIMoleculeController.Instance.toggle_NA_CLICK = GUILayout.Toggle (GUIMoleculeController.Instance.toggle_NA_CLICK, new GUIContent ("Atom selection", "Toggles mouse clicking to select/deselect atoms (left click/right click)"));
 			GUILayout.EndHorizontal();
 
 			// Luiz FIXME gotta find a way yo synchronize selection
-			toggle_NA_CLICK = false;
+			GUIMoleculeController.Instance.toggle_NA_CLICK = false;
 			
 			GUILayout.BeginHorizontal();
-			toggle_NA_CAMLOCK = GUILayout.Toggle (toggle_NA_CAMLOCK, new GUIContent ("Lock camera", "Enable/Disable camera movements"));
+			GUIMoleculeController.Instance.toggle_NA_CAMLOCK = GUILayout.Toggle (GUIMoleculeController.Instance.toggle_NA_CAMLOCK, new GUIContent ("Lock camera", "Enable/Disable camera movements"));
 			GUILayout.EndHorizontal();
 			
-			if (!toggle_NA_CLICK && GameObject.FindGameObjectWithTag("MainCamera").GetComponent<ClickAtom> ())
+			if (!GUIMoleculeController.Instance.toggle_NA_CLICK && GameObject.FindGameObjectWithTag("MainCamera").GetComponent<ClickAtom> ())
 				GameObject.FindGameObjectWithTag("MainCamera").GetComponent<ClickAtom> ().enabled = false;
-			else if (toggle_NA_CLICK && GameObject.FindGameObjectWithTag("MainCamera").GetComponent<ClickAtom> ())
+			else if (GUIMoleculeController.Instance.toggle_NA_CLICK && GameObject.FindGameObjectWithTag("MainCamera").GetComponent<ClickAtom> ())
 				GameObject.FindGameObjectWithTag("MainCamera").GetComponent<ClickAtom> ().enabled = true;
 			
 			
@@ -3673,7 +3700,7 @@ namespace UI{
 			int labelWidth = (int) (Rectangles.atomButtonWidth * 0.4f);
 			
 			GUILayout.BeginHorizontal();
-			HBallManager.brightness = LabelSlider(HBallManager.brightness, 0.33f, 2.0f, "Brightness: " + HBallManager.brightness.ToString("0.00"), 
+			HBallManager.brightness = GUIMoleculeController.Instance.LabelSlider(HBallManager.brightness, 0.33f, 2.0f, "Brightness: " + HBallManager.brightness.ToString("0.00"), 
 									"Adjusts the brightness of atoms and bonds represented with the MatCap shader",
 									(UIData.Instance.atomtype == UIData.AtomType.hyperball), sliderWidth, labelWidth, false);
 			if(GUI.changed)
@@ -3689,7 +3716,7 @@ namespace UI{
 		/// <summary>
 		/// Loads the GUI components for taking screenshots in the display window.
 		/// </summary>
-		private static void LoadScreenShot () {
+		private void LoadScreenShot () {
 			GUILayout.BeginHorizontal();
 			if (GUILayout.Button (new GUIContent ("ScreenShot", "Capture the screen and save image to the original file path"))) {
 				GameObject LocCamera = GameObject.Find ("Camera");
@@ -3715,7 +3742,7 @@ namespace UI{
 		/// <summary>
 		/// Defines the GUI components that allow for background color control in the display menu.
 		/// </summary>
-		private static void BackGroundControl () {
+		private void BackGroundControl () {
 			GUILayout.BeginHorizontal ();
 			
 			GUILayout.Label (new GUIContent ("BackGround", "Toggle the use of a skybox on/off"), GUILayout.MaxWidth (120));
@@ -3729,7 +3756,7 @@ namespace UI{
 			GUILayout.EndHorizontal ();
 			
 			// MB: only show possibility to change skybox if it is set to on
-			showBackgroundType = UIData.Instance.backGroundIs ;
+			GUIMoleculeController.Instance.showBackgroundType = UIData.Instance.backGroundIs ;
 
 			if (Event.current.type == EventType.Repaint)
 				MoleculeModel.newtooltip = GUI.tooltip;
@@ -3739,7 +3766,7 @@ namespace UI{
 		/// <summary>
 		/// Defines the GUI components for setting the BackGround color. Part of the Display window.
 		/// </summary>
-		private static void BackColor () {
+		private void BackColor () {
 			//Luiz: 
 			GUILayout.BeginHorizontal ();
 
@@ -3770,10 +3797,10 @@ namespace UI{
 
 			GUILayout.BeginHorizontal ();
 			if (GUILayout.Button (new GUIContent ("Background Color", "Choose the background color"))) {
-				if (m_colorPicker != null)
-					m_colorPicker = null;
+				if (GUIMoleculeController.Instance.m_colorPicker != null)
+					GUIMoleculeController.Instance.m_colorPicker = null;
 					
-				m_colorPicker = new ColorPicker(Rectangles.colorPickerRect,	BackgroundColor, null, "All", "All", "Background Color");
+				GUIMoleculeController.Instance.m_colorPicker = new ColorPicker(Rectangles.colorPickerRect, GUIMoleculeController.Instance.BackgroundColor, null, "All", "All", "Background Color");
 			}
 			GUILayout.EndHorizontal ();
 		}
@@ -3786,26 +3813,26 @@ namespace UI{
 		/// <param name='a'>
 		/// A.
 		/// </param>
-		public static void Display (int a) {
-			showManipulatorMenu = SetTitleExit("Display");
+		public void Display (int a) {
+			GUIMoleculeController.Instance.showManipulatorMenu = SetTitleExit("Display");
 			// VisualControl ();
 			LoadScreenShot ();
 			//ShaderControl();
 			BackGroundControl ();
 
-			if(showBackgroundType)
+			if(GUIMoleculeController.Instance.showBackgroundType)
 				GUI.enabled = false;
 			BackColor ();
 			GUI.enabled = true;
 			
 			GUILayout.BeginHorizontal ();
 			if (GUILayout.Button (new GUIContent ("Effects", "Toggle what kind of special effect to apply to the scene"))) 
-				showEffectType = !showEffectType;
+				GUIMoleculeController.Instance.showEffectType = !GUIMoleculeController.Instance.showEffectType;
 			GUILayout.EndHorizontal ();
 			
 			GUILayout.BeginHorizontal ();
 			if (GUILayout.Button (new GUIContent ("Infos", "Show/Hide the FPS, atom count and bond count"))) 
-				toggle_INFOS = !toggle_INFOS;
+				GUIMoleculeController.Instance.toggle_INFOS = !GUIMoleculeController.Instance.toggle_INFOS;
 			GUILayout.EndHorizontal ();
 
 			if (Event.current.type == EventType.Repaint)
@@ -3814,7 +3841,7 @@ namespace UI{
 		} // End of Display
 
 		// Luiz:
-		public static void Energy(int id) {
+		public void Energy(int id) {
 			EnergyWindow.Draw(
 				GUIDisplay.Instance.CurrentState.Energy,
 				GUIDisplay.Instance.StateEnergyMinMax.max,
@@ -3835,10 +3862,10 @@ namespace UI{
 		/// <param name='a'>
 		/// Window identifier.
 		/// </param>
-		public static void Manipulator (int a) {
+		public void Manipulator (int a) {
 			SetTitle("Molecule Manipulator");
 			maxCamera fixeCam;
-			fixeCam = scenecontroller.GetComponent<maxCamera> ();
+			fixeCam = GUIMoleculeController.Instance.scenecontroller.GetComponent<maxCamera> ();
 			if (GUILayout.RepeatButton (new GUIContent ("Up", "Move Up")))
 				fixeCam.upyDeg ();
 			
@@ -3875,7 +3902,7 @@ namespace UI{
 					GUIDisplay.Instance.GoToNextState();
 				}
 
-				GUIDisplay.Instance.CurrentStateIdx = (int) System.Math.Round(LabelSlider(
+				GUIDisplay.Instance.CurrentStateIdx = (int) System.Math.Round(GUIMoleculeController.Instance.LabelSlider(
 					GUIDisplay.Instance.CurrentStateIdx,
 					0f,
 					GUIDisplay.Instance.StateFiles.Length - 1,
@@ -3894,20 +3921,20 @@ namespace UI{
 		} // End of Manipulator	
 
 		// Luiz:
-		private static void DispatchMethodPerformedEvent(string methodName, object param)
+		private void DispatchMethodPerformedEvent(string methodName, object param)
 		{
 			ChangeManager.DispatchMethodEvent (typeof(LoadTypeGUI), methodName, param);
 		}
-		public static void ChangeRepresentation(UIData.AtomType type)
+		public void ChangeRepresentation(UIData.AtomType type)
 		{
 			UIData.Instance.resetDisplay = true;
 			UIData.Instance.atomtype = type;
 			Debug.Log ("UIData.Instance.resetDisplay:" + UIData.Instance.resetDisplay);
 			Debug.Log ("UIData.Instance.isCubeToSphere:" + UIData.Instance.isCubeToSphere);
 			Debug.Log ("UIData.Instance.isSphereToCube:" + UIData.Instance.isSphereToCube);
-			showAtomType = false;
-			toggle_NA_HIDE = false;
-			toggle_NA_CLICK = false;
+			GUIMoleculeController.Instance.showAtomType = false;
+			GUIMoleculeController.Instance.toggle_NA_HIDE = false;
+			GUIMoleculeController.Instance.toggle_NA_CLICK = false;
 
 			switch (UIData.Instance.atomtype) {
 			case UIData.AtomType.cube:
@@ -3947,33 +3974,33 @@ namespace UI{
 
 			DispatchMethodPerformedEvent ("ChangeRepresentation", type);
 		}
-		public static void ChangeBond(UIData.BondType type)
+		public void ChangeBond(UIData.BondType type)
 		{
 			UIData.Instance.resetBondDisplay = true;
 			UIData.Instance.bondtype = type;
-			showBondType = false;
+			GUIMoleculeController.Instance.showBondType = false;
 
 			DispatchMethodPerformedEvent ("ChangeBond", type);
 		}
-		public static void SmoothHyperBalls()
+		public void SmoothHyperBalls()
 		{
-			toggle_NA_HBALLSMOOTH = !toggle_NA_HBALLSMOOTH;
-			UIData.Instance.hballsmoothmode = toggle_NA_HBALLSMOOTH;
+			GUIMoleculeController.Instance.toggle_NA_HBALLSMOOTH = !GUIMoleculeController.Instance.toggle_NA_HBALLSMOOTH;
+			UIData.Instance.hballsmoothmode = GUIMoleculeController.Instance.toggle_NA_HBALLSMOOTH;
 
 			DispatchMethodPerformedEvent ("SmoothHyperBalls", null);
 		}
-		public static void ChangeBackgroundColor(ColorPicker.ColorEventArgs e)
+		public void ChangeBackgroundColor(ColorPicker.ColorEventArgs e)
 		{
 			// Luiz: could be a property change, indeed, but god knows why JsonUtility can't 
 			// serialize ColorObject correctly.
 
 			var newColor = e.Color;
 			if (newColor != sNullColor) {
-				BackgroundColor = new ColorObject (newColor);
+				GUIMoleculeController.Instance.BackgroundColor = new ColorObject (newColor);
 						Camera.main.backgroundColor = newColor;
 				DispatchMethodPerformedEvent ("ChangeBackgroundColor", e);
 			}
 		}
-		private static Color sNullColor = new Color (0, 0, 0, 0);
+		private Color sNullColor = new Color (0, 0, 0, 0);
 	}
 }

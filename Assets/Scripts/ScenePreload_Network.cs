@@ -85,11 +85,11 @@ public class ScenePreload_Network : MonoBehaviour {
 		GUIDisplay.Instance.file_extension = "xgmml";	
 		UIData.Instance.atomtype=UIData.AtomType.hyperball;
 		UIData.Instance.bondtype=UIData.BondType.hyperstick;
-		GUIMoleculeController.globalRadius = 0.7f;
-		GUIMoleculeController.shrink = 0.0001f;
-		GUIMoleculeController.linkScale = 0.3f;
-		GUIMoleculeController.showOpenMenu = false;
-		GUIMoleculeController.showAtomMenu = true;
+		GUIMoleculeController.Instance.globalRadius = 0.7f;
+		GUIMoleculeController.Instance.shrink = 0.0001f;
+		GUIMoleculeController.Instance.linkScale = 0.3f;
+		GUIMoleculeController.Instance.showOpenMenu = false;
+		GUIMoleculeController.Instance.showAtomMenu = true;
 		SendMessage("Display",SendMessageOptions.DontRequireReceiver);	
 	}
 	

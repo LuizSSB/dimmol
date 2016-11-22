@@ -389,7 +389,7 @@ public class CubeManager : GenericManager {
 		if(UIData.Instance.atomtype == UIData.AtomType.cube){
 			foreach(BallUpdateCube cb in cubes) {
 				float buffer = Molecule.Model.MoleculeModel.atomsTypelist[(int)cb.number].radius
-								* (GUIMoleculeController.globalRadius)
+								* (GUIMoleculeController.Instance.globalRadius)
 								* (Molecule.Model.MoleculeModel.atomsLocalScaleList[(int)cb.number]/100);
 				cb.transform.localScale = new Vector3(buffer, buffer, buffer);
 			}
@@ -435,7 +435,7 @@ public class CubeManager : GenericManager {
 		if(BallUpdate.resetRadii || (BallUpdate.oldRadiusFactor != BallUpdate.radiusFactor))
 			ResetRadii();
 		
-		if(GUIMoleculeController.toggle_MDDRIVER) {
+		if(GUIMoleculeController.Instance.toggle_MDDRIVER) {
 			if(!mouseOvers)
 			{
 				CreateMouseOversMDDriver();
@@ -445,7 +445,7 @@ public class CubeManager : GenericManager {
 		{
 			if(mouseOvers)
 			{
-				if (GUIMoleculeController.toggle_MDDRIVER)
+				if (GUIMoleculeController.Instance.toggle_MDDRIVER)
 				{
 					DestroyMouseOversMDDriver();
 				}

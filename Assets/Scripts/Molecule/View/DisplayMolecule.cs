@@ -74,9 +74,7 @@ namespace Molecule.View {
 	using Molecule.View.DisplayBond;
 	using UI;
 
-
-	public class DisplayMolecule {
-		
+	public class DisplayMolecule {		
 		public static void ResetDisplay() {
 			DestroyObject();
 			
@@ -200,7 +198,7 @@ namespace Molecule.View {
 				UIData.Instance.isCubeToSphere=false;
 				UIData.Instance.isSphereToCube=true;
 
-//				ParticleEffect.radiusFactor = GUIMoleculeController.rayon;
+//				ParticleEffect.radiusFactor = GUIMoleculeController.Instance.rayon;
 				ShurikenParticleManager.radiusFactor = BallUpdate.radiusFactor;
 				GameObject npmObject = GameObject.FindGameObjectWithTag("ShurikenParticleManager");
 				ShurikenParticleManager shManager = npmObject.GetComponent<ShurikenParticleManager>();
@@ -408,10 +406,11 @@ namespace Molecule.View {
 			CreatGameObjectArray();
 			CheckResidues();
 		
-			if (GUIMoleculeController.HYPERBALLSDEFAULT){
-				GUIMoleculeController.toggle_NA_HBALLSMOOTH = !GUIMoleculeController.toggle_NA_HBALLSMOOTH;
-				UIData.Instance.hballsmoothmode = GUIMoleculeController.toggle_NA_HBALLSMOOTH;
-			}
+			// Luiz:
+//			if (GUIMoleculeController.Instance.HYPERBALLSDEFAULT){
+				GUIMoleculeController.Instance.toggle_NA_HBALLSMOOTH = !GUIMoleculeController.Instance.toggle_NA_HBALLSMOOTH;
+				UIData.Instance.hballsmoothmode = GUIMoleculeController.Instance.toggle_NA_HBALLSMOOTH;
+//			}
  
 			UIData.Instance.hasMoleculeDisplay=true;
 //			UIData.Instance.EnableUpdate=true;

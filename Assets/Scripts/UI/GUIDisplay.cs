@@ -94,6 +94,7 @@ namespace UI {
 	 * <A HREF="http://docs.unity3d.com/Documentation/ScriptReference/Rect.html">Rect</A><BR>
 	 * 
 	 */
+	[ClearableSingleton]
 	public class GUIDisplay	{
 		// Luiz:
 		public const string DefaultTextureLocation = "lit_spheres/";
@@ -197,15 +198,6 @@ namespace UI {
 		
 		public bool LoginFlag=false;
 		public bool LoginAgainFlag=false;
-
-		private GUIMoleculeController _gUIMoleculeController;
-		public GUIMoleculeController gUIMoleculeController
-		{
-			get
-			{
-				return _gUIMoleculeController = _gUIMoleculeController ?? new GUIMoleculeController();
-			}
-		}
 		
 		public ImprovedFileBrowser m_fileBrowser;
 		public string m_textPath;
@@ -231,7 +223,7 @@ namespace UI {
 
 				if(newScale != oldScale){
 					GenericManager manager = DisplayMolecule.GetManagers()[0];
-					if(!GUIMoleculeController.toggle_NA_CLICK){
+					if(!GUIMoleculeController.Instance.toggle_NA_CLICK){
 						Debug.Log ("h0wwwww");
 						manager.SetRadii(applyToAtoms, applyToRes, applyToChain);
 						oldScale = newScale;
@@ -309,7 +301,7 @@ namespace UI {
 		private Dictionary<string, List<RendererInfos>> panelDict = new Dictionary<string, List<RendererInfos>>();
 		
 		// Those are public because "SurfaceTexture" in LoadTypeGUI use them for the Surface Textures Menu.
-		// BTW, I don't really get how things are distributed between GUIDisplay, LoadTypeGUI or GUIMoleculeController... [Erwan]
+		// BTW, I don't really get how things are distributed between GUIDisplay, LoadTypeGUI or GUIMoleculeController.Instance... [Erwan]
 		public List<string> textureMenuTitles = new List<string>();
 		public List<string[]> textureMenuList = new List<string[]>();
 		
@@ -345,12 +337,20 @@ namespace UI {
 		 *		<img src="imageDoc/colorBox_UnityMol.png" alt="Pannel for selecting Atoms Color in UnityMol." title="Atoms color selection Pannel."/>
 		 * <p>
 		 */
-		
+
+		// Luiz: Singleton pattern
+		private static GUIDisplay sInstance;
+		public static GUIDisplay Instance
+		{
+			get {
+				return sInstance = sInstance ?? new GUIDisplay();
+			}
+		}
+
+
 		/// <summary>
 		/// Make a box for atom color selecting.
 		/// </summary>
-		// Luiz:
-		public static GUIDisplay Instance = new GUIDisplay();
 		private GUIDisplay() {
 			if (Screen.width > 900)
 				guiScale = 0.9f;
@@ -389,7 +389,7 @@ namespace UI {
 			// 	UIData.Instance.isOpenFile = true;
 			// 	UIData.Instance.atomtype = UIData.AtomType.particleball;
 			// 	UIData.Instance.bondtype = UIData.BondType.nobond;
-			// 	GUIMoleculeController.showOpenMenu=false;
+			// 	GUIMoleculeController.Instance.showOpenMenu=false;
 			// }
 			// #endif
 
@@ -461,7 +461,7 @@ namespace UI {
 		/// <summary>
 		/// Display a GUI pannel for selecting a PDB on a server or on a local file. 
 		/// </summary>
-		public void Display() {
+		public bool Display() {
 			if(!UIData.Instance.isRenderDictInit)
 				InitRenderDict();
 			if(!UIData.Instance.isTexturesMenuListInit)
@@ -471,7 +471,7 @@ namespace UI {
 			fileimage=(Texture2D)Resources.Load("FileBrowser/fichiers");
 
 			if (UnityClusterPackage.Node.CurrentNode.HasPermission(NodePermission.MenuControl)) {
-				if (GUIMoleculeController.showOpenMenu) {
+				if (GUIMoleculeController.Instance.showOpenMenu) {
 					GUILayout.BeginArea (Rectangles.openRect);
 					#if !UNITY_WEBPLAYER
 					{
@@ -489,8 +489,8 @@ namespace UI {
 //							m_fileBrowser.SelectionPattern = "*.pdb|*.xgmml";
 								m_fileBrowser.DirectoryImage = directoryimage; 
 								m_fileBrowser.FileImage = fileimage;
-								GUIMoleculeController.showOpenMenu = false;
-								GUIMoleculeController.showSecStructMenu = false;
+								GUIMoleculeController.Instance.showOpenMenu = false;
+								GUIMoleculeController.Instance.showSecStructMenu = false;
 							}
 
 							GUILayout.BeginHorizontal ();
@@ -520,7 +520,7 @@ namespace UI {
 								id = PdbRequest.PdbId;
 								UIData.Instance.fetchPDBFile = true;
 								UIData.Instance.isOpenFile = true;
-								GUIMoleculeController.showOpenMenu = false;
+								GUIMoleculeController.Instance.showOpenMenu = false;
 								UIData.Instance.atomtype = UIData.AtomType.particleball;
 								UIData.Instance.bondtype = UIData.BondType.nobond;
 							}
@@ -532,8 +532,8 @@ namespace UI {
 								m_fileBrowser = new ImprovedFileBrowser(Rectangles.fileBrowserRect, "", OpenGamessOutputCallback, m_lastOpenDir);
 								m_fileBrowser.DirectoryImage = directoryimage; 
 								m_fileBrowser.FileImage = fileimage;
-								GUIMoleculeController.showOpenMenu = false;
-								GUIMoleculeController.showSecStructMenu = false;
+								GUIMoleculeController.Instance.showOpenMenu = false;
+								GUIMoleculeController.Instance.showSecStructMenu = false;
 							}
 							GUILayout.Label("Web address to GAMESS output");
 							GUILayout.BeginHorizontal(); {
@@ -541,14 +541,14 @@ namespace UI {
 								if(GUILayout.Button(new GUIContent("Fetch", "Fetch GAMESS optimization output file from the web"))) {
 
 									try {
-										GUIMoleculeController.showOpenMenu = false;
-										GUIMoleculeController.showSecStructMenu = false;
+										GUIMoleculeController.Instance.showOpenMenu = false;
+										GUIMoleculeController.Instance.showSecStructMenu = false;
 										var filePath = RequestGamessOutput.Fetch(GamessOutputWebAddress, Application.persistentDataPath);
 										OpenGamessOutputCallback(filePath);
 									} catch(System.Exception e) {
 										Debug.Log("Could not fetch gamess output: " + e);
-										GUIMoleculeController.showOpenMenu = true;
-										GUIMoleculeController.showSecStructMenu = true;
+										GUIMoleculeController.Instance.showOpenMenu = true;
+										GUIMoleculeController.Instance.showSecStructMenu = true;
 									}
 
 								}
@@ -573,7 +573,7 @@ namespace UI {
 						else {
 							if (GUILayout.Button (new GUIContent ("Clear", "Clear the scene"))) {
 								// Luiz:
-								Clear ();
+								Clear (false);
 							}
 						}
 					}
@@ -633,7 +633,7 @@ namespace UI {
 					if(GUILayout.Button("Main Menu"))
 					{
 						UIData.Instance.isclear = true;
-						GUIMoleculeController.pdbGen = false;
+						GUIMoleculeController.Instance.pdbGen = false;
 						UIData.Instance.hasMoleculeDisplay = false;
 						Application.LoadLevel("MainMenu");
 					}
@@ -646,54 +646,54 @@ namespace UI {
 				}
 			}
 
-			gUIMoleculeController.CameraStop();
+			GUIMoleculeController.Instance.CameraStop();
 
 			// Luiz: this method must remain here, because it performs stuff related to drawing the molecule correctly 
 			// when it's first loaded.
-			gUIMoleculeController.SetAtomMenu();
+			GUIMoleculeController.Instance.SetAtomMenu();
 
 			// Luiz:
 			if (UnityClusterPackage.Node.CurrentNode.HasPermission(NodePermission.MenuControl)) {
-				gUIMoleculeController.SetSecStructMenu();
-				gUIMoleculeController.SetSurfaceMenu();
-				gUIMoleculeController.SetBfactorMenu();
-				gUIMoleculeController.SetFieldMenu();
-				gUIMoleculeController.SetManipulatorMenu();
-				gUIMoleculeController.DisplayGUI();
-				gUIMoleculeController.SetAtomType();
-				gUIMoleculeController.SetBondType();
-				gUIMoleculeController.SetCubeLineBond();
-				gUIMoleculeController.SetHyperBall();
-				gUIMoleculeController.SetEffectType();
-				gUIMoleculeController.SetSurfaceTexture();
-				gUIMoleculeController.SetSurfaceCut();
-				gUIMoleculeController.SetSurtfaceMobileCut();
-				gUIMoleculeController.SetBackGroundType();
-				gUIMoleculeController.SetMetaphorType();
-				gUIMoleculeController.SetAdvMenu();
-				gUIMoleculeController.SetGuidedMenu();
-				gUIMoleculeController.RenderHelp();
-				gUIMoleculeController.setSugarMenu(); //
-				gUIMoleculeController.setSugarRibbonsTuneMenu();
-				gUIMoleculeController.setColorTuneMenu();
-				gUIMoleculeController.SetVRPNMenu();
-				gUIMoleculeController.SetMDDriverMenu();
-				gUIMoleculeController.SetHydroMenu();
+				GUIMoleculeController.Instance.SetSecStructMenu();
+				GUIMoleculeController.Instance.SetSurfaceMenu();
+				GUIMoleculeController.Instance.SetBfactorMenu();
+				GUIMoleculeController.Instance.SetFieldMenu();
+				GUIMoleculeController.Instance.SetManipulatorMenu();
+				GUIMoleculeController.Instance.DisplayGUI();
+				GUIMoleculeController.Instance.SetAtomType();
+				GUIMoleculeController.Instance.SetBondType();
+				GUIMoleculeController.Instance.SetCubeLineBond();
+				GUIMoleculeController.Instance.SetHyperBall();
+				GUIMoleculeController.Instance.SetEffectType();
+				GUIMoleculeController.Instance.SetSurfaceTexture();
+				GUIMoleculeController.Instance.SetSurfaceCut();
+				GUIMoleculeController.Instance.SetSurtfaceMobileCut();
+				GUIMoleculeController.Instance.SetBackGroundType();
+				GUIMoleculeController.Instance.SetMetaphorType();
+				GUIMoleculeController.Instance.SetAdvMenu();
+				GUIMoleculeController.Instance.SetGuidedMenu();
+				GUIMoleculeController.Instance.RenderHelp();
+				GUIMoleculeController.Instance.setSugarMenu(); //
+				GUIMoleculeController.Instance.setSugarRibbonsTuneMenu();
+				GUIMoleculeController.Instance.setColorTuneMenu();
+				GUIMoleculeController.Instance.SetVRPNMenu();
+				GUIMoleculeController.Instance.SetMDDriverMenu();
+				GUIMoleculeController.Instance.SetHydroMenu();
 			}
-			gUIMoleculeController.SetEnergyWindow();
+			GUIMoleculeController.Instance.SetEnergyWindow();
 			if (GUI.Button(Rectangles.GoBackRect, new GUIContent("Go Back", "Goes back to the node setup"))) {
-				GUIDisplay.Instance.Clear ();
-				UnityEngine.SceneManagement.SceneManager.LoadScene("UCPSetup", UnityEngine.SceneManagement.LoadSceneMode.Single);
+				DieHard();
+				return false;
 			}
 
 			if(UnityClusterPackage.Node.CurrentNode.HasPermission(NodePermission.CameraControl)) {
-				gUIMoleculeController.SetMnipulatormove ();
+				GUIMoleculeController.Instance.SetMnipulatormove ();
 			}
 
 //			SetHyperballMatCapTexture();
 			SetAtomScales();
 			
-			if( GUIMoleculeController.m_colorPicker != null ){
+			if(GUIMoleculeController.Instance.m_colorPicker != null ){
 				ChangeAllColors();
 				//ColorPickerCaller ();
 			}
@@ -708,7 +708,8 @@ namespace UI {
 //			GUI.Label ( new Rect(120,Screen.height-35,Screen.width-360,20), GUI.tooltip);
 
 
-
+			// Luiz:
+			return true;
 		}
 		
 /*		public void SetHyperballMatCapTexture()	{
@@ -727,7 +728,7 @@ namespace UI {
 		/// Sets the atom scales, color and texture menu.
 		/// </summary>
 		public void SetAtomScales()	{
-			if (GUIMoleculeController.showSetAtomScales)
+			if (GUIMoleculeController.Instance.showSetAtomScales)
 				Rectangles.atomScalesRect = GUILayout.Window(41,Rectangles.atomScalesRect, LoadMenu, "");
 		}
 		
@@ -785,7 +786,7 @@ namespace UI {
 		/// </summary>
 		private void ColorPickerCaller(){
 			// Luiz:
-			var picker = GUIMoleculeController.CreateColorPicker(buttonColor, "Select a color", applyToAtoms, applyToRes, applyToChain);
+			var picker = GUIMoleculeController.Instance.CreateColorPicker(buttonColor, "Select a color", applyToAtoms, applyToRes, applyToChain);
 			picker.AtomsColorPicked += (sender, e) => ChangeAtomsColor(e);
 		}
 		
@@ -802,7 +803,7 @@ namespace UI {
 		/// Textures description.
 		/// </param>
 		private void AtomScales(string texDir,string[] texList, string texDescr){ // TODO: Move this ?
-			GUIMoleculeController.showSetAtomScales = LoadTypeGUI.SetTitleExit("Atom Colors, Textures and Scales");
+			GUIMoleculeController.Instance.showSetAtomScales = LoadTypeGUI.Instance.SetTitleExit("Atom Colors, Textures and Scales");
 			// check on http://docs.unity3d.com/Documentation/ScriptReference/Texture2D.SetPixels.html
 			
 			int fifth = Rectangles.atomScalesWidth / 5;
@@ -814,7 +815,7 @@ namespace UI {
 			GUILayout.BeginHorizontal();
 			GUILayout.Box("Apply changes to:");
 			
-			if(GUIMoleculeController.toggle_NA_CLICK){
+			if(GUIMoleculeController.Instance.toggle_NA_CLICK){
 				GUI.color = Color.yellow;
 				GUILayout.Label("Atom Selection Mode: All changes applied to selected atoms");
 				GUI.color = Color.white;
@@ -825,7 +826,7 @@ namespace UI {
 					applyToAtoms.Add("All");
 					applyToRes = "All";
 					applyToChain = "All";
-					GUIMoleculeController.m_colorPicker = null;
+					GUIMoleculeController.Instance.m_colorPicker = null;
 				}
 			}
 			
@@ -834,13 +835,13 @@ namespace UI {
 			GUILayout.BeginHorizontal();
 			if(quickSelection)
 				GUI.color = new Color(0.5f, 1.0f, 0.5f);
-			if(GUIMoleculeController.toggle_NA_CLICK)
+			if(GUIMoleculeController.Instance.toggle_NA_CLICK)
 				GUI.enabled = false;
 			if( GUILayout.Button (new GUIContent ("Quick atoms selection", "Click-and-run mode for atom selection"), GUILayout.Width(Rectangles.textureWidth / 2))){
 				quickSelection = true;
 				//extendedSelection = false;
-				GUIMoleculeController.m_colorPicker = null;
-				GUIMoleculeController.showAtomsExtendedMenu = false;
+				GUIMoleculeController.Instance.m_colorPicker = null;
+				GUIMoleculeController.Instance.showAtomsExtendedMenu = false;
 				applyToAtoms.Clear();
 				applyToAtoms.Add("All");
 			}
@@ -851,14 +852,14 @@ namespace UI {
 			if(GUILayout.Button(new GUIContent("All", "Select all atoms"), GUILayout.Width(Rectangles.textureWidth / 6))){
 				applyToAtoms.Clear();
 				applyToAtoms.Add("All");
-				if(GUIMoleculeController.m_colorPicker != null)
+				if(GUIMoleculeController.Instance.m_colorPicker != null)
 					ColorPickerCaller ();
 			}
 
 			if(GUILayout.Button(new GUIContent("None", "Unselect all atoms"), GUILayout.Width(Rectangles.textureWidth / 6))){
 				applyToAtoms.Clear();
 				applyToAtoms.Add("None");
-				GUIMoleculeController.m_colorPicker = null;
+				GUIMoleculeController.Instance.m_colorPicker = null;
 			}
 			GUILayout.EndHorizontal();
 			
@@ -870,7 +871,7 @@ namespace UI {
 					applyToAtoms.Remove("H");
 				else
 					applyToAtoms.Add("H");
-				if(GUIMoleculeController.m_colorPicker != null)
+				if(GUIMoleculeController.Instance.m_colorPicker != null)
 					ColorPickerCaller ();
 			}
 			GUI.color = Color.white;
@@ -882,7 +883,7 @@ namespace UI {
 					applyToAtoms.Remove("C");
 				else
 					applyToAtoms.Add("C");
-				if(GUIMoleculeController.m_colorPicker != null)
+				if(GUIMoleculeController.Instance.m_colorPicker != null)
 					ColorPickerCaller ();
 			}
 			GUI.color = Color.white;
@@ -894,7 +895,7 @@ namespace UI {
 					applyToAtoms.Remove("N");
 				else
 					applyToAtoms.Add("N");
-				if(GUIMoleculeController.m_colorPicker != null)
+				if(GUIMoleculeController.Instance.m_colorPicker != null)
 					ColorPickerCaller ();
 			}
 			GUI.color = Color.white;
@@ -906,7 +907,7 @@ namespace UI {
 					applyToAtoms.Remove("O");
 				else
 					applyToAtoms.Add("O");
-				if(GUIMoleculeController.m_colorPicker != null)
+				if(GUIMoleculeController.Instance.m_colorPicker != null)
 					ColorPickerCaller ();
 			}
 			GUI.color = Color.white;
@@ -918,7 +919,7 @@ namespace UI {
 					applyToAtoms.Remove("P");
 				else
 					applyToAtoms.Add("P");
-				if(GUIMoleculeController.m_colorPicker != null)
+				if(GUIMoleculeController.Instance.m_colorPicker != null)
 					ColorPickerCaller ();
 			}
 			GUI.color = Color.white;
@@ -930,7 +931,7 @@ namespace UI {
 					applyToAtoms.Remove("S");
 				else
 					applyToAtoms.Add("S");
-				if(GUIMoleculeController.m_colorPicker != null)
+				if(GUIMoleculeController.Instance.m_colorPicker != null)
 					ColorPickerCaller ();
 			}
 			GUI.color = Color.white;
@@ -942,7 +943,7 @@ namespace UI {
 					applyToAtoms.Remove("X");
 				else
 					applyToAtoms.Add("X");
-				if(GUIMoleculeController.m_colorPicker != null)
+				if(GUIMoleculeController.Instance.m_colorPicker != null)
 					ColorPickerCaller ();
 			}
 			GUI.color = Color.white;
@@ -953,13 +954,13 @@ namespace UI {
 			GUILayout.BeginHorizontal();
 			if(!quickSelection)
 				GUI.color = new Color(0.5f, 1.0f, 0.5f);
-			if(GUIMoleculeController.toggle_NA_CLICK)//applyToAtoms["Select"])
+			if(GUIMoleculeController.Instance.toggle_NA_CLICK)//applyToAtoms["Select"])
 				GUI.enabled = false;
 			if( GUILayout.Button (new GUIContent ("Extended atoms selection", "In-depth atom selection"), GUILayout.Width(Rectangles.textureWidth / 2))){
 				quickSelection = false;
 				//extendedSelection = true;
-				GUIMoleculeController.m_colorPicker = null;
-				GUIMoleculeController.showAtomsExtendedMenu = !GUIMoleculeController.showAtomsExtendedMenu;
+				GUIMoleculeController.Instance.m_colorPicker = null;
+				GUIMoleculeController.Instance.showAtomsExtendedMenu = !GUIMoleculeController.Instance.showAtomsExtendedMenu;
 				applyToAtoms.Clear();
 				applyToAtoms.Add("All");
 			}
@@ -972,7 +973,7 @@ namespace UI {
 			if(!extendedSelection)
 				GUI.enabled = false;
 			if(GUILayout.Button(new GUIContent("Extended atoms", "Change atom"), GUILayout.Width(Rectangles.textureWidth / 8)))
-				GUIMoleculeController.showAtomsExtendedMenu = !GUIMoleculeController.showAtomsExtendedMenu;
+				GUIMoleculeController.Instance.showAtomsExtendedMenu = !GUIMoleculeController.Instance.showAtomsExtendedMenu;
 */
 			GUILayout.FlexibleSpace();
 			
@@ -983,27 +984,27 @@ namespace UI {
 			// ---------- RESIDUES, CHAIN, GRAYSCALE, SELECTION ----------
 			GUILayout.BeginHorizontal();
 			GUILayout.Label("Residue :");
-			if(GUIMoleculeController.toggle_NA_CLICK
+			if(GUIMoleculeController.Instance.toggle_NA_CLICK
 				|| !UIData.Instance.hasResidues) {
 				GUI.enabled = false;
 				applyToRes = "All";
 			}
 
 			if(GUILayout.Button(new GUIContent(applyToRes, "Change residue"), GUILayout.Width(Rectangles.textureWidth / 8)))
-				GUIMoleculeController.showResiduesMenu = !GUIMoleculeController.showResiduesMenu;
+				GUIMoleculeController.Instance.showResiduesMenu = !GUIMoleculeController.Instance.showResiduesMenu;
 
 			GUI.enabled = true;
 			
 			GUILayout.FlexibleSpace();
 			
 			GUILayout.Label(" Chain :");
-			if(GUIMoleculeController.toggle_NA_CLICK
+			if(GUIMoleculeController.Instance.toggle_NA_CLICK
 				|| !UIData.Instance.hasChains) {
 				GUI.enabled = false;
 				applyToChain = "All";
 			}
 			if(GUILayout.Button(new GUIContent(applyToChain, "Change chain"), GUILayout.Width(Rectangles.textureWidth / 8))){
-				GUIMoleculeController.showChainsMenu = !GUIMoleculeController.showChainsMenu;
+				GUIMoleculeController.Instance.showChainsMenu = !GUIMoleculeController.Instance.showChainsMenu;
 			}
 			GUI.enabled = true;
 			
@@ -1016,7 +1017,7 @@ namespace UI {
 			GUILayout.BeginHorizontal();
 			GUILayout.Box("Color and Scale :");
 			if (GUILayout.Button (new GUIContent ("Panels", "Open colors and textures panels menu"), GUILayout.Width(Rectangles.textureWidth / 4))) {
-				GUIMoleculeController.showPanelsMenu = !GUIMoleculeController.showPanelsMenu;
+				GUIMoleculeController.Instance.showPanelsMenu = !GUIMoleculeController.Instance.showPanelsMenu;
 			}
 			if(GUILayout.Button(new GUIContent("Reset scales", "Reset all scales to 100"), GUILayout.Width(Rectangles.textureWidth / 4))){
 				newScale = 100f;
@@ -1033,7 +1034,7 @@ namespace UI {
 			}
 			GUILayout.FlexibleSpace();
 			
-			newScale = GUIMoleculeController.LabelSlider(newScale, 50, 150.0f,
+			newScale = GUIMoleculeController.Instance.LabelSlider(newScale, 50, 150.0f,
 														"Scale: "+(int)(newScale*10)/10,
 														"Determines atom radius",true,sliderWidth,(int)(nameWidth*0.75));
 
@@ -1053,7 +1054,7 @@ namespace UI {
 			GUILayout.BeginHorizontal();
 			if(GUILayout.Button(new GUIContent("<<","Go to previous series of textures"))){ // Cycle through texture sets
 				texture_set--; 
-				if(GUIMoleculeController.onlyBestTextures){
+				if(GUIMoleculeController.Instance.onlyBestTextures){
 					if(texture_set < 0)
 						texture_set = 4; // First 5 pages are best textures (0-4)
 				}
@@ -1072,7 +1073,7 @@ namespace UI {
 			
 			if(GUILayout.Button(new GUIContent(">>","Go to next series of textures"))) { // Cycle through texture sets
 				texture_set++; 
-				if (GUIMoleculeController.onlyBestTextures) {
+				if (GUIMoleculeController.Instance.onlyBestTextures) {
 					if(texture_set>4) // First 5 pages are best textures (0-4)
 						texture_set = 0;
 				}
@@ -1114,34 +1115,34 @@ namespace UI {
 
 			for (int i =0; i <200; i++){
 				colorButtonNew[i]   =buttonColor.color;
-				LoadTypeGUI.helixButtonNew[i] =Ribbons.HELIX_COLOR.color;
-				LoadTypeGUI.sheetButtonNew[i] =Ribbons.STRAND_COLOR.color;
-				LoadTypeGUI.coilButtonNew[i] =Ribbons.COIL_COLOR.color;
-				LoadTypeGUI.chainbuttonAnew[i] = Ribbons.ChainColorA.color;
-				LoadTypeGUI.chainbuttonBnew[i] = Ribbons.ChainColorB.color;
-				LoadTypeGUI.chainbuttonCnew[i] = Ribbons.ChainColorC.color;
-				LoadTypeGUI.chainbuttonDnew[i] = Ribbons.ChainColorD.color;
-				LoadTypeGUI.chainbuttonEnew[i] = Ribbons.ChainColorE.color;
+				LoadTypeGUI.Instance.helixButtonNew[i] =Ribbons.HELIX_COLOR.color;
+				LoadTypeGUI.Instance.sheetButtonNew[i] =Ribbons.STRAND_COLOR.color;
+				LoadTypeGUI.Instance.coilButtonNew[i] =Ribbons.COIL_COLOR.color;
+				LoadTypeGUI.Instance.chainbuttonAnew[i] = Ribbons.ChainColorA.color;
+				LoadTypeGUI.Instance.chainbuttonBnew[i] = Ribbons.ChainColorB.color;
+				LoadTypeGUI.Instance.chainbuttonCnew[i] = Ribbons.ChainColorC.color;
+				LoadTypeGUI.Instance.chainbuttonDnew[i] = Ribbons.ChainColorD.color;
+				LoadTypeGUI.Instance.chainbuttonEnew[i] = Ribbons.ChainColorE.color;
 			}
 			
 			colorButton.SetPixels(colorButtonNew);
 			colorButton.Apply(true);
-			LoadTypeGUI.helixButton.SetPixels(LoadTypeGUI.helixButtonNew);
-			LoadTypeGUI.helixButton.Apply(true);
-			LoadTypeGUI.sheetButton.SetPixels(LoadTypeGUI.sheetButtonNew);
-			LoadTypeGUI.sheetButton.Apply(true);
-			LoadTypeGUI.coilButton.SetPixels(LoadTypeGUI.coilButtonNew);
-			LoadTypeGUI.coilButton.Apply(true);
-			LoadTypeGUI.chainbuttonA.SetPixels (LoadTypeGUI.chainbuttonAnew);
-			LoadTypeGUI.chainbuttonA.Apply (true);
-			LoadTypeGUI.chainbuttonB.SetPixels (LoadTypeGUI.chainbuttonBnew);
-			LoadTypeGUI.chainbuttonB.Apply (true);
-			LoadTypeGUI.chainbuttonC.SetPixels (LoadTypeGUI.chainbuttonCnew);
-			LoadTypeGUI.chainbuttonC.Apply (true);
-			LoadTypeGUI.chainbuttonD.SetPixels (LoadTypeGUI.chainbuttonDnew);
-			LoadTypeGUI.chainbuttonD.Apply (true);
-			LoadTypeGUI.chainbuttonE.SetPixels (LoadTypeGUI.chainbuttonEnew);
-			LoadTypeGUI.chainbuttonE.Apply (true);
+			LoadTypeGUI.Instance.helixButton.SetPixels(LoadTypeGUI.Instance.helixButtonNew);
+			LoadTypeGUI.Instance.helixButton.Apply(true);
+			LoadTypeGUI.Instance.sheetButton.SetPixels(LoadTypeGUI.Instance.sheetButtonNew);
+			LoadTypeGUI.Instance.sheetButton.Apply(true);
+			LoadTypeGUI.Instance.coilButton.SetPixels(LoadTypeGUI.Instance.coilButtonNew);
+			LoadTypeGUI.Instance.coilButton.Apply(true);
+			LoadTypeGUI.Instance.chainbuttonA.SetPixels (LoadTypeGUI.Instance.chainbuttonAnew);
+			LoadTypeGUI.Instance.chainbuttonA.Apply (true);
+			LoadTypeGUI.Instance.chainbuttonB.SetPixels (LoadTypeGUI.Instance.chainbuttonBnew);
+			LoadTypeGUI.Instance.chainbuttonB.Apply (true);
+			LoadTypeGUI.Instance.chainbuttonC.SetPixels (LoadTypeGUI.Instance.chainbuttonCnew);
+			LoadTypeGUI.Instance.chainbuttonC.Apply (true);
+			LoadTypeGUI.Instance.chainbuttonD.SetPixels (LoadTypeGUI.Instance.chainbuttonDnew);
+			LoadTypeGUI.Instance.chainbuttonD.Apply (true);
+			LoadTypeGUI.Instance.chainbuttonE.SetPixels (LoadTypeGUI.Instance.chainbuttonEnew);
+			LoadTypeGUI.Instance.chainbuttonE.Apply (true);
 		} // end of AtomScales
 
 		
@@ -1155,7 +1156,7 @@ namespace UI {
 				GameObject hbManagerObj = GameObject.FindGameObjectWithTag("HBallManager");
 				HBallManager hbManager = hbManagerObj.GetComponent<HBallManager>();
 				Texture2D grayTexture = new Texture2D(www.texture.width, www.texture.height);
-				if(!GUIMoleculeController.toggle_NA_CLICK){
+				if(!GUIMoleculeController.Instance.toggle_NA_CLICK){
 					if(!UIData.Instance.grayscalemode){
 						hbManager.SetTexture(www.texture, applyToAtoms, applyToRes, applyToChain);
 					}
@@ -1177,7 +1178,7 @@ namespace UI {
 				}
 
 			}
-			GUIMoleculeController.FileBrowser_show2=false;
+			GUIMoleculeController.Instance.FileBrowser_show2=false;
 //			Debug.Log("Mis a false");
 		}
 		
@@ -1189,7 +1190,7 @@ namespace UI {
 		/// No idea...
 		/// </param>
 		public void PanelsMenu(int a) {
-			GUIMoleculeController.showPanelsMenu = LoadTypeGUI.SetTitleExit("Panels Menu");
+			GUIMoleculeController.Instance.showPanelsMenu = LoadTypeGUI.Instance.SetTitleExit("Panels Menu");
 			
 			//---------- To edit/add Color and Texture palettes, please read Assets/Resources/HowToColorPanel.txt ----------
 			// NB : the name "ColorPanel.txt" and everything related to it (like panelDict, RenderDict or whatever) doesn't seem really great,
@@ -1280,7 +1281,7 @@ namespace UI {
 		/// No idea...
 		/// </param>
 		public void AtomsExtendedMenu(int a) {
-			GUIMoleculeController.showAtomsExtendedMenu = LoadTypeGUI.SetTitleExit("Choose an atom");
+			GUIMoleculeController.Instance.showAtomsExtendedMenu = LoadTypeGUI.Instance.SetTitleExit("Choose an atom");
 			
 			int buttonWidth = (int)(Rectangles.residuesMenuWidth / 4.8);
 			int count = 0;
@@ -1292,7 +1293,7 @@ namespace UI {
 			if(GUILayout.Button(new GUIContent("All", "All atoms"))){
 				applyToAtoms.Clear();
 				applyToAtoms.Add("All");
-				//GUIMoleculeController.showAtomsExtendedMenu = false;
+				// GUIMoleculeController.Instance.showAtomsExtendedMenu = false;
 			}
 			GUI.color = Color.white;
 			GUILayout.EndHorizontal();
@@ -1311,9 +1312,9 @@ namespace UI {
 								applyToAtoms.Add(MoleculeModel.existingName[count]);
 							else
 								applyToAtoms.Remove(MoleculeModel.existingName[count]);
-							if(GUIMoleculeController.m_colorPicker != null)
+							if(GUIMoleculeController.Instance.m_colorPicker != null)
 								ColorPickerCaller ();
-//							GUIMoleculeController.showAtomsExtendedMenu = false;
+//							GUIMoleculeController.Instance.showAtomsExtendedMenu = false;
 						}
 						GUI.color = Color.white;
 					}
@@ -1337,7 +1338,7 @@ namespace UI {
 		/// No idea...
 		/// </param>
 		public void ResiduesMenu(int a) {
-			GUIMoleculeController.showResiduesMenu = LoadTypeGUI.SetTitleExit("Choose a residue");
+			GUIMoleculeController.Instance.showResiduesMenu = LoadTypeGUI.Instance.SetTitleExit("Choose a residue");
 			
 			int buttonWidth = (int)(Rectangles.residuesMenuWidth / 4.8);
 			int count = 0;
@@ -1347,7 +1348,7 @@ namespace UI {
 				GUI.color = Color.green;
 			if(GUILayout.Button(new GUIContent("All", "All residues"))){
 				applyToRes = "All";
-				//GUIMoleculeController.showResiduesMenu = false;
+				// GUIMoleculeController.Instance.showResiduesMenu = false;
 			}
 			GUI.color = Color.white;
 			GUILayout.EndHorizontal();
@@ -1363,9 +1364,9 @@ namespace UI {
 							GUI.color = Color.green;
 						if(GUILayout.Button(new GUIContent(MoleculeModel.existingRes[count], ""), GUILayout.Width(buttonWidth))){
 							applyToRes = MoleculeModel.existingRes[count];
-							if(GUIMoleculeController.m_colorPicker != null)
+							if(GUIMoleculeController.Instance.m_colorPicker != null)
 								ColorPickerCaller ();
-//							GUIMoleculeController.showResiduesMenu = false;
+//							GUIMoleculeController.Instance.showResiduesMenu = false;
 						}
 						GUI.color = Color.white;
 					}
@@ -1389,7 +1390,7 @@ namespace UI {
 		/// No idea...
 		/// </param>
 		public void ChainsMenu(int a) {
-			GUIMoleculeController.showChainsMenu = LoadTypeGUI.SetTitleExit("Choose a chain");
+			GUIMoleculeController.Instance.showChainsMenu = LoadTypeGUI.Instance.SetTitleExit("Choose a chain");
 			
 			int buttonWidth = (int)(Rectangles.residuesMenuWidth / 4.8);
 			int count = 0;
@@ -1399,7 +1400,7 @@ namespace UI {
 				GUI.color = Color.green;
 			if(GUILayout.Button(new GUIContent("All", "All chains"))){
 				applyToChain = "All";
-				//GUIMoleculeController.showChainsMenu = false;
+				// GUIMoleculeController.Instance.showChainsMenu = false;
 			}
 			GUI.color = Color.white;
 			GUILayout.EndHorizontal();
@@ -1414,9 +1415,9 @@ namespace UI {
 							GUI.color = Color.green;
 						if(GUILayout.Button(new GUIContent(MoleculeModel.existingChain[count], ""), GUILayout.Width(buttonWidth))){
 							applyToChain = MoleculeModel.existingChain[count];
-							if(GUIMoleculeController.m_colorPicker != null)
+							if(GUIMoleculeController.Instance.m_colorPicker != null)
 								ColorPickerCaller ();
-//							GUIMoleculeController.showChainsMenu = false;
+//							GUIMoleculeController.Instance.showChainsMenu = false;
 						}
 						GUI.color = Color.white;
 					}
@@ -1586,16 +1587,23 @@ namespace UI {
 		}
 		
 		// Luiz:
-		public event System.EventHandler Cleared;
-		public void Clear() {
-			_gUIMoleculeController = null;
+		public event System.EventHandler<ClearingEventArgs> Cleared;
+		public void Clear(bool exitingScene) {
+			if (exitingScene && UnityClusterPackage.Node.CurrentNode.IsHostNode && Cleared != null) {
+				Cleared(this, new ClearingEventArgs(true));
+			}
+
 			StateFiles = null;
 			id="";
 			UIData.Instance.isclear = true;
-			GUIMoleculeController.pdbGen = false;
+			GUIMoleculeController.Instance.pdbGen = false;
 			UIData.Instance.hasMoleculeDisplay = false;
-			GUIMoleculeController.toggle_NA_INTERACTIVE = false; // causes all sorts of headaches otherwise
-			GameObject.FindGameObjectWithTag("MainCamera").GetComponent<ClickAtom>().ClearSelection(); // so the halos don't stay after clearing
+			GUIMoleculeController.Instance.toggle_NA_INTERACTIVE = false; // causes all sorts of headaches otherwise
+
+			var camera = GameObject.FindGameObjectWithTag("MainCamera");
+			if(camera != null)
+				camera.GetComponent<ClickAtom>().ClearSelection(); // so the halos don't stay after clearing
+			
 			// Delete all the Parents to start again on a clear ground
 			GameObject.Destroy(Molecule.View.DisplayAtom.AtomCubeStyle.AtomCubeParent);
 			GameObject.Destroy(Molecule.View.DisplayAtom.AtomSphereStyle.AtomCubeParent);
@@ -1605,8 +1613,8 @@ namespace UI {
 
 			UIData.Instance.loadHireRNA = false;
 
-			if (Cleared != null) {
-				Cleared (this, null);
+			if (!exitingScene && Cleared != null) {
+				Cleared (this, new ClearingEventArgs(false));
 			}
 		}
 		public void HandlePanelSelected(string panel)
@@ -1664,7 +1672,7 @@ namespace UI {
 		{
 			GenericManager manager = Molecule.View.DisplayMolecule.GetManagers()[0];
 
-			if(!UI.GUIMoleculeController.toggle_NA_CLICK) {
+			if(!UI.GUIMoleculeController.Instance.toggle_NA_CLICK) {
 				manager.SetColor(args.Color, args.Atoms, args.Residue, args.Chain);
 			} else { 
 				foreach(GameObject obj in GameObject.FindGameObjectWithTag("MainCamera").GetComponent<ClickAtom>().objList){
@@ -1689,7 +1697,7 @@ namespace UI {
 			if(UIData.Instance.grayscalemode)
 				texture = hbManager.ToGray(texture);
 
-			if(!GUIMoleculeController.toggle_NA_CLICK){
+			if(!GUIMoleculeController.Instance.toggle_NA_CLICK){
 				Debug.Log ("ATOMS: " + applyToAtoms.Count + " " + applyToRes + " " + applyToChain);
 				hbManager.SetTexture(texture, applyToAtoms, applyToRes, applyToChain);
 			}
@@ -1705,6 +1713,13 @@ namespace UI {
 			ChangeManager.DispatchPropertyEvent (typeof(GUIDisplay), "applyToChain", applyToChain, applyToChain);
 			ChangeManager.DispatchMethodEvent (typeof(GUIDisplay), "ChangeAtomsTexture", texFil);
 		}
+		public void DieHard() {
+			Clear (true);
+			var masterObject = GameObject.Find("Master");
+			GameObject.DestroyImmediate(masterObject);
+			UnityEngine.SceneManagement.SceneManager.LoadScene("UCPSetup", UnityEngine.SceneManagement.LoadSceneMode.Single);
+			SingletonCleaner.Clean();
+		}
 	}
 
 	// Luiz: needed because Unity's default json capabilities can't encode collections by themselves and MiniJSON can't deserialize
@@ -1718,4 +1733,16 @@ namespace UI {
 		}		
 	}
 
+	public class ClearingEventArgs : System.EventArgs
+	{
+		public bool ExitingScene {
+			get;
+			set;
+		}
+
+		public ClearingEventArgs(bool exitingScene)
+		{
+			this.ExitingScene = exitingScene;
+		}
+	}
 }

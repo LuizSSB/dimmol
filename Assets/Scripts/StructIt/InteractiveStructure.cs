@@ -73,9 +73,10 @@ public class InteractiveStructure : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		Debug.Log("INTERACTIVE MAH NIGGA");
 		UIData.Instance.atomtype = UIData.AtomType.hyperball; 
 		UIData.Instance.bondtype=UIData.BondType.hyperstick;
-		GUIMoleculeController.toggle_NA_INTERACTIVE = true;
+		GUIMoleculeController.Instance.toggle_NA_INTERACTIVE = true;
 	}
 	
 	// Update is called once per frame

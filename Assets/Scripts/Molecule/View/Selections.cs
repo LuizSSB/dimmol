@@ -34,7 +34,7 @@ public class Selections : MonoBehaviour {
 		foreach(BallUpdate comp in selections)
 		{
 //			comp.independant = false;
-			comp.SetRayonFactor(UI.GUIMoleculeController.globalRadius);
+			comp.SetRayonFactor(UI.GUIMoleculeController.Instance.globalRadius);
 			comp.AtomColor = MoleculeModel.GetAtomColor(MoleculeModel.atomsTypelist[(int)comp.number].type);
 		}
 		selections.Clear();

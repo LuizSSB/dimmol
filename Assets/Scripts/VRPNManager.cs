@@ -215,7 +215,7 @@ public class VRPNManager : MonoBehaviour {
 	public static string deviceName = "Omni";
 	public static VRPNDeviceType type = VRPNDeviceType.Phantom;
 	public static void VRPNM (int a) {
-		GUIMoleculeController.showVRPNMenu = LoadTypeGUI.SetTitleExit("VRPN Client");
+		GUIMoleculeController.Instance.showVRPNMenu = LoadTypeGUI.Instance.SetTitleExit("VRPN Client");
 		
 		/*
 			 * Device configuration section

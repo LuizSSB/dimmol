@@ -208,7 +208,6 @@ public class maxCamera : MonoBehaviour
 	{
 		Init ();
 		GUIDisplay.Instance.Cleared += (sender, e) => {
-			Debug.Log("heyyy");
 			_LocCamera = null;
 		};
 	}
@@ -301,7 +300,7 @@ public class maxCamera : MonoBehaviour
 		if (Input.GetKeyUp (KeyCode.Space)) {
 			Debug.Log ("Space push");
 			automove = !automove;
-			GUIMoleculeController.toggle_NA_AUTOMOVE = !GUIMoleculeController.toggle_NA_AUTOMOVE;
+			GUIMoleculeController.Instance.toggle_NA_AUTOMOVE = !GUIMoleculeController.Instance.toggle_NA_AUTOMOVE;
 			Molecule3DComp.toggleFPSLog ();
 		}
 
@@ -315,7 +314,7 @@ public class maxCamera : MonoBehaviour
 
 		if (Input.GetKeyUp (KeyCode.C)) {
 
-				if (UI.GUIMoleculeController.toggle_NA_CLICK) {
+				if (UI.GUIMoleculeController.Instance.toggle_NA_CLICK) {
 
 					/*if just one atom is selected, we center the camera (CAM TARGEt!!! THE CAMERA FOLLOW CAM TARGET)
 					on this atom*/
@@ -693,7 +692,7 @@ public class maxCamera : MonoBehaviour
 				}
 			} else { // otherwise (orthographic mode) we can achieve the same effet by making the camera bigger/smaller
 				float tmp_size = Camera.main.orthographicSize - Input.GetAxis ("Mouse ScrollWheel") * Time.deltaTime * zoomRate;
-				if (tmp_size <= LoadTypeGUI.maxOrthoSize && tmp_size >= LoadTypeGUI.minOrthoSize)
+				if (tmp_size <= LoadTypeGUI.Instance.maxOrthoSize && tmp_size >= LoadTypeGUI.Instance.minOrthoSize)
 					Camera.main.orthographicSize = tmp_size;
 			}
 
@@ -1242,7 +1241,7 @@ public class maxCamera : MonoBehaviour
 			computeSpreadPart(out spreadE1, out spreadE2, "E");
 		}
 		
-		if(GUIMoleculeController.toggle_SEC_STRUCT){
+		if(GUIMoleculeController.Instance.toggle_SEC_STRUCT){
 			
 			GameObject[] ribA = GameObject.FindGameObjectsWithTag("RibbonObjA");
 			GameObject[] ribB = GameObject.FindGameObjectsWithTag("RibbonObjB");
@@ -1404,7 +1403,7 @@ public class maxCamera : MonoBehaviour
 			comp_spread = 0;
 		}else{
 			
-			if(GUIMoleculeController.toggle_SEC_STRUCT){
+			if(GUIMoleculeController.Instance.toggle_SEC_STRUCT){
 				
 				GameObject[] ribA = GameObject.FindGameObjectsWithTag("RibbonObjA");
 				GameObject[] ribB = GameObject.FindGameObjectsWithTag("RibbonObjB");
@@ -1593,7 +1592,7 @@ public class maxCamera : MonoBehaviour
 			}
 		} //End if Sphere
 		
-		if(GUIMoleculeController.toggle_SEC_STRUCT){
+		if(GUIMoleculeController.Instance.toggle_SEC_STRUCT){
 			GameObject[] Objs = FindObjectsOfType(typeof(GameObject)) as GameObject[];
 			foreach(GameObject ribObj in Objs){
 				if(ribObj.name == "Ribbons")

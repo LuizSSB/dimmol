@@ -198,7 +198,7 @@ public class BallUpdateHB : BallUpdate {
 		// 	renderer.material.SetFloat("_Cut", cut);
 
 		//if(!rigidbody)
-		if(!GUIMoleculeController.toggle_NA_INTERACTIVE)
+		if(!GUIMoleculeController.Instance.toggle_NA_INTERACTIVE)
 		{
 			//if(resetColors)
 			//	ResetColors();
@@ -220,7 +220,7 @@ public class BallUpdateHB : BallUpdate {
 		}
 		
 
-		if(GUIMoleculeController.toggle_NA_INTERACTIVE)
+		if(GUIMoleculeController.Instance.toggle_NA_INTERACTIVE)
 		{
 			if(!GetComponent<MouseOverMolecule>())
 			{
@@ -241,7 +241,7 @@ public class BallUpdateHB : BallUpdate {
 		
 		//if(rigidbody)
 
-		if(GUIMoleculeController.toggle_NA_INTERACTIVE)
+		if(GUIMoleculeController.Instance.toggle_NA_INTERACTIVE)
 		{
 			GetComponent<Rigidbody>().drag=drag;
 			

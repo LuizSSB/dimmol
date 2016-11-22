@@ -378,7 +378,7 @@ public class GenerateMesh {
 		ELECTRO = electro;
 		Debug.Log(ELECTRO.ToString());
 		if(ELECTRO) {
-			ReadDX readDX = UI.GUIMoleculeController.readdx;
+			ReadDX readDX = UI.GUIMoleculeController.Instance.readdx;
 			origin = readDX.GetOrigin();
 			delta  = readDX.GetDelta();
 		}

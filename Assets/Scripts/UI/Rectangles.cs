@@ -49,7 +49,7 @@
 /// The fact that you are presently reading this means that you have had 
 /// knowledge of the CeCILL-C license and that you accept its terms.
 ///
-/// $Id: GUIMoleculeController.cs 213 2013-04-06 21:13:42Z baaden $
+/// $Id: GUIMoleculeController.Instance.cs 213 2013-04-06 21:13:42Z baaden $
 ///
 /// References : 
 /// If you use this code, please cite the following reference : 	
@@ -68,7 +68,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class Rectangles : UI.GUIMoleculeController {
+public class Rectangles {
 
 	private static int sWidth = (int) (Screen.width * UI.GUIDisplay.Instance.guiScale) ;
 	private static int sHeight = (int) (Screen.height * UI.GUIDisplay.Instance.guiScale) ;	

@@ -99,8 +99,8 @@ public class ScenePreload_Fieldlines : MonoBehaviour {
 		
 		UIData.Instance.atomtype = UIData.AtomType.particleball;
 		UIData.Instance.bondtype = UIData.BondType.nobond;
-		GUIMoleculeController.showOpenMenu=false;
-		GUIMoleculeController.showAtomMenu=true;
+		GUIMoleculeController.Instance.showOpenMenu=false;
+		GUIMoleculeController.Instance.showAtomMenu=true;
 		SendMessage("Display",SendMessageOptions.DontRequireReceiver);
 		
 		StartCoroutine(requestPDB.LoadJsonWWW(UIData.Instance.server_url+"Scenes/fieldlines/fieldline.json",MoleculeModel.Offset));
@@ -111,7 +111,7 @@ public class ScenePreload_Fieldlines : MonoBehaviour {
 		}
 		json_progress = 1.0f;
 		MoleculeModel.fieldLineFileExists = true;
-		GUIMoleculeController.showFieldLines = true;
+		GUIMoleculeController.Instance.showFieldLines = true;
 		FieldLineStyle.DisplayFieldLine();
 
 		StartCoroutine(requestPDB.LoadOBJWWW(UIData.Instance.server_url+"Scenes/fieldlines/fieldline.obj"));
@@ -122,7 +122,7 @@ public class ScenePreload_Fieldlines : MonoBehaviour {
 		}
 		obj_progress = 1.0f;
 		MoleculeModel.surfaceFileExists = true;
-		GUIMoleculeController.modif=true;
+		GUIMoleculeController.Instance.modif=true;
 	
 	}
 	

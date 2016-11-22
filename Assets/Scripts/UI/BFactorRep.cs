@@ -5,16 +5,38 @@ using Molecule.Model;
 using UI;
 using Molecule.Control;
 
+// Luiz:
+[ClearableSingleton]
 public class BFactorRep {
-	public static List<float[]> backupCaList = MoleculeModel.backupCatomsLocationlist ;
-	public static List<string> backupCaChainList = MoleculeModel.backupCaSplineChainList ;
-	public static List<float> backupBfactCAList;
-	public static float minValue;
-	public static float maxValue;
-	public static string minval = "";
-	public static string maxval = "";
+	private static BFactorRep sInstance;
+	public static BFactorRep Instance {
+		get {
+			return sInstance = sInstance ?? new BFactorRep();
+		}
+	}
+	private BFactorRep() {}
 
-	public static void CreateBFRep() {
+	public List<float[]> backupCaList = MoleculeModel.backupCatomsLocationlist ;
+	public List<string> backupCaChainList = MoleculeModel.backupCaSplineChainList ;
+	public List<float> backupBfactCAList;
+	public float minValue;
+	public float maxValue;
+
+	// Luiz:
+	private string _minval = string.Empty;
+	public string minval {
+		get { return _minval; }
+		set { _minval = this.ProcessPropertyChanged("minval", _minval, value); }
+	}
+	private string _maxval = string.Empty;
+	public string maxval {
+				get { return _maxval; }
+				set { _maxval = this.ProcessPropertyChanged("maxval", _maxval, value); }
+	}
+	//public string minval = "";
+	//public string maxval = "";
+
+	public void CreateBFRep() {
 		List<float[]>	alist			=	MoleculeModel.atomsLocationlist;
 		List<float[]>	calist			=	new List<float[]>(MoleculeModel.backupCatomsLocationlist);
 		List<string>	caChainlist		=	new List<string>(MoleculeModel.backupCaSplineChainList);
@@ -133,7 +155,7 @@ public class BFactorRep {
 		maxval = (maxValue+minValue).ToString ();
 	}  
 
-	public static string GetBFStyle(float BFValue){
+	public string GetBFStyle(float BFValue){
 		string typebf;
 		if (BFValue < 0.1)
 			typebf = "BF1";
@@ -163,7 +185,7 @@ public class BFactorRep {
 	/// </summary>
 	/// <returns>The minimum.</returns>
 	/// <param name="ListValues">List values.</param>
-	public static float GetMin (List<float> ListValues){
+	public float GetMin (List<float> ListValues){
 		float mymin = ListValues[0];
 		foreach (float g in ListValues)
 			if (g<mymin)
@@ -176,7 +198,7 @@ public class BFactorRep {
 	/// </summary>
 	/// <returns>The max.</returns>
 	/// <param name="ListValues">List values.</param>
-	public static float GetMax (List<float> ListValues){
+	public float GetMax (List<float> ListValues){
 		float mymax = ListValues [0];
 		foreach (float f in ListValues)
 			if (f>mymax)

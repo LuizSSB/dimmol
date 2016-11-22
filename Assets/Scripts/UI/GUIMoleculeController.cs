@@ -81,7 +81,12 @@ namespace UI {
 //		public int texSet_max=30; /*!< Maximum number of full texture pages */
 //		public int besttexSet_min=-5; /*!< Maximum number of condensed texture pages (negative value!) */
 		public bool onlyBestTextures = true; /*!< Toggle condensed set of textures vs. full set */
-		public int texture_set=0;
+//		public int texture_set=0;
+		private int _texture_set = 0;
+		public int texture_set {
+			get { return _texture_set; }
+			set { _texture_set = this.ProcessPropertyChanged("texture_set", _texture_set, value); }
+		}
 	
 		// Luiz:
 		//bool for default visualisation with Hyperballs

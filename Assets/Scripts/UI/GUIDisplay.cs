@@ -1115,14 +1115,14 @@ namespace UI {
 
 			for (int i =0; i <200; i++){
 				colorButtonNew[i]   =buttonColor.color;
-				LoadTypeGUI.Instance.helixButtonNew[i] =Ribbons.HELIX_COLOR.color;
-				LoadTypeGUI.Instance.sheetButtonNew[i] =Ribbons.STRAND_COLOR.color;
-				LoadTypeGUI.Instance.coilButtonNew[i] =Ribbons.COIL_COLOR.color;
-				LoadTypeGUI.Instance.chainbuttonAnew[i] = Ribbons.ChainColorA.color;
-				LoadTypeGUI.Instance.chainbuttonBnew[i] = Ribbons.ChainColorB.color;
-				LoadTypeGUI.Instance.chainbuttonCnew[i] = Ribbons.ChainColorC.color;
-				LoadTypeGUI.Instance.chainbuttonDnew[i] = Ribbons.ChainColorD.color;
-				LoadTypeGUI.Instance.chainbuttonEnew[i] = Ribbons.ChainColorE.color;
+				LoadTypeGUI.Instance.helixButtonNew[i] =RibbonsGeneralData.Instance.HELIX_COLOR.color;
+				LoadTypeGUI.Instance.sheetButtonNew[i] =RibbonsGeneralData.Instance.STRAND_COLOR.color;
+				LoadTypeGUI.Instance.coilButtonNew[i] =RibbonsGeneralData.Instance.COIL_COLOR.color;
+				LoadTypeGUI.Instance.chainbuttonAnew[i] = RibbonsGeneralData.Instance.ChainColorA.color;
+				LoadTypeGUI.Instance.chainbuttonBnew[i] = RibbonsGeneralData.Instance.ChainColorB.color;
+				LoadTypeGUI.Instance.chainbuttonCnew[i] = RibbonsGeneralData.Instance.ChainColorC.color;
+				LoadTypeGUI.Instance.chainbuttonDnew[i] = RibbonsGeneralData.Instance.ChainColorD.color;
+				LoadTypeGUI.Instance.chainbuttonEnew[i] = RibbonsGeneralData.Instance.ChainColorE.color;
 			}
 			
 			colorButton.SetPixels(colorButtonNew);

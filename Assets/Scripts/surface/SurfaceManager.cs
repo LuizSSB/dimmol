@@ -116,8 +116,8 @@ public class SurfaceManager : MonoBehaviour {
 			//if(UI.UIData.Instance.atomtype == UI.UIData.AtomType.particleball){
 				type = atomTree.GetClosestAtomType(vertices[i]);
 				if(UI.UIData.Instance.surfColChain){
-					Ribbons.InitCol();
-					meshColors[i] = Ribbons.GetColorChain(type);
+					RibbonsGeneralData.Instance.InitCol();
+					meshColors[i] = RibbonsGeneralData.Instance.GetColorChain(type);
 				}
 				else if(UI.UIData.Instance.surfColHydroKD){
 					HydrophobicScales.InitKyteDoo();
@@ -143,11 +143,11 @@ public class SurfaceManager : MonoBehaviour {
 				else if(UI.UIData.Instance.surfColBF){
 					valtype = float.Parse (type);
 					if(valmax == 0){
-						valmin = BFactorRep.GetMin(BFactorList);
-						valmax = BFactorRep.GetMax(BFactorList);
+						valmin = BFactorRep.Instance.GetMin(BFactorList);
+						valmax = BFactorRep.Instance.GetMax(BFactorList);
 					}
 					valtype = (valtype - valmin) / (valmax -valmin);
-					bftype = BFactorRep.GetBFStyle(valtype);
+					bftype = BFactorRep.Instance.GetBFStyle(valtype);
 					meshColors[i] = AtomModel.GetModel (bftype).baseColor;
 				}
 				else

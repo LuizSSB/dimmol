@@ -118,7 +118,15 @@ namespace UI
 		public bool readWater = false;
 		public bool connectivity_calc = true;
 		public bool connectivity_PDB = false;
-		public bool resetDisplay=false;
+
+		// Luiz:
+		private bool _resetDisplay = false;
+		public bool resetDisplay {
+			get { return _resetDisplay; }
+			set { _resetDisplay = this.ProcessPropertyChanged("resetDisplay", _resetDisplay, value); }
+		}
+		//public bool resetDisplay=false;
+
 		public bool isCubeToSphere=false;
 		public bool isSphereToCube=true;
 		
@@ -142,16 +150,7 @@ namespace UI
 
 		public bool loginSucess=false;
 
-		public AtomType _atomtype=AtomType.particleball;
-		public AtomType atomtype {
-			get {
-				return _atomtype;
-			}
-			set {
-				Debug.Log("H4LP " + value);
-				_atomtype = value;
-			}
-		}
+		public AtomType atomtype=AtomType.particleball;
 
 		public BondType bondtype=BondType.nobond;
 		
@@ -185,29 +184,120 @@ namespace UI
 		public bool openAllMenu=false;
 
 		public bool openBound=false;
-		
-		public bool secondarystruct=false;
-		public bool toggle_bf = false;
-		public bool isRescale = false;
-		public bool toggle_SS = false;
-		public bool ssColChain = false;
-		public bool ssColStruct = false;
-		public bool ssDivCol = false;
-		public bool surfColChain = false;
-		public bool surfColHydroKD = false;
-		public bool surfColHydroEng = false;
-		public bool surfColHydroWO = false;
-		public bool surfColHydroEis = false;
-		public bool surfColHydroHW = false;
-		public bool surfColPChim = false;
-		public bool surfColBF = false;
-		public bool isGLIC = false;
-		public bool spread_tree = false;
+
+		private bool _secondarystruct = false;
+
+		public bool secondarystruct {
+			get { return _secondarystruct; }
+			set { _secondarystruct = this.ProcessPropertyChanged("secondarystruct", _secondarystruct, value); }
+		}
+		private bool _toggle_bf = false;
+		public bool toggle_bf {
+			get { return _toggle_bf; }
+			set { _toggle_bf = this.ProcessPropertyChanged("toggle_bf", _toggle_bf, value); }
+		}
+		private bool _isRescale = false;
+		public bool isRescale {
+			get { return _isRescale; }
+			set { _isRescale = this.ProcessPropertyChanged("isRescale", _isRescale, value); }
+		}
+		private bool _toggle_SS = false;
+		public bool toggle_SS {
+			get { return _toggle_SS; }
+			set { _toggle_SS = this.ProcessPropertyChanged("toggle_SS", _toggle_SS, value); }
+		}
+		private bool _ssColChain = false;
+		public bool ssColChain {
+			get { return _ssColChain; }
+			set { _ssColChain = this.ProcessPropertyChanged("ssColChain", _ssColChain, value); }
+		}
+		private bool _ssColStruct = false;
+		public bool ssColStruct {
+			get { return _ssColStruct; }
+			set { _ssColStruct = this.ProcessPropertyChanged("ssColStruct", _ssColStruct, value); }
+		}
+		private bool _ssDivCol = false;
+		public bool ssDivCol {
+			get { return _ssDivCol; }
+			set { _ssDivCol = this.ProcessPropertyChanged("ssDivCol", _ssDivCol, value); }
+		}
+		private bool _surfColChain = false;
+		public bool surfColChain {
+			get { return _surfColChain; }
+			set { _surfColChain = this.ProcessPropertyChanged("surfColChain", _surfColChain, value); }
+		}
+		private bool _surfColHydroKD = false;
+		public bool surfColHydroKD {
+			get { return _surfColHydroKD; }
+			set { _surfColHydroKD = this.ProcessPropertyChanged("surfColHydroKD", _surfColHydroKD, value); }
+		}
+		private bool _surfColHydroEng = false;
+		public bool surfColHydroEng {
+			get { return _surfColHydroEng; }
+			set { _surfColHydroEng = this.ProcessPropertyChanged("surfColHydroEng", _surfColHydroEng, value); }
+		}
+		private bool _surfColHydroWO = false;
+		public bool surfColHydroWO {
+			get { return _surfColHydroWO; }
+			set { _surfColHydroWO = this.ProcessPropertyChanged("surfColHydroWO", _surfColHydroWO, value); }
+		}
+		private bool _surfColHydroEis = false;
+		public bool surfColHydroEis {
+			get { return _surfColHydroEis; }
+			set { _surfColHydroEis = this.ProcessPropertyChanged("surfColHydroEis", _surfColHydroEis, value); }
+		}
+		private bool _surfColHydroHW = false;
+		public bool surfColHydroHW {
+			get { return _surfColHydroHW; }
+			set { _surfColHydroHW = this.ProcessPropertyChanged("surfColHydroHW", _surfColHydroHW, value); }
+		}
+		private bool _surfColPChim = false;
+		public bool surfColPChim {
+			get { return _surfColPChim; }
+			set { _surfColPChim = this.ProcessPropertyChanged("surfColPChim", _surfColPChim, value); }
+		}
+		private bool _surfColBF = false;
+		public bool surfColBF {
+			get { return _surfColBF; }
+			set { _surfColBF = this.ProcessPropertyChanged("surfColBF", _surfColBF, value); }
+		}
+		private bool _isGLIC = false;
+		public bool isGLIC {
+			get { return _isGLIC; }
+			set { _isGLIC = this.ProcessPropertyChanged("isGLIC", _isGLIC, value); }
+		}
+		private bool _spread_tree = false;
+		public bool spread_tree {
+			get { return _spread_tree; }
+			set { _spread_tree = this.ProcessPropertyChanged("spread_tree", _spread_tree, value); }
+		}
+		private bool _toggleBfac = false;
+		public bool toggleBfac {
+			get { return _toggleBfac; }
+			set { _toggleBfac = this.ProcessPropertyChanged("toggleBfac", _toggleBfac, value); }
+		}
+		//public bool secondarystruct=false;
+		//public bool toggle_bf = false;
+		//public bool isRescale = false;
+		//public bool toggle_SS = false;
+		//public bool ssColChain = false;
+		//public bool ssColStruct = false;
+		//public bool ssDivCol = false;
+		//public bool surfColChain = false;
+		//public bool surfColHydroKD = false;
+		//public bool surfColHydroEng = false;
+		//public bool surfColHydroWO = false;
+		//public bool surfColHydroEis = false;
+		//public bool surfColHydroHW = false;
+		//public bool surfColPChim = false;
+		//public bool surfColBF = false;
+		//public bool isGLIC = false;
+		//public bool spread_tree = false;
 
 		public bool firststruct=true;
 		
 		public bool toggleSurf=true;
-		public bool toggleBfac=false;
+		//public bool toggleBfac=false;
 
 		// Guided navigation mode
 		public bool guided=false;

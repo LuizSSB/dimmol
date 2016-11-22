@@ -2,9 +2,184 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
+// Luiz:
+[System.Serializable]
+public class RibbonWidthEventArgs
+{
+	public int Index;
+	public float Value;
+}
+[UI.ClearableSingleton]
+public class RibbonsGeneralData
+{
+	private static RibbonsGeneralData sInstance;
+	public static RibbonsGeneralData Instance {
+		get {
+			return sInstance = sInstance ?? new RibbonsGeneralData();
+		}
+	}
+	private RibbonsGeneralData() {
+		ribbonWidth.Changed += (int obj) => {
+			ChangeManager.DispatchMethodEvent(
+				typeof(Ribbons), "UpdateRibbonWidth",
+				new RibbonWidthEventArgs {
+					Index = obj,
+					Value = ribbonWidth[obj]
+				}
+			);
+		};
+	}
+
+//	public bool mustSplitDictList = false;
+//	public string ribbontag = "";
+//
+//	public bool mustSplitDictList = false;
+//	public string ribbontag = "";
+//	public string currentchain = "";
+//
+//	public ColorObject HELIX_COLOR = new ColorObject(new Color32(255,0,0,255));	// red
+//	public ColorObject STRAND_COLOR = new ColorObject(new Color32(0,0,255,255));	// blue
+//	public ColorObject COIL_COLOR = new ColorObject(new Color32(255,255,255,255));	// light grey
+//
+//	public ColorObject ChainColorA = new ColorObject(new Color32( 10,  3,200,50));
+//	public ColorObject ChainColorB = new ColorObject(new Color32( 10,170, 34,50));
+//	public ColorObject ChainColorC = new ColorObject(new Color32(  0,150,150,50));
+//	public ColorObject ChainColorD = new ColorObject(new Color32(  0,180,  0,50));
+//	public ColorObject ChainColorE = new ColorObject(new Color32(  0,170,200,50));
+//
+//	public float HELIX_DIAM = 1.8f;
+//	public float THICKNESS = 0.3f;
+//	public float ARROW_WIDTH = 1.8f;
+//
+//	public float[] ribbonWidth = {1.5f, 1.7f, 0.3f}; // Ribbon widths for helix, strand and coil, respectively
+
+//	public ColorObject HELIX_COLOR = new ColorObject(new Color32(255,0,0,255));	// red
+//	public ColorObject STRAND_COLOR = new ColorObject(new Color32(0,0,255,255));	// blue
+//	public ColorObject COIL_COLOR = new ColorObject(new Color32(255,255,255,255));	// light grey
+//
+//	public ColorObject ChainColorA = new ColorObject(new Color32( 10,  3,200,50));
+//	public ColorObject ChainColorB = new ColorObject(new Color32( 10,170, 34,50));
+//	public ColorObject ChainColorC = new ColorObject(new Color32(  0,150,150,50));
+//	public ColorObject ChainColorD = new ColorObject(new Color32(  0,180,  0,50));
+//	public ColorObject ChainColorE = new ColorObject(new Color32(  0,170,200,50));
+//
+//	public float HELIX_DIAM = 1.8f;
+//	public float THICKNESS = 0.3f;
+//	public float ARROW_WIDTH = 1.8f;
+//	public float[] ribbonWidth = {1.5f, 1.7f, 0.3f}; // Ribbon widths for helix, strand and coil, respectively
+
+	private bool _mustSplitDictList = false;
+	public bool mustSplitDictList {
+		get { return _mustSplitDictList; }
+		set { _mustSplitDictList = this.ProcessPropertyChanged("mustSplitDictList", _mustSplitDictList, value); }
+	}
+	private string _ribbontag = string.Empty;
+	public string ribbontag {
+				get { return _ribbontag; }
+				set { _ribbontag = this.ProcessPropertyChanged("ribbonTag", _ribbontag, value); }
+	}
+	private string _currentchain = string.Empty;
+	public string currentchain {
+		get { return _currentchain; }
+		set { _currentchain = this.ProcessPropertyChanged("currentChain", _currentchain, value); }
+	}
+	private ColorObject _HELIX_COLOR = new ColorObject(new Color32(255,0,0,255));
+	public ColorObject HELIX_COLOR {
+		get { return _HELIX_COLOR; }
+		set { _HELIX_COLOR = this.ProcessPropertyChanged("HELIX_COLOR", _HELIX_COLOR, value); }
+	}
+	private ColorObject _STRAND_COLOR = new ColorObject(new Color32(0,0,255,255));
+	public ColorObject STRAND_COLOR {
+		get { return _STRAND_COLOR; }
+		set { _STRAND_COLOR = this.ProcessPropertyChanged("STRAND_COLOR", _STRAND_COLOR, value); }
+	}
+	private ColorObject _COIL_COLOR = new ColorObject(new Color32(255,255,255,255));
+	public ColorObject COIL_COLOR {
+				get { return _COIL_COLOR; }
+				set { _COIL_COLOR = this.ProcessPropertyChanged("COIL_COLOR", _COIL_COLOR, value); }
+	}
+	private ColorObject _ChainColorA = new ColorObject(new Color32( 10,  3,200,50));
+	public ColorObject ChainColorA {
+				get { return _ChainColorA; }
+				set { _ChainColorA = this.ProcessPropertyChanged("ChainColorA", _ChainColorA, value); }
+	}
+	private ColorObject _ChainColorB = new ColorObject(new Color32( 10,170, 34,50));
+	public ColorObject ChainColorB {
+		get { return _ChainColorB; }
+		set { _ChainColorB = this.ProcessPropertyChanged("ChainColorB", _ChainColorB, value); }
+	}
+	private ColorObject _ChainColorC = new ColorObject(new Color32(  0,150,150,50));
+	public ColorObject ChainColorC {
+		get { return _ChainColorC; }
+		set { _ChainColorC = this.ProcessPropertyChanged("ChainColorC", _ChainColorC, value); }
+	}
+	private ColorObject _ChainColorD = new ColorObject(new Color32(  0,180,  0,50));
+	public ColorObject ChainColorD {
+		get { return _ChainColorD; }
+		set { _ChainColorD = this.ProcessPropertyChanged("ChainColorD", _ChainColorD, value); }
+	}
+	private ColorObject _ChainColorE = new ColorObject(new Color32(  0,170,200,50));
+	public ColorObject ChainColorE {
+		get { return _ChainColorE; }
+		set { _ChainColorE = this.ProcessPropertyChanged("ChainColorE", _ChainColorE, value); }
+	}
+	private float _HELIX_DIAM = 1.8f;
+	public float HELIX_DIAM {
+				get { return _HELIX_DIAM; }
+				set { _HELIX_DIAM = this.ProcessPropertyChanged("HELIX_DIAM", _HELIX_DIAM, value); }
+	}
+	private float _THICKNESS = .3f;
+	public float THICKNESS {
+				get { return _THICKNESS; }
+				set { _THICKNESS = this.ProcessPropertyChanged("THICKNESS", _THICKNESS, value); }
+	}
+	private float _ARROW_WIDTH = 1.8f;
+	public float ARROW_WIDTH {
+				get { return _ARROW_WIDTH; }
+				set { _ARROW_WIDTH = this.ProcessPropertyChanged("ARROW_WIDTH", _ARROW_WIDTH, value); }
+	}
+
+	public readonly ObservableList<float> ribbonWidth =  new ObservableList<float>(new []{1.5f, 1.7f, .3f});
+	public void UpdateRibbonWidth(RibbonWidthEventArgs args)
+	{
+		ribbonWidth[args.Index] = args.Value;
+	}
+
+	private Dictionary<string, Color32> ss_chain_col = null;
+
+	public void InitCol() {
+		ss_chain_col = new Dictionary <string, Color32> ();
+
+		// Color by Chain
+
+		ss_chain_col.Add ("A", ChainColorA.color);
+		ss_chain_col.Add ("AL", new Color32( 50, 50, 100, 255));
+		ss_chain_col.Add ("B", ChainColorB.color);
+		ss_chain_col.Add ("BL", new Color32(60, 120, 60, 255));
+		ss_chain_col.Add ("C", ChainColorC.color);
+		ss_chain_col.Add ("CL", new Color32(50, 90, 90, 255));
+		ss_chain_col.Add ("D", ChainColorD.color);
+		ss_chain_col.Add ("DL", new Color32(60, 150, 60, 255));
+		ss_chain_col.Add ("E", ChainColorE.color);
+		ss_chain_col.Add ("EL", new Color32(60, 150, 150, 255));
+	}
+
+	public Color32 GetColorChain(string type) {
+		Color32 value = new Color32(255, 255, 255, 255);
+		if(ss_chain_col == null)
+			return new Color32(255, 255, 255, 255);
+		else if(!ss_chain_col.TryGetValue(type, out value))
+			return new Color32(255, 255, 255, 255);
+		else
+			return ss_chain_col[type];
+	}
+}
+
 public class Ribbons {
+	private static int RIBBON_DETAIL = 4;           // Ribbon detail: from 1 (lowest) to 4 (highest)
+	private static int RENDER_MODE = 1;             // 0 = lines, 1 = flat ribbons
+
 	// For handling multiple chains.
-	public static bool mustSplitDictList = false;
 	private Vector3 flipTestV;
 	private BSpline splineCenter;
 	private BSpline splineSide1;
@@ -15,33 +190,12 @@ public class Ribbons {
 	public List<int> handedlist = new List<int> ();
 	public List<int> sslist = new List<int> ();
 	private bool createss = false; // check if ss informations are present in the pdb file
-	public static string ribbontag = "";
-	private static string currentchain = "";
 
 	private const int HELIX = 0;
 	private const int STRAND = 1;
 	private const int COIL = 2;
 	private const int LHANDED = -1;
 	private const int RHANDED = 1;
-	
-	private static int RIBBON_DETAIL = 4;           // Ribbon detail: from 1 (lowest) to 4 (highest)
-	private static int RENDER_MODE = 1;             // 0 = lines, 1 = flat ribbons
-	
-	public static ColorObject HELIX_COLOR = new ColorObject(new Color32(255,0,0,255));	// red
-	public static ColorObject STRAND_COLOR = new ColorObject(new Color32(0,0,255,255));	// blue
-	public static ColorObject COIL_COLOR = new ColorObject(new Color32(255,255,255,255));	// light grey
-
-	public static ColorObject ChainColorA = new ColorObject(new Color32( 10,  3,200,50));
-	public static ColorObject ChainColorB = new ColorObject(new Color32( 10,170, 34,50));
-	public static ColorObject ChainColorC = new ColorObject(new Color32(  0,150,150,50));
-	public static ColorObject ChainColorD = new ColorObject(new Color32(  0,180,  0,50));
-	public static ColorObject ChainColorE = new ColorObject(new Color32(  0,170,200,50));
-
-	public static float HELIX_DIAM = 1.8f;
-	public static float THICKNESS = 0.3f;
-	public static float ARROW_WIDTH = 1.8f;
-	
-	public static float[] ribbonWidth = {1.5f, 1.7f, 0.3f}; // Ribbon widths for helix, strand and coil, respectively
 	
 	private float CalculateTorsionalAngle(Vector3 at0, Vector3 at1, Vector3 at2, Vector3 at3, bool print) {
 		Vector3 r01 = at0 - at1;
@@ -82,7 +236,7 @@ public class Ribbons {
 	}
 	
 	private void CalculateSecondaryStructures(List<Dictionary<string, Vector3>> residueDicts, int[] ss, int[] handedness) {
-		Debug.Log("Ribbons.cs::CalculateSecondaryStructures > Beginning.");
+		Debug.Log("RibbonsGeneralData.Instance.cs::CalculateSecondaryStructures > Beginning.");
 		Vector3 c0, n1, ca1, c1, n2;
 		c0 = n1 = ca1 = c1 = n2 = Vector3.zero; // you have to init them
 		Dictionary<string, Vector3> res0, res1, res2;
@@ -109,7 +263,7 @@ public class Ribbons {
 				success = success && res2.TryGetValue("N", out n2);
 				
 				if(!success)
-					Debug.Log("Ribbons.cs::CalculateSecondaryStructures > Failed to get all the vectors.");
+					Debug.Log("RibbonsGeneralData.Instance.cs::CalculateSecondaryStructures > Failed to get all the vectors.");
 		
 				bool print = (i<100);
 				print = false;
@@ -218,15 +372,15 @@ public class Ribbons {
 			// from the helix axis, along the C direction.
 			p0 = Vector3.zero;
 			splineCenter.GetCPoint(3, out p0);
-			cpt0 = LinearComb(1f, p0, handedness*HELIX_DIAM, C);
+			cpt0 = LinearComb(1f, p0, handedness * RibbonsGeneralData.Instance.HELIX_DIAM, C);
 			splineCenter.SetCPoint(3, cpt0);
 		}
 		
 		// The control points for the side ribbons are constructed.
-		cpt1 = LinearComb(1f, cpt0, ribbonWidth[ss], D);
+		cpt1 = LinearComb(1f, cpt0, RibbonsGeneralData.Instance.ribbonWidth[ss], D);
 		splineSide1.SetCPoint(3, cpt1);
 		
-		cpt2 = LinearComb(1f, cpt0, - ribbonWidth[ss], D);
+		cpt2 = LinearComb(1f, cpt0, - RibbonsGeneralData.Instance.ribbonWidth[ss], D);
 		splineSide2.SetCPoint(3, cpt2);
 
 
@@ -243,7 +397,7 @@ public class Ribbons {
 	
 	
 	private void ConstructControlPoints(List<Dictionary<string, Vector3>> residueDicts, int res, int ss, int handedness) {
-		//Debug.Log("Ribbons.cs::ConstructControlPoints > Beginning.");
+		//Debug.Log("RibbonsGeneralData.Instance.cs::ConstructControlPoints > Beginning.");
 		Vector3 ca0, ox0, ca1;
 		Vector3 p0, p1, p2, p3;
 		
@@ -265,7 +419,7 @@ public class Ribbons {
 			success = success && res1.TryGetValue("CA", out ca1);
 			
 			if(!success)
-				Debug.Log("Ribbons.cs::ConstructControlPoints > Failed to get all the vectors.");
+				Debug.Log("RibbonsGeneralData.Instance.cs::ConstructControlPoints > Failed to get all the vectors.");
 			
 			AddControlPoints(ca0, ox0, ca1, ss, handedness);
 			splineSide1.CopyCPoints(3, 2);
@@ -279,7 +433,7 @@ public class Ribbons {
 			success = success && res0.TryGetValue("O", out ox0);
 			success = success && res1.TryGetValue("CA", out ca1);
 			if(!success)
-				Debug.Log("Ribbons.cs::ConstructControlPoints > Failed to get all the vectors.");
+				Debug.Log("RibbonsGeneralData.Instance.cs::ConstructControlPoints > Failed to get all the vectors.");
 			AddControlPoints(ca0, ox0, ca1, ss, handedness);
 			
 			// We still need the two first control points
@@ -289,15 +443,15 @@ public class Ribbons {
 			
 			p1 = LinearComb(2f, p2, -1f, p3);
 			splineCenter.SetCPoint(1, p1);
-			splineSide1.SetCPoint(1, LinearComb(1f, p1, ribbonWidth[ss], flipTestV));
-			splineSide2.SetCPoint(1, LinearComb(1f, p1, -ribbonWidth[ss], flipTestV));
+			splineSide1.SetCPoint(1, LinearComb(1f, p1, RibbonsGeneralData.Instance.ribbonWidth[ss], flipTestV));
+			splineSide2.SetCPoint(1, LinearComb(1f, p1, -RibbonsGeneralData.Instance.ribbonWidth[ss], flipTestV));
 			
 			p0 = LinearComb(2f, p1, -1f, p2);
 
 
 			splineCenter.SetCPoint(0, p0);
-			splineSide1.SetCPoint(0, LinearComb(1f, p0, ribbonWidth[ss], flipTestV));
-			splineSide2.SetCPoint(0, LinearComb(1f, p0, -ribbonWidth[ss], flipTestV));
+			splineSide1.SetCPoint(0, LinearComb(1f, p0, RibbonsGeneralData.Instance.ribbonWidth[ss], flipTestV));
+			splineSide2.SetCPoint(0, LinearComb(1f, p0, -RibbonsGeneralData.Instance.ribbonWidth[ss], flipTestV));
 		} else {
 			ShiftControlPoints();
 			if ( (residueDicts.Count - 1 == res) || (residueDicts.Count - 2 == res) ) {
@@ -307,8 +461,8 @@ public class Ribbons {
 				
 				p3 = LinearComb(2f, p2, -1f, p1);
 				splineCenter.SetCPoint(3, p3);
-				splineSide1.SetCPoint(3, LinearComb(1f, p3, ribbonWidth[ss], flipTestV));
-				splineSide2.SetCPoint(3, LinearComb(1f, p3, -ribbonWidth[ss], flipTestV));
+				splineSide1.SetCPoint(3, LinearComb(1f, p3, RibbonsGeneralData.Instance.ribbonWidth[ss], flipTestV));
+				splineSide2.SetCPoint(3, LinearComb(1f, p3, -RibbonsGeneralData.Instance.ribbonWidth[ss], flipTestV));
 			} else {
 				res0 = residueDicts[res + 1];
 				res1 = residueDicts[res + 2];
@@ -317,7 +471,7 @@ public class Ribbons {
 				success = success && res0.TryGetValue("O", out ox0);
 				success = success && res1.TryGetValue("CA", out ca1);
 				if(!success)
-					Debug.Log("Ribbons.cs::ConstructControlPoints > Failed to get all the vectors.");
+					Debug.Log("RibbonsGeneralData.Instance.cs::ConstructControlPoints > Failed to get all the vectors.");
 				AddControlPoints(ca0, ox0, ca1, ss, handedness);
 			}
 		}
@@ -384,8 +538,8 @@ public class Ribbons {
 		Transversal = Sid1Point1 - Sid2Point1;
 		Normal1 = Vector3.Cross(Transversal, Tangent);
 		Normal1.Normalize();
-		float extraWidthFactor = ARROW_WIDTH;
-		float pointOneAdjustment = 0.1f * ARROW_WIDTH;
+		float extraWidthFactor = RibbonsGeneralData.Instance.ARROW_WIDTH;
+		float pointOneAdjustment = 0.1f * RibbonsGeneralData.Instance.ARROW_WIDTH;
 		float pointOneWidthFactor;
 		
 		Vector3 leftNormal0, leftNormal1, rightNormal0, rightNormal1;
@@ -444,10 +598,10 @@ public class Ribbons {
 				*/
 				
 				Forward = CP1 - CP0;
-				LeftDiag0 = (Forward.magnitude*Forward + (leftVect0.magnitude + ARROW_WIDTH)*leftVect0).normalized;
-				LeftDiag1 = (Forward.magnitude*Forward + (leftVect1.magnitude + ARROW_WIDTH)*leftVect1).normalized;
-				RightDiag0 = (Forward.magnitude*Forward + (rightVect0.magnitude + ARROW_WIDTH)*rightVect0).normalized;
-				RightDiag1 = (Forward.magnitude*Forward + (rightVect1.magnitude + ARROW_WIDTH)*rightVect1).normalized;
+				LeftDiag0 = (Forward.magnitude*Forward + (leftVect0.magnitude + RibbonsGeneralData.Instance.ARROW_WIDTH)*leftVect0).normalized;
+				LeftDiag1 = (Forward.magnitude*Forward + (leftVect1.magnitude + RibbonsGeneralData.Instance.ARROW_WIDTH)*leftVect1).normalized;
+				RightDiag0 = (Forward.magnitude*Forward + (rightVect0.magnitude + RibbonsGeneralData.Instance.ARROW_WIDTH)*rightVect0).normalized;
+				RightDiag1 = (Forward.magnitude*Forward + (rightVect1.magnitude + RibbonsGeneralData.Instance.ARROW_WIDTH)*rightVect1).normalized;
 				
 				
 				// The (Sid1Point0, Sid1Point1, CentPoint1) triangle is added.
@@ -465,13 +619,13 @@ public class Ribbons {
 				triangles.Add(vIndex+2);
 				
 				// and duplicated above
-				vertices.Add(S1P0 + THICKNESS * Norm0 + extraWidthFactor * leftNormal0);
+				vertices.Add(S1P0 + RibbonsGeneralData.Instance.THICKNESS * Norm0 + extraWidthFactor * leftNormal0);
 				normals.Add(-Norm0);
 				
-				vertices.Add(S1P1 + THICKNESS * Norm1 + pointOneWidthFactor * leftNormal1);
+				vertices.Add(S1P1 + RibbonsGeneralData.Instance.THICKNESS * Norm1 + pointOneWidthFactor * leftNormal1);
 				normals.Add(-Norm1);
 				
-				vertices.Add(CP1 + THICKNESS * Norm1);
+				vertices.Add(CP1 + RibbonsGeneralData.Instance.THICKNESS * Norm1);
 				normals.Add(-Norm1);
 				
 				triangles.Add(vIndex+3);
@@ -493,13 +647,13 @@ public class Ribbons {
 				triangles.Add(vIndex+8);
 				
 				// and duplicated above
-				vertices.Add(S1P0 + THICKNESS * Norm0 + extraWidthFactor * leftNormal0);
+				vertices.Add(S1P0 + RibbonsGeneralData.Instance.THICKNESS * Norm0 + extraWidthFactor * leftNormal0);
 				normals.Add(-Norm0);
 				
-				vertices.Add(CP1 + THICKNESS * Norm1);
+				vertices.Add(CP1 + RibbonsGeneralData.Instance.THICKNESS * Norm1);
 				normals.Add(-Norm1);
 				
-				vertices.Add(CP0 + THICKNESS * Norm0);
+				vertices.Add(CP0 + RibbonsGeneralData.Instance.THICKNESS * Norm0);
 				normals.Add(-Norm0);
 				
 				triangles.Add(vIndex+9);
@@ -521,13 +675,13 @@ public class Ribbons {
 				triangles.Add(vIndex+14);
 				
 				// and duplicated above
-				vertices.Add(S2P0 + THICKNESS * Norm0 + extraWidthFactor * rightNormal0);
+				vertices.Add(S2P0 + RibbonsGeneralData.Instance.THICKNESS * Norm0 + extraWidthFactor * rightNormal0);
 				normals.Add(-Norm0);
 				
-				vertices.Add(S2P1 + THICKNESS * Norm1 + pointOneWidthFactor * rightNormal1);
+				vertices.Add(S2P1 + RibbonsGeneralData.Instance.THICKNESS * Norm1 + pointOneWidthFactor * rightNormal1);
 				normals.Add(-Norm1);
 				
-				vertices.Add(CP1 + THICKNESS * Norm1);
+				vertices.Add(CP1 + RibbonsGeneralData.Instance.THICKNESS * Norm1);
 				normals.Add(-Norm1);
 				
 				triangles.Add(vIndex+15);
@@ -550,13 +704,13 @@ public class Ribbons {
 				
 				// and duplicated above
 				
-				vertices.Add(S2P0 + THICKNESS * Norm0 + extraWidthFactor * rightNormal0);
+				vertices.Add(S2P0 + RibbonsGeneralData.Instance.THICKNESS * Norm0 + extraWidthFactor * rightNormal0);
 				normals.Add(-Norm0);
 				
-				vertices.Add(CP1 + THICKNESS * Norm1);
+				vertices.Add(CP1 + RibbonsGeneralData.Instance.THICKNESS * Norm1);
 				normals.Add(-Norm1);
 				
-				vertices.Add(CP0 + THICKNESS * Norm0);
+				vertices.Add(CP0 + RibbonsGeneralData.Instance.THICKNESS * Norm0);
 				normals.Add(-Norm0);
 				
 				triangles.Add(vIndex+21);
@@ -578,16 +732,16 @@ public class Ribbons {
 				normals.Add(RightDiag1);
 				
 				// and duplicating them again, this time raising them as well
-				vertices.Add(S1P0 + THICKNESS * Norm0 + extraWidthFactor * leftNormal0);
+				vertices.Add(S1P0 + RibbonsGeneralData.Instance.THICKNESS * Norm0 + extraWidthFactor * leftNormal0);
 				normals.Add(LeftDiag0);
 				
-				vertices.Add(S1P1 + THICKNESS * Norm1 + pointOneWidthFactor * leftNormal1);
+				vertices.Add(S1P1 + RibbonsGeneralData.Instance.THICKNESS * Norm1 + pointOneWidthFactor * leftNormal1);
 				normals.Add(LeftDiag1);
 				
-				vertices.Add(S2P0 + THICKNESS * Norm0 + extraWidthFactor * rightNormal0);
+				vertices.Add(S2P0 + RibbonsGeneralData.Instance.THICKNESS * Norm0 + extraWidthFactor * rightNormal0);
 				normals.Add(RightDiag0);
 				
-				vertices.Add(S2P1 + THICKNESS * Norm1 + pointOneWidthFactor * rightNormal1);
+				vertices.Add(S2P1 + RibbonsGeneralData.Instance.THICKNESS * Norm1 + pointOneWidthFactor * rightNormal1);
 				normals.Add(RightDiag1);
 				
 				// Side triangles
@@ -712,13 +866,13 @@ public class Ribbons {
 				triangles.Add(vIndex+2);
 				
 				// and duplicated above
-				vertices.Add(S1P0 + THICKNESS * Norm0);
+				vertices.Add(S1P0 + RibbonsGeneralData.Instance.THICKNESS * Norm0);
 				normals.Add(-Norm0);
 				
-				vertices.Add(S1P1 + THICKNESS * Norm1);
+				vertices.Add(S1P1 + RibbonsGeneralData.Instance.THICKNESS * Norm1);
 				normals.Add(-Norm1);
 				
-				vertices.Add(CP1 + THICKNESS * Norm1);
+				vertices.Add(CP1 + RibbonsGeneralData.Instance.THICKNESS * Norm1);
 				normals.Add(-Norm1);
 				
 				triangles.Add(vIndex+3);
@@ -740,13 +894,13 @@ public class Ribbons {
 				triangles.Add(vIndex+8);
 				
 				// and duplicated above
-				vertices.Add(S1P0 + THICKNESS * Norm0);
+				vertices.Add(S1P0 + RibbonsGeneralData.Instance.THICKNESS * Norm0);
 				normals.Add(-Norm0);
 				
-				vertices.Add(CP1 + THICKNESS * Norm1);
+				vertices.Add(CP1 + RibbonsGeneralData.Instance.THICKNESS * Norm1);
 				normals.Add(-Norm1);
 				
-				vertices.Add(CP0 + THICKNESS * Norm0);
+				vertices.Add(CP0 + RibbonsGeneralData.Instance.THICKNESS * Norm0);
 				normals.Add(-Norm0);
 				
 				triangles.Add(vIndex+9);
@@ -768,13 +922,13 @@ public class Ribbons {
 				triangles.Add(vIndex+14);
 				
 				// and duplicated above
-				vertices.Add(S2P0 + THICKNESS * Norm0);
+				vertices.Add(S2P0 + RibbonsGeneralData.Instance.THICKNESS * Norm0);
 				normals.Add(-Norm0);
 				
-				vertices.Add(S2P1 + THICKNESS * Norm1);
+				vertices.Add(S2P1 + RibbonsGeneralData.Instance.THICKNESS * Norm1);
 				normals.Add(-Norm1);
 				
-				vertices.Add(CP1 + THICKNESS * Norm1);
+				vertices.Add(CP1 + RibbonsGeneralData.Instance.THICKNESS * Norm1);
 				normals.Add(-Norm1);
 				
 				triangles.Add(vIndex+15);
@@ -796,13 +950,13 @@ public class Ribbons {
 				triangles.Add(vIndex+20);
 				
 				// and duplicated above
-				vertices.Add(S2P0 + THICKNESS * Norm0);
+				vertices.Add(S2P0 + RibbonsGeneralData.Instance.THICKNESS * Norm0);
 				normals.Add(-Norm0);
 				
-				vertices.Add(CP1 + THICKNESS * Norm1);
+				vertices.Add(CP1 + RibbonsGeneralData.Instance.THICKNESS * Norm1);
 				normals.Add(-Norm1);
 				
-				vertices.Add(CP0 + THICKNESS * Norm0);
+				vertices.Add(CP0 + RibbonsGeneralData.Instance.THICKNESS * Norm0);
 				normals.Add(-Norm0);
 				
 				triangles.Add(vIndex+21);
@@ -824,16 +978,16 @@ public class Ribbons {
 				normals.Add(rightNormal1);
 				
 				// and duplicating them again, this time raising them as well
-				vertices.Add(S1P0 + THICKNESS * Norm0);
+				vertices.Add(S1P0 + RibbonsGeneralData.Instance.THICKNESS * Norm0);
 				normals.Add(leftNormal0);
 				
-				vertices.Add(S1P1 + THICKNESS * Norm1);
+				vertices.Add(S1P1 + RibbonsGeneralData.Instance.THICKNESS * Norm1);
 				normals.Add(leftNormal1);
 				
-				vertices.Add(S2P0 + THICKNESS * Norm0);
+				vertices.Add(S2P0 + RibbonsGeneralData.Instance.THICKNESS * Norm0);
 				normals.Add(rightNormal0);
 				
-				vertices.Add(S2P1 + THICKNESS * Norm1);
+				vertices.Add(S2P1 + RibbonsGeneralData.Instance.THICKNESS * Norm1);
 				normals.Add(rightNormal1);
 				
 				// Side triangles
@@ -891,12 +1045,12 @@ public class Ribbons {
 			handedarray = handedlist.ToArray();
 		}
 
-		if(!mustSplitDictList) {
+		if(!RibbonsGeneralData.Instance.mustSplitDictList) {
 			CreateRibbons(residueDicts, sslist, handedlist);
 			return;
 		}
 
-		Debug.Log("Ribbons.cs::CreateRibons() > Splitting");
+		Debug.Log("RibbonsGeneralData.Instance.cs::CreateRibons() > Splitting");
 		List<int> splits = Copy(Molecule.Model.MoleculeModel.splits);
 		int resNb = Molecule.Model.MoleculeModel.firstresnb;
 		List<Dictionary<string, Vector3>> tmpDictList = new List<Dictionary<string, Vector3>>();
@@ -909,8 +1063,8 @@ public class Ribbons {
 		while(resNb<residueDicts.Count && splits.Count>0) {
 
 			if(resNb != splits[0]){
-				currentchain = Molecule.Model.MoleculeModel.resChainList2[resNb];
-				ribbontag = "RibbonObj" + currentchain;
+				RibbonsGeneralData.Instance.currentchain = Molecule.Model.MoleculeModel.resChainList2[resNb];
+				RibbonsGeneralData.Instance.ribbontag = "RibbonObj" + RibbonsGeneralData.Instance.currentchain;
 				tmpDictList.Add(residueDicts[resNb]);
 				if(ssarray.Length != 0){ 
 					tmpSSList.Add (ssarray[resNb]);
@@ -927,7 +1081,7 @@ public class Ribbons {
 			}
 			resNb++;
 		}
-		Debug.Log ("ribbontag " + ribbontag);
+		Debug.Log ("ribbontag " + RibbonsGeneralData.Instance.ribbontag);
 		CreateRibbons(tmpDictList, tmpSSList, tmpHandednessList);
 	}
 
@@ -990,7 +1144,7 @@ public class Ribbons {
 			}
 		}
 
-		InitCol();	//Initialization Dictionary of colors
+		RibbonsGeneralData.Instance.InitCol();	//Initialization Dictionary of colors
 		
 		List<int> triangles = new List<int>();
 		vIndex = 0;
@@ -1007,14 +1161,14 @@ public class Ribbons {
 				GenerateSpline(1, vertices1);
 				GenerateSpline(2, vertices2);
 			} else {
-				if (isArrow && ARROW_WIDTH > 0f)
+				if (isArrow && RibbonsGeneralData.Instance.ARROW_WIDTH > 0f)
 					GenerateArrowRibbon(vertices, normals, triangles);
 				else
 					GenerateFlatRibbon(vertices, normals, triangles);
 				Color32 color;
 
 				if (UI.UIData.Instance.ssColChain) {
-					color =  GetColorChain(currentchain);
+					color = RibbonsGeneralData.Instance.GetColorChain(RibbonsGeneralData.Instance.currentchain);
 					if(i > 185 && UI.UIData.Instance.ssDivCol ){
 						color.g += 100;
 						color.b += 100;}
@@ -1022,13 +1176,13 @@ public class Ribbons {
 				
 					switch(ss[colorIndex]) {
 					case HELIX:
-						color = HELIX_COLOR.color;
+							color = RibbonsGeneralData.Instance.HELIX_COLOR.color;
 						break;
 					case STRAND:
-						color = STRAND_COLOR.color;
+						color = RibbonsGeneralData.Instance.STRAND_COLOR.color;
 						break;
 					default:
-						color = COIL_COLOR.color;
+						color = RibbonsGeneralData.Instance.COIL_COLOR.color;
 						break;
 					}
 				}
@@ -1198,37 +1352,5 @@ public class Ribbons {
 		sslist.RemoveAt (0);
 		handednesslist.RemoveAt (0);
 
-	}//End CreateSSlist
-
-	private static Dictionary<string, Color32> ss_chain_col = null;
-
-	public static void InitCol() {
-		ss_chain_col = new Dictionary <string, Color32> ();
-
-		// Color by Chain
-
-		ss_chain_col.Add ("A", ChainColorA.color);
-		ss_chain_col.Add ("AL", new Color32( 50, 50, 100, 255));
-		ss_chain_col.Add ("B", ChainColorB.color);
-		ss_chain_col.Add ("BL", new Color32(60, 120, 60, 255));
-		ss_chain_col.Add ("C", ChainColorC.color);
-		ss_chain_col.Add ("CL", new Color32(50, 90, 90, 255));
-		ss_chain_col.Add ("D", ChainColorD.color);
-		ss_chain_col.Add ("DL", new Color32(60, 150, 60, 255));
-		ss_chain_col.Add ("E", ChainColorE.color);
-		ss_chain_col.Add ("EL", new Color32(60, 150, 150, 255));
-
-	}
-
-	public static Color32 GetColorChain(string type) {
-		Color32 value = new Color32(255, 255, 255, 255);
-		if(ss_chain_col == null)
-			return new Color32(255, 255, 255, 255);
-		else if(!ss_chain_col.TryGetValue(type, out value))
-		   return new Color32(255, 255, 255, 255);
-		else
-			return ss_chain_col[type];
-	}
-	
-	
+	}//End CreateSSlist	
 }

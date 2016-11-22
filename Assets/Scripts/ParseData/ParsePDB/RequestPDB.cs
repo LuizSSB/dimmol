@@ -639,7 +639,7 @@ namespace  ParseData.ParsePDB
 				}
 			}
 			isDone=true;
-			Ribbons.mustSplitDictList = (nbTers > 1);
+			RibbonsGeneralData.Instance.mustSplitDictList = (nbTers > 1);
 			
 			for(int i = 0; i < typelist.Count; i++)
 				MoleculeModel.atomsLocalScaleList.Add(100.0f);

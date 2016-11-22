@@ -224,16 +224,18 @@ public class Molecule3D:MonoBehaviour {
 
 	void HandleChangeManagerPropertyChanged (object sender, PropertyEventArgs e)
 	{
-		var rpcData = GetRPCData(e.NewValue, "Property");
-		mNetworkView.RPC(
-			rpcData.HandlerName,
-			RPCMode.All,
-			Node.CurrentNode.Id,
-			e.TypeName,
-			e.PropertyName,
-			e.NewValue.GetType().FullName,
-			rpcData.Data
-		);
+		if (Node.CurrentNode.HasPermission(NodePermission.MenuControl)) {
+			var rpcData = GetRPCData(e.NewValue, "Property");
+			mNetworkView.RPC(
+				rpcData.HandlerName,
+				RPCMode.All,
+				Node.CurrentNode.Id,
+				e.TypeName,
+				e.PropertyName,
+				e.NewValue.GetType().FullName,
+				rpcData.Data
+			);
+		}
 	}
 
 	void HandleChangeManagerMethodInvoked (object sender, MethodParamEventArgs e)

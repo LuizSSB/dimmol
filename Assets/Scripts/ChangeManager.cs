@@ -14,6 +14,10 @@ public static class ChangeManager {
 			));
 		}
 	}
+	public static void DispatchMethodEvent(this object obj, string methodName, object param)
+	{
+		DispatchMethodEvent(obj.GetType(), methodName, param);
+	}
 
 	public static event EventHandler<PropertyEventArgs> PropertyChanged;
 	public static void DispatchPropertyEvent(Type classType, string propertyName, object oldValue, object newValue)
@@ -32,6 +36,10 @@ public static class ChangeManager {
 			DispatchPropertyEvent (classType, propName, oldValue, newValue);
 		}
 		return newValue;
+	}
+	public static TData ProcessPropertyChanged<TData>(this object obj, string propName, TData oldValue, TData newValue)
+	{
+		return ProcessPropertyChanged(obj.GetType(), propName, oldValue, newValue);
 	}
 }
 

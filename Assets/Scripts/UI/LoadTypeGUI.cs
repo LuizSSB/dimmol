@@ -95,21 +95,92 @@ namespace UI {
 		public float maxOrthoSize = 60f ;
 		public float orthoSize = 10f; // size of the orthographic camera
 
+		// Luiz:
 		//Parameters for SugarRibbons
-		public float RibbonsThickness = 0.15f;
-		public float OxySphereSize = 1f;
-		public float OxySphereSizeCheck = 1f;
-		public float thickness_Little=1.8f;
-		public float thickness_BIG=1f;
-		public float thickness_bond_6_C1_C4=0.2f; 
-		public float thickness_6_other=0.16f; 
-		public float thickness_bond_5=0.2f;
-		public float lighter_color_factor_bond=0.35f;
-		public float lighter_color_factor_bond_check=0.35f;
-		public float lighter_color_factor_ring=0.35f;
-		public float lighter_color_factor_ring_check=0.35f;
-		public int ColorationModeRing=0;
-		public int ColorationModeBond=0;
+//		public float RibbonsThickness = 0.15f;
+//		public float OxySphereSize = 1f;
+//		public float OxySphereSizeCheck = 1f;
+//		public float thickness_Little=1.8f;
+//		public float thickness_BIG=1f;
+//		public float thickness_bond_6_C1_C4=0.2f; 
+//		public float thickness_6_other=0.16f; 
+//		public float thickness_bond_5=0.2f;
+//		public float lighter_color_factor_bond=0.35f;
+//		public float lighter_color_factor_bond_check=0.35f;
+//		public float lighter_color_factor_ring=0.35f;
+//		public float lighter_color_factor_ring_check=0.35f;
+//		public int ColorationModeRing=0;
+//		public int ColorationModeBond=0;
+		private float _RibbonsThickness = .15f;
+		public float RibbonsThickness {
+			get { return _RibbonsThickness; }
+			set { _RibbonsThickness = this.ProcessPropertyChanged("RibbonsThickness", _RibbonsThickness, value); }
+		}
+		private float _OxySphereSize = 1f;
+		public float OxySphereSize {
+			get { return _OxySphereSize; }
+			set { _OxySphereSize = this.ProcessPropertyChanged("OxySphereSize", _OxySphereSize, value); }
+		}
+		private float _OxySphereSizeCheck = 1f;
+		public float OxySphereSizeCheck {
+			get { return _OxySphereSizeCheck; }
+			set { _OxySphereSizeCheck = this.ProcessPropertyChanged("OxySphereSizeCheck", _OxySphereSizeCheck, value); }
+		}
+		private float _thickness_Little = 1.8f;
+		public float thickness_Little {
+			get { return _thickness_Little; }
+			set { _thickness_Little = this.ProcessPropertyChanged("thickness_Little", _thickness_Little, value); }
+		}
+		private float _thickness_BIG = 1f;
+		public float thickness_BIG {
+			get { return _thickness_BIG; }
+			set { _thickness_BIG = this.ProcessPropertyChanged("thickness_BIG", _thickness_BIG, value); }
+		}
+		private float  _thickness_bond_6_C1_C4 = .2f;
+		public float  thickness_bond_6_C1_C4 {
+			get { return _thickness_bond_6_C1_C4; }
+			set { _thickness_bond_6_C1_C4 = this.ProcessPropertyChanged("thickness_bond_6_C1_C4", _thickness_bond_6_C1_C4, value); }
+		}
+		private float _thickness_6_other = .16f;
+		public float thickness_6_other {
+			get { return _thickness_6_other; }
+			set { _thickness_6_other = this.ProcessPropertyChanged("thickness_6_other", _thickness_6_other, value); }
+		}
+		private float _thickness_bond_5 = .2f;
+		public float thickness_bond_5 {
+			get { return _thickness_bond_5; }
+			set { _thickness_bond_5 = this.ProcessPropertyChanged("thickness_bond_5", _thickness_bond_5, value); }
+		}
+		private float _lighter_color_factor_bond = .2f;
+		public float lighter_color_factor_bond {
+			get { return _lighter_color_factor_bond; }
+			set { _lighter_color_factor_bond = this.ProcessPropertyChanged("lighter_color_factor_bond", _lighter_color_factor_bond, value); }
+		}
+		private float _lighter_color_factor_bond_check = .2f;
+		public float lighter_color_factor_bond_check {
+			get { return _lighter_color_factor_bond_check; }
+			set { _lighter_color_factor_bond_check = this.ProcessPropertyChanged("lighter_color_factor_bond_check", _lighter_color_factor_bond_check, value); }
+		}
+		private float _lighter_color_factor_ring = .2f;
+		public float lighter_color_factor_ring {
+			get { return _lighter_color_factor_ring; }
+			set { _lighter_color_factor_ring = this.ProcessPropertyChanged("lighter_color_factor_ring", _lighter_color_factor_ring, value); }
+		}
+		private float _lighter_color_factor_ring_check = .2f;
+		public float lighter_color_factor_ring_check {
+			get { return _lighter_color_factor_ring_check; }
+			set { _lighter_color_factor_ring_check = this.ProcessPropertyChanged("lighter_color_factor_ring_check", _lighter_color_factor_ring_check, value); }
+		}
+		private int _ColorationModeRing = 0;
+		public int ColorationModeRing {
+			get { return _ColorationModeRing; }
+			set { _ColorationModeRing = this.ProcessPropertyChanged("ColorationModeRing", _ColorationModeRing, value); }
+		}
+		private int _ColorationModeBond = 0;
+		public int ColorationModeBond {
+			get { return _ColorationModeBond; }
+			set { _ColorationModeBond = this.ProcessPropertyChanged("ColorationModeBond", _ColorationModeBond, value); }
+		}
 
 		//definition of sugarRibons and RingBlending, to avoid create them to each frame
 		public SugarRibbons SR;
@@ -170,19 +241,64 @@ namespace UI {
 		
 		// Set to true when the chainXColors arrays have been initalized
 		private bool chainColorsInit = false ;
-*/
-		
-		
-		public string SymmetryOriginX = "34.3444";
-		public string SymmetryOriginY = "4.29016";
-		public string SymmetryOriginZ = "69.0832";
-		public string SymmetryDirectionX = "0.446105";
-		public string SymmetryDirectionY = "0.00135695";
-		public string SymmetryDirectionZ = "-0.894949";
-		public string TargetX = "16.32";
-		public string TargetY = "-1.42";
-		public string TargetZ = "-18.17";
-		public string CameraDistance = "20.0";
+		*/
+		private string _SymmetryOriginX = "34.3444";
+		public string SymmetryOriginX {
+			get { return _SymmetryOriginX; }
+			set { _SymmetryOriginX = this.ProcessPropertyChanged("SymmetryOriginX", _SymmetryOriginX, value); }
+		}
+		private string _SymmetryOriginY = "4.29016";
+		public string SymmetryOriginY {
+			get { return _SymmetryOriginY; }
+			set { _SymmetryOriginY = this.ProcessPropertyChanged("SymmetryOriginY", _SymmetryOriginY, value); }
+		}
+		private string _SymmetryOriginZ = "69.0832";
+		public string SymmetryOriginZ {
+			get { return _SymmetryOriginZ; }
+			set { _SymmetryOriginZ = this.ProcessPropertyChanged("SymmetryOriginZ", _SymmetryOriginZ, value); }
+		}
+		private string _SymmetryDirectionX = "0.446105";
+		public string SymmetryDirectionX {
+			get { return _SymmetryDirectionX; }
+			set { _SymmetryDirectionX = this.ProcessPropertyChanged("SymmetryDirectionX", _SymmetryDirectionX, value); }
+		}
+		private string _SymmetryDirectionY = "0.00135695";
+		public string SymmetryDirectionY {
+			get { return _SymmetryDirectionY; }
+			set { _SymmetryDirectionY = this.ProcessPropertyChanged("SymmetryDirectionY", _SymmetryDirectionY, value); }
+		}
+		private string _SymmetryDirectionZ = "-0.894949";
+		public string SymmetryDirectionZ {
+			get { return _SymmetryDirectionZ; }
+			set { _SymmetryDirectionZ = this.ProcessPropertyChanged("SymmetryDirectionZ", _SymmetryDirectionZ, value); }
+		}
+		private string _TargetX = "16.32";
+		public string TargetX {
+			get { return _TargetX; }
+			set { _TargetX = this.ProcessPropertyChanged("TargetX", _TargetX, value); }
+		}
+		private string _TargetY = "-1.42";
+		public string TargetY {
+			get { return _TargetY; }
+			set { _TargetY = this.ProcessPropertyChanged("TargetY", _TargetY, value); }
+		}
+		private string _TargetZ = "-18.17";
+		public string TargetZ {
+			get { return _TargetZ; }
+			set { _TargetZ = this.ProcessPropertyChanged("TargetZ", _TargetZ, value); }
+		}
+		private string _CameraDistance = "-18.17";
+		public string CameraDistance {
+			get { return _CameraDistance; }
+			set { _CameraDistance = this.ProcessPropertyChanged("CameraDistance", _CameraDistance, value); }
+		}
+//		public string SymmetryOriginX = "34.3444";
+//		public string SymmetryOriginY = "4.29016";
+//		public string SymmetryOriginZ = "69.0832";
+//		public string SymmetryDirectionX = "0.446105";
+//		public string SymmetryDirectionY = "0.00135695";
+//		public string SymmetryDirectionZ = "-0.894949";
+//		public string CameraDistance = "20.0";
 		
 		public bool showOriginAxe = true;
 		public bool originThere = true;
@@ -304,37 +420,154 @@ namespace UI {
 		}
 		private Quaternion NA_SCCROT = new Quaternion (-0.1f, 0.1f, 0.0f, -1.0f);
 		private Vector3 NA_SCCPOS = new Vector3 (0.4f, 1.8f, -12.0f);
-		private bool toggle_VE_BLUR = false;
-		private bool toggle_VE_SSAO = false;
-		private bool toggle_VE_DOF = false;
-		private bool toggle_VE_CREASE = false;
-		private bool toggle_VE2_VORTX = false;
-		private bool toggle_VE2_TWIRL = false;
-		private bool toggle_VE2_SEPIA = false;
-		private bool toggle_VE2_NOISE = false;
-		private bool toggle_VE2_GRAYS = false;
-		private bool toggle_VE2_GLOW = false;
-		private bool toggle_VE2_EDGE = false;
-		private bool toggle_VE2_CONTR = false;
-		private bool toggle_VE2_CCORR = false;
-		private bool toggle_VE2_BLUR2 = false;
-		private bool toggle_VE2_DREAM = false;
+
+		private bool _toggle_VE_BLUR = false;
+		public bool toggle_VE_BLUR {
+			get { return _toggle_VE_BLUR; }
+			set { _toggle_VE_BLUR = this.ProcessPropertyChanged("toggle_VE_BLUR", _toggle_VE_BLUR, value); }
+		}
+		private bool _toggle_VE_SSAO = false;
+		public bool toggle_VE_SSAO {
+			get { return _toggle_VE_SSAO; }
+			set { _toggle_VE_SSAO = this.ProcessPropertyChanged("toggle_VE_SSAO", _toggle_VE_SSAO, value); }
+		}
+		private bool _toggle_VE_DOF = false;
+		public bool toggle_VE_DOF {
+			get { return _toggle_VE_DOF; }
+			set { _toggle_VE_DOF = this.ProcessPropertyChanged("toggle_VE_DOF", _toggle_VE_DOF, value); }
+		}
+		private bool _toggle_VE_CREASE = false;
+		public bool toggle_VE_CREASE {
+			get { return _toggle_VE_CREASE; }
+			set { _toggle_VE_CREASE = this.ProcessPropertyChanged("toggle_VE_CREASE", _toggle_VE_CREASE, value); }
+		}
+		private bool _toggle_VE2_VORTX = false;
+		public bool toggle_VE2_VORTX {
+			get { return _toggle_VE2_VORTX; }
+			set { _toggle_VE2_VORTX = this.ProcessPropertyChanged("toggle_VE2_VORTX", _toggle_VE2_VORTX, value); }
+		}
+		private bool _toggle_VE2_TWIRL = false;
+		public bool toggle_VE2_TWIRL {
+			get { return _toggle_VE2_TWIRL; }
+			set { _toggle_VE2_TWIRL = this.ProcessPropertyChanged("toggle_VE2_TWIRL", _toggle_VE2_TWIRL, value); }
+		}
+		private bool _toggle_VE2_SEPIA = false;
+		public bool toggle_VE2_SEPIA {
+			get { return _toggle_VE2_SEPIA; }
+			set { _toggle_VE2_SEPIA = this.ProcessPropertyChanged("toggle_VE2_SEPIA", _toggle_VE2_SEPIA, value); }
+		}
+		private bool _toggle_VE2_NOISE = false;
+		public bool toggle_VE2_NOISE {
+			get { return _toggle_VE2_NOISE; }
+			set { _toggle_VE2_NOISE = this.ProcessPropertyChanged("toggle_VE2_NOISE", _toggle_VE2_NOISE, value); }
+		}
+		private bool _toggle_VE2_GRAYS = false;
+		public bool toggle_VE2_GRAYS {
+			get { return _toggle_VE2_GRAYS; }
+			set { _toggle_VE2_GRAYS = this.ProcessPropertyChanged("toggle_VE2_GRAYS", _toggle_VE2_GRAYS, value); }
+		}
+		private bool _toggle_VE2_GLOW = false;
+		public bool toggle_VE2_GLOW {
+			get { return _toggle_VE2_GLOW; }
+			set { _toggle_VE2_GLOW = this.ProcessPropertyChanged("toggle_VE2_GLOW", _toggle_VE2_GLOW, value); }
+		}
+		private bool _toggle_VE2_EDGE = false;
+		public bool toggle_VE2_EDGE {
+			get { return _toggle_VE2_EDGE; }
+			set { _toggle_VE2_EDGE = this.ProcessPropertyChanged("toggle_VE2_EDGE", _toggle_VE2_EDGE, value); }
+		}
+		private bool _toggle_VE2_CONTR = false;
+		public bool toggle_VE2_CONTR {
+			get { return _toggle_VE2_CONTR; }
+			set { _toggle_VE2_CONTR = this.ProcessPropertyChanged("toggle_VE2_CONTR", _toggle_VE2_CONTR, value); }
+		}
+		private bool _toggle_VE2_CCORR = false;
+		public bool toggle_VE2_CCORR {
+			get { return _toggle_VE2_CCORR; }
+			set { _toggle_VE2_CCORR = this.ProcessPropertyChanged("toggle_VE2_CCORR", _toggle_VE2_CCORR, value); }
+		}
+		private bool _toggle_VE2_BLUR2 = false;
+		public bool toggle_VE2_BLUR2 {
+			get { return _toggle_VE2_BLUR2; }
+			set { _toggle_VE2_BLUR2 = this.ProcessPropertyChanged("toggle_VE2_BLUR2", _toggle_VE2_BLUR2, value); }
+		}
+		private bool _toggle_VE2_DREAM = false;
+		public bool toggle_VE2_DREAM {
+			get { return _toggle_VE2_DREAM; }
+			set { _toggle_VE2_DREAM = this.ProcessPropertyChanged("toggle_VE2_DREAM", _toggle_VE2_DREAM, value); }
+		}
+//		private bool toggle_VE_BLUR = false;
+//		private bool toggle_VE_SSAO = false;
+//		private bool toggle_VE_DOF = false;
+//		private bool toggle_VE_CREASE = false;
+//		private bool toggle_VE2_VORTX = false;
+//		private bool toggle_VE2_TWIRL = false;
+//		private bool toggle_VE2_SEPIA = false;
+//		private bool toggle_VE2_NOISE = false;
+//		private bool toggle_VE2_GRAYS = false;
+//		private bool toggle_VE2_GLOW = false;
+//		private bool toggle_VE2_EDGE = false;
+//		private bool toggle_VE2_CONTR = false;
+//		private bool toggle_VE2_CCORR = false;
+//		private bool toggle_VE2_BLUR2 = false;
+//		private bool toggle_VE2_DREAM = false;
 		private string[] ve2_grays_ramps = {"grayscale ramp", "grayscale ramp inverse"}; // Ramps for grayscale effect
 		private int ve2_grays_rampn = 1;
-		private int ve2_grays_rampc = 1;
+		private int _ve2_grays_rampc = 1;
+		public int ve2_grays_rampc {
+			get { return _ve2_grays_rampc; }
+			set { _ve2_grays_rampc = this.ProcessPropertyChanged("ve2_grays_rampc", _ve2_grays_rampc, value); }
+		}
+//		private int ve2_grays_rampc = 1;
 		private string[] ve2_ccorr_ramps = {"oceangradient", "nightgradient"}; // Ramps for color correction effect
 		private int ve2_ccorr_rampn = 1;
-		private int ve2_ccorr_rampc = 0;
+		private int _ve2_ccorr_rampc = 0;
+		public int ve2_ccorr_rampc {
+			get { return _ve2_ccorr_rampc; }
+			set { _ve2_ccorr_rampc = this.ProcessPropertyChanged("ve2_ccorr_rampc", _ve2_ccorr_rampc, value); }
+		}
+//		private int ve2_ccorr_rampc = 0;
 		private DepthCueing depthCueing;
 		private AmbientOcclusion ambientOcclusion;
-		private bool toggle_NA_SWITCH = false;
-		private	static bool toggle_NA_MEASURE = false;
-		private bool toggle_MESHCOMBINE = false;
+//		private bool toggle_NA_SWITCH = false;
+//		private	bool toggle_NA_MEASURE = false;
+//		private bool toggle_MESHCOMBINE = false;
+		private bool _toggle_NA_SWITCH = false;
+		public bool toggle_NA_SWITCH {
+			get { return _toggle_NA_SWITCH; }
+			set { _toggle_NA_SWITCH = this.ProcessPropertyChanged("toggle_NA_SWITCH", _toggle_NA_SWITCH, value); }
+		}
+		private bool _toggle_NA_MEASURE = false;
+
+		public bool toggle_NA_MEASURE {
+			get { return _toggle_NA_MEASURE; }
+			set { _toggle_NA_MEASURE = this.ProcessPropertyChanged("toggle_NA_MEASURE", _toggle_NA_MEASURE, value); }
+		}
+		private bool _toggle_MESHCOMBINE = false;
+		public bool toggle_MESHCOMBINE {
+			get { return _toggle_MESHCOMBINE; }
+			set { _toggle_MESHCOMBINE = this.ProcessPropertyChanged("toggle_MESHCOMBINE", _toggle_MESHCOMBINE, value); }
+		}
 		public bool showGrayColor = false;
 		public bool showSurfaceButton = false;
-		public bool showSurface = false;
-		public bool showVolumetricDepth = false;
-		public bool electroIsoSurfaceTransparency = false;
+//		public bool showSurface = false;
+//		public bool showVolumetricDepth = false;
+//		public bool electroIsoSurfaceTransparency = false;
+		private bool _showSurface = false;
+		public bool showSurface {
+			get { return _showSurface; }
+			set { _showSurface = this.ProcessPropertyChanged("showSurface", _showSurface, value); }
+		}
+		private bool _showVolumetricDepth = false;
+		public bool showVolumetricDepth {
+			get { return _showVolumetricDepth; }
+			set { _showVolumetricDepth = this.ProcessPropertyChanged("showVolumetricDepth", _showVolumetricDepth, value); }
+		}
+		private bool _electroIsoSurfaceTransparency = false;
+		public bool electroIsoSurfaceTransparency {
+			get { return _electroIsoSurfaceTransparency; }
+			set { _electroIsoSurfaceTransparency = this.ProcessPropertyChanged("electroIsoSurfaceTransparency", _electroIsoSurfaceTransparency, value); }
+		}
 		public ColorObject BondColor  = new ColorObject(Color.black);
 		public ColorObject BondColorcheck  = new ColorObject(Color.black);
 		public ColorObject RingColor  = new ColorObject(Color.black);
@@ -2962,35 +3195,35 @@ namespace UI {
 			int sliderWidth = (int) (0.50f * Rectangles.secStructMenuWidth);
 			
 			GUILayout.BeginHorizontal();
-			Ribbons.ribbonWidth[0] = GUIMoleculeController.Instance.LabelSlider(Ribbons.ribbonWidth[0], 0.375f, 3.0f,
-				"Helix Width: " + Ribbons.ribbonWidth[0].ToString("0.00"), "", true, sliderWidth, labelWidth, true);
+			RibbonsGeneralData.Instance.ribbonWidth[0] = GUIMoleculeController.Instance.LabelSlider(RibbonsGeneralData.Instance.ribbonWidth[0], 0.375f, 3.0f,
+				"Helix Width: " + RibbonsGeneralData.Instance.ribbonWidth[0].ToString("0.00"), "", true, sliderWidth, labelWidth, true);
 			GUILayout.EndHorizontal();
 
 		
 
 			GUILayout.BeginHorizontal();
-			Ribbons.ribbonWidth[1] = GUIMoleculeController.Instance.LabelSlider(Ribbons.ribbonWidth[1], 0.425f, 3.4f,
-				"Sheet Width: " + Ribbons.ribbonWidth[1].ToString("0.00"), "", true, sliderWidth, labelWidth, true);
+			RibbonsGeneralData.Instance.ribbonWidth[1] = GUIMoleculeController.Instance.LabelSlider(RibbonsGeneralData.Instance.ribbonWidth[1], 0.425f, 3.4f,
+				"Sheet Width: " + RibbonsGeneralData.Instance.ribbonWidth[1].ToString("0.00"), "", true, sliderWidth, labelWidth, true);
 			GUILayout.EndHorizontal();
 			
 			GUILayout.BeginHorizontal();
-			Ribbons.ribbonWidth[2] = GUIMoleculeController.Instance.LabelSlider(Ribbons.ribbonWidth[2], 0.075f, 0.6f,
-				"Coil Width: " + Ribbons.ribbonWidth[2].ToString("0.00"), "", true, sliderWidth, labelWidth, true);
+			RibbonsGeneralData.Instance.ribbonWidth[2] = GUIMoleculeController.Instance.LabelSlider(RibbonsGeneralData.Instance.ribbonWidth[2], 0.075f, 0.6f,
+				"Coil Width: " + RibbonsGeneralData.Instance.ribbonWidth[2].ToString("0.00"), "", true, sliderWidth, labelWidth, true);
 			GUILayout.EndHorizontal();
 			
 			GUILayout.BeginHorizontal();
-			Ribbons.THICKNESS = GUIMoleculeController.Instance.LabelSlider(Ribbons.THICKNESS, 0.075f, 0.6f,
-				"Thickness: " + Ribbons.THICKNESS.ToString("0.00"), "", true, sliderWidth, labelWidth, true);
+			RibbonsGeneralData.Instance.THICKNESS = GUIMoleculeController.Instance.LabelSlider(RibbonsGeneralData.Instance.THICKNESS, 0.075f, 0.6f,
+				"Thickness: " + RibbonsGeneralData.Instance.THICKNESS.ToString("0.00"), "", true, sliderWidth, labelWidth, true);
 			GUILayout.EndHorizontal();
 			
 			GUILayout.BeginHorizontal();
-			Ribbons.HELIX_DIAM = GUIMoleculeController.Instance.LabelSlider(Ribbons.HELIX_DIAM, 0.45f, 3.6f,
-				"Helix diameter: " + Ribbons.HELIX_DIAM.ToString("0.00"), "", true, sliderWidth, labelWidth, true);
+			RibbonsGeneralData.Instance.HELIX_DIAM = GUIMoleculeController.Instance.LabelSlider(RibbonsGeneralData.Instance.HELIX_DIAM, 0.45f, 3.6f,
+				"Helix diameter: " + RibbonsGeneralData.Instance.HELIX_DIAM.ToString("0.00"), "", true, sliderWidth, labelWidth, true);
 			GUILayout.EndHorizontal();
 			
 			GUILayout.BeginHorizontal();
-			Ribbons.ARROW_WIDTH = GUIMoleculeController.Instance.LabelSlider(Ribbons.ARROW_WIDTH, 0f, 3.6f,
-				"Arrow width: " + Ribbons.ARROW_WIDTH.ToString("0.00"), "", true, sliderWidth, labelWidth, true);
+			RibbonsGeneralData.Instance.ARROW_WIDTH = GUIMoleculeController.Instance.LabelSlider(RibbonsGeneralData.Instance.ARROW_WIDTH, 0f, 3.6f,
+				"Arrow width: " + RibbonsGeneralData.Instance.ARROW_WIDTH.ToString("0.00"), "", true, sliderWidth, labelWidth, true);
 			GUILayout.EndHorizontal();
 
 			GUILayout.BeginHorizontal ();
@@ -3005,7 +3238,7 @@ namespace UI {
 			GUILayout.Label("Helix Color :");
 			GUILayout.FlexibleSpace();
 			if(GUILayout.Button(helixButton,GUILayout.MinWidth(100),GUILayout.MinHeight(20))){
-				GUIMoleculeController.Instance.CreateColorPicker(Ribbons.HELIX_COLOR, "Helix color", null);
+				GUIMoleculeController.Instance.CreateColorPicker(RibbonsGeneralData.Instance.HELIX_COLOR, "Helix color", null);
 			}
 			GUILayout.EndHorizontal();
 			
@@ -3013,7 +3246,7 @@ namespace UI {
 			GUILayout.Label("Sheet Color :");
 			GUILayout.FlexibleSpace();
 			if(GUILayout.Button(sheetButton,GUILayout.MinWidth(100),GUILayout.MinHeight(20))){
-				GUIMoleculeController.Instance.CreateColorPicker(Ribbons.STRAND_COLOR, "Sheet color", null);
+				GUIMoleculeController.Instance.CreateColorPicker(RibbonsGeneralData.Instance.STRAND_COLOR, "Sheet color", null);
 			}
 			GUILayout.EndHorizontal();
 			
@@ -3021,7 +3254,7 @@ namespace UI {
 			GUILayout.Label("Coil Color :");
 			GUILayout.FlexibleSpace();
 			if(GUILayout.Button(coilButton,GUILayout.MinWidth(100),GUILayout.MinHeight(20))){
-				GUIMoleculeController.Instance.CreateColorPicker(Ribbons.COIL_COLOR, "Coil color", null);
+				GUIMoleculeController.Instance.CreateColorPicker(RibbonsGeneralData.Instance.COIL_COLOR, "Coil color", null);
 			}
 			GUILayout.EndHorizontal();
 			}
@@ -3045,35 +3278,35 @@ namespace UI {
 				GUILayout.BeginHorizontal();
 				GUILayout.Label("Chain A :");
 				if(GUILayout.Button(chainbuttonA,GUILayout.MinWidth(100),GUILayout.MinHeight(20))){
-					GUIMoleculeController.Instance.CreateColorPicker(Ribbons.ChainColorA, "Chain A color", null);
+					GUIMoleculeController.Instance.CreateColorPicker(RibbonsGeneralData.Instance.ChainColorA, "Chain A color", null);
 				}
 				GUILayout.EndHorizontal();
 
 				GUILayout.BeginHorizontal();
 				GUILayout.Label("Chain B :");
 				if(GUILayout.Button(chainbuttonB,GUILayout.MinWidth(100),GUILayout.MinHeight(20))){
-					GUIMoleculeController.Instance.CreateColorPicker(Ribbons.ChainColorB, "Chain B color", null);
+					GUIMoleculeController.Instance.CreateColorPicker(RibbonsGeneralData.Instance.ChainColorB, "Chain B color", null);
 				}
 				GUILayout.EndHorizontal();
 				
 				GUILayout.BeginHorizontal();
 				GUILayout.Label("Chain C :");
 				if(GUILayout.Button(chainbuttonC,GUILayout.MinWidth(100),GUILayout.MinHeight(20))){
-					GUIMoleculeController.Instance.CreateColorPicker(Ribbons.ChainColorC, "Chain C color", null);
+					GUIMoleculeController.Instance.CreateColorPicker(RibbonsGeneralData.Instance.ChainColorC, "Chain C color", null);
 				}
 				GUILayout.EndHorizontal();
 				
 				GUILayout.BeginHorizontal();
 				GUILayout.Label("Chain D :");
 				if(GUILayout.Button(chainbuttonD,GUILayout.MinWidth(100),GUILayout.MinHeight(20))){
-					GUIMoleculeController.Instance.CreateColorPicker(Ribbons.ChainColorD, "Chain D color", null);
+					GUIMoleculeController.Instance.CreateColorPicker(RibbonsGeneralData.Instance.ChainColorD, "Chain D color", null);
 				}
 				GUILayout.EndHorizontal();
 				
 				GUILayout.BeginHorizontal();
 				GUILayout.Label("Chain E :");
 				if(GUILayout.Button(chainbuttonE,GUILayout.MinWidth(100),GUILayout.MinHeight(20))){
-					GUIMoleculeController.Instance.CreateColorPicker(Ribbons.ChainColorE, "Chain E color", null);
+					GUIMoleculeController.Instance.CreateColorPicker(RibbonsGeneralData.Instance.ChainColorE, "Chain E color", null);
 				}
 				GUILayout.EndHorizontal();
 			}
@@ -3081,18 +3314,7 @@ namespace UI {
 			GUILayout.BeginHorizontal();
 			GUI.enabled = GUIMoleculeController.Instance.toggle_SUGAR_ONLY;
 			if(GUILayout.Button(new GUIContent("Apply changes"))) {
-				// Destroying the ribbons
-				GUIMoleculeController.Instance.toggle_NA_HIDE = !GUIMoleculeController.Instance.toggle_NA_HIDE;
-				GameObject[] Objs = Object.FindObjectsOfType(typeof(GameObject)) as GameObject[];;
-				foreach(GameObject ribObj in Objs){
-					if(ribObj.name == "Ribbons")
-						//foreach(GameObject ribObj in ribbonObjs)
-						GameObject.Destroy(ribObj);
-				}
-				// Recreating them
-				Ribbons ribbons = new Ribbons();
-				ribbons.CreateRibbons();
-				GUIMoleculeController.Instance.toggle_NA_HIDE = !GUIMoleculeController.Instance.toggle_NA_HIDE;
+				ApplySugarChanges();
 			}
 			GUI.enabled = true;
 			GUILayout.EndHorizontal();
@@ -3347,27 +3569,8 @@ namespace UI {
 			
 			GUI.enabled = (MoleculeModel.CatomsLocationlist.Count > 2);
 			if (GUILayout.Button (new GUIContent (structTypeButtonLabel(GUIMoleculeController.Instance.structType), "Switch to " + structTypeButtonLabel(GUIMoleculeController.Instance.structType)))) {
-
-				if (UIData.Instance.secondarystruct) {
-					UIData.Instance.secondarystruct = false;
-					GUIMoleculeController.Instance.structType = "All atoms";
-					UIData.Instance.changeStructure = true;
-					GUIMoleculeController.Instance.globalRadius = 0.40f;
-					GUIMoleculeController.Instance.shrink = 0.50f;
-				} else {
-					UIData.Instance.secondarystruct = true;
-					GUIMoleculeController.Instance.structType = "C-alpha trace";
-					if (UIData.Instance.toggle_bf){
-						AlphaChainSmoother.ReSpline ();
-						DisplayMolecule.InitManagers();
-						UIData.Instance.toggle_bf = false;
-					}
-					UIData.Instance.changeStructure = true;
-					GUIMoleculeController.Instance.globalRadius = 0.25f;
-					GUIMoleculeController.Instance.shrink = 0.0001f;
-				}
-				DisplayMolecule.DestroyAtomsAndBonds();
-				UIData.Instance.resetDisplay = true ;
+				// Luiz:
+				SwitchStruct(false);
 				SetAtomStyle();
 			}
 
@@ -3385,30 +3588,8 @@ namespace UI {
 			
 			GUI.enabled = (MoleculeModel.CatomsLocationlist.Count > 2);
 			if (GUILayout.Button (new GUIContent (structTypeButtonLabel_BF(GUIMoleculeController.Instance.structType), "Switch to " + structTypeButtonLabel_BF(GUIMoleculeController.Instance.structType)))) {
-				if (UIData.Instance.secondarystruct) {
-					UIData.Instance.secondarystruct = false;
-					GUIMoleculeController.Instance.structType = "All atoms";
-					UIData.Instance.changeStructure = true;
-					GUIMoleculeController.Instance.globalRadius = 0.40f;
-					GUIMoleculeController.Instance.shrink = 0.50f;
-				} else {
-					UIData.Instance.secondarystruct = true;
-					GUIMoleculeController.Instance.structType = "B Factor";
-				//	DisplayMolecule.DestroyAtomsAndBonds();
-					UIData.Instance.toggle_bf = true;
-					BFactorRep.CreateBFRep();
-					DisplayMolecule.InitManagers();
-					UIData.Instance.changeStructure = true;
-					GUIMoleculeController.Instance.globalRadius = 0.15f;
-					GUIMoleculeController.Instance.shrink = 0.0001f;
-
-				//	UIData.Instance.resetDisplay = true;
-				}
-				
-				//if (Event.current.type == EventType.Repaint)
-					//MoleculeModel.newtooltip = GUI.tooltip;
-				DisplayMolecule.DestroyAtomsAndBonds();
-				UIData.Instance.resetDisplay = true ;
+				// Luiz:
+				SwitchStruct(true);
 				SetAtomStyle();
 			}
 			GUI.enabled = true;
@@ -3430,12 +3611,7 @@ namespace UI {
 			GUI.enabled = true;
 			
 			if(newSmooth != GenInterpolationPoint.smoothnessFactor) {
-				GenInterpolationPoint.smoothnessFactor = newSmooth;
-				DisplayMolecule.DestroyAtomsAndBonds();
-				AlphaChainSmoother.ReSpline();
-				DisplayMolecule.InitManagers();
-				UIData.Instance.changeStructure = true;
-				UIData.Instance.resetDisplay = true;
+				ChangeSmoothness(newSmooth);
 			}
 			
 			if (Event.current.type == EventType.Repaint)
@@ -3455,12 +3631,7 @@ namespace UI {
 			GUI.enabled = true;
 			
 			if(newSmooth != GenInterpolationPoint_BF.smoothnessFactor) {
-				GenInterpolationPoint_BF.smoothnessFactor = newSmooth;
-				DisplayMolecule.DestroyAtomsAndBonds();
-				BFactorRep.CreateBFRep();
-				DisplayMolecule.InitManagers();
-				UIData.Instance.changeStructure = true;
-				UIData.Instance.resetDisplay = true;
+				ChangeSmoothnessBF(newSmooth);
 			}
 			
 			if (Event.current.type == EventType.Repaint)
@@ -3497,35 +3668,24 @@ namespace UI {
 
 			GUILayout.Label ("Choose scale");
 			GUILayout.Label ("Min");
-			//BFactorRep.minval = GUILayout.TextField (BFactorRep.minValue.ToString(), 8, GUILayout.Width (labelWidth));
-			BFactorRep.minval = GUILayout.TextField (BFactorRep.minval, 6, GUILayout.Width (textWidth));
+			//BFactorRep.Instance.minval = GUILayout.TextField (BFactorRep.Instance.minValue.ToString(), 8, GUILayout.Width (labelWidth));
+			BFactorRep.Instance.minval = GUILayout.TextField (BFactorRep.Instance.minval, 6, GUILayout.Width (textWidth));
 			GUILayout.Label ("Max");
-			BFactorRep.maxval = GUILayout.TextField (BFactorRep.maxval, 6, GUILayout.Width (textWidth));
+			BFactorRep.Instance.maxval = GUILayout.TextField (BFactorRep.Instance.maxval, 6, GUILayout.Width (textWidth));
 
 			GUILayout.EndHorizontal ();
 			GUILayout.BeginHorizontal ();
 
 			if (GUILayout.Button (new GUIContent ("Rescaling", "Rescale Bfactor values"), GUILayout.Width (buttonWidth))) {
-				UIData.Instance.isRescale = true;
-				DisplayMolecule.DestroyAtomsAndBonds();
-				BFactorRep.CreateBFRep();
-				DisplayMolecule.InitManagers ();
-				UIData.Instance.changeStructure = true;
-				UIData.Instance.resetDisplay = true;
-
+				Rescaling();
 			}
 
 			if (GUILayout.Button (new GUIContent ("Reset", "Reset to original Bfactor values"), GUILayout.Width (buttonWidth))){
-				UIData.Instance.isRescale = false;
-				DisplayMolecule.DestroyAtomsAndBonds();
-				BFactorRep.CreateBFRep();
-				DisplayMolecule.InitManagers ();
-				UIData.Instance.changeStructure = true;
-				UIData.Instance.resetDisplay = true;
+				Reset();
 			}
 		}
-
-/*	
+			
+/*
 		private string hideOrShowAtoms() {
 			if (showAtoms)
 				return("Hide atoms");
@@ -3795,14 +3955,15 @@ namespace UI {
 			if (Event.current.type == EventType.Repaint)
 				MoleculeModel.newtooltip = GUI.tooltip;
 
-			GUILayout.BeginHorizontal ();
-			if (GUILayout.Button (new GUIContent ("Background Color", "Choose the background color"))) {
-				if (GUIMoleculeController.Instance.m_colorPicker != null)
-					GUIMoleculeController.Instance.m_colorPicker = null;
-					
-				GUIMoleculeController.Instance.m_colorPicker = new ColorPicker(Rectangles.colorPickerRect, GUIMoleculeController.Instance.BackgroundColor, null, "All", "All", "Background Color");
-			}
-			GUILayout.EndHorizontal ();
+			// Luiz:
+//			GUILayout.BeginHorizontal ();
+//			if (GUILayout.Button (new GUIContent ("Background Color", "Choose the background color"))) {
+//				if (GUIMoleculeController.Instance.m_colorPicker != null)
+//					GUIMoleculeController.Instance.m_colorPicker = null;
+//					
+//				GUIMoleculeController.Instance.m_colorPicker = new ColorPicker(Rectangles.colorPickerRect, GUIMoleculeController.Instance.BackgroundColor, null, "All", "All", "Background Color");
+//			}
+//			GUILayout.EndHorizontal ();
 		}
 		
 		
@@ -3924,6 +4085,113 @@ namespace UI {
 		private void DispatchMethodPerformedEvent(string methodName, object param)
 		{
 			ChangeManager.DispatchMethodEvent (typeof(LoadTypeGUI), methodName, param);
+		}
+		public void SwitchStruct(bool isBF) {
+			if (isBF) {
+				if (UIData.Instance.secondarystruct) {
+					UIData.Instance.secondarystruct = false;
+					GUIMoleculeController.Instance.structType = "All atoms";
+					UIData.Instance.changeStructure = true;
+					GUIMoleculeController.Instance.globalRadius = 0.40f;
+					GUIMoleculeController.Instance.shrink = 0.50f;
+				} else {
+					UIData.Instance.secondarystruct = true;
+					GUIMoleculeController.Instance.structType = "B Factor";
+					//	DisplayMolecule.DestroyAtomsAndBonds();
+					UIData.Instance.toggle_bf = true;
+					BFactorRep.Instance.CreateBFRep();
+					DisplayMolecule.InitManagers();
+					UIData.Instance.changeStructure = true;
+					GUIMoleculeController.Instance.globalRadius = 0.15f;
+					GUIMoleculeController.Instance.shrink = 0.0001f;
+
+					//	UIData.Instance.resetDisplay = true;
+				}
+
+				//if (Event.current.type == EventType.Repaint)
+				//MoleculeModel.newtooltip = GUI.tooltip;
+				DisplayMolecule.DestroyAtomsAndBonds();
+				UIData.Instance.resetDisplay = true ;
+			} else {
+				if (UIData.Instance.secondarystruct) {
+					UIData.Instance.secondarystruct = false;
+					GUIMoleculeController.Instance.structType = "All atoms";
+					UIData.Instance.changeStructure = true;
+					GUIMoleculeController.Instance.globalRadius = 0.40f;
+					GUIMoleculeController.Instance.shrink = 0.50f;
+				} else {
+					UIData.Instance.secondarystruct = true;
+					GUIMoleculeController.Instance.structType = "C-alpha trace";
+					if (UIData.Instance.toggle_bf){
+						AlphaChainSmoother.ReSpline ();
+						DisplayMolecule.InitManagers();
+						UIData.Instance.toggle_bf = false;
+					}
+					UIData.Instance.changeStructure = true;
+					GUIMoleculeController.Instance.globalRadius = 0.25f;
+					GUIMoleculeController.Instance.shrink = 0.0001f;
+				}
+				DisplayMolecule.DestroyAtomsAndBonds();
+				UIData.Instance.resetDisplay = true ;
+			}
+
+			DispatchMethodPerformedEvent("SwitchStruct", isBF);
+		}
+		public void ChangeSmoothness(int newSmooth) {
+			GenInterpolationPoint.smoothnessFactor = newSmooth;
+			DisplayMolecule.DestroyAtomsAndBonds();
+			AlphaChainSmoother.ReSpline();
+			DisplayMolecule.InitManagers();
+			UIData.Instance.changeStructure = true;
+			UIData.Instance.resetDisplay = true;
+
+			DispatchMethodPerformedEvent("ChangeSmoothness", newSmooth);
+		}
+		public void ChangeSmoothnessBF(int newSmooth) {
+			GenInterpolationPoint_BF.smoothnessFactor = newSmooth;
+			DisplayMolecule.DestroyAtomsAndBonds();
+			BFactorRep.Instance.CreateBFRep();
+			DisplayMolecule.InitManagers();
+			UIData.Instance.changeStructure = true;
+			UIData.Instance.resetDisplay = true;
+
+			DispatchMethodPerformedEvent("ChangeSmoothnessBF", newSmooth);
+		}
+		public void Rescaling() {
+			UIData.Instance.isRescale = true;
+			DisplayMolecule.DestroyAtomsAndBonds();
+			BFactorRep.Instance.CreateBFRep();
+			DisplayMolecule.InitManagers ();
+			UIData.Instance.changeStructure = true;
+			UIData.Instance.resetDisplay = true;
+
+			DispatchMethodPerformedEvent("Rescaling", null);
+		}
+		public void Reset() {
+			UIData.Instance.isRescale = false;
+			DisplayMolecule.DestroyAtomsAndBonds();
+			BFactorRep.Instance.CreateBFRep();
+			DisplayMolecule.InitManagers ();
+			UIData.Instance.changeStructure = true;
+			UIData.Instance.resetDisplay = true;
+
+			DispatchMethodPerformedEvent("Reset", null);
+		}
+		public void ApplySugarChanges() {
+			// Destroying the ribbons
+			GUIMoleculeController.Instance.toggle_NA_HIDE = !GUIMoleculeController.Instance.toggle_NA_HIDE;
+			GameObject[] Objs = Object.FindObjectsOfType(typeof(GameObject)) as GameObject[];;
+			foreach(GameObject ribObj in Objs){
+				if(ribObj.name == "Ribbons")
+					//foreach(GameObject ribObj in ribbonObjs)
+					GameObject.Destroy(ribObj);
+			}
+			// Recreating them
+			Ribbons ribbons = new Ribbons();
+			ribbons.CreateRibbons();
+			GUIMoleculeController.Instance.toggle_NA_HIDE = !GUIMoleculeController.Instance.toggle_NA_HIDE;
+
+			DispatchMethodPerformedEvent("ApplySugarChanges", null);
 		}
 		public void ChangeRepresentation(UIData.AtomType type)
 		{

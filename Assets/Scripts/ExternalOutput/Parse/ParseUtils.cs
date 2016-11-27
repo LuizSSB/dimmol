@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace GamessOutput
+namespace ExternalOutput.Parse
 {
 	public class ParseUtils
 	{
-		public static List<OutputState> ExtractStates(string fromOutputFilePath)
+		public static List<OutputState> ExtractStates(string fromOutputFilePath, ParseableOutputTypes ofType)
 		{
-			IParser parser = new SearchingParser();
+			IParser parser = ParserFactory.GetInitialParser(fromOutputFilePath, ofType);
+
 			using (var reader = File.OpenText(fromOutputFilePath))
 			{
 				string line;

@@ -62,8 +62,9 @@
 /// using HyperBalls, a unified algorithm for balls, sticks and hyperboloids",
 /// J. Comput. Chem., 2011, 32, 2924
 ///
-using GamessOutput;
+using ExternalOutput;
 using System.Linq;
+using ExternalOutput.Parse;
 
 namespace UI {
 	using UnityEngine;
@@ -327,7 +328,8 @@ namespace UI {
 	    protected GUIStyle m_centredText;
 
 		// Luiz:
-		public string GamessOutputWebAddress = "https://gist.github.com/LuizSSB/a9f9487453e44807f7c7a3e048fc0bde/raw/8a4939d111cf889fa73e1301ac1f59fe310a974d/gistfile1.txt";
+		public string ExternalOutputWebAddress = "https://gist.github.com/LuizSSB/a9f9487453e44807f7c7a3e048fc0bde/raw/8a4939d111cf889fa73e1301ac1f59fe310a974d/gistfile1.txt";
+		public ParseableOutputTypes ExternalOutputType = ParseableOutputTypes.Gamess;
 		
 // 		private int left=0;//0:oxygen;1:sulphur;2:carbon;3:nitrogen;4:phosphorus;5:unknown
 		
@@ -404,12 +406,16 @@ namespace UI {
 		}
 
 		// Luiz:
-		public void OpenGamessOutputCallback(string path) {
+		public void OpenExternalOutputCallback(string path) {
 			m_fileBrowser = null;
 			if(path == null)
 				return;
 
-			var states = ParseUtils.ExtractStates(path);
+//			var outputFormat = path.Substring(
+//			ParseableOutputTypes outputType;
+//
+
+			var states = ParseUtils.ExtractStates(path, ExternalOutputType);
 			var energies = states.Select(s => s.Energy);
 			StateEnergyMinMax = new RangeAttribute(energies.Min(), energies.Max());
 			StateFiles = ParseUtils.SaveStatesAsPDBs(states, Application.persistentDataPath);
@@ -485,7 +491,7 @@ namespace UI {
 						//id != "" if a molecule is already open
 						if(GUIDisplay.Instance.StateFiles == null || GUIDisplay.Instance.StateFiles.Length == 0)
 						{
-							if (GUILayout.Button (new GUIContent ("Open File From Disk", "Load a PDB/XYZ/XMOL file from disk"))) {
+							if (GUILayout.Button (new GUIContent ("Open File From Disk", "Load a PDB/XYZ file from disk"))) {
 								m_fileBrowser = new ImprovedFileBrowser (Rectangles.fileBrowserRect, "", OpenFileCallback, m_lastOpenDir);
 //							m_fileBrowser.SelectionPattern = "*.pdb|*.xgmml";
 								m_fileBrowser.DirectoryImage = directoryimage; 
@@ -529,31 +535,39 @@ namespace UI {
 						}
 
 						if(id == "") {
-							if(GUILayout.Button(new GUIContent("Open GAMESS optimization output", "Load a GAMESS optimization output file from disk"))) {
-								m_fileBrowser = new ImprovedFileBrowser(Rectangles.fileBrowserRect, "", OpenGamessOutputCallback, m_lastOpenDir);
+							if(GUILayout.Button(new GUIContent("Open external optimization output", "Load a GAMESS (.gms) or XMol (.xmol) optimization/dynamics output file from disk"))) {
+								m_fileBrowser = new ImprovedFileBrowser(Rectangles.fileBrowserRect, "", OpenExternalOutputCallback, m_lastOpenDir);
 								m_fileBrowser.DirectoryImage = directoryimage; 
 								m_fileBrowser.FileImage = fileimage;
 								GUIMoleculeController.Instance.showOpenMenu = false;
 								GUIMoleculeController.Instance.showSecStructMenu = false;
 							}
-							GUILayout.Label("Web address to GAMESS output");
+							GUILayout.Label("Web address to external output");
 							GUILayout.BeginHorizontal(); {
-								GamessOutputWebAddress = GUILayout.TextField(GamessOutputWebAddress, GUILayout.Width(pServerWidth));
-								if(GUILayout.Button(new GUIContent("Fetch", "Fetch GAMESS optimization output file from the web"))) {
+								ExternalOutputWebAddress = GUILayout.TextField(ExternalOutputWebAddress, GUILayout.Width(pServerWidth));
+								if(GUILayout.Button(new GUIContent("Fetch", "Fetch external optimization/dynamics output file from the web"))) {
 
 									try {
 										GUIMoleculeController.Instance.showOpenMenu = false;
 										GUIMoleculeController.Instance.showSecStructMenu = false;
-										var filePath = RequestGamessOutput.Fetch(GamessOutputWebAddress, Application.persistentDataPath);
-										OpenGamessOutputCallback(filePath);
+										var filePath = RequestExternalOutput.Fetch(
+											ExternalOutputWebAddress,
+											Application.persistentDataPath,
+											ExternalOutputType
+										);
+										OpenExternalOutputCallback(filePath);
 									} catch(System.Exception e) {
-										Debug.Log("Could not fetch gamess output: " + e);
+										Debug.Log("Could not fetch external output: " + e);
 										GUIMoleculeController.Instance.showOpenMenu = true;
 										GUIMoleculeController.Instance.showSecStructMenu = true;
 									}
 
 								}
 							} GUILayout.EndHorizontal();
+
+							ExternalOutputType = (ParseableOutputTypes)GUILayout.SelectionGrid(
+								(int)ExternalOutputType, new []{"GAMESS", "XMOL"}, 2
+							);
 
 							GUILayout.BeginHorizontal ();
 

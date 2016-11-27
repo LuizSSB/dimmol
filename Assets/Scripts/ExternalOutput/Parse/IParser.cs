@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace GamessOutput
+namespace ExternalOutput.Parse
 {
 	public interface IParser
 	{
@@ -18,6 +18,22 @@ namespace GamessOutput
 		IParser ParseLine (string line, int lineNumber);
 	}
 
+	public static class ParserFactory {
+		public static IParser GetInitialParser(string forFile, ParseableOutputTypes ofType) {
+			switch (ofType) {
+				case ParseableOutputTypes.Gamess:
+					return new Gamess.SearchingParser();
+					break;
+
+				case ParseableOutputTypes.Xyz_Xmol:
+					return new XyzXmol.FirstLinesParser();
+					break;
+			}
+
+			throw new ArgumentException("Unrecognized output type");
+		}
+	}
+
 	public abstract	class BaseParser : IParser
 	{
 		protected BaseParser(List<OutputState> statesSoFar = null, Dictionary<string, object> userInfo = null)
@@ -32,6 +48,10 @@ namespace GamessOutput
 		protected OutputState CurrentAtoms {
 			get;
 			private set;
+		}
+
+		protected T GetUserInfo<T>(string key) {
+			return (T)UserInfo[key];
 		}
 
 		#region IParser implementation

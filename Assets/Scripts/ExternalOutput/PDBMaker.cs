@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace GamessOutput
+namespace ExternalOutput
 {
 	public static class PDBMaker
 	{

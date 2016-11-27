@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace GamessOutput
+namespace ExternalOutput
 {
 	[Serializable]
 	public class Atom

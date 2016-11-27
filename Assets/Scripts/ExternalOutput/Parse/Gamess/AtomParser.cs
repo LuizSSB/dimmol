@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace GamessOutput
+namespace ExternalOutput.Parse.Gamess
 {
 	public class AtomParser : BaseParser
 	{
@@ -13,12 +13,12 @@ namespace GamessOutput
 		#region IParser implementation
 		public override IParser ParseLine (string line, int lineNumber)
 		{
-			if (line.Trim().Length == 0)
+			if (string.IsNullOrEmpty(line.Trim()))
 			{
 				return new EnergyParser(AtomsStates, UserInfo);
 			}
 
-			var lineParts = System.Text.RegularExpressions.Regex.Split(line.Trim(), " +");
+			var lineParts = line.GetWordsSimple();
 			var atom = new Atom {
 				Id = lineParts[0],
 				Charge = float.Parse(lineParts[1]),

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace GamessOutput
+namespace ExternalOutput.Parse.Gamess
 {
 	public class EnergyParser : BaseParser
 	{

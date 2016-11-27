@@ -464,9 +464,9 @@ public class Molecule3D:MonoBehaviour {
 	}
 
 	// Luiz:
-	public void LoadState(GamessOutput.OutputState state) {
+	public void LoadState(ExternalOutput.OutputState state) {
 		var transitionspeed = Time.deltaTime * 1.5f;
-		GamessOutput.Atom currentAtom;
+		ExternalOutput.Atom currentAtom;
 		float[] currentLocation;
 		for(int idxAtom = 0; idxAtom < MoleculeModel.atomsLocationlist.Count; ++idxAtom) {
 			currentAtom = state.Atoms.ElementAt(idxAtom);

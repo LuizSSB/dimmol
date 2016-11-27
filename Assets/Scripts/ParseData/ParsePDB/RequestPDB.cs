@@ -314,33 +314,12 @@ namespace  ParseData.ParsePDB
 		// Luiz:
 		public void MakePDBFromXYZ(string xyzFileName, string fileFomat)
 		{
-			var state = new GamessOutput.OutputState();
-
-			using (var reader = File.OpenText(xyzFileName + "." + fileFomat))
-			{
-				string line;
-				for (int idx = 0; (line = reader.ReadLine()) != null; ++idx)
-				{
-					line = line.Trim();
-
-					if (idx >= 2 && line.Length > 0) {
-						var lineParts = System.Text.RegularExpressions.Regex.Split(line, " +");
-
-						if(lineParts.Length < 4) // Luiz: there may be more than 4 parameters, because of the xmol format.
-							throw new ArgumentException("xyzFilename \"" + xyzFileName + "\" has too few data on line " + (idx + 1));
-
-						state.Atoms.Add(new GamessOutput.Atom() {
-							Id = lineParts[0],
-							X = lineParts[1],
-							Y = lineParts[2],
-							Z = lineParts[3]
-						});
-					}
-				}
-
-				string pdb = GamessOutput.PDBMaker.MakePDB(state);
-				ControlMolecule.CreateMolecule(new StringReader(pdb));
-			}
+			string fullFileName = xyzFileName + "." + fileFomat;
+			var atoms = ExternalOutput.Parse.ParseUtils.ExtractStates(
+				fullFileName, ExternalOutput.Parse.ParseableOutputTypes.Xyz_Xmol
+			);
+			string pdb = ExternalOutput.PDBMaker.MakePDB(atoms[0]);
+			ControlMolecule.CreateMolecule(new StringReader(pdb));
 		}
 	
 		public void LoadPDBRequest(string file_base_name, bool withData = true) {

@@ -79,10 +79,37 @@ using System;
 //[AddComponentMenu("Camera-Control/3dsMax Camera Style")]
 using Config;
 
+[ClearableSingleton]
+public class MaxCameraData
+{
+	private static MaxCameraData sInstance;
+	public static MaxCameraData Instance {
+		get {
+			return sInstance = sInstance ?? new MaxCameraData();
+		}
+	}
+	private MaxCameraData() { }
+
+	public bool cameraStop = false;
+	public float currentDistance;
+	public float desiredDistance;
+	private GameObject _LocCamera = null;
+	public GameObject LocCamera {
+		get {
+			var cam =  _LocCamera = _LocCamera ?? GameObject.FindGameObjectWithTag("MainCamera");
+			if (cam == null) {
+				Debug.Log("frak");
+			}
+			return cam;
+		}
+	}
+	public Vector3 optim_target;
+	public Vector3 optim_cam_position;
+}
 
 public class maxCamera : MonoBehaviour
 {
-	public static bool cameraStop = false;
+	//	public static bool cameraStop = false;
 	public bool automove = false;
 	public Transform target;
 	public Vector3 targetOffset;
@@ -99,7 +126,7 @@ public class maxCamera : MonoBehaviour
 	public float rotationFactor = 50.0f ;
 	public float strength = 0.5f; // for camera translation
 	public int reslim =192; // for second step spreading (currently only available for GLIC)
-	
+
 	public Vector3 originalCamPosition;
 	public bool centerChanged = false; // for camera rotation;
 
@@ -112,8 +139,8 @@ public class maxCamera : MonoBehaviour
 	private float xDeg = 0.0f;
 	private float yDeg = 0.0f;
 	private float zDeg = 0.0f;
-	public static float currentDistance;
-	public static float desiredDistance;
+	//	public static float currentDistance;
+	//	public static float desiredDistance;
 	private Quaternion currentRotation;
 	private Quaternion desiredRotation;
 	private Quaternion rotation;
@@ -122,17 +149,17 @@ public class maxCamera : MonoBehaviour
 	private GameObject LoadBox;
 	private Molecule3D Molecule3DComp;
 
-	private static GameObject _LocCamera;
-	public static GameObject LocCamera
-	{
-		get {
-			if (_LocCamera == null) {
-				_LocCamera = GameObject.FindGameObjectWithTag("MainCamera");
-			}
-
-			return _LocCamera;
-		}
-	}
+	//	private static GameObject _MaxCameraData.Instance.LocCamera;
+	//	public static GameObject MaxCameraData.Instance.LocCamera
+	//	{
+	//		get {
+	//			if (_MaxCameraData.Instance.LocCamera == null) {
+	//				_MaxCameraData.Instance.LocCamera = GameObject.FindGameObjectWithTag("MainCamera");
+	//			}
+	//
+	//			return _MaxCameraData.Instance.LocCamera;
+	//		}
+	//	}
 
 	// +------------------------------+
 	// | Guided Navigation Variables  |
@@ -183,8 +210,8 @@ public class maxCamera : MonoBehaviour
 	public GameObject ghost_target;
 	public GameObject ghost_target_real;
 	private bool ghost_target_instantiate = false;
-	public static Vector3 optim_target;
-	public static Vector3 optim_cam_position;
+	//	public static Vector3 optim_target;
+	//	public static Vector3 optim_cam_position;
 	public bool cam_pos_optimized = false;
 	public float angle = 0;
 	private Vector3 velocity = Vector3.zero;
@@ -197,26 +224,23 @@ public class maxCamera : MonoBehaviour
 	public bool FocusPhase = true;
 	public float transitionDuration = 2.5f;
 	// Elliptic transition
-//	public Vector3 center = new Vector3(0, 1, 0);
-//	public float radiusA;
-//	public float radiusB = MoleculeModel.;
+	//	public Vector3 center = new Vector3(0, 1, 0);
+	//	public float radiusA;
+	//	public float radiusB = MoleculeModel.;
 
-	
+
 	//Nouvelle variable
 
 	void Awake ()
 	{
 		Init ();
-		GUIDisplay.Instance.Cleared += (sender, e) => {
-			_LocCamera = null;
-		};
 	}
 
 	void OnEnable ()
 	{
 		Init ();
 	}
-	
+
 	public void Init ()
 	{
 		if (UnityClusterPackage.Node.CurrentNode.HasPermission(NodePermission.Slave)) {
@@ -225,7 +249,7 @@ public class maxCamera : MonoBehaviour
 				// While the end-result is pretty much the intended one, it also causes a lot of errors to be
 				// constantly logged, probably because the recipient of the synchronized data sent by the
 				// server/host is no more. I honestly don't know what can be done about it, supposing there is such thing.
-//				GetComponent<NetworkView>().SetScope(new NetworkPlayer(), false);
+				//				GetComponent<NetworkView>().SetScope(new NetworkPlayer(), false);
 				GetComponent<NetworkView>().observed = null;//GameObject.Find("DummyObservable").transform;
 			} else {
 				enabled = false;
@@ -241,12 +265,12 @@ public class maxCamera : MonoBehaviour
 			//transform.position = go.transform.position + (transform.forward * distance);
 			target = go.transform;
 		}
-        
+
 		// Debug.Log("Cam distance : " + Vector3.Distance(transform.position, target.position));
 		distance = Vector3.Distance (transform.position, target.position);
-		currentDistance = distance;
-		desiredDistance = distance;
-                
+		MaxCameraData.Instance.currentDistance = distance;
+		MaxCameraData.Instance.desiredDistance = distance;
+
 		//be sure to grab the current rotations as starting points.
 		position = transform.position;
 		rotation = transform.rotation;
@@ -254,11 +278,11 @@ public class maxCamera : MonoBehaviour
 		// rotation = Quaternion.identity;
 		currentRotation = transform.rotation;
 		desiredRotation = transform.rotation;
-        
+
 		xDeg = Vector3.Angle (Vector3.right, transform.right);
 		yDeg = Vector3.Angle (Vector3.up, transform.up);
 	}
-    
+
 	public void upxDeg ()
 	{
 		xDeg = 1;
@@ -282,7 +306,7 @@ public class maxCamera : MonoBehaviour
 		yDeg = 1;
 		guiControl = true;
 	}
-	
+
 	public void downzDeg ()
 	{
 		zDeg = 1;
@@ -314,41 +338,41 @@ public class maxCamera : MonoBehaviour
 
 		if (Input.GetKeyUp (KeyCode.C)) {
 
-				if (UI.GUIMoleculeController.Instance.toggle_NA_CLICK) {
+			if (UI.GUIMoleculeController.Instance.toggle_NA_CLICK) {
 
-					/*if just one atom is selected, we center the camera (CAM TARGEt!!! THE CAMERA FOLLOW CAM TARGET)
+				/*if just one atom is selected, we center the camera (CAM TARGEt!!! THE CAMERA FOLLOW CAM TARGET)
 					on this atom*/
-					if (GameObject.FindGameObjectWithTag("MainCamera").GetComponent<ClickAtom> ().objList.Count == 1) {
-						
-						int atomnumber = (int)GameObject.FindGameObjectWithTag("MainCamera").GetComponent<ClickAtom> ().objList [0].GetComponent<BallUpdate> ().number;
-						newposition = new Vector3 (MoleculeModel.atomsLocationlist [atomnumber] [0],
-						                          MoleculeModel.atomsLocationlist [atomnumber] [1],
-						                          MoleculeModel.atomsLocationlist [atomnumber] [2]);
+				if (GameObject.FindGameObjectWithTag("MainCamera").GetComponent<ClickAtom> ().objList.Count == 1) {
 
-						cameraTranslation = true;
-						centerChanged = true;
-						/* if multiple atom is selected, we calcul the barycenter*/
-					} else if (GameObject.FindGameObjectWithTag("MainCamera").GetComponent<ClickAtom> ().objList.Count > 1) {
+					int atomnumber = (int)GameObject.FindGameObjectWithTag("MainCamera").GetComponent<ClickAtom> ().objList [0].GetComponent<BallUpdate> ().number;
+					newposition = new Vector3 (MoleculeModel.atomsLocationlist [atomnumber] [0],
+						MoleculeModel.atomsLocationlist [atomnumber] [1],
+						MoleculeModel.atomsLocationlist [atomnumber] [2]);
 
-						//barycenter of all atom selection calculation
-						Vector3 barycenter = new Vector3 ();
-						float xTot = 0.0f, yTot = 0.0f, zTot = 0.0f;
-						for (int i=0; i<GameObject.FindGameObjectWithTag("MainCamera").GetComponent<ClickAtom>().objList.Count; i++) {
-							int atomnumber = (int)GameObject.FindGameObjectWithTag("MainCamera").GetComponent<ClickAtom> ().objList [i].GetComponent<BallUpdate> ().number;
-							xTot = xTot + MoleculeModel.atomsLocationlist [atomnumber] [0];
-							yTot = yTot + MoleculeModel.atomsLocationlist [atomnumber] [1];
-							zTot = zTot + MoleculeModel.atomsLocationlist [atomnumber] [2];
-						}
-						barycenter.x = xTot / GameObject.FindGameObjectWithTag("MainCamera").GetComponent<ClickAtom> ().objList.Count;
-						barycenter.y = yTot / GameObject.FindGameObjectWithTag("MainCamera").GetComponent<ClickAtom> ().objList.Count;
-						barycenter.z = zTot / GameObject.FindGameObjectWithTag("MainCamera").GetComponent<ClickAtom> ().objList.Count;
-					
-						newposition = barycenter;
+					cameraTranslation = true;
+					centerChanged = true;
+					/* if multiple atom is selected, we calcul the barycenter*/
+				} else if (GameObject.FindGameObjectWithTag("MainCamera").GetComponent<ClickAtom> ().objList.Count > 1) {
 
-						cameraTranslation = true;
-						centerChanged = true;
+					//barycenter of all atom selection calculation
+					Vector3 barycenter = new Vector3 ();
+					float xTot = 0.0f, yTot = 0.0f, zTot = 0.0f;
+					for (int i=0; i<GameObject.FindGameObjectWithTag("MainCamera").GetComponent<ClickAtom>().objList.Count; i++) {
+						int atomnumber = (int)GameObject.FindGameObjectWithTag("MainCamera").GetComponent<ClickAtom> ().objList [i].GetComponent<BallUpdate> ().number;
+						xTot = xTot + MoleculeModel.atomsLocationlist [atomnumber] [0];
+						yTot = yTot + MoleculeModel.atomsLocationlist [atomnumber] [1];
+						zTot = zTot + MoleculeModel.atomsLocationlist [atomnumber] [2];
 					}
+					barycenter.x = xTot / GameObject.FindGameObjectWithTag("MainCamera").GetComponent<ClickAtom> ().objList.Count;
+					barycenter.y = yTot / GameObject.FindGameObjectWithTag("MainCamera").GetComponent<ClickAtom> ().objList.Count;
+					barycenter.z = zTot / GameObject.FindGameObjectWithTag("MainCamera").GetComponent<ClickAtom> ().objList.Count;
+
+					newposition = barycenter;
+
+					cameraTranslation = true;
+					centerChanged = true;
 				}
+			}
 		}
 
 		if(UIData.Instance.guided){
@@ -380,15 +404,15 @@ public class maxCamera : MonoBehaviour
 				monomer_jump = !monomer_jump;
 				Debug.Log("monomer jump: " + monomer_jump);
 			}
-		
+
 			if(Input.GetKeyUp (KeyCode.L))
-			   near_spread = !near_spread;
+				near_spread = !near_spread;
 
 			if(near_spread)
 				NearSpreading();
 		}
 	}
-	
+
 	/// <summary>
 	/// Only available in "guided navigation" mode and specific to pentameric channels.
 	/// Constrained path for camera moving around the protein structure.
@@ -408,8 +432,8 @@ public class maxCamera : MonoBehaviour
 			nav_speed = SpeedNavigation();
 
 		if(Vector3.Distance(transform.position, new Vector3(0, transform.position.y, 0)) < 2.0 && angle < 180){
-			//Vector3 target = new Vector3(-LocCamera.transform.position.x,LocCamera.transform.position.y,-LocCamera.transform.position.z );
-			//LocCamera.transform.RotateAround(new Vector3(0, LocCamera.transform.position.y, 0), new Vector3(0,1,0), 6);
+			//Vector3 target = new Vector3(-MaxCameraData.Instance.LocCamera.transform.position.x,MaxCameraData.Instance.LocCamera.transform.position.y,-MaxCameraData.Instance.LocCamera.transform.position.z );
+			//MaxCameraData.Instance.LocCamera.transform.RotateAround(new Vector3(0, MaxCameraData.Instance.LocCamera.transform.position.y, 0), new Vector3(0,1,0), 6);
 			transform.RotateAround(new Vector3(0, transform.position.y, 0), new Vector3(0,1,0), nav_speed*6);
 			angle += nav_speed*6;
 			//Debug.Log("Angle: "+angle);
@@ -420,7 +444,7 @@ public class maxCamera : MonoBehaviour
 			angle = 0;
 		}
 
-		else if ((LocCamera.transform.position.y >= MoleculeModel.MaxValue.y)) {
+		else if ((MaxCameraData.Instance.LocCamera.transform.position.y >= MoleculeModel.MaxValue.y)) {
 
 			UIData.Instance.up_part = false;
 			UIData.Instance.down_part = true;
@@ -450,7 +474,7 @@ public class maxCamera : MonoBehaviour
 
 		}
 
-		else if ((LocCamera.transform.position.y <= MoleculeModel.MinValue.y)){
+		else if ((MaxCameraData.Instance.LocCamera.transform.position.y <= MoleculeModel.MinValue.y)){
 
 			UIData.Instance.up_part = true;
 			UIData.Instance.down_part = false;
@@ -466,18 +490,18 @@ public class maxCamera : MonoBehaviour
 					isneg = false;
 				checkangle = true;
 			}
-			
+
 			if(isneg)
 				move = new Vector3(0, tempv.z, 0);
 			else
 				move = new Vector3(0, -tempv.z, 0);
-			
+
 			move.Normalize ();
 			transform.Translate(move);
 			dirdown = false;
 
 			target.position = new Vector3(0, MoleculeModel.MinValue.y, 0);
-			
+
 		} else {
 			if(UIData.Instance.up_part){
 				checkangle = false;
@@ -519,7 +543,7 @@ public class maxCamera : MonoBehaviour
 			nav_speed = SpeedNavigation();
 
 		if(Vector3.Distance(transform.position, new Vector3(0, transform.position.y, 0)) < 2.0 && angle < 180){
-			//Vector3 target = new Vector3(-LocCamera.transform.position.x,LocCamera.transform.position.y,-LocCamera.transform.position.z );
+			//Vector3 target = new Vector3(-MaxCameraData.Instance.LocCamera.transform.position.x,MaxCameraData.Instance.LocCamera.transform.position.y,-MaxCameraData.Instance.LocCamera.transform.position.z );
 			transform.RotateAround(new Vector3(0, transform.position.y, 0), new Vector3(0,1,0), 6);
 			angle += 6;
 			//Debug.Log("Angle: "+angle);
@@ -530,7 +554,7 @@ public class maxCamera : MonoBehaviour
 			angle = 0;
 		}
 
-		else if ((LocCamera.transform.position.y >= MoleculeModel.MaxValue.y)) {
+		else if ((MaxCameraData.Instance.LocCamera.transform.position.y >= MoleculeModel.MaxValue.y)) {
 
 			UIData.Instance.down_part = false;
 			UIData.Instance.up_part = true;
@@ -546,12 +570,12 @@ public class maxCamera : MonoBehaviour
 					isneg = false;
 				checkangle = true;
 			}
-			
+
 			if(isneg)
 				move = new Vector3(0, -tempv.z, 0);
 			else
 				move = new Vector3(0, tempv.z, 0);
-			
+
 			move.Normalize ();
 			transform.Translate(move);
 			dirup = false;
@@ -559,7 +583,7 @@ public class maxCamera : MonoBehaviour
 			target.position = new Vector3(0, MoleculeModel.MaxValue.y, 0);
 		}
 
-		else if ((LocCamera.transform.position.y <= MoleculeModel.MinValue.y)){
+		else if ((MaxCameraData.Instance.LocCamera.transform.position.y <= MoleculeModel.MinValue.y)){
 
 			UIData.Instance.down_part = true;
 			UIData.Instance.up_part = false;
@@ -575,12 +599,12 @@ public class maxCamera : MonoBehaviour
 					isneg = false;
 				checkangle = true;
 			}
-			
+
 			if(isneg)
 				move = new Vector3(0, tempv.z, 0);
 			else
 				move = new Vector3(0, -tempv.z, 0);
-			
+
 			move.Normalize ();
 			transform.Translate(move);
 			dirup = false;
@@ -592,7 +616,7 @@ public class maxCamera : MonoBehaviour
 				checkangle = false;
 				isabove = false;
 				isunder = false;
-				transform.eulerAngles = new Vector3 (0, LocCamera.transform.eulerAngles.y, 0);
+				transform.eulerAngles = new Vector3 (0, MaxCameraData.Instance.LocCamera.transform.eulerAngles.y, 0);
 				v.y += nav_speed;
 				transform.position = v;
 				target.position = new Vector3(0, v.y, 0);
@@ -600,7 +624,7 @@ public class maxCamera : MonoBehaviour
 				checkangle = false;
 				isabove = false;
 				isunder = false;
-				transform.eulerAngles = new Vector3 (0, LocCamera.transform.eulerAngles.y, 0);
+				transform.eulerAngles = new Vector3 (0, MaxCameraData.Instance.LocCamera.transform.eulerAngles.y, 0);
 				v.y -= nav_speed;
 				transform.position = v;
 				target.position = new Vector3(0, v.y, 0);
@@ -610,10 +634,10 @@ public class maxCamera : MonoBehaviour
 
 	private float SpeedNavigation()
 	{
-			float tot = Math.Abs (MoleculeModel.MinValue.y) + Math.Abs (MoleculeModel.MaxValue.y);
-			return (tot / 120);
+		float tot = Math.Abs (MoleculeModel.MinValue.y) + Math.Abs (MoleculeModel.MaxValue.y);
+		return (tot / 120);
 	}
-	
+
 	IEnumerator Transition()
 	{
 		float t = 0.0f;
@@ -621,8 +645,8 @@ public class maxCamera : MonoBehaviour
 		while (t < 1.0f)
 		{
 			t += Time.deltaTime * (Time.timeScale/transitionDuration);
-			
-			transform.position = Vector3.Lerp(startingPos, optim_target, t);
+
+			transform.position = Vector3.Lerp(startingPos, MaxCameraData.Instance.optim_target, t);
 			yield return 0;
 		}
 	}
@@ -633,9 +657,9 @@ public class maxCamera : MonoBehaviour
 	void LateUpdate ()
 	{
 		var oldTransform = TransformData.FromTransform(transform);
-		var oldLocTransform = TransformData.FromTransform(LocCamera.transform);
+		var oldLocTransform = TransformData.FromTransform(MaxCameraData.Instance.LocCamera.transform);
 
-		if (cameraStop == false) {
+		if (MaxCameraData.Instance.cameraStop == false) {
 			keyboardOperate ();
 			if (!guiControl)
 				joypadOperate ();
@@ -646,10 +670,10 @@ public class maxCamera : MonoBehaviour
 				if (Input.GetMouseButton (1)) {
 					if (UIData.Instance.switchmode)
 						Molecule3DComp.ToParticle ();
-					desiredDistance -= Input.GetAxis ("Mouse Y") * Time.deltaTime * zoomRate;//* Mathf.Abs(desiredDistance);
+					MaxCameraData.Instance.desiredDistance -= Input.GetAxis ("Mouse Y") * Time.deltaTime * zoomRate;//* Mathf.Abs(desiredDistance);
 				}
-	            // If middle mouse and left alt are selected? ORBIT
-	            else if (Input.GetMouseButton (0) && !guiControl) {
+				// If middle mouse and left alt are selected? ORBIT
+				else if (Input.GetMouseButton (0) && !guiControl) {
 					if (UIData.Instance.switchmode)
 						Molecule3DComp.ToParticle ();
 					if (Input.mousePosition.x < Screen.width * 0.85f && Input.mousePosition.y < Screen.height * 0.85f && Input.mousePosition.y > Screen.height * 0.15f) {	
@@ -668,14 +692,14 @@ public class maxCamera : MonoBehaviour
 
 
 				}
-	            // otherwise if middle mouse is selected, we pan by way of transforming the target in screenspace
-	            else if (Input.GetMouseButton (2)) {
+				// otherwise if middle mouse is selected, we pan by way of transforming the target in screenspace
+				else if (Input.GetMouseButton (2)) {
 					if (UIData.Instance.switchmode)
 						Molecule3DComp.ToParticle ();
-					Vector3 v = LocCamera.transform.localPosition;
+					Vector3 v = MaxCameraData.Instance.LocCamera.transform.localPosition;
 					v.x -= Input.GetAxis ("Mouse X") * panSpeed;
 					v.y -= Input.GetAxis ("Mouse Y") * panSpeed;
-					LocCamera.transform.localPosition = v;
+					MaxCameraData.Instance.LocCamera.transform.localPosition = v;
 				} else {
 					if (UIData.Instance.switchmode)
 						Molecule3DComp.ToNotParticle ();
@@ -685,8 +709,8 @@ public class maxCamera : MonoBehaviour
 			// get the desired Zoom distance if we roll the scrollwheel
 			if (!UIData.Instance.hiddenCamera)
 			if (!Camera.main.orthographic) { // only if the camera is in perspective mode
-				desiredDistance -= Input.GetAxis ("Mouse ScrollWheel") * Time.deltaTime * zoomRate;// * Mathf.Abs(desiredDistance);
-				if (UIData.Instance.guided && (desiredDistance != currentDistance)) {
+				MaxCameraData.Instance.desiredDistance -= Input.GetAxis ("Mouse ScrollWheel") * Time.deltaTime * zoomRate;// * Mathf.Abs(desiredDistance);
+				if (UIData.Instance.guided && (MaxCameraData.Instance.desiredDistance != MaxCameraData.Instance.currentDistance)) {
 					//currentDistance = Vector3.Distance (transform.position, target.position);
 					guidedzoom = true;
 				}
@@ -702,22 +726,22 @@ public class maxCamera : MonoBehaviour
 				xDeg += Mathf.Lerp (0.0F, 100.0F, Time.deltaTime * 0.8f);
 				yDeg = 0;
 			}
-	
+
 			if (centerChanged) {
 				//if we reach the position (for camera sliding) we stop!
-	
+
 				//otherwise we continue the translation.
 				if (cameraTranslation) {
-	
+
 					weight += Time.deltaTime * 1;
 					target.localPosition = Vector3.Lerp (target.localPosition, newposition, weight);
-	
-					LocCamera.transform.localPosition = Vector3.Lerp (LocCamera.transform.localPosition, Vector3.zero, weight);
 
-					//LocCamera.transform.eulerAngles = Vector3.Lerp (LocCamera.transform.eulerAngles, Vector3.zero, weight);
-	
-					if (cameraTranslation && target.position == newposition && LocCamera.transform.localPosition == Vector3.zero) {
-	
+					MaxCameraData.Instance.LocCamera.transform.localPosition = Vector3.Lerp (MaxCameraData.Instance.LocCamera.transform.localPosition, Vector3.zero, weight);
+
+					//MaxCameraData.Instance.LocCamera.transform.eulerAngles = Vector3.Lerp (MaxCameraData.Instance.LocCamera.transform.eulerAngles, Vector3.zero, weight);
+
+					if (cameraTranslation && target.position == newposition && MaxCameraData.Instance.LocCamera.transform.localPosition == Vector3.zero) {
+
 						weight = 0;
 						cameraTranslation = false;
 						centerChanged = false;
@@ -734,17 +758,17 @@ public class maxCamera : MonoBehaviour
 
 
 			if ((position.x <= -maxDistance || position.y <= -maxDistance || position.z <= -maxDistance)
-				&& desiredDistance > maxDistance) {
-				Debug.Log("man " + desiredDistance);
-				desiredDistance = maxDistance;
+				&& MaxCameraData.Instance.desiredDistance > maxDistance) {
+				Debug.Log("man " + MaxCameraData.Instance.desiredDistance);
+				MaxCameraData.Instance.desiredDistance = maxDistance;
 			} else if ((position.x >= -minDistance || position.y >= -minDistance || position.z >= -minDistance)
-				&& desiredDistance < minDistance) {
-				desiredDistance = minDistance;
+				&& MaxCameraData.Instance.desiredDistance < minDistance) {
+				MaxCameraData.Instance.desiredDistance = minDistance;
 			}
 
 			//Camera movement
-			currentDistance = Mathf.Lerp (currentDistance, desiredDistance, Time.deltaTime * zoomDampening);
-			position = target.position - (rotation * Vector3.forward * currentDistance + targetOffset);
+			MaxCameraData.Instance.currentDistance = Mathf.Lerp (MaxCameraData.Instance.currentDistance, MaxCameraData.Instance.desiredDistance, Time.deltaTime * zoomDampening);
+			position = target.position - (rotation * Vector3.forward * MaxCameraData.Instance.currentDistance + targetOffset);
 			if (!UIData.Instance.guided || reset_panoramic) {
 				transform.position = position;
 				reset_panoramic = false;
@@ -769,7 +793,7 @@ public class maxCamera : MonoBehaviour
 					transform.Translate (new Vector3 (0, 0, Input.GetAxis ("Mouse ScrollWheel") * Time.deltaTime * zoomRate));
 				guidedzoom = false;
 			}
-	
+
 			xDeg = 0;
 			yDeg = 0;
 			zDeg = 0;
@@ -788,114 +812,114 @@ public class maxCamera : MonoBehaviour
 			weight += Time.deltaTime * 1;
 			transform.position = Vector3.Lerp (v, new Vector3 (0, v.y, 0), weight);
 		}
-		
+
 		if (UIData.Instance.optim_view) {
 			if (!ghost_target_instantiate) {
 				Debug.LogWarning ("CREATE TARGET OBJECT");
-				ghost_target_real = (GameObject)GameObject.Instantiate (ghost_target, optim_target, Quaternion.identity);
+				ghost_target_real = (GameObject)GameObject.Instantiate (ghost_target, MaxCameraData.Instance.optim_target, Quaternion.identity);
 				ghost_target_real.name = "Target";
 				ghost_target_real.GetComponent<Renderer> ().material.color = Color.magenta;
 				ghost_target_real.transform.localScale = new Vector3 (4.0f, 4.0f, 4.0f);
 				ghost_target_real.SetActive (true);
 				ghost_target_instantiate = true;
 			}
-			if (LocCamera.transform.position != optim_cam_position) {
-				Debug.Log ("optim: " + optim_cam_position);
-				Debug.Log ("camera: " + LocCamera.transform.position);
-				float distance = Vector3.Distance (LocCamera.transform.position, new Vector3 (0, 0, 0));
-//				Debug.Log("initial camera location z ++: " + (-MoleculeModel.cameraLocation.z) * 1.05);
-//				Debug.Log("initial camera location z --: " + (-MoleculeModel.cameraLocation.z) * 0.95);
-//				Debug.Log ("height comparison: "+ !Mathf.Approximately(LocCamera.transform.position.y, optim_cam_position.y) + " smooth: " + smooth);
-				
-				
+			if (MaxCameraData.Instance.LocCamera.transform.position != MaxCameraData.Instance.optim_cam_position) {
+				Debug.Log ("optim: " + MaxCameraData.Instance.optim_cam_position);
+				Debug.Log ("camera: " + MaxCameraData.Instance.LocCamera.transform.position);
+				float distance = Vector3.Distance (MaxCameraData.Instance.LocCamera.transform.position, new Vector3 (0, 0, 0));
+				//				Debug.Log("initial camera location z ++: " + (-MoleculeModel.cameraLocation.z) * 1.05);
+				//				Debug.Log("initial camera location z --: " + (-MoleculeModel.cameraLocation.z) * 0.95);
+				//				Debug.Log ("height comparison: "+ !Mathf.Approximately(MaxCameraData.Instance.LocCamera.transform.position.y, optim_cam_position.y) + " smooth: " + smooth);
+
+
 				if (RemotePhase) {
-					LocCamera.transform.position = Vector3.SmoothDamp (LocCamera.transform.position, optim_cam_position, ref velocity, 5.0f);
-					LocCamera.transform.LookAt (optim_target);
+					MaxCameraData.Instance.LocCamera.transform.position = Vector3.SmoothDamp (MaxCameraData.Instance.LocCamera.transform.position, MaxCameraData.Instance.optim_cam_position, ref velocity, 5.0f);
+					MaxCameraData.Instance.LocCamera.transform.LookAt (MaxCameraData.Instance.optim_target);
 				}
-				
-				
-//				if(distance < (- MoleculeModel.cameraLocation.z * 0.95) && RemotePhase){
-//					Debug.Log ("Remote Phase zoom out");
-////					float distCovered = (Time.time - UIData.Instance.start_time) * 1.0F;
-////					float fracJourney = distCovered / 4.0F;
-////					LocCamera.transform.position = Vector3.Lerp(UIData.Instance.optim_view_start_point, new Vector3(LocCamera.transform.position.x, LocCamera.transform.position.y, MoleculeModel.cameraLocation.z), fracJourney);
-////					LocCamera.transform.LookAt(new Vector3(0,LocCamera.transform.position.y,0));
-//					LocCamera.transform.position = Vector3.SmoothDamp(LocCamera.transform.position, new Vector3(LocCamera.transform.position.x, LocCamera.transform.position.y, MoleculeModel.cameraLocation.z), ref velocity, 0.5f);
-//					//LocCamera.transform.Translate((LocCamera.transform.position - new Vector3(0,LocCamera.transform.position.y, 0)) * Time.deltaTime * 0.5f, Space.World);
-//				}
-//				else if(distance > (-MoleculeModel.cameraLocation.z * 1.05) && RemotePhase){
-//					Debug.Log ("Remote Phase zoom in");
-//					float distCovered = (Time.time - UIData.Instance.start_time) * 1.0F;
-//					float fracJourney = distCovered / 2.0F;
-//					LocCamera.transform.position = Vector3.Lerp(UIData.Instance.optim_view_start_point, new Vector3(LocCamera.transform.position.x, LocCamera.transform.position.y, MoleculeModel.cameraLocation.z), fracJourney);
-//					//LocCamera.transform.Translate((new Vector3(0,LocCamera.transform.position.y, 0) - LocCamera.transform.position) * Time.deltaTime * 0.5f, Space.World);
-//				}
-////				else if(smooth){
-////					RemotePhase = false;
-////					HeightPhase = false;
-////					RotatePhase = false;
-////					ApproachPhase = false;
-////					if(FocusPhase && Quaternion.Angle(LocCamera.transform.rotation, Quaternion.LookRotation(optim_target - LocCamera.transform.position)) < 1.0F){
-////						Quaternion lookat = Quaternion.LookRotation(optim_target - LocCamera.transform.position);
-////						Debug.Log("Rotation : "+LocCamera.transform.rotation+" "+lookat);
-////						LocCamera.transform.rotation = Quaternion.Slerp(LocCamera.transform.rotation, lookat, Time.deltaTime);
-////					}
-////					else if (Vector3.Distance(LocCamera.transform.position, optim_cam_position) < 0.5){
-////						FocusPhase = false;
-////						Debug.Log("MoveTowards");
-////						float step = 1.0F * Time.deltaTime;
-////						LocCamera.transform.position = Vector3.SmoothDamp(LocCamera.transform.position, optim_cam_position, ref velocity, 2.0f);
-////						LocCamera.transform.LookAt(optim_target);
-////					}
-////					//float step = 1.0F * Time.deltaTime;
-////				}
-//				else if(!Mathf.Approximately(LocCamera.transform.position.y, optim_cam_position.y) && HeightPhase){
-//					RemotePhase = false;
-//					Debug.Log ("Height Phase");
-//					LocCamera.transform.position = Vector3.SmoothDamp(LocCamera.transform.position, new Vector3(LocCamera.transform.position.x, optim_cam_position.y, LocCamera.transform.position.z), ref velocity, 0.3f);
-//					UIData.Instance.start_time = Time.time;
-//					UIData.Instance.optim_view_start_point = LocCamera.transform.position - new Vector3(0, LocCamera.transform.position.y, 0);
-//				}
-//				else if(Vector3.Angle( (LocCamera.transform.position - new Vector3(0, LocCamera.transform.position.y, 0)), (optim_cam_position - new Vector3(0, LocCamera.transform.position.y, 0))) > 2 && RotatePhase){
-//					HeightPhase = false;
-//					Debug.Log ("Rotate Phase");
-//					Debug.Log (Vector3.Angle( (LocCamera.transform.position - new Vector3(0, LocCamera.transform.position.y, 0)), (optim_cam_position - new Vector3(0, LocCamera.transform.position.y, 0))));
-////					Vector3 center = (UIData.Instance.optim_view_start_point + (optim_cam_position - new Vector3(0, LocCamera.transform.position.y, 0))) * 0.5F;
-////					center -= new Vector3(0, 1, 0);
-////					Vector3 riseRelCenter = UIData.Instance.optim_view_start_point - center;
-////					Vector3 setRelCenter = (optim_cam_position - new Vector3(0, LocCamera.transform.position.y, 0)) - center;
-////					float fracComplete = (Time.time - UIData.Instance.start_time) / 2.0F;
-////					LocCamera.transform.position = Vector3.Slerp(riseRelCenter, setRelCenter, fracComplete);
-////					LocCamera.transform.position += center;
-//					float angle = Vector3.Angle( (LocCamera.transform.position - new Vector3(0, LocCamera.transform.position.y, 0)), (optim_cam_position - new Vector3(0, LocCamera.transform.position.y, 0)));
-//					LocCamera.transform.RotateAround(Vector3.zero, Vector3.up, angle * Time.deltaTime);
-//				}
-//				else if(LocCamera.transform.position != optim_cam_position && ApproachPhase){
-//					Debug.Log("Approach phase");
-//					RotatePhase = false;
-//					LocCamera.transform.position = Vector3.SmoothDamp(LocCamera.transform.position, optim_cam_position, ref velocity, 0.5f);
-//				}
-////				Debug.Log ("Distance: "+distance);
-//				//LocCamera.transform.position = Vector3.SmoothDamp(LocCamera.transform.position, optim_cam_position, ref velocity, 0.3f);	
+
+
+				//				if(distance < (- MoleculeModel.cameraLocation.z * 0.95) && RemotePhase){
+				//					Debug.Log ("Remote Phase zoom out");
+				////					float distCovered = (Time.time - UIData.Instance.start_time) * 1.0F;
+				////					float fracJourney = distCovered / 4.0F;
+				////					MaxCameraData.Instance.LocCamera.transform.position = Vector3.Lerp(UIData.Instance.optim_view_start_point, new Vector3(MaxCameraData.Instance.LocCamera.transform.position.x, MaxCameraData.Instance.LocCamera.transform.position.y, MoleculeModel.cameraLocation.z), fracJourney);
+				////					MaxCameraData.Instance.LocCamera.transform.LookAt(new Vector3(0,MaxCameraData.Instance.LocCamera.transform.position.y,0));
+				//					MaxCameraData.Instance.LocCamera.transform.position = Vector3.SmoothDamp(MaxCameraData.Instance.LocCamera.transform.position, new Vector3(MaxCameraData.Instance.LocCamera.transform.position.x, MaxCameraData.Instance.LocCamera.transform.position.y, MoleculeModel.cameraLocation.z), ref velocity, 0.5f);
+				//					//MaxCameraData.Instance.LocCamera.transform.Translate((MaxCameraData.Instance.LocCamera.transform.position - new Vector3(0,MaxCameraData.Instance.LocCamera.transform.position.y, 0)) * Time.deltaTime * 0.5f, Space.World);
+				//				}
+				//				else if(distance > (-MoleculeModel.cameraLocation.z * 1.05) && RemotePhase){
+				//					Debug.Log ("Remote Phase zoom in");
+				//					float distCovered = (Time.time - UIData.Instance.start_time) * 1.0F;
+				//					float fracJourney = distCovered / 2.0F;
+				//					MaxCameraData.Instance.LocCamera.transform.position = Vector3.Lerp(UIData.Instance.optim_view_start_point, new Vector3(MaxCameraData.Instance.LocCamera.transform.position.x, MaxCameraData.Instance.LocCamera.transform.position.y, MoleculeModel.cameraLocation.z), fracJourney);
+				//					//MaxCameraData.Instance.LocCamera.transform.Translate((new Vector3(0,MaxCameraData.Instance.LocCamera.transform.position.y, 0) - MaxCameraData.Instance.LocCamera.transform.position) * Time.deltaTime * 0.5f, Space.World);
+				//				}
+				////				else if(smooth){
+				////					RemotePhase = false;
+				////					HeightPhase = false;
+				////					RotatePhase = false;
+				////					ApproachPhase = false;
+				////					if(FocusPhase && Quaternion.Angle(MaxCameraData.Instance.LocCamera.transform.rotation, Quaternion.LookRotation(optim_target - MaxCameraData.Instance.LocCamera.transform.position)) < 1.0F){
+				////						Quaternion lookat = Quaternion.LookRotation(optim_target - MaxCameraData.Instance.LocCamera.transform.position);
+				////						Debug.Log("Rotation : "+MaxCameraData.Instance.LocCamera.transform.rotation+" "+lookat);
+				////						MaxCameraData.Instance.LocCamera.transform.rotation = Quaternion.Slerp(MaxCameraData.Instance.LocCamera.transform.rotation, lookat, Time.deltaTime);
+				////					}
+				////					else if (Vector3.Distance(MaxCameraData.Instance.LocCamera.transform.position, optim_cam_position) < 0.5){
+				////						FocusPhase = false;
+				////						Debug.Log("MoveTowards");
+				////						float step = 1.0F * Time.deltaTime;
+				////						MaxCameraData.Instance.LocCamera.transform.position = Vector3.SmoothDamp(MaxCameraData.Instance.LocCamera.transform.position, optim_cam_position, ref velocity, 2.0f);
+				////						MaxCameraData.Instance.LocCamera.transform.LookAt(optim_target);
+				////					}
+				////					//float step = 1.0F * Time.deltaTime;
+				////				}
+				//				else if(!Mathf.Approximately(MaxCameraData.Instance.LocCamera.transform.position.y, optim_cam_position.y) && HeightPhase){
+				//					RemotePhase = false;
+				//					Debug.Log ("Height Phase");
+				//					MaxCameraData.Instance.LocCamera.transform.position = Vector3.SmoothDamp(MaxCameraData.Instance.LocCamera.transform.position, new Vector3(MaxCameraData.Instance.LocCamera.transform.position.x, optim_cam_position.y, MaxCameraData.Instance.LocCamera.transform.position.z), ref velocity, 0.3f);
+				//					UIData.Instance.start_time = Time.time;
+				//					UIData.Instance.optim_view_start_point = MaxCameraData.Instance.LocCamera.transform.position - new Vector3(0, MaxCameraData.Instance.LocCamera.transform.position.y, 0);
+				//				}
+				//				else if(Vector3.Angle( (MaxCameraData.Instance.LocCamera.transform.position - new Vector3(0, MaxCameraData.Instance.LocCamera.transform.position.y, 0)), (optim_cam_position - new Vector3(0, MaxCameraData.Instance.LocCamera.transform.position.y, 0))) > 2 && RotatePhase){
+				//					HeightPhase = false;
+				//					Debug.Log ("Rotate Phase");
+				//					Debug.Log (Vector3.Angle( (MaxCameraData.Instance.LocCamera.transform.position - new Vector3(0, MaxCameraData.Instance.LocCamera.transform.position.y, 0)), (optim_cam_position - new Vector3(0, MaxCameraData.Instance.LocCamera.transform.position.y, 0))));
+				////					Vector3 center = (UIData.Instance.optim_view_start_point + (optim_cam_position - new Vector3(0, MaxCameraData.Instance.LocCamera.transform.position.y, 0))) * 0.5F;
+				////					center -= new Vector3(0, 1, 0);
+				////					Vector3 riseRelCenter = UIData.Instance.optim_view_start_point - center;
+				////					Vector3 setRelCenter = (optim_cam_position - new Vector3(0, MaxCameraData.Instance.LocCamera.transform.position.y, 0)) - center;
+				////					float fracComplete = (Time.time - UIData.Instance.start_time) / 2.0F;
+				////					MaxCameraData.Instance.LocCamera.transform.position = Vector3.Slerp(riseRelCenter, setRelCenter, fracComplete);
+				////					MaxCameraData.Instance.LocCamera.transform.position += center;
+				//					float angle = Vector3.Angle( (MaxCameraData.Instance.LocCamera.transform.position - new Vector3(0, MaxCameraData.Instance.LocCamera.transform.position.y, 0)), (optim_cam_position - new Vector3(0, MaxCameraData.Instance.LocCamera.transform.position.y, 0)));
+				//					MaxCameraData.Instance.LocCamera.transform.RotateAround(Vector3.zero, Vector3.up, angle * Time.deltaTime);
+				//				}
+				//				else if(MaxCameraData.Instance.LocCamera.transform.position != optim_cam_position && ApproachPhase){
+				//					Debug.Log("Approach phase");
+				//					RotatePhase = false;
+				//					MaxCameraData.Instance.LocCamera.transform.position = Vector3.SmoothDamp(MaxCameraData.Instance.LocCamera.transform.position, optim_cam_position, ref velocity, 0.5f);
+				//				}
+				////				Debug.Log ("Distance: "+distance);
+				//				//MaxCameraData.Instance.LocCamera.transform.position = Vector3.SmoothDamp(MaxCameraData.Instance.LocCamera.transform.position, optim_cam_position, ref velocity, 0.3f);	
 			} else {
 				Debug.Log ("LookAt phase");
 				ApproachPhase = false;
-				Quaternion lookat = Quaternion.LookRotation (optim_target - LocCamera.transform.position);
-				LocCamera.transform.rotation = Quaternion.Slerp (LocCamera.transform.rotation, lookat, Time.deltaTime);
+				Quaternion lookat = Quaternion.LookRotation (MaxCameraData.Instance.optim_target - MaxCameraData.Instance.LocCamera.transform.position);
+				MaxCameraData.Instance.LocCamera.transform.rotation = Quaternion.Slerp (MaxCameraData.Instance.LocCamera.transform.rotation, lookat, Time.deltaTime);
 			}
-//			LocCamera.transform.position = optim_cam_position;
-//			GameObject ghost_target = new GameObject();
-//			ghost_target.name = "TARGET";
-//			ghost_target.transform.position = optim_target;
-//			ghost_target.SetActive(true);
-//			LocCamera.transform.LookAt(ghost_target.transform);
+			//			MaxCameraData.Instance.LocCamera.transform.position = optim_cam_position;
+			//			GameObject ghost_target = new GameObject();
+			//			ghost_target.name = "TARGET";
+			//			ghost_target.transform.position = optim_target;
+			//			ghost_target.SetActive(true);
+			//			MaxCameraData.Instance.LocCamera.transform.LookAt(ghost_target.transform);
 		}
 		if (UIData.Instance.guided) {		
 			if (next_right && rotation_done < 360 / MoleculeModel.existingChain.Count) {
-				LocCamera.transform.RotateAround (Vector3.zero, Vector3.up, -(360 / MoleculeModel.existingChain.Count) * Time.deltaTime);
+				MaxCameraData.Instance.LocCamera.transform.RotateAround (Vector3.zero, Vector3.up, -(360 / MoleculeModel.existingChain.Count) * Time.deltaTime);
 				rotation_done += (360 / MoleculeModel.existingChain.Count) * Time.deltaTime;
 			} else if (next_left && rotation_done < 360 / MoleculeModel.existingChain.Count) {
-				LocCamera.transform.RotateAround (Vector3.zero, Vector3.up, (360 / MoleculeModel.existingChain.Count) * Time.deltaTime);
+				MaxCameraData.Instance.LocCamera.transform.RotateAround (Vector3.zero, Vector3.up, (360 / MoleculeModel.existingChain.Count) * Time.deltaTime);
 				rotation_done += (360 / MoleculeModel.existingChain.Count) * Time.deltaTime;
 				;
 			} else if (rotation_done > 360 / MoleculeModel.existingChain.Count) {
@@ -904,7 +928,7 @@ public class maxCamera : MonoBehaviour
 				rotation_done = 0.0f;
 			}
 			/*if (next_left && rotation_done < 360/MoleculeModel.existingChain.Count){
-				LocCamera.transform.RotateAround(Vector3.zero, Vector3.up, (360/MoleculeModel.existingChain.Count) * Time.deltaTime);
+				MaxCameraData.Instance.LocCamera.transform.RotateAround(Vector3.zero, Vector3.up, (360/MoleculeModel.existingChain.Count) * Time.deltaTime);
 				rotation_done += (360/MoleculeModel.existingChain.Count) * Time.deltaTime;
 				Debug.Log("rotation_done " + rotation_done + " next_left " + next_left);
 			}
@@ -917,16 +941,16 @@ public class maxCamera : MonoBehaviour
 
 		// Luiz:
 		if (UnityClusterPackage.Node.CurrentNode.HasPermission(NodePermission.Client)) {
-			if (!oldTransform.Equals(transform) || !oldLocTransform.Equals(LocCamera.transform)) {
+			if (!oldTransform.Equals(transform) || !oldLocTransform.Equals(MaxCameraData.Instance.LocCamera.transform)) {
 				GetComponent<NetworkView>().RPC(
 					"AdjustCamera", RPCMode.Server,
 					transform.position, transform.rotation,
-					LocCamera.transform.position, LocCamera.transform.rotation
+					MaxCameraData.Instance.LocCamera.transform.position, MaxCameraData.Instance.LocCamera.transform.rotation
 				);
 			}
 		}
 	}
-	
+
 	private static float ClampAngle (float angle, float min, float max)
 	{
 		if (angle < -360)
@@ -935,15 +959,15 @@ public class maxCamera : MonoBehaviour
 			angle -= 360;
 		return Mathf.Clamp (angle, min, max);
 	}
-    
+
 	public void ToCenter (bool reallyChangePosition = true)
 	{
 		if(reallyChangePosition)
 		{
-			LocCamera.transform.localPosition = Vector3.zero;
+			MaxCameraData.Instance.LocCamera.transform.localPosition = Vector3.zero;
 			target.transform.localPosition = Vector3.zero;
 			transform.position = new Vector3 (0, 0, MoleculeModel.cameraLocation.z);
-			LocCamera.transform.rotation = new Quaternion (0, 0, 0, 0);
+			MaxCameraData.Instance.LocCamera.transform.rotation = new Quaternion (0, 0, 0, 0);
 			transform.rotation = Quaternion.identity;
 		}
 		centerChanged = false;
@@ -951,12 +975,12 @@ public class maxCamera : MonoBehaviour
 		Init ();
 	}
 
-// control of the joypad =============================================================================================      
-//                       =============================================================================================      
+	// control of the joypad =============================================================================================      
+	//                       =============================================================================================      
 	private void joypadOperate ()
 	{
 		target.rotation = transform.rotation;
-		Vector3 v = LocCamera.transform.localPosition;
+		Vector3 v = MaxCameraData.Instance.LocCamera.transform.localPosition;
 		if (Input.GetAxis ("Axis5") > joypadDeadzone || (Input.GetAxis ("Axis5") < joypadDeadzone))
 			v.x -= Input.GetAxis ("Axis5") * panSpeed;
 		if (Input.GetAxis ("Axis6") > joypadDeadzone || (Input.GetAxis ("Axis6") < joypadDeadzone))
@@ -965,14 +989,14 @@ public class maxCamera : MonoBehaviour
 			v.x -= Input.GetAxis ("AxisX") * panSpeed * 3.0f;
 		if (Input.GetAxis ("AxisY") > joypadDeadzone || (Input.GetAxis ("AxisY") < joypadDeadzone))
 			v.y -= Input.GetAxis ("AxisY") * panSpeed * 3.0f;
-		LocCamera.transform.localPosition = v;
+		MaxCameraData.Instance.LocCamera.transform.localPosition = v;
 
 		if (Input.GetAxis ("Axis3") > joypadDeadzone || (Input.GetAxis ("Axis3") < joypadDeadzone))
 			xDeg = Input.GetAxis ("Axis3") * xSpeed * 0.08f;
 
 		if (Input.GetAxis ("Axis4") > joypadDeadzone || (Input.GetAxis ("Axis4") < joypadDeadzone))
 			yDeg = Input.GetAxis ("Axis4") * ySpeed * 0.08f;
-        
+
 		//Z rotation
 		if (Input.GetKey ("joystick button 7"))
 			zDeg = Time.deltaTime * xSpeed * 0.5f;
@@ -982,18 +1006,18 @@ public class maxCamera : MonoBehaviour
 
 		//Zoom out
 		if (Input.GetKey ("joystick button 4")) {
-			desiredDistance -= Time.deltaTime * zoomRate * 0.08f; 
+			MaxCameraData.Instance.desiredDistance -= Time.deltaTime * zoomRate * 0.08f; 
 			if (UIData.Instance.switchmode)
 				Molecule3DComp.ToParticle ();
 		}
 		//zoom in
 		if (Input.GetKey ("joystick button 6")) {
-			desiredDistance += Time.deltaTime * zoomRate * 0.08f;
+			MaxCameraData.Instance.desiredDistance += Time.deltaTime * zoomRate * 0.08f;
 			if (UIData.Instance.switchmode)
 				Molecule3DComp.ToParticle ();
 		}
 	}
-	
+
 	/// <summary>
 	/// Manage the camera rotation with keyboard inputs.
 	/// </summary>
@@ -1002,18 +1026,18 @@ public class maxCamera : MonoBehaviour
 		//rotation
 		if (Input.GetKey (KeyCode.RightArrow) || Input.GetKey (KeyCode.Z)){
 			if(monomer_jump && UIData.Instance.guided){
-//				int nb_chains = MoleculeModel.existingChain.Count;
-//				Dictionary<string, Vector3> chains_COM = new Dictionary<string, Vector3>();
-//				for(int c = 0; i<nb_chains; i++){
-//					chains_COM.Add (MoleculeModel.existingChain[c], Vector3.zero);
-//				}
-//				for(int i = 0; i<MoleculeModel.atomsChainList.Count; i++){
-//					chains_COM.Add (MoleculeModel.atomsChainList[i], MoleculeModel.atomsLocationlist[i]);
-//					if(chains_COM[MoleculeModel.atomsChainList[i]] == Vector3.zero)
-//						chains_COM[MoleculeModel.atomsChainList[i]] += MoleculeModel.atomsLocationlist[i];
-//					else
-//						chains_COM[MoleculeModel.atomsChainList[i]] = (chains_COM[MoleculeModel.atomsChainList[i]] + MoleculeModel.atomsLocationlist[i]) / 2;
-//				}
+				//				int nb_chains = MoleculeModel.existingChain.Count;
+				//				Dictionary<string, Vector3> chains_COM = new Dictionary<string, Vector3>();
+				//				for(int c = 0; i<nb_chains; i++){
+				//					chains_COM.Add (MoleculeModel.existingChain[c], Vector3.zero);
+				//				}
+				//				for(int i = 0; i<MoleculeModel.atomsChainList.Count; i++){
+				//					chains_COM.Add (MoleculeModel.atomsChainList[i], MoleculeModel.atomsLocationlist[i]);
+				//					if(chains_COM[MoleculeModel.atomsChainList[i]] == Vector3.zero)
+				//						chains_COM[MoleculeModel.atomsChainList[i]] += MoleculeModel.atomsLocationlist[i];
+				//					else
+				//						chains_COM[MoleculeModel.atomsChainList[i]] = (chains_COM[MoleculeModel.atomsChainList[i]] + MoleculeModel.atomsLocationlist[i]) / 2;
+				//				}
 				next_right = true;
 			}
 
@@ -1025,7 +1049,7 @@ public class maxCamera : MonoBehaviour
 			else
 				upxDeg ();
 		}
-        
+
 		//rotation
 		if (Input.GetKey (KeyCode.LeftArrow) || Input.GetKey (KeyCode.X)) {
 			if(monomer_jump && UIData.Instance.guided){
@@ -1069,7 +1093,7 @@ public class maxCamera : MonoBehaviour
 				else{
 					goDownConstrained();}
 			}
-			 
+
 			else
 				downyDeg ();
 		}
@@ -1086,7 +1110,7 @@ public class maxCamera : MonoBehaviour
 			ResetChainsPos();
 
 	} // End of KeyboardOperate
-	
+
 	/// <summary>
 	/// Compute center of mass.
 	/// </summary>
@@ -1112,15 +1136,15 @@ public class maxCamera : MonoBehaviour
 		}
 
 		else{
-		for (int i=first_atom; i < MoleculeModel.atomsLocationlist.Count; i++) {
-			if(MoleculeModel.atomsChainList[i]== chain){
-				x += MoleculeModel.atomsLocationlist[i][0];
-				y += MoleculeModel.atomsLocationlist[i][1];
-				z += MoleculeModel.atomsLocationlist[i][2];
-				nb_atoms++;
+			for (int i=first_atom; i < MoleculeModel.atomsLocationlist.Count; i++) {
+				if(MoleculeModel.atomsChainList[i]== chain){
+					x += MoleculeModel.atomsLocationlist[i][0];
+					y += MoleculeModel.atomsLocationlist[i][1];
+					z += MoleculeModel.atomsLocationlist[i][2];
+					nb_atoms++;
+				}
 			}
-		}
-		return new Vector3(x/nb_atoms, y/nb_atoms, z/nb_atoms);
+			return new Vector3(x/nb_atoms, y/nb_atoms, z/nb_atoms);
 		}
 	} // End get_com
 
@@ -1134,23 +1158,23 @@ public class maxCamera : MonoBehaviour
 			sym_center = new Vector3(0, (MoleculeModel.MaxValue.y + MoleculeModel.MinValue.y), 0);
 		else
 			sym_center = new Vector3(0, (MoleculeModel.MaxValue.y - MoleculeModel.MinValue.y), 0);
-		
+
 		Vector3 temp = get_com("A");
 		spreadA = temp - sym_center;
 		spreadA.Normalize();
-		
+
 		temp = get_com("B");
 		spreadB = temp - sym_center;
 		spreadB.Normalize();
-		
+
 		temp = get_com("C");
 		spreadC = temp - sym_center;
 		spreadC.Normalize();
-		
+
 		temp = get_com("D");
 		spreadD = temp - sym_center;
 		spreadD.Normalize();
-		
+
 		temp = get_com("E");
 		spreadE = temp - sym_center;
 		spreadE.Normalize();
@@ -1231,7 +1255,7 @@ public class maxCamera : MonoBehaviour
 		computeSpreadingVector();
 		comp_spread+=0.1f;
 		comp_spread = Math.Round (comp_spread, 1);
-		
+
 		if(UIData.Instance.isGLIC){
 			//Second step spreading
 			computeSpreadPart(out spreadA1, out spreadA2, "A");
@@ -1240,17 +1264,17 @@ public class maxCamera : MonoBehaviour
 			computeSpreadPart(out spreadD1, out spreadD2, "D");
 			computeSpreadPart(out spreadE1, out spreadE2, "E");
 		}
-		
+
 		if(GUIMoleculeController.Instance.toggle_SEC_STRUCT){
-			
+
 			GameObject[] ribA = GameObject.FindGameObjectsWithTag("RibbonObjA");
 			GameObject[] ribB = GameObject.FindGameObjectsWithTag("RibbonObjB");
 			GameObject[] ribC = GameObject.FindGameObjectsWithTag("RibbonObjC");
 			GameObject[] ribD = GameObject.FindGameObjectsWithTag("RibbonObjD");
 			GameObject[] ribE = GameObject.FindGameObjectsWithTag("RibbonObjE");
-			
+
 			if(comp_spread > 2 && UIData.Instance.isGLIC){
-				
+
 				if(UIData.Instance.guided){
 					ribA[0].transform.Translate(spreadE1);
 					ribA[1].transform.Translate (spreadE2);
@@ -1281,22 +1305,22 @@ public class maxCamera : MonoBehaviour
 						rib.transform.Translate(spreadE);
 					else
 						rib.transform.Translate(spreadA);
-				
+
 				foreach( GameObject rib in ribB)
 					if(UIData.Instance.guided)
 						rib.transform.Translate(spreadD);
 					else
 						rib.transform.Translate(spreadB);
-				
+
 				foreach( GameObject rib in ribC)
 					rib.transform.Translate(spreadC);
-				
+
 				foreach( GameObject rib in ribD)
 					if(UIData.Instance.guided)
 						rib.transform.Translate(spreadB);
 					else
 						rib.transform.Translate(spreadD);
-				
+
 				foreach( GameObject rib in ribE)
 					if(UIData.Instance.guided)
 						rib.transform.Translate(spreadA);
@@ -1304,12 +1328,12 @@ public class maxCamera : MonoBehaviour
 						rib.transform.Translate(spreadE);
 			}
 		}
-		
+
 		if(UIData.Instance.atomtype == UIData.AtomType.hyperball){
 			hballs = GameObject.FindObjectsOfType(typeof(BallUpdateHB)) as BallUpdateHB[];
 			Molecule.View.DisplayMolecule.DestroyBondObject();
 			for (int i=0; i<hballs.Length; i++) {
-				
+
 				if(UIData.Instance.secondarystruct){
 					if(MoleculeModel.CaSplineChainList[(int)hballs[i].number] == "A")
 						hballs[i].transform.Translate(spreadA);
@@ -1337,7 +1361,7 @@ public class maxCamera : MonoBehaviour
 			}
 			UIData.Instance.resetDisplay = true;
 		}
-		
+
 		if(UIData.Instance.atomtype == UIData.AtomType.sphere){
 			sballs = GameObject.FindObjectsOfType(typeof(BallUpdateSphere)) as BallUpdateSphere[];
 			Molecule.View.DisplayMolecule.DestroyBondObject();
@@ -1398,21 +1422,21 @@ public class maxCamera : MonoBehaviour
 		computeSpreadingVector();
 		comp_spread-=0.1f;
 		comp_spread = Math.Round ((double)comp_spread, 1);
-		
+
 		if(comp_spread <= 0){
 			comp_spread = 0;
 		}else{
-			
+
 			if(GUIMoleculeController.Instance.toggle_SEC_STRUCT){
-				
+
 				GameObject[] ribA = GameObject.FindGameObjectsWithTag("RibbonObjA");
 				GameObject[] ribB = GameObject.FindGameObjectsWithTag("RibbonObjB");
 				GameObject[] ribC = GameObject.FindGameObjectsWithTag("RibbonObjC");
 				GameObject[] ribD = GameObject.FindGameObjectsWithTag("RibbonObjD");
 				GameObject[] ribE = GameObject.FindGameObjectsWithTag("RibbonObjE");
-				
+
 				if(comp_spread > 2 && UIData.Instance.isGLIC){
-					
+
 					if(UIData.Instance.guided){
 						ribA[0].transform.Translate(-spreadE1);
 						ribA[1].transform.Translate (-spreadE2);
@@ -1442,22 +1466,22 @@ public class maxCamera : MonoBehaviour
 							rib.transform.Translate(-spreadE);
 						else
 							rib.transform.Translate(-spreadA);
-					
+
 					foreach( GameObject rib in ribB)
 						if(UIData.Instance.guided)
 							rib.transform.Translate(-spreadD);
 						else
 							rib.transform.Translate(-spreadB);
-					
+
 					foreach( GameObject rib in ribC)
 						rib.transform.Translate(-spreadC);
-					
+
 					foreach( GameObject rib in ribD)
 						if(UIData.Instance.guided)
 							rib.transform.Translate(-spreadB);
 						else
 							rib.transform.Translate(-spreadD);
-					
+
 					foreach( GameObject rib in ribE)
 						if(UIData.Instance.guided)
 							rib.transform.Translate(-spreadA);
@@ -1465,12 +1489,12 @@ public class maxCamera : MonoBehaviour
 							rib.transform.Translate(-spreadE);
 				}
 			}
-			
+
 			if(UIData.Instance.atomtype == UIData.AtomType.hyperball){
 				hballs = GameObject.FindObjectsOfType(typeof(BallUpdateHB)) as BallUpdateHB[]; 
 				Molecule.View.DisplayMolecule.DestroyBondObject();
 				for (int i=0; i<hballs.Length; i++) {
-					
+
 					if(comp_spread <= 0){
 						comp_spread = 0;
 						break;
@@ -1503,16 +1527,16 @@ public class maxCamera : MonoBehaviour
 					UIData.Instance.resetDisplay = true;
 				}
 			} // End if Hyperballs
-			
+
 			if(UIData.Instance.atomtype == UIData.AtomType.sphere){
 				sballs = GameObject.FindObjectsOfType(typeof(BallUpdateSphere)) as BallUpdateSphere[];
 				for (int i=0; i<sballs.Length; i++) {
-					
+
 					if(comp_spread <= 0){
 						comp_spread = 0;
 						break;
 					}else{
-						
+
 						if(MoleculeModel.atomsChainList[(int)sballs[i].number] == "A")
 							sballs[i].transform.Translate(-spreadA);
 						if(MoleculeModel.atomsChainList[(int)sballs[i].number] == "B")
@@ -1541,57 +1565,57 @@ public class maxCamera : MonoBehaviour
 				if(UIData.Instance.secondarystruct){
 					//comp_spread = 0;
 					if(hballs[i].transform.position.x == MoleculeModel.CaSplineList[(int)hballs[i].number][0] && 
-					   hballs[i].transform.position.y == MoleculeModel.CaSplineList[(int)hballs[i].number][1] && 
-					   hballs[i].transform.position.z == MoleculeModel.CaSplineList[(int)hballs[i].number][2])
+						hballs[i].transform.position.y == MoleculeModel.CaSplineList[(int)hballs[i].number][1] && 
+						hballs[i].transform.position.z == MoleculeModel.CaSplineList[(int)hballs[i].number][2])
 						break;
 					else{
-						
+
 						vectemp = new Vector3();
 						vectemp.x = MoleculeModel.CaSplineList[(int)hballs[i].number][0];
 						vectemp.y = MoleculeModel.CaSplineList[(int)hballs[i].number][1];
 						vectemp.z = MoleculeModel.CaSplineList[(int)hballs[i].number][2];
-						
+
 						hballs[i].transform.position = vectemp;
 					}
-					
+
 				}
 				else{
 					if(hballs[i].transform.position.x == MoleculeModel.atomsLocationlist[(int)hballs[i].number][0] && 
-					   hballs[i].transform.position.y == MoleculeModel.atomsLocationlist[(int)hballs[i].number][1] && 
-					   hballs[i].transform.position.z == MoleculeModel.atomsLocationlist[(int)hballs[i].number][2])
+						hballs[i].transform.position.y == MoleculeModel.atomsLocationlist[(int)hballs[i].number][1] && 
+						hballs[i].transform.position.z == MoleculeModel.atomsLocationlist[(int)hballs[i].number][2])
 						break;
 					else{
-						
+
 						vectemp = new Vector3();
 						vectemp.x = MoleculeModel.atomsLocationlist[(int)hballs[i].number][0];
 						vectemp.y = MoleculeModel.atomsLocationlist[(int)hballs[i].number][1];
 						vectemp.z = MoleculeModel.atomsLocationlist[(int)hballs[i].number][2];
-						
+
 						hballs[i].transform.position = vectemp;
 					}
 				}
 			}
 		} //End if hyperballs
-		
+
 		if(UIData.Instance.atomtype == UIData.AtomType.sphere){
 			sballs = GameObject.FindObjectsOfType(typeof(BallUpdateSphere)) as BallUpdateSphere[];
 			for (int i=0; i<sballs.Length; i++) {
-				
+
 				if(sballs[i].transform.position.x == MoleculeModel.atomsLocationlist[(int)sballs[i].number][0] && 
-				   sballs[i].transform.position.y == MoleculeModel.atomsLocationlist[(int)sballs[i].number][1] && 
-				   sballs[i].transform.position.z == MoleculeModel.atomsLocationlist[(int)sballs[i].number][2])
+					sballs[i].transform.position.y == MoleculeModel.atomsLocationlist[(int)sballs[i].number][1] && 
+					sballs[i].transform.position.z == MoleculeModel.atomsLocationlist[(int)sballs[i].number][2])
 					break;
 				else{
 					vectemp = new Vector3();
 					vectemp.x = MoleculeModel.atomsLocationlist[(int)sballs[i].number][0];
 					vectemp.y = MoleculeModel.atomsLocationlist[(int)sballs[i].number][1];
 					vectemp.z = MoleculeModel.atomsLocationlist[(int)sballs[i].number][2];
-					
+
 					sballs[i].transform.position = vectemp;
 				}			
 			}
 		} //End if Sphere
-		
+
 		if(GUIMoleculeController.Instance.toggle_SEC_STRUCT){
 			GameObject[] Objs = FindObjectsOfType(typeof(GameObject)) as GameObject[];
 			foreach(GameObject ribObj in Objs){
@@ -1601,7 +1625,7 @@ public class maxCamera : MonoBehaviour
 			Ribbons ribbons = new Ribbons();
 			ribbons.CreateRibbons();
 		}
-		
+
 		UIData.Instance.resetBondDisplay = true;
 	}// End ResetChainsPos
 
@@ -1630,8 +1654,8 @@ public class maxCamera : MonoBehaviour
 	{
 		transform.position = position;
 		transform.rotation = rotation;
-		LocCamera.transform.position = locPosition;
-		LocCamera.transform.rotation = locRotation;
+		MaxCameraData.Instance.LocCamera.transform.position = locPosition;
+		MaxCameraData.Instance.LocCamera.transform.rotation = locRotation;
 	}
 	private class TransformData
 	{

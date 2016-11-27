@@ -3195,35 +3195,35 @@ namespace UI {
 			int sliderWidth = (int) (0.50f * Rectangles.secStructMenuWidth);
 			
 			GUILayout.BeginHorizontal();
-			RibbonsGeneralData.Instance.ribbonWidth[0] = GUIMoleculeController.Instance.LabelSlider(RibbonsGeneralData.Instance.ribbonWidth[0], 0.375f, 3.0f,
-				"Helix Width: " + RibbonsGeneralData.Instance.ribbonWidth[0].ToString("0.00"), "", true, sliderWidth, labelWidth, true);
+			RibbonsData.Instance.ribbonWidth[0] = GUIMoleculeController.Instance.LabelSlider(RibbonsData.Instance.ribbonWidth[0], 0.375f, 3.0f,
+				"Helix Width: " + RibbonsData.Instance.ribbonWidth[0].ToString("0.00"), "", true, sliderWidth, labelWidth, true);
 			GUILayout.EndHorizontal();
 
 		
 
 			GUILayout.BeginHorizontal();
-			RibbonsGeneralData.Instance.ribbonWidth[1] = GUIMoleculeController.Instance.LabelSlider(RibbonsGeneralData.Instance.ribbonWidth[1], 0.425f, 3.4f,
-				"Sheet Width: " + RibbonsGeneralData.Instance.ribbonWidth[1].ToString("0.00"), "", true, sliderWidth, labelWidth, true);
+			RibbonsData.Instance.ribbonWidth[1] = GUIMoleculeController.Instance.LabelSlider(RibbonsData.Instance.ribbonWidth[1], 0.425f, 3.4f,
+				"Sheet Width: " + RibbonsData.Instance.ribbonWidth[1].ToString("0.00"), "", true, sliderWidth, labelWidth, true);
 			GUILayout.EndHorizontal();
 			
 			GUILayout.BeginHorizontal();
-			RibbonsGeneralData.Instance.ribbonWidth[2] = GUIMoleculeController.Instance.LabelSlider(RibbonsGeneralData.Instance.ribbonWidth[2], 0.075f, 0.6f,
-				"Coil Width: " + RibbonsGeneralData.Instance.ribbonWidth[2].ToString("0.00"), "", true, sliderWidth, labelWidth, true);
+			RibbonsData.Instance.ribbonWidth[2] = GUIMoleculeController.Instance.LabelSlider(RibbonsData.Instance.ribbonWidth[2], 0.075f, 0.6f,
+				"Coil Width: " + RibbonsData.Instance.ribbonWidth[2].ToString("0.00"), "", true, sliderWidth, labelWidth, true);
 			GUILayout.EndHorizontal();
 			
 			GUILayout.BeginHorizontal();
-			RibbonsGeneralData.Instance.THICKNESS = GUIMoleculeController.Instance.LabelSlider(RibbonsGeneralData.Instance.THICKNESS, 0.075f, 0.6f,
-				"Thickness: " + RibbonsGeneralData.Instance.THICKNESS.ToString("0.00"), "", true, sliderWidth, labelWidth, true);
+			RibbonsData.Instance.THICKNESS = GUIMoleculeController.Instance.LabelSlider(RibbonsData.Instance.THICKNESS, 0.075f, 0.6f,
+				"Thickness: " + RibbonsData.Instance.THICKNESS.ToString("0.00"), "", true, sliderWidth, labelWidth, true);
 			GUILayout.EndHorizontal();
 			
 			GUILayout.BeginHorizontal();
-			RibbonsGeneralData.Instance.HELIX_DIAM = GUIMoleculeController.Instance.LabelSlider(RibbonsGeneralData.Instance.HELIX_DIAM, 0.45f, 3.6f,
-				"Helix diameter: " + RibbonsGeneralData.Instance.HELIX_DIAM.ToString("0.00"), "", true, sliderWidth, labelWidth, true);
+			RibbonsData.Instance.HELIX_DIAM = GUIMoleculeController.Instance.LabelSlider(RibbonsData.Instance.HELIX_DIAM, 0.45f, 3.6f,
+				"Helix diameter: " + RibbonsData.Instance.HELIX_DIAM.ToString("0.00"), "", true, sliderWidth, labelWidth, true);
 			GUILayout.EndHorizontal();
 			
 			GUILayout.BeginHorizontal();
-			RibbonsGeneralData.Instance.ARROW_WIDTH = GUIMoleculeController.Instance.LabelSlider(RibbonsGeneralData.Instance.ARROW_WIDTH, 0f, 3.6f,
-				"Arrow width: " + RibbonsGeneralData.Instance.ARROW_WIDTH.ToString("0.00"), "", true, sliderWidth, labelWidth, true);
+			RibbonsData.Instance.ARROW_WIDTH = GUIMoleculeController.Instance.LabelSlider(RibbonsData.Instance.ARROW_WIDTH, 0f, 3.6f,
+				"Arrow width: " + RibbonsData.Instance.ARROW_WIDTH.ToString("0.00"), "", true, sliderWidth, labelWidth, true);
 			GUILayout.EndHorizontal();
 
 			GUILayout.BeginHorizontal ();
@@ -3238,7 +3238,7 @@ namespace UI {
 			GUILayout.Label("Helix Color :");
 			GUILayout.FlexibleSpace();
 			if(GUILayout.Button(helixButton,GUILayout.MinWidth(100),GUILayout.MinHeight(20))){
-				GUIMoleculeController.Instance.CreateColorPicker(RibbonsGeneralData.Instance.HELIX_COLOR, "Helix color", null);
+				GUIMoleculeController.Instance.CreateColorPicker(RibbonsData.Instance.HELIX_COLOR, "Helix color", null);
 			}
 			GUILayout.EndHorizontal();
 			
@@ -3246,7 +3246,7 @@ namespace UI {
 			GUILayout.Label("Sheet Color :");
 			GUILayout.FlexibleSpace();
 			if(GUILayout.Button(sheetButton,GUILayout.MinWidth(100),GUILayout.MinHeight(20))){
-				GUIMoleculeController.Instance.CreateColorPicker(RibbonsGeneralData.Instance.STRAND_COLOR, "Sheet color", null);
+				GUIMoleculeController.Instance.CreateColorPicker(RibbonsData.Instance.STRAND_COLOR, "Sheet color", null);
 			}
 			GUILayout.EndHorizontal();
 			
@@ -3254,7 +3254,7 @@ namespace UI {
 			GUILayout.Label("Coil Color :");
 			GUILayout.FlexibleSpace();
 			if(GUILayout.Button(coilButton,GUILayout.MinWidth(100),GUILayout.MinHeight(20))){
-				GUIMoleculeController.Instance.CreateColorPicker(RibbonsGeneralData.Instance.COIL_COLOR, "Coil color", null);
+				GUIMoleculeController.Instance.CreateColorPicker(RibbonsData.Instance.COIL_COLOR, "Coil color", null);
 			}
 			GUILayout.EndHorizontal();
 			}
@@ -3278,35 +3278,35 @@ namespace UI {
 				GUILayout.BeginHorizontal();
 				GUILayout.Label("Chain A :");
 				if(GUILayout.Button(chainbuttonA,GUILayout.MinWidth(100),GUILayout.MinHeight(20))){
-					GUIMoleculeController.Instance.CreateColorPicker(RibbonsGeneralData.Instance.ChainColorA, "Chain A color", null);
+					GUIMoleculeController.Instance.CreateColorPicker(RibbonsData.Instance.ChainColorA, "Chain A color", null);
 				}
 				GUILayout.EndHorizontal();
 
 				GUILayout.BeginHorizontal();
 				GUILayout.Label("Chain B :");
 				if(GUILayout.Button(chainbuttonB,GUILayout.MinWidth(100),GUILayout.MinHeight(20))){
-					GUIMoleculeController.Instance.CreateColorPicker(RibbonsGeneralData.Instance.ChainColorB, "Chain B color", null);
+					GUIMoleculeController.Instance.CreateColorPicker(RibbonsData.Instance.ChainColorB, "Chain B color", null);
 				}
 				GUILayout.EndHorizontal();
 				
 				GUILayout.BeginHorizontal();
 				GUILayout.Label("Chain C :");
 				if(GUILayout.Button(chainbuttonC,GUILayout.MinWidth(100),GUILayout.MinHeight(20))){
-					GUIMoleculeController.Instance.CreateColorPicker(RibbonsGeneralData.Instance.ChainColorC, "Chain C color", null);
+					GUIMoleculeController.Instance.CreateColorPicker(RibbonsData.Instance.ChainColorC, "Chain C color", null);
 				}
 				GUILayout.EndHorizontal();
 				
 				GUILayout.BeginHorizontal();
 				GUILayout.Label("Chain D :");
 				if(GUILayout.Button(chainbuttonD,GUILayout.MinWidth(100),GUILayout.MinHeight(20))){
-					GUIMoleculeController.Instance.CreateColorPicker(RibbonsGeneralData.Instance.ChainColorD, "Chain D color", null);
+					GUIMoleculeController.Instance.CreateColorPicker(RibbonsData.Instance.ChainColorD, "Chain D color", null);
 				}
 				GUILayout.EndHorizontal();
 				
 				GUILayout.BeginHorizontal();
 				GUILayout.Label("Chain E :");
 				if(GUILayout.Button(chainbuttonE,GUILayout.MinWidth(100),GUILayout.MinHeight(20))){
-					GUIMoleculeController.Instance.CreateColorPicker(RibbonsGeneralData.Instance.ChainColorE, "Chain E color", null);
+					GUIMoleculeController.Instance.CreateColorPicker(RibbonsData.Instance.ChainColorE, "Chain E color", null);
 				}
 				GUILayout.EndHorizontal();
 			}

@@ -312,19 +312,23 @@ namespace  ParseData.ParsePDB
 		}
 
 		// Luiz:
-		public void MakePDBFromXYZ(string xyzFileName)
+		public void MakePDBFromXYZ(string xyzFileName, string fileFomat)
 		{
 			var state = new GamessOutput.OutputState();
 
-			using (var reader = File.OpenText(xyzFileName + ".xyz"))
+			using (var reader = File.OpenText(xyzFileName + "." + fileFomat))
 			{
 				string line;
 				for (int idx = 0; (line = reader.ReadLine()) != null; ++idx)
 				{
-					if (idx >= 2 && line.Trim().Length > 0) {
-						var lineParts = line.Split(' ');
-						if(lineParts.Length != 4)
-							throw new ArgumentException("xyzFilename too many/few data on line " + (idx + 1));
+					line = line.Trim();
+
+					if (idx >= 2 && line.Length > 0) {
+						var lineParts = System.Text.RegularExpressions.Regex.Split(line, " +");
+
+						if(lineParts.Length < 4) // Luiz: there may be more than 4 parameters, because of the xmol format.
+							throw new ArgumentException("xyzFilename \"" + xyzFileName + "\" has too few data on line " + (idx + 1));
+
 						state.Atoms.Add(new GamessOutput.Atom() {
 							Id = lineParts[0],
 							X = lineParts[1],
@@ -639,7 +643,7 @@ namespace  ParseData.ParsePDB
 				}
 			}
 			isDone=true;
-			RibbonsGeneralData.Instance.mustSplitDictList = (nbTers > 1);
+			RibbonsData.Instance.mustSplitDictList = (nbTers > 1);
 			
 			for(int i = 0; i < typelist.Count; i++)
 				MoleculeModel.atomsLocalScaleList.Add(100.0f);

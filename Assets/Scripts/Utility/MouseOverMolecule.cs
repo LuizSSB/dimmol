@@ -78,7 +78,7 @@ public class MouseOverMolecule : MonoBehaviour {
 	// to the user clicking on the object 
 	void OnMouseDrag () {
 		if(Input.GetMouseButton(0)){
-			maxCamera.cameraStop = true;
+			MaxCameraData.Instance.cameraStop = true;
 			stopCamera = true;
 			Vector3 p = Input.mousePosition;
 			p.z = Camera.main.WorldToScreenPoint(transform.position).z;
@@ -88,7 +88,7 @@ public class MouseOverMolecule : MonoBehaviour {
 	
 	void OnMouseUp() {
 		Debug.Log("MouseUp is called now.");
-		maxCamera.cameraStop = false;
+		MaxCameraData.Instance.cameraStop = false;
 		stopCamera = false;
 	}
 	

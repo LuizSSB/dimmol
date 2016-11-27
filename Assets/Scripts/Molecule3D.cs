@@ -106,7 +106,7 @@ public class Molecule3D:MonoBehaviour {
 	public static GameObject LocCamera
 	{
 		get {
-			return maxCamera.LocCamera;
+			return MaxCameraData.Instance.LocCamera;
 		}
 	}
 	
@@ -614,8 +614,9 @@ public class Molecule3D:MonoBehaviour {
 		// if we laod a pdb file launch the reading of file
 			else if(GUIDisplay.Instance.file_extension=="pdb")
 				requestPDB.LoadPDBRequest(GUIDisplay.Instance.file_base_name);
-			else if(GUIDisplay.Instance.file_extension == "xyz")
-				requestPDB.MakePDBFromXYZ(GUIDisplay.Instance.file_base_name);
+			else if(GUIDisplay.Instance.file_extension == "xyz" || GUIDisplay.Instance.file_extension == "xmol") {
+				requestPDB.MakePDBFromXYZ(GUIDisplay.Instance.file_base_name, GUIDisplay.Instance.file_extension);
+			}
 
 		// check the format of xgmml	
 			else if(UI.GUIDisplay.Instance.file_extension=="xgmml") {
@@ -756,7 +757,7 @@ public class Molecule3D:MonoBehaviour {
 			curLineRenderer.material.SetFloat("_Density", GUIMoleculeController.Instance.density);
 			curLineRenderer.material.SetFloat("_Length", GUIMoleculeController.Instance.linelength);
 			curLineRenderer.SetWidth(GUIMoleculeController.Instance.linewidth, GUIMoleculeController.Instance.linewidth);
-			curLineRenderer.material.SetFloat("_depthcut", (GUIMoleculeController.Instance.depthCut-maxCamera.currentDistance));
+			curLineRenderer.material.SetFloat("_depthcut", (GUIMoleculeController.Instance.depthCut-MaxCameraData.Instance.currentDistance));
 			curLineRenderer.material.SetFloat("_adjust",(GUIMoleculeController.Instance.adjustFieldLineCut));
 			curLineRenderer.material.SetVector("_SurfacePos", FieldLine.transform.position);
 
@@ -1152,7 +1153,7 @@ public class Molecule3D:MonoBehaviour {
 	/// The targeted atom ('T' key)
 	/// </summary>
 	/// 
-	/* replaced by R and C in maxCamera.
+	/* replaced by R and C in MaxCameraData.Instance.
 	private void SetCenterbySpace() {
 		if(Input.GetKeyUp(KeyCode.R)) {
 			Debug.Log("Press the R key");

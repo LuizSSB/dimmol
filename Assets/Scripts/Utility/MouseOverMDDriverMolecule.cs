@@ -31,7 +31,7 @@ public class MouseOverMDDriverMolecule : MonoBehaviour {
 		BallUpdate script = gameObject.GetComponent<BallUpdate>();
 		
 		if(Input.GetMouseButton(0)){
-			maxCamera.cameraStop = true;
+			MaxCameraData.Instance.cameraStop = true;
 			stopCamera = true;
 			
 			Vector3 p = Input.mousePosition;
@@ -56,7 +56,7 @@ public class MouseOverMDDriverMolecule : MonoBehaviour {
 		MDDriver mddriverScript = GameObject.FindObjectOfType<MDDriver>();
 		mddriverScript.applyForces(new int[] {(int)script.number}, new float[] {0.0f, 0.0f, 0.0f});
 		
-		maxCamera.cameraStop = false;
+		MaxCameraData.Instance.cameraStop = false;
 		stopCamera = false;
 
 		if (arrowParent != null)

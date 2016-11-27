@@ -416,6 +416,7 @@ namespace UI {
 
 			OpenFileCallback(StateFiles[0]);
 
+			// Luiz: unfortunate hack to make things work.
 			new System.Threading.Thread(new System.Threading.ThreadStart(() => {
 //				while (MoleculeModel.atomsLocationlist == null) {}
 				System.Threading.Thread.Sleep(250);
@@ -484,7 +485,7 @@ namespace UI {
 						//id != "" if a molecule is already open
 						if(GUIDisplay.Instance.StateFiles == null || GUIDisplay.Instance.StateFiles.Length == 0)
 						{
-							if (GUILayout.Button (new GUIContent ("Open File From Disk", "Load a PDB file from disk"))) {
+							if (GUILayout.Button (new GUIContent ("Open File From Disk", "Load a PDB/XYZ/XMOL file from disk"))) {
 								m_fileBrowser = new ImprovedFileBrowser (Rectangles.fileBrowserRect, "", OpenFileCallback, m_lastOpenDir);
 //							m_fileBrowser.SelectionPattern = "*.pdb|*.xgmml";
 								m_fileBrowser.DirectoryImage = directoryimage; 
@@ -1115,14 +1116,14 @@ namespace UI {
 
 			for (int i =0; i <200; i++){
 				colorButtonNew[i]   =buttonColor.color;
-				LoadTypeGUI.Instance.helixButtonNew[i] =RibbonsGeneralData.Instance.HELIX_COLOR.color;
-				LoadTypeGUI.Instance.sheetButtonNew[i] =RibbonsGeneralData.Instance.STRAND_COLOR.color;
-				LoadTypeGUI.Instance.coilButtonNew[i] =RibbonsGeneralData.Instance.COIL_COLOR.color;
-				LoadTypeGUI.Instance.chainbuttonAnew[i] = RibbonsGeneralData.Instance.ChainColorA.color;
-				LoadTypeGUI.Instance.chainbuttonBnew[i] = RibbonsGeneralData.Instance.ChainColorB.color;
-				LoadTypeGUI.Instance.chainbuttonCnew[i] = RibbonsGeneralData.Instance.ChainColorC.color;
-				LoadTypeGUI.Instance.chainbuttonDnew[i] = RibbonsGeneralData.Instance.ChainColorD.color;
-				LoadTypeGUI.Instance.chainbuttonEnew[i] = RibbonsGeneralData.Instance.ChainColorE.color;
+				LoadTypeGUI.Instance.helixButtonNew[i] =RibbonsData.Instance.HELIX_COLOR.color;
+				LoadTypeGUI.Instance.sheetButtonNew[i] =RibbonsData.Instance.STRAND_COLOR.color;
+				LoadTypeGUI.Instance.coilButtonNew[i] =RibbonsData.Instance.COIL_COLOR.color;
+				LoadTypeGUI.Instance.chainbuttonAnew[i] = RibbonsData.Instance.ChainColorA.color;
+				LoadTypeGUI.Instance.chainbuttonBnew[i] = RibbonsData.Instance.ChainColorB.color;
+				LoadTypeGUI.Instance.chainbuttonCnew[i] = RibbonsData.Instance.ChainColorC.color;
+				LoadTypeGUI.Instance.chainbuttonDnew[i] = RibbonsData.Instance.ChainColorD.color;
+				LoadTypeGUI.Instance.chainbuttonEnew[i] = RibbonsData.Instance.ChainColorE.color;
 			}
 			
 			colorButton.SetPixels(colorButtonNew);

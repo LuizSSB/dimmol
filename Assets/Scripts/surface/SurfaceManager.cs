@@ -116,8 +116,8 @@ public class SurfaceManager : MonoBehaviour {
 			//if(UI.UIData.Instance.atomtype == UI.UIData.AtomType.particleball){
 				type = atomTree.GetClosestAtomType(vertices[i]);
 				if(UI.UIData.Instance.surfColChain){
-					RibbonsGeneralData.Instance.InitCol();
-					meshColors[i] = RibbonsGeneralData.Instance.GetColorChain(type);
+					RibbonsData.Instance.InitCol();
+					meshColors[i] = RibbonsData.Instance.GetColorChain(type);
 				}
 				else if(UI.UIData.Instance.surfColHydroKD){
 					HydrophobicScales.InitKyteDoo();

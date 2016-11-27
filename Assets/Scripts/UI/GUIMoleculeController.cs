@@ -577,15 +577,15 @@ namespace UI {
 				|| toggle_NA_CAMLOCK
 			  )
 			{
-				maxCamera.cameraStop = true;  // stop macCamera
+				MaxCameraData.Instance.cameraStop = true;  // stop macCamera
 				UIData.Instance.cameraStop2 = true;
-//				Debug.Log("maxCamera.cameraStop = true");
+//				Debug.Log("MaxCameraData.Instance.cameraStop = true");
 			} else {
 				if (UIData.Instance.cameraStop) {
-					maxCamera.cameraStop = true;
+					MaxCameraData.Instance.cameraStop = true;
 					UIData.Instance.cameraStop2 = true;
 				} else {
-					maxCamera.cameraStop = false;
+					MaxCameraData.Instance.cameraStop = false;
 					UIData.Instance.cameraStop2 = false;
 				}
 			}

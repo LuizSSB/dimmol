@@ -262,8 +262,8 @@ namespace UI
 			
 					// Place the camera at the new best position and make it face the target
 					UIData.Instance.optim_view = true;
-					maxCamera.optim_target = new Vector3(target[0], target[1], target[2]);
-					maxCamera.optim_cam_position = new Vector3(best_pos_cart[0], best_pos_cart[1], best_pos_cart[2]);
+					MaxCameraData.Instance.optim_target = new Vector3(target[0], target[1], target[2]);
+					MaxCameraData.Instance.optim_cam_position = new Vector3(best_pos_cart[0], best_pos_cart[1], best_pos_cart[2]);
 					GameObject camera = GameObject.Find("LoadBox");
 					UIData.Instance.optim_view_start_point = camera.transform.position;
 					UIData.Instance.start_time = Time.time;
@@ -274,7 +274,7 @@ namespace UI
 //					camera.transform.position = new Vector3(best_pos_cart3[0], best_pos_cart3[1], best_pos_cart3[2]);
 //					Wait();
 //					camera.transform.position = new Vector3(best_pos_cart4[0], best_pos_cart4[1], best_pos_cart4[2]);
-					//maxCamera.ghost_target = GameObject.Find("Target");
+					//MaxCameraData.Instance.ghost_target = GameObject.Find("Target");
 					
 //					camera.transform.LookAt(ghost_target.transform);
 				//result.Vertizes

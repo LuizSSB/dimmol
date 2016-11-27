@@ -73,7 +73,7 @@ public class TransparentFocus : MonoBehaviour {
 		
 		if((UIData.Instance.atomtype == UIData.AtomType.sphere) && (UIData.Instance.optim_view))
 		{
-			target = maxCamera.optim_target;
+			target = MaxCameraData.Instance.optim_target;
 			double distance = Vector3.Distance(transform.position, target) * 0.50;
 			UnityEngine.Debug.Log ("Distance: "+distance);
 			hits = Physics.SphereCastAll(transform.position, (float) distance / 2, target - transform.position, (float) distance, 1);

@@ -292,7 +292,7 @@ public class PostProcessing {
 										List<int> triangles, List<Color32> colors, int[] ss,
 	                                  string tag="RibbonObj", string gameobj="Ribbons") {
 	//	DuplicateVertices(vertices, normals, triangles, colors);
-		tag = RibbonsGeneralData.Instance.ribbontag;
+		tag = RibbonsData.Instance.ribbontag;
 		AddFirstFrontalFace(vertices, normals, triangles, colors, ss);
 		AddLastFrontalFace(vertices, normals, triangles, colors, ss);
 		MeshData mData = new MeshData();

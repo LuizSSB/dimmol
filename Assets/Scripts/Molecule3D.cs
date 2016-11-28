@@ -665,7 +665,6 @@ public class Molecule3D:MonoBehaviour {
 			}
 		}
 
-		GUIMoleculeController.Instance.toggle_NA_HBALLSMOOTH = true;
 	}
 
 	// Update is called once per frame
@@ -1311,7 +1310,6 @@ public class Molecule3D:MonoBehaviour {
 				} else {
 					requestPDB.LoadPDB (UIData.Instance.ChosenPdbContents);
 				}
-				GUIMoleculeController.Instance.toggle_NA_HBALLSMOOTH = true;
 			}
 		}
 	}

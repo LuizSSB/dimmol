@@ -4003,17 +4003,21 @@ namespace UI {
 
 		// Luiz:
 		public void Energy(int id) {
-			EnergyWindow.Draw(
-				GUIDisplay.Instance.CurrentState.Energy,
-				GUIDisplay.Instance.StateEnergyMinMax.max,
-				GUIDisplay.Instance.StateEnergyMinMax.min
-			);
-//			EnergyWindow.Draw(
-//				-282,
-//				-282,
-//				-286
-//			);
-			GUI.DragWindow();
+			if (GUIDisplay.Instance.StateEnergyMinMax != null) {
+
+				Debug.Log(GUIDisplay.Instance.CurrentState);
+				EnergyWindow.Draw(
+					GUIDisplay.Instance.CurrentState.Energy,
+					GUIDisplay.Instance.StateEnergyMinMax.max,
+					GUIDisplay.Instance.StateEnergyMinMax.min
+				);
+				//			EnergyWindow.Draw(
+				//				-282,
+				//				-282,
+				//				-286
+				//			);
+				GUI.DragWindow();
+			}
 		}
 		
 		/// <summary>

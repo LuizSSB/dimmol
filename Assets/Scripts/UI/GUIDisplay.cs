@@ -416,9 +416,11 @@ namespace UI {
 //
 
 			var states = ParseUtils.ExtractStates(path, ExternalOutputType);
+			StateFiles = ParseUtils.SaveStatesAsPDBs(states, Application.persistentDataPath);
+			CurrentState = states[0];
+
 			var energies = states.Select(s => s.Energy);
 			StateEnergyMinMax = new RangeAttribute(energies.Min(), energies.Max());
-			StateFiles = ParseUtils.SaveStatesAsPDBs(states, Application.persistentDataPath);
 
 			OpenFileCallback(StateFiles[0]);
 

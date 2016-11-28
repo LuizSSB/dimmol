@@ -392,5 +392,9 @@ namespace UI
 			mUpdateParts = null;
 			return true;
 		}
+
+		public static void SetNewData(UIData newData) {
+			sInstance = newData;
+		}
 	}
 }

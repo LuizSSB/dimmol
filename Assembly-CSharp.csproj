@@ -202,6 +202,7 @@
      <Compile Include="Assets\Scripts\ParseData\vecFieldLoader.cs" />
      <Compile Include="Assets\Scripts\PreloadFromPDB.cs" />
      <Compile Include="Assets\Scripts\RNAView.cs" />
+     <Compile Include="Assets\Scripts\RPCMessenger.cs" />
      <Compile Include="Assets\Scripts\ScenePreload_1KX2.cs" />
      <Compile Include="Assets\Scripts\ScenePreload_Fieldlines.cs" />
      <Compile Include="Assets\Scripts\ScenePreload_Network.cs" />
@@ -221,6 +222,7 @@
      <Compile Include="Assets\Scripts\UI\LoadTypeGUI.cs" />
      <Compile Include="Assets\Scripts\UI\MainMenu.cs" />
      <Compile Include="Assets\Scripts\UI\Rectangles.cs" />
+     <Compile Include="Assets\Scripts\UI\TrajectoryData.cs" />
      <Compile Include="Assets\Scripts\UI\UIData.cs" />
      <Compile Include="Assets\Scripts\UniWii\UniWiiCheck.cs" />
      <Compile Include="Assets\Scripts\UnityMolUcpGui.cs" />

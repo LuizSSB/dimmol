@@ -494,7 +494,6 @@ public class Molecule3D:MonoBehaviour {
 			}	
 		}
 
-		// Luiz: this will probably start an infinite loop, but let's see.
 		if (UnityClusterPackage.Node.CurrentNode.HasPermission(NodePermission.MenuControl)) {
 			var newLocations = MiniJSON.JsonEncode(MoleculeModel.atomsLocationlist.ToArray());
 			var networkinson = GetComponent<NetworkView> ();
@@ -659,12 +658,10 @@ public class Molecule3D:MonoBehaviour {
 
 		// Luiz:
 		if (UnityClusterPackage.Node.CurrentNode.HasPermission(NodePermission.MenuControl)) {
-			var networkinson = GetComponent<NetworkView> ();
-			foreach (var part in UIData.Instance.SerializeInParts ()) {
-				networkinson.RPC ("Synchronize", RPCMode.All, Node.CurrentNode.Id, part);
-			}
+			AssemblyCSharp.RPCMessenger.GetCurrent().SendComplexObject(
+				UIData.Instance, GetType(), "ReceiveNewUIData"
+			);
 		}
-
 	}
 
 	// Update is called once per frame
@@ -1298,21 +1295,24 @@ public class Molecule3D:MonoBehaviour {
 			StartCoroutine(UpdateVisualState());
 		}
 	}
-	[RPC]
-	public void Synchronize(int senderNodeId, string serializedData)
-	{
-		Debug.Log("Synchronizing molecule");
+
+	public static void ReceiveNewUIData(int senderNodeId, UIData data) {
 		if (Node.CurrentNode.Id != senderNodeId) {
-			if (UIData.DeserializePart (serializedData)) {
-				UIData.Instance.isOpenFile = true;
-				if(UIData.Instance.ChosenPdbContents.IndexOf("ProxyPort") > -1) {
-					GUIDisplay.Instance.PdbRequest = JsonUtility.FromJson<GUIDisplay.PdbRequestData>(UIData.Instance.ChosenPdbContents);
-				} else {
-					requestPDB.LoadPDB (UIData.Instance.ChosenPdbContents);
-				}
+			UIData.SetNewData(data);
+			UIData.Instance.isOpenFile = true;
+
+			if(UIData.Instance.ChosenPdbContents.IndexOf("ProxyPort") > -1) {
+				GUIDisplay.Instance.PdbRequest = JsonUtility.FromJson<GUIDisplay.PdbRequestData>(
+					UIData.Instance.ChosenPdbContents
+				);
+			} else {
+				var parentObject = GameObject.FindGameObjectWithTag("LoadBox");
+				var @this = parentObject.GetComponent<Molecule3D>();
+				@this.requestPDB.LoadPDB (UIData.Instance.ChosenPdbContents);
 			}
 		}
 	}
+
 	[RPC]
 	public void DieHard(int senderNodeId)
 	{

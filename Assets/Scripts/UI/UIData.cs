@@ -105,7 +105,11 @@ namespace UI
 
 		// Luiz:
 		public bool stateChanged = false;
-		public bool autoChangingState = false;
+		private bool _autoChangingState = false;
+				public bool autoChangingState {
+			get { return _autoChangingState; }
+			set { _autoChangingState = this.ProcessPropertyChanged("autoChangingState", _autoChangingState, value); }
+		}
 		
 		public bool isCubeLoaded = false;
 		public bool isSphereLoaded = false;
@@ -120,12 +124,7 @@ namespace UI
 		public bool connectivity_PDB = false;
 
 		// Luiz:
-		private bool _resetDisplay = false;
-		public bool resetDisplay {
-			get { return _resetDisplay; }
-			set { _resetDisplay = this.ProcessPropertyChanged("resetDisplay", _resetDisplay, value); }
-		}
-		//public bool resetDisplay=false;
+		public bool resetDisplay=false;
 
 		public bool isCubeToSphere=false;
 		public bool isSphereToCube=true;

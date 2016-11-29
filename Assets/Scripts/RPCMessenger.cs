@@ -39,7 +39,7 @@ namespace AssemblyCSharp
 				idx < objSerialized.Length;
 				idx += ComplexObjectPartLength, ++idxPart) {
 
-				control.CurrentPart = idx;
+				control.CurrentPart = idxPart;
 
 				var part = control +
 					"$" +

@@ -229,6 +229,7 @@
      <Compile Include="Assets\Scripts\Utility\ClickAtom.cs" />
      <Compile Include="Assets\Scripts\Utility\ColorObject.cs" />
      <Compile Include="Assets\Scripts\Utility\DebugStreamer.cs" />
+     <Compile Include="Assets\Scripts\Utility\DoOnMainThread.cs" />
      <Compile Include="Assets\Scripts\Utility\GUILayoutx.cs" />
      <Compile Include="Assets\Scripts\Utility\GradientBackground.cs" />
      <Compile Include="Assets\Scripts\Utility\ImprovedFileBrowser.cs" />

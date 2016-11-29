@@ -18,8 +18,8 @@ namespace Config {
 	}
 
 	public static class NodeExtensions {
-		// Luiz: The most adequate way to deal with this would probably be having a dependency injection structure, however
-		// for the time being this will do.
+		// Luiz: The most adequate way to deal with this would probably be having a dependency injection scheme,
+		// however for the time being this will do.
 		public static bool HasPermission(this Node node, NodePermission permission)
 		{
 			if (permission.IsFlagSet(NodePermission.Slave))
@@ -48,7 +48,7 @@ namespace Config {
 				return false;
 
 			if (permission.IsFlagSet(NodePermission.Energy))
-			if (Node.CurrentNode.NodeType == Node.Type.master && Node.CurrentNode.NodeType != Node.Type.client
+			if (Node.CurrentNode.NodeType != Node.Type.master && Node.CurrentNode.NodeType != Node.Type.client
 				&& !SlaveConfig.CurrentConfig.ShowEnergy)
 				return false;
 

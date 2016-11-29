@@ -13,16 +13,16 @@ namespace ExternalOutput.Parse.Gamess
 		}
 		
 		public override IParser ParseLine(string line, int lineNumber)
-		{	
+		{			
 			do {
-				if (line.Contains("COORDINATES OF ALL ATOMS ARE (ANGS)")) {
+				if (line.Contains("COORDINATES OF")) {
 					--mCounter;
 					break;
 				} else if (mCounter == 3) {
 					break;
 				}
 
-				if (line.Contains("  ATOM   CHARGE       X              Y              Z")) {
+				if (line.Contains("ATOM   CHARGE       X              Y              Z")) {
 					--mCounter;
 					break;
 				}
@@ -32,7 +32,7 @@ namespace ExternalOutput.Parse.Gamess
 				}
 
 				break;
-			} while(true);
+			} while(false);
 
 			if(mCounter == 0) {
 				AtomsStates.Add(new OutputState());

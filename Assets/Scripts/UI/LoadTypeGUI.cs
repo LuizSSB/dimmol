@@ -4003,19 +4003,13 @@ namespace UI {
 
 		// Luiz:
 		public void Energy(int id) {
-			if (GUIDisplay.Instance.StateEnergyMinMax != null) {
-
-				Debug.Log(GUIDisplay.Instance.CurrentState);
+			if (TrajectoryData.Instance.StateEnergyMinMax != null) {
 				EnergyWindow.Draw(
-					GUIDisplay.Instance.CurrentState.Energy,
-					GUIDisplay.Instance.StateEnergyMinMax.max,
-					GUIDisplay.Instance.StateEnergyMinMax.min
+					TrajectoryData.Instance.CurrentState.Energy,
+					TrajectoryData.Instance.StateEnergyMinMax.max,
+					TrajectoryData.Instance.StateEnergyMinMax.min
 				);
-				//			EnergyWindow.Draw(
-				//				-282,
-				//				-282,
-				//				-286
-				//			);
+
 				GUI.DragWindow();
 			}
 		}
@@ -4055,7 +4049,7 @@ namespace UI {
 
 			GUILayout.EndHorizontal ();
 
-			if (GUIDisplay.Instance.StateFiles != null && GUIDisplay.Instance.StateFiles.Length > 1) {
+			if (TrajectoryData.Instance.StateFiles != null && TrajectoryData.Instance.StateFiles.Length > 1) {
 				var oldAutoChangeState = UIData.Instance.autoChangingState;
 				GUILayout.BeginHorizontal();
 				UIData.Instance.autoChangingState = GUILayout.Toggle(
@@ -4064,14 +4058,14 @@ namespace UI {
 				GUILayout.EndHorizontal();
 
 				if(!oldAutoChangeState && UIData.Instance.autoChangingState) {
-					GUIDisplay.Instance.GoToNextState();
+					TrajectoryData.Instance.GoToNextState();
 				}
 
-				GUIDisplay.Instance.CurrentStateIdx = (int) System.Math.Round(GUIMoleculeController.Instance.LabelSlider(
-					GUIDisplay.Instance.CurrentStateIdx,
+				TrajectoryData.Instance.CurrentStateIdx = (int) System.Math.Round(GUIMoleculeController.Instance.LabelSlider(
+					TrajectoryData.Instance.CurrentStateIdx,
 					0f,
-					GUIDisplay.Instance.StateFiles.Length - 1,
-					"State: " + GUIDisplay.Instance.CurrentStateIdx + " / " + (GUIDisplay.Instance.StateFiles.Length - 1),
+					TrajectoryData.Instance.StateFiles.Length - 1,
+					"State: " + TrajectoryData.Instance.CurrentStateIdx + " / " + (TrajectoryData.Instance.StateFiles.Length - 1),
 					"State of molecule across time",
 					!UIData.Instance.autoChangingState,
 					(int)(0.9f * Rectangles.manipulatorWidth),

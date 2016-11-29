@@ -74,7 +74,7 @@ namespace Molecule.View {
 	using Molecule.View.DisplayBond;
 	using UI;
 
-	public class DisplayMolecule {		
+	public class DisplayMolecule {
 		public static void ResetDisplay() {
 			DestroyObject();
 			

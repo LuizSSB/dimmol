@@ -73,12 +73,24 @@ namespace Molecule.View.DisplayBond {
 	using Config;
 	using UI;
 	using Molecule.View.DisplayAtom;
+
+	[ClearableSingleton]
+	public class BondCubeData {
+		private static BondCubeData sInstance;
+		public static BondCubeData Instance {
+			get {
+				return sInstance = sInstance ?? new BondCubeData();
+			}
+		}
+		private BondCubeData() { }
+
+		public readonly GameObject BondCubeParent = new GameObject("BondCubeParent");
+	}
+
 	public class BondCubeStyle:IBondStyle {
 		public int number=1;
 		public List<int[]> bondList;
 		public List<int[]> bondEPList;
-
-		public GameObject BondCubeParent = new GameObject("BondCubeParent");
 		
 		public BondCubeStyle() {
 			number=FunctionConfig.number;
@@ -185,7 +197,7 @@ namespace Molecule.View.DisplayBond {
 				Stick.tag="Club";
 				Stick.GetComponent<Collider>().enabled = false;
 				Stick.transform.position = comp.atompointer1.transform.position;
-				Stick.transform.parent = BondCubeParent.transform;
+				Stick.transform.parent = BondCubeData.Instance.BondCubeParent.transform;
 		}
 
 
@@ -221,7 +233,7 @@ namespace Molecule.View.DisplayBond {
 //			o.transform.LookAt(location[1]);
 			o.transform.localScale=new Vector3(0.1f,0.1f,1f);
 			o.tag="Club";
-			o.transform.parent = BondCubeParent.transform;
+			o.transform.parent = BondCubeData.Instance.BondCubeParent.transform;
 		}
 		
 
@@ -258,7 +270,7 @@ namespace Molecule.View.DisplayBond {
 			comp.enabled = true;										
 			Stick.GetComponent<Renderer>().material.SetFloat("_Shrink", 0.01f);
 			Stick.tag="Club";
-			Stick.transform.parent = BondCubeParent.transform;
+			Stick.transform.parent = BondCubeData.Instance.BondCubeParent.transform;
 		}
 		
 	}

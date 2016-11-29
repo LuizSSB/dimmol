@@ -838,8 +838,8 @@ namespace UI {
 		}
 
 		public void SetEnergyWindow() {
-			if((UnityClusterPackage.Node.CurrentNode.HasPermission(NodePermission.Energy) && GUIDisplay.Instance.CurrentState != null)
-				|| (GUIDisplay.Instance.StateFiles != null && GUIDisplay.Instance.StateFiles.Length > 0))
+			if(UnityClusterPackage.Node.CurrentNode.HasPermission(NodePermission.Energy) &&
+				TrajectoryData.Instance.CurrentState != null)
 			{
 				Rectangles.EnergyRect = GUI.Window(666, Rectangles.EnergyRect, LoadTypeGUI.Instance.Energy, emptyContent);
 			}

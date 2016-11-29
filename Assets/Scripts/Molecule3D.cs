@@ -224,18 +224,20 @@ public class Molecule3D:MonoBehaviour {
 
 	void HandleChangeManagerPropertyChanged (object sender, PropertyEventArgs e)
 	{
-		if (Node.CurrentNode.HasPermission(NodePermission.MenuControl)) {
-			var rpcData = GetRPCData(e.NewValue, "Property");
-			mNetworkView.RPC(
-				rpcData.HandlerName,
-				RPCMode.All,
-				Node.CurrentNode.Id,
-				e.TypeName,
-				e.PropertyName,
-				e.NewValue.GetType().FullName,
-				rpcData.Data
-			);
-		}
+		DoOnMainThread.AddAction(delegate {
+			if (Node.CurrentNode.HasPermission(NodePermission.MenuControl)) {
+				var rpcData = GetRPCData(e.NewValue, "Property");
+				mNetworkView.RPC(
+					rpcData.HandlerName,
+					RPCMode.All,
+					Node.CurrentNode.Id,
+					e.TypeName,
+					e.PropertyName,
+					e.NewValue.GetType().FullName,
+					rpcData.Data
+				);
+			}
+		});
 	}
 
 	void HandleChangeManagerMethodInvoked (object sender, MethodParamEventArgs e)
@@ -408,11 +410,11 @@ public class Molecule3D:MonoBehaviour {
 		}
 
 		if(UIData.Instance.autoChangingState) {
-			LoadState(GUIDisplay.Instance.CurrentState);
+			LoadState(TrajectoryData.Instance.CurrentStateIdx);
 		} else {
 			if(UIData.Instance.stateChanged) {
+				LoadState(TrajectoryData.Instance.CurrentStateIdx);
 				UIData.Instance.stateChanged = false;
-				LoadState(GUIDisplay.Instance.CurrentState);
 			}	
 		}
 		
@@ -464,8 +466,11 @@ public class Molecule3D:MonoBehaviour {
 	}
 
 	// Luiz:
-	public void LoadState(ExternalOutput.OutputState state) {
+	public void LoadState(int stateIdx) {
+
 		var transitionspeed = Time.deltaTime * 1.5f;
+		var state = TrajectoryData.Instance.CurrentState;
+			
 		ExternalOutput.Atom currentAtom;
 		float[] currentLocation;
 		for(int idxAtom = 0; idxAtom < MoleculeModel.atomsLocationlist.Count; ++idxAtom) {
@@ -473,7 +478,7 @@ public class Molecule3D:MonoBehaviour {
 			currentLocation = MoleculeModel.atomsLocationlist[idxAtom];
 
 			if(UIData.Instance.autoChangingState) {
-				var previousStateAtom = GUIDisplay.Instance.PreviousState.Atoms[idxAtom];
+				var previousStateAtom = TrajectoryData.Instance.PreviousState.Atoms[idxAtom];
 				currentLocation[0] += (currentAtom.FloatX - previousStateAtom.FloatX) * transitionspeed;
 				currentLocation[1] += (currentAtom.FloatY - previousStateAtom.FloatY) * transitionspeed;
 				currentLocation[2] += (currentAtom.FloatZ - previousStateAtom.FloatZ) * transitionspeed;
@@ -486,29 +491,18 @@ public class Molecule3D:MonoBehaviour {
 		}
 
 		if (UIData.Instance.autoChangingState) {
-			float prevX = GUIDisplay.Instance.PreviousState.Atoms[0].FloatX;
+			float prevX = TrajectoryData.Instance.PreviousState.Atoms[0].FloatX;
 			float currX = state.Atoms[0].FloatX;
 			float firstX = MoleculeModel.atomsLocationlist[0][0];
 			if (Mathf.Abs(currX - prevX) <= 1e-6 || (prevX < currX && firstX >= currX) || (prevX > currX && firstX <= currX)) {
-				GUIDisplay.Instance.GoToNextState();
+				TrajectoryData.Instance.GoToNextState();
 			}	
 		}
 
-		if (UnityClusterPackage.Node.CurrentNode.HasPermission(NodePermission.MenuControl)) {
-			var newLocations = MiniJSON.JsonEncode(MoleculeModel.atomsLocationlist.ToArray());
-			var networkinson = GetComponent<NetworkView> ();
-			networkinson.RPC(
-				"LoadStateRPC", RPCMode.All,
-				Node.CurrentNode.Id,
-				newLocations,
-				GUIDisplay.Instance.StateEnergyMinMax.min,
-				GUIDisplay.Instance.StateEnergyMinMax.max,
-				GUIDisplay.Instance.CurrentState.Energy
-			);
-		}
 
-//		UpdateVisualState();
+		StartCoroutine(UpdateVisualState());
 	}
+
 	public IEnumerator UpdateVisualState() {
 		GameObject parentGameObject;
 		GenericManager manager;
@@ -657,7 +651,8 @@ public class Molecule3D:MonoBehaviour {
 		Debug.Log("T.T ==> END OF LOADING");
 
 		// Luiz:
-		if (UnityClusterPackage.Node.CurrentNode.HasPermission(NodePermission.MenuControl)) {
+		if (UnityClusterPackage.Node.CurrentNode.HasPermission(NodePermission.MenuControl) &&
+			TrajectoryData.Instance.StateFiles == null) {
 			AssemblyCSharp.RPCMessenger.GetCurrent().SendComplexObject(
 				UIData.Instance, GetType(), "ReceiveNewUIData"
 			);
@@ -1272,29 +1267,6 @@ public class Molecule3D:MonoBehaviour {
 
 	// Luiz:
 	private NetworkView mNetworkView;
-	[RPC]
-	public void LoadStateRPC(int senderNodeId, string serializedPositions, float minEnergy, float maxEnergy, float currentEnergy)
-	{
-//		if(Node.CurrentNode.Id != senderNodeId)
-		{
-			var deserialized = (System.Collections.ArrayList)MiniJSON.JsonDecode(serializedPositions);
-
-			// Faster than proper deserialization
-			MoleculeModel.atomsLocationlist.Clear();
-			foreach(var atom in deserialized) {
-				var trueAtom = (System.Collections.ArrayList)atom;
-				MoleculeModel.atomsLocationlist.Add(new [] {
-					(float)(System.Double)trueAtom[0],
-					(float)(System.Double)trueAtom[1],
-					(float)(System.Double)trueAtom[2]
-				});
-			}
-
-			GUIDisplay.Instance.SetEnergyData(minEnergy, maxEnergy, currentEnergy);
-
-			StartCoroutine(UpdateVisualState());
-		}
-	}
 
 	public static void ReceiveNewUIData(int senderNodeId, UIData data) {
 		if (Node.CurrentNode.Id != senderNodeId) {
@@ -1415,7 +1387,7 @@ public class Molecule3D:MonoBehaviour {
 		} else {
 			var instanceMember = ofType.GetProperty("Instance");
 			if (instanceMember == null) {
-				throw new ArgumentException("Type " + ofType.Name + " has no singleton property named 'Instance'");
+				throw new ArgumentException("Type " + ofType.Name + " has no singleton property named 'Instance' for method: " + forMethod.Name);
 			}
 			return instanceMember.GetValue(null, null);
 		}

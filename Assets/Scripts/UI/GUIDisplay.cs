@@ -1506,6 +1506,7 @@ namespace UI {
 			}
 
 			id="";
+			UIData.Instance.MustDie = exitingScene;
 			UIData.Instance.isclear = true;
 			GUIMoleculeController.Instance.pdbGen = false;
 			UIData.Instance.hasMoleculeDisplay = false;
@@ -1627,10 +1628,6 @@ namespace UI {
 		}
 		public void DieHard() {
 			Clear (true);
-			var masterObject = GameObject.Find("Master");
-			GameObject.DestroyImmediate(masterObject);
-			UnityEngine.SceneManagement.SceneManager.LoadScene("UCPSetup", UnityEngine.SceneManagement.LoadSceneMode.Single);
-			SingletonCleaner.Clean();
 		}
 	}
 

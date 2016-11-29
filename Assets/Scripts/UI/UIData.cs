@@ -110,6 +110,7 @@ namespace UI
 			get { return _autoChangingState; }
 			set { _autoChangingState = this.ProcessPropertyChanged("autoChangingState", _autoChangingState, value); }
 		}
+		public bool MustDie { get; set; }
 		
 		public bool isCubeLoaded = false;
 		public bool isSphereLoaded = false;

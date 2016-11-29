@@ -800,6 +800,16 @@ public class Molecule3D:MonoBehaviour {
 		//SetVolumetricDensity();
 		// GUIDisplay.Instance.gUIMoleculeController.GetPanelPixel();
 	}
+
+	private int mDieFramesCount = 0;
+	public void LateUpdate() {
+		if (UIData.Instance.MustDie && ++mDieFramesCount >= 2) {
+			var masterObject = GameObject.Find("Master");
+			GameObject.DestroyImmediate(masterObject);
+			UnityEngine.SceneManagement.SceneManager.LoadScene("UCPSetup", UnityEngine.SceneManagement.LoadSceneMode.Single);
+			SingletonCleaner.Clean();
+		}
+	}
 	
 	public void toggleFPSLog() { // Debugging tool creating .txt files with FPS informations
 /*		if(!fpsLogToggle) {

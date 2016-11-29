@@ -69,12 +69,11 @@ namespace AssemblyCSharp
 		void HandleUICleared (object sender, ClearingEventArgs e)
 		{
 			if(e.ExitingScene) {
-				Debug.Log("WAT");
 				ChangeManager.MethodInvoked -= HandleChangeManagerMethodInvoked;
 				ChangeManager.PropertyChanged -= HandleChangeManagerPropertyChanged;
 				GUIDisplay.Instance.Cleared -= HandleUICleared;
 
-				if (UnityClusterPackage.Node.CurrentNode.IsHostNode) {
+				if (UnityClusterPackage.Node.CurrentNode.HasPermission(NodePermission.MenuControl)) {
 					mNetworkView.RPC("DieHard", RPCMode.All, Node.CurrentNode.Id);
 				}
 			} else {

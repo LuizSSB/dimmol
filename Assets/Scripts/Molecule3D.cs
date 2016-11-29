@@ -199,14 +199,6 @@ public class Molecule3D:MonoBehaviour {
 		scenecontroller = GameObject.Find("LoadBox");
 		scenecontroller.AddComponent<ReadDX>();
 
-		// Luiz: Configuring RPC calls for when stuff changes
-		if (UnityClusterPackage.Node.CurrentNode.HasPermission(NodePermission.MenuControl)) {
-			mNetworkView = GetComponent<NetworkView>();
-			GUIDisplay.Instance.Cleared += HandleUICleared;
-			ChangeManager.MethodInvoked += HandleChangeManagerMethodInvoked;
-			ChangeManager.PropertyChanged += HandleChangeManagerPropertyChanged;
-		}
-
 		DebugStreamer.message = "new GUIDisplay()";
 		//Init
 		// DebugStreamer.message = "Find LoadBox";
@@ -220,54 +212,6 @@ public class Molecule3D:MonoBehaviour {
 		AtomModel.InitAtomic();
 		
 		SendMessage("InitScene",requestPDB,SendMessageOptions.DontRequireReceiver);
-	}
-
-	void HandleChangeManagerPropertyChanged (object sender, PropertyEventArgs e)
-	{
-		DoOnMainThread.AddAction(delegate {
-			if (Node.CurrentNode.HasPermission(NodePermission.MenuControl)) {
-				var rpcData = GetRPCData(e.NewValue, "Property");
-				mNetworkView.RPC(
-					rpcData.HandlerName,
-					RPCMode.All,
-					Node.CurrentNode.Id,
-					e.TypeName,
-					e.PropertyName,
-					e.NewValue.GetType().FullName,
-					rpcData.Data
-				);
-			}
-		});
-	}
-
-	void HandleChangeManagerMethodInvoked (object sender, MethodParamEventArgs e)
-	{
-		var rpcData = GetRPCData(e.Param, "Method");
-		mNetworkView.RPC(
-			rpcData.HandlerName,
-			RPCMode.All,
-			Node.CurrentNode.Id,
-			e.TypeName,
-			e.MethodName,
-			(e.Param ?? new object()).GetType().FullName,
-			rpcData.Data
-		);
-	}
-
-	void HandleUICleared (object sender, ClearingEventArgs e)
-	{
-		if(e.ExitingScene) {
-			Debug.Log("WAT");
-			ChangeManager.MethodInvoked -= HandleChangeManagerMethodInvoked;
-			ChangeManager.PropertyChanged -= HandleChangeManagerPropertyChanged;
-			GUIDisplay.Instance.Cleared -= HandleUICleared;
-
-			if (UnityClusterPackage.Node.CurrentNode.IsHostNode) {
-				mNetworkView.RPC("DieHard", RPCMode.All, Node.CurrentNode.Id);
-			}
-		} else {
-			mNetworkView.RPC("Clear", RPCMode.All, Node.CurrentNode.Id);
-		}
 	}
 
 	public void Display() {
@@ -1265,9 +1209,6 @@ public class Molecule3D:MonoBehaviour {
 		// Debug.Log("ToParticle()");
 	}
 
-	// Luiz:
-	private NetworkView mNetworkView;
-
 	public static void ReceiveNewUIData(int senderNodeId, UIData data) {
 		if (Node.CurrentNode.Id != senderNodeId) {
 			UIData.SetNewData(data);
@@ -1283,135 +1224,6 @@ public class Molecule3D:MonoBehaviour {
 				@this.requestPDB.LoadPDB (UIData.Instance.ChosenPdbContents);
 			}
 		}
-	}
-
-	[RPC]
-	public void DieHard(int senderNodeId)
-	{
-		if (Node.CurrentNode.Id != senderNodeId) {
-			GUIDisplay.Instance.DieHard();
-		}
-	}
-	[RPC]
-	public void Clear(int senderNodeId)
-	{
-		if (Node.CurrentNode.Id != senderNodeId) {
-			GUIDisplay.Instance.Clear (false);
-		}
-	}
-	[RPC]
-	public void HandleInt32Method(int senderNodeId, string typeName, string methodName, string paramTypeName, int param)
-	{
-		HandleMethodInvoked (senderNodeId, typeName, methodName, param);
-	}
-	[RPC]
-	public void HandleSingleMethod(int senderNodeId, string typeName, string methodName, string paramTypeName, float param)
-	{
-		HandleMethodInvoked (senderNodeId, typeName, methodName, param);
-	}
-	[RPC]
-	public void HandleBooleanMethod(int senderNodeId, string typeName, string methodName, string paramTypeName, bool param)
-	{
-		HandleMethodInvoked (senderNodeId, typeName, methodName, param);
-	}
-	[RPC]
-	public void HandleStringMethod(int senderNodeId, string typeName, string methodName, string paramTypeName, string param)
-	{
-		HandleMethodInvoked (senderNodeId, typeName, methodName, param);
-	}
-	[RPC]
-	public void HandleObjectMethod(int senderNodeId, string typeName, string methodName, string paramTypeName, string paramSerialized)
-	{
-		var param = paramSerialized == null ? null : JsonUtility.FromJson (paramSerialized, Type.GetType (paramTypeName));
-		HandleMethodInvoked (senderNodeId, typeName, methodName, param);
-	}
-	private void HandleMethodInvoked(int senderNodeId, string typeName, string methodName, object param)
-	{
-		Debug.Log ("### Method " + typeName + "." + methodName + "(" + param + ")");
-
-		if (senderNodeId != Node.CurrentNode.Id) {
-			var type = Type.GetType (typeName);
-			var method = type.GetMethod (methodName);
-			var singleton = GetTypeSingletonIfAny(type, method);
-			if (param != null) {
-				method.Invoke (singleton, new [] { param });
-			} else {
-				method.Invoke (singleton, null);
-			}
-		}
-	}
-	[RPC]
-	public void HandleInt32Property(int senderNodeId, string typeName, string propertyName, string newValueTypeName, int param)
-	{
-		HandlePropertyChanged (senderNodeId, typeName, propertyName, param);
-	}
-	[RPC]
-	public void HandleSingleProperty(int senderNodeId, string typeName, string propertyName, string newValueTypeName, float param)
-	{
-		HandlePropertyChanged (senderNodeId, typeName, propertyName, param);
-	}
-	[RPC]
-	public void HandleBooleanProperty(int senderNodeId, string typeName, string propertyName, string newValueTypeName, bool param)
-	{
-		HandlePropertyChanged (senderNodeId, typeName, propertyName, param);
-	}
-	[RPC]
-	public void HandleStringProperty(int senderNodeId, string typeName, string propertyName, string newValueTypeName, string param)
-	{
-		HandlePropertyChanged (senderNodeId, typeName, propertyName, param);
-	}
-	[RPC]
-	public void HandleObjectProperty(int senderNodeId, string typeName, string propertyName, string newValueTypeName, string newValueSerialized)
-	{
-		var param = JsonUtility.FromJson (newValueSerialized, Type.GetType (newValueTypeName));
-		HandlePropertyChanged (senderNodeId, typeName, propertyName, param);
-	}
-	private void HandlePropertyChanged(int senderNodeId, string typeName, string propertyName, object newValue) {
-		Debug.Log (string.Format ("### Property changed - {0}:{1} = {2}", typeName, propertyName, newValue));
-
-		if (Node.CurrentNode.Id != senderNodeId) {
-			var type = Type.GetType (typeName);
-			var property = type.GetProperty (propertyName);
-			var singleton = GetTypeSingletonIfAny(type, property.GetGetMethod());
-			property.SetValue (singleton, newValue, null);
-		}
-	}
-	private static HashSet<Type> sRPCHandledTypes = new HashSet<Type> {
-		typeof(int), typeof(float), typeof(bool), typeof(string)
-	};
-
-	private object GetTypeSingletonIfAny(Type ofType, System.Reflection.MethodInfo forMethod)
-	{
-		if (forMethod.IsStatic) {
-			return null;
-		} else {
-			var instanceMember = ofType.GetProperty("Instance");
-			if (instanceMember == null) {
-				throw new ArgumentException("Type " + ofType.Name + " has no singleton property named 'Instance' for method: " + forMethod.Name);
-			}
-			return instanceMember.GetValue(null, null);
-		}
-	}
-
-	private static RPCData GetRPCData(object forValue, string handlerSuffix)
-	{
-		var valueType = (forValue ?? new object()).GetType ();
-		if (sRPCHandledTypes.Contains (valueType)) {
-			return new RPCData {
-				Data = forValue,
-				HandlerName = "Handle" + valueType.Name + handlerSuffix
-			};
-		} else {
-//			Debug.Log ("forValue " + JsonUtility.ToJson(forValue));
-			return new RPCData {
-				Data = JsonUtility.ToJson(forValue),
-				HandlerName = "HandleObject" + handlerSuffix
-			};
-		}
-	}
-	private class RPCData {
-		public object Data;
-		public string HandlerName;
 	}
 }
 

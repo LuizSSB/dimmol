@@ -192,13 +192,13 @@ namespace Molecule.Model
 			s_typeToModel.Add("X", new AtomModel("X", 1.40f, 100, Color.black, 					null));	
 */
 			// NEW PASTEL COLOR THEME
-			s_typeToModel.Add("O", new AtomModel("O", 1.52f, 100, new Color(0.827f,0.294f,0.333f,1f), null));
-			s_typeToModel.Add("C", new AtomModel("C", 1.70f, 100, new Color(0.282f,0.6f,0.498f,1f)  , null));
-			s_typeToModel.Add("N", new AtomModel("N", 1.55f, 100, new Color(0.443f,0.662f,0.882f,1f), null));
-			s_typeToModel.Add("H", new AtomModel("H", 1.20f, 100, Color.white                       , null));
-			s_typeToModel.Add("S", new AtomModel("S", 2.27f, 100, new Color(1f,0.839f,0.325f,1f)    , null));
-			s_typeToModel.Add("P", new AtomModel("P", 1.80f, 100, new Color(0.960f,0.521f,0.313f,1f), null));
-			s_typeToModel.Add("X", new AtomModel("X", 1.40f, 100, Color.black, 					null));	
+			s_typeToModel.Add("O", new AtomModel("O", 1.52f, 100, MoleculeModel.GetAtomColor("O"), null));
+			s_typeToModel.Add("C", new AtomModel("C", 1.70f, 100, MoleculeModel.GetAtomColor("C"), null));
+			s_typeToModel.Add("N", new AtomModel("N", 1.55f, 100, MoleculeModel.GetAtomColor("N"), null));
+			s_typeToModel.Add("H", new AtomModel("H", 1.20f, 100, MoleculeModel.GetAtomColor("H"), null));
+			s_typeToModel.Add("S", new AtomModel("S", 2.27f, 100, MoleculeModel.GetAtomColor("S"), null));
+			s_typeToModel.Add("P", new AtomModel("P", 1.80f, 100, MoleculeModel.GetAtomColor("P"), null));
+			s_typeToModel.Add("X", new AtomModel("X", 1.40f, 100, MoleculeModel.GetAtomColor("X"), null));	
 			
 			//Chains
 			s_typeToModel.Add("chainA", new AtomModel("C", 1.70f, 100, Color.red,	null));
@@ -237,11 +237,11 @@ namespace Molecule.Model
 //			s_typeToModel.Add("C1", new AtomModel("C1", 3.5f, 100, Color.cyan, 					null));
 //			s_typeToModel.Add("X", new AtomModel("X", 1.40f, 100, Color.black, 					null));
 			
-			s_typeToModel.Add("P", new AtomModel("P", 3.5f, 100, MoleculeModel.phosphorusColor.color, null));
-			s_typeToModel.Add("O5*", new AtomModel("O", 3.5f, 100, MoleculeModel.oxygenColor.color, null));
-			s_typeToModel.Add("C5*", new AtomModel("C", 3.5f, 100, MoleculeModel.carbonColor.color, null));
-			s_typeToModel.Add("CA", new AtomModel("C", 3.5f, 100, MoleculeModel.carbonColor.color, null));
-			s_typeToModel.Add("CY", new AtomModel("C", 3.5f, 100, MoleculeModel.carbonColor.color, null));
+			s_typeToModel.Add("P", new AtomModel("P", 3.5f, 100, MoleculeModel.phosphorusColor, null));
+			s_typeToModel.Add("O5*", new AtomModel("O", 3.5f, 100, MoleculeModel.oxygenColor, null));
+			s_typeToModel.Add("C5*", new AtomModel("C", 3.5f, 100, MoleculeModel.carbonColor, null));
+			s_typeToModel.Add("CA", new AtomModel("C", 3.5f, 100, MoleculeModel.carbonColor, null));
+			s_typeToModel.Add("CY", new AtomModel("C", 3.5f, 100, MoleculeModel.carbonColor, null));
 			
 			s_typeToModel.Add("G1", new AtomModel("X", 3.5f, 100, Color.green, null));
 			s_typeToModel.Add("G2", new AtomModel("X", 3.5f, 100, Color.green, null));
@@ -257,7 +257,9 @@ namespace Molecule.Model
 		public static AtomModel GetModel(string type) {
 			if(s_typeToModel == null)
 				return null;
-			return (AtomModel)s_typeToModel[type];
+
+			string atomKey = MoleculeModel.FindAtomNameKeyInDictionary(type, s_typeToModel);
+			return atomKey != null ? (AtomModel)s_typeToModel[atomKey] : null;
 		}
 		
 	}

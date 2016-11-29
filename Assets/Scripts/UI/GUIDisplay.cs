@@ -1463,43 +1463,6 @@ namespace UI {
 		}
 
 		/// <summary>
-		/// Change the color of an atom type.
-		/// </summary>
-		/// <param name='atomChar'>
-		/// Character of the atom. String.
-		/// </param>
-		/// <param name='col'>
-		/// Color to apply. Color.
-		/// </param>
-		public void SetAtomColor(string atomChar, Color col) {
-			switch(atomChar) {
-				case "H" :
-					MoleculeModel.hydrogenColor.color = col;
-					break;
-				case "C" :
-					MoleculeModel.carbonColor.color = col;
-					break;
-				case "N" :
-					MoleculeModel.nitrogenColor.color = col;
-					break;
-				case "O" :
-					MoleculeModel.oxygenColor.color = col;
-					break;
-				case "P" :
-					MoleculeModel.phosphorusColor.color = col;
-					break;
-				case "S" :
-					MoleculeModel.sulphurColor.color = col;
-					break;
-				case "X" :
-				default :
-					MoleculeModel.unknownColor.color = col;
-					break;
-			}
-		}
-
-
-		/// <summary>
 		/// Change the color of all atoms according to a color panel.
 		/// </summary>
 		/// <param name='panelName'>

@@ -482,14 +482,9 @@ namespace  ParseData.ParsePDB
 						string atomsNumber = s.Substring(6,5);
 						string typestring=s.Substring(12,4).Trim();
 						atomsNameList.Add(typestring);
-						int bout;
-						bool b = int.TryParse(typestring[0].ToString(), out bout);
-						string type;
-						if(b)
-							type=typestring[1].ToString();
-						else
-							type=typestring[0].ToString();
-
+						string type = System.Text.RegularExpressions.Regex.Replace(
+							typestring, "[0-9]", string.Empty
+						);
 						string resname=s.Substring(17,3).Trim();
 						int resid = int.Parse(s.Substring(22,4));
 						residueIds.Add(resid);

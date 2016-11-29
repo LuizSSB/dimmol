@@ -339,13 +339,13 @@ namespace Molecule.View.DisplayAtom {
 			}
 			else {
 				switch(iType) {
-					case 0:c= (MoleculeModel.carbonColor.color);v=new Vector3(1.7f*scale[0],1.7f*scale[0],1.7f*scale[0]);break;//c
-					case 1:c= (MoleculeModel.nitrogenColor.color);v=new Vector3(1.55f*scale[1],1.55f*scale[1],1.55f*scale[1]);break;//n
-					case 2:c= (MoleculeModel.oxygenColor.color);v=new Vector3(1.52f*scale[2],1.52f*scale[2],1.52f*scale[2]);break;//o
-					case 3:c= (MoleculeModel.sulphurColor.color);v=new Vector3(2.27f*scale[3],2.27f*scale[3],2.27f*scale[3]);break;//s
-					case 4:c= (MoleculeModel.phosphorusColor.color);v=new Vector3(1.18f*scale[4],1.18f*scale[4],1.18f*scale[4]);break;//p
-					case 5:c= (MoleculeModel.hydrogenColor.color);v=new Vector3(1.2f*scale[5],1.2f*scale[5],1.2f*scale[5]);break;//h
-					default:c= (MoleculeModel.unknownColor.color);v=new Vector3(1.0f*scale[6],1.0f*scale[6],1.0f*scale[6]);break;//unknown
+					case 0:c= (MoleculeModel.carbonColor);v=new Vector3(1.7f*scale[0],1.7f*scale[0],1.7f*scale[0]);break;//c
+					case 1:c= (MoleculeModel.nitrogenColor);v=new Vector3(1.55f*scale[1],1.55f*scale[1],1.55f*scale[1]);break;//n
+					case 2:c= (MoleculeModel.oxygenColor);v=new Vector3(1.52f*scale[2],1.52f*scale[2],1.52f*scale[2]);break;//o
+					case 3:c= (MoleculeModel.sulphurColor);v=new Vector3(2.27f*scale[3],2.27f*scale[3],2.27f*scale[3]);break;//s
+					case 4:c= (MoleculeModel.phosphorusColor);v=new Vector3(1.18f*scale[4],1.18f*scale[4],1.18f*scale[4]);break;//p
+					case 5:c= (MoleculeModel.hydrogenColor);v=new Vector3(1.2f*scale[5],1.2f*scale[5],1.2f*scale[5]);break;//h
+					default:c= (MoleculeModel.unknownColor);v=new Vector3(1.0f*scale[6],1.0f*scale[6],1.0f*scale[6]);break;//unknown
 				}
 			}
 			

@@ -235,36 +235,8 @@ public class PDBtoDEN : MonoBehaviour {
 			
 			// Possibilité de créer une liste a la lecture du pdb et de la reprendre ici.
 			// Comme cela on peut lire d'autre propriétés biologiques
-			switch(type) {
-				case "C": 
-					AtomRadius =3.4f;
-					atomColor = MoleculeModel.carbonColor.color;
-					break;
-				case "N": 
-					AtomRadius =3.1f;
-					atomColor =MoleculeModel.nitrogenColor.color;
-					break;	
-				case "O": 
-					AtomRadius =3.04f;
-					atomColor = MoleculeModel.oxygenColor.color;
-					break;
-				case "S": 
-					AtomRadius =4.54f;
-					atomColor = MoleculeModel.sulphurColor.color;
-					break;
-				case "P": 
-					AtomRadius =3.6f;
-					atomColor =	MoleculeModel.phosphorusColor.color;
-					break;
-				case "H": 
-					AtomRadius =2.4f;
-					atomColor = MoleculeModel.hydrogenColor.color;
-					break;
-				default: 
-					AtomRadius =2f;
-					atomColor = MoleculeModel.unknownColor.color;
-					break;
-			}
+			atomColor = MoleculeModel.GetAtomColor(type);
+			AtomRadius = MoleculeModel.GetAtomRadius(type);
 			
 			if (UIData.Instance.toggleSurf && !UIData.Instance.toggleBfac) {
 			for (int l = i-8 ;l < i+9 ; l++)

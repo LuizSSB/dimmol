@@ -4049,7 +4049,7 @@ namespace UI {
 
 			GUILayout.EndHorizontal ();
 
-			if (TrajectoryData.Instance.StateFiles != null && TrajectoryData.Instance.StateFiles.Length > 1) {
+			if (TrajectoryData.Instance.IsLoaded) {
 				var oldAutoChangeState = UIData.Instance.autoChangingState;
 				GUILayout.BeginHorizontal();
 				UIData.Instance.autoChangingState = GUILayout.Toggle(
@@ -4064,8 +4064,8 @@ namespace UI {
 				TrajectoryData.Instance.CurrentStateIdx = (int) System.Math.Round(GUIMoleculeController.Instance.LabelSlider(
 					TrajectoryData.Instance.CurrentStateIdx,
 					0f,
-					TrajectoryData.Instance.StateFiles.Length - 1,
-					"State: " + TrajectoryData.Instance.CurrentStateIdx + " / " + (TrajectoryData.Instance.StateFiles.Length - 1),
+					TrajectoryData.Instance.NumberOfStates - 1,
+					"State: " + (TrajectoryData.Instance.CurrentStateIdx + 1) + " / " + (TrajectoryData.Instance.NumberOfStates),
 					"State of molecule across time",
 					!UIData.Instance.autoChangingState,
 					(int)(0.9f * Rectangles.manipulatorWidth),

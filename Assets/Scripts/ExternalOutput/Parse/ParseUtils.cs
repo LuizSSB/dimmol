@@ -22,6 +22,13 @@ namespace ExternalOutput.Parse
 			return parser.AtomsStates;
 		}
 
+		public static string SaveStateAsPDB(OutputState state, string toFolder) {
+			return SaveStatesAsPDBs(
+				new List<OutputState> { state },
+				toFolder
+			)[0];
+		}
+
 		public static string[] SaveStatesAsPDBs(List<OutputState> states, string toFolder)
 		{
 			int stateIdx = 0;

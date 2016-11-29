@@ -652,7 +652,7 @@ public class Molecule3D:MonoBehaviour {
 
 		// Luiz:
 		if (UnityClusterPackage.Node.CurrentNode.HasPermission(NodePermission.MenuControl) &&
-			TrajectoryData.Instance.StateFiles == null) {
+			!TrajectoryData.Instance.IsLoaded) {
 			AssemblyCSharp.RPCMessenger.GetCurrent().SendComplexObject(
 				UIData.Instance, GetType(), "ReceiveNewUIData"
 			);

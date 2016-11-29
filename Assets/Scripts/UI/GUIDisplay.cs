@@ -423,7 +423,7 @@ namespace UI {
 						float pServerWidth = menuWidth * 0.65f;
 
 						//id != "" if a molecule is already open
-						if(TrajectoryData.Instance.StateFiles == null)
+						if(!TrajectoryData.Instance.IsLoaded)
 						{
 							if (GUILayout.Button (new GUIContent ("Open File From Disk", "Load a PDB/XYZ file from disk"))) {
 								m_fileBrowser = new ImprovedFileBrowser (Rectangles.fileBrowserRect, "", OpenFileCallback, m_lastOpenDir);

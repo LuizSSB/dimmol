@@ -360,7 +360,8 @@ namespace UI {
 			m_fileBrowser = null;
 			if(path == null)
 				return;
-			
+
+			UpdateOldPaths(path);
 			TrajectoryData.Instance.LoadTrajectoryFile(path, ExternalOutputType);
 		}
 
@@ -379,8 +380,7 @@ namespace UI {
 				AtomModel.InitHiRERNA();
 			}
 
-			directorypath = System.IO.Path.GetDirectoryName(path);
-			m_lastOpenDir = directorypath;
+			UpdateOldPaths(path);
 			file_base_name = directorypath + System.IO.Path.DirectorySeparatorChar +
 				System.IO.Path.GetFileNameWithoutExtension(path);
 			file_extension = System.IO.Path.GetExtension(path).Substring(1);
@@ -391,6 +391,14 @@ namespace UI {
 			UIData.Instance.isOpenFile=true;
 			UIData.Instance.atomtype=UIData.AtomType.particleball;
 			UIData.Instance.bondtype=UIData.BondType.nobond;
+		}
+
+		private void UpdateOldPaths(string newPath) {
+			directorypath = System.IO.Path.GetDirectoryName(newPath);
+
+			if (!TrajectoryData.Instance.IsLoaded) {
+				m_lastOpenDir = directorypath;
+			}
 		}
 
 		/** Display a GUI pannel for selecting a PDB on a server or on a local file.
@@ -423,7 +431,7 @@ namespace UI {
 						float pServerWidth = menuWidth * 0.65f;
 
 						//id != "" if a molecule is already open
-						if(!TrajectoryData.Instance.IsLoaded)
+						if(!TrajectoryData.Instance.IsLoaded && string.IsNullOrEmpty(id))
 						{
 							if (GUILayout.Button (new GUIContent ("Open File From Disk", "Load a PDB/XYZ file from disk"))) {
 								m_fileBrowser = new ImprovedFileBrowser (Rectangles.fileBrowserRect, "", OpenFileCallback, m_lastOpenDir);
@@ -468,7 +476,7 @@ namespace UI {
 							GUILayout.EndHorizontal ();	
 						}
 
-						if(id == "") {
+						if(string.IsNullOrEmpty(id)) {
 							if(GUILayout.Button(new GUIContent("Open external optimization output", "Load a GAMESS (.gms) or Xmol (.xmol) optimization/dynamics output file from disk"))) {
 								m_fileBrowser = new ImprovedFileBrowser(Rectangles.fileBrowserRect, "", OpenExternalOutputCallback, m_lastOpenDir);
 								m_fileBrowser.DirectoryImage = directoryimage; 

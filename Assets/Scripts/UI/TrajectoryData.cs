@@ -56,16 +56,15 @@ namespace UI
 						throw new System.ArgumentOutOfRangeException("CurrentStateIdx " + value + " out of bounds");
 					}
 
-//					var state = ParseUtils.ExtractState(StateFiles[value]);
-//					if (MoleculeModel.atomsLocationlist.Count > 0 && state.Atoms.Count != MoleculeModel.atomsLocationlist.Count) {
-//						throw new System.InvalidOperationException("number of atoms in PDB file does not match number of atoms in display.");
-//					}
+					var state = States[value];
+					if (MoleculeModel.atomsLocationlist.Count > 0 && state.Atoms.Count != MoleculeModel.atomsLocationlist.Count) {
+						throw new System.InvalidOperationException("number of atoms in PDB file does not match number of atoms in display.");
+					}
 
 					PreviousState = CurrentState;
 					var oldValue = _CurrentStateIdx;
 					_CurrentStateIdx = value;
 					UIData.Instance.stateChanged = true;
-					Debug.Log("dig");
 
 					ChangeManager.DispatchPropertyEvent(GetType(), "CurrentStateIdx", oldValue, value);
 				}

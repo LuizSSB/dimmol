@@ -112,7 +112,7 @@ namespace UnityClusterPackage {
 					m_Node.NodeScreen.ScreenEye = GUILayout.Toggle(
 						m_Node.NodeScreen.ScreenEye == Node.Eye.right,
 						"Right eye?",
-						MakeWidthOption(.5f)
+						MakeWidthOption(.33f)
 					) ? Node.Eye.right : Node.Eye.left;
 
 					// Whether it is using Google VR
@@ -154,12 +154,12 @@ namespace UnityClusterPackage {
 			GUILayout.BeginHorizontal(); {
 				point.X = DrawPoint(label + " X", point.X);
 				point.Y = DrawPoint(label + " Y", point.Y);
-				point.Z = DrawPoint(label + " Z", point.Z);
+				point.Z = DrawPoint(label + " Z", point.Z, .32f);
 			} GUILayout.EndHorizontal();
 		}
 
-		private static string DrawPoint(string label, string pointValue) {
-			GUILayout.BeginVertical(MakeWidthOption(.33f)); {
+		private static string DrawPoint(string label, string pointValue, float fieldWidth = .33f) {
+			GUILayout.BeginVertical(MakeWidthOption(fieldWidth)); {
 				GUILayout.Label(label);
 				pointValue = GUILayout.TextField(pointValue);
 			} GUILayout.EndVertical();

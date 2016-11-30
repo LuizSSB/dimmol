@@ -26,12 +26,12 @@ public class UnityMolUcpGui : UnityClusterPackage.UcpGui {
 			m_SlaveConfig.ShowEnergy = GUILayout.Toggle(
 				m_SlaveConfig.ShowEnergy,
 				"Displays energy meter",
-				MakeWidthOption(.33f)
+				MakeWidthOption(.5f)
 			);
-
-			if (GUILayout.Button("Save slave settings", MakeWidthOption(.32f))) {
-				SlaveConfig.SetSlaveConfigData(m_SlaveConfig);
-			}
 		} GUILayout.EndHorizontal();
+
+		if (GUILayout.Button("Save slave settings")) {
+			SlaveConfig.SetSlaveConfigData(m_SlaveConfig);
+		}
 	}
 }

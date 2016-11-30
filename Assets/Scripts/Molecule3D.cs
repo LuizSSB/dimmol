@@ -411,7 +411,7 @@ public class Molecule3D:MonoBehaviour {
 
 	// Luiz:
 	public void LoadState(int stateIdx) {
-
+		TrajectoryData.Instance.CurrentStateIdx = stateIdx;
 		var transitionspeed = Time.deltaTime * 1.5f;
 		var state = TrajectoryData.Instance.CurrentState;
 			

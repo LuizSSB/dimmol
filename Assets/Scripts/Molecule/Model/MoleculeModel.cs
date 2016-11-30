@@ -359,7 +359,7 @@ namespace Molecule.Model {
 			{"MG", new Color(142f/255f, 253f/255f, 49f/255f)},
 			{"AL", new Color(189f/255f, 165f/255f, 165f/255f)},
 			{"SI", new Color(239f/255f, 200f/255f, 162f/255f)},
-			{"CL", new Color(51f/255f, 538f/255f, 55f/255f)},
+			{"CL", new Color(51f/255f, 238f/255f, 55f/255f)},
 			{"AR", new Color(131f/255f, 209f/255f, 223f/255f)},
 			{"K", new Color(142f/255f, 71f/255f, 209f/255f)},
 			{"CA", new Color(74f/255f, 253f/255f, 47f/255f)},

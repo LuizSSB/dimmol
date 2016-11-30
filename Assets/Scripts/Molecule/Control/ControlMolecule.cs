@@ -298,7 +298,7 @@ namespace Molecule.Control {
 			Vector3 centerPoint = bary/alist.Count;
 			MoleculeModel.target = Vector3.zero;
 			Debug.Log("centerPoint:"+centerPoint + " min/max " + minPoint + "/" + maxPoint);
-			MoleculeModel.Offset = Vector3.zero;//-centerPoint;
+			MoleculeModel.Offset = /*Vector3.zero;//*/-centerPoint;
 
 			bary = Vector3.zero;
 			Debug.Log("alist.Count:"+alist.Count);

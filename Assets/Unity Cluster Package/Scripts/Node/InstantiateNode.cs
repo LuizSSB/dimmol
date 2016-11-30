@@ -67,7 +67,6 @@ namespace UnityClusterPackage {
 				yield return new WaitForEndOfFrame ();
 
 			GameObject.FindGameObjectWithTag("MainCamera").transform.parent = transform;
-			Camera.main.backgroundColor = Color.black;
 		}
 		
 		void OnFailedToConnect(NetworkConnectionError error)

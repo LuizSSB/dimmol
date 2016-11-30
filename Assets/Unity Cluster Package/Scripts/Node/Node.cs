@@ -39,40 +39,49 @@ namespace UnityClusterPackage
 
 		private static string NodeInformationFilePath {
 			get {
-				return Path.Combine(UnityEngine.Application.streamingAssetsPath, "node-config.xml");
+				return Path.Combine(
+					UnityEngine.Application.isMobilePlatform ? 
+						UnityEngine.Application.persistentDataPath :
+						UnityEngine.Application.streamingAssetsPath,
+					"node-config.xml"
+				);
 			}
 		}
-		public static Node CurrentNode {
-			get;
-			private set;
-		}
-		static Node()
-		{
-			try {
-				using(var reader = new StreamReader(NodeInformationFilePath)) {
-					var serializer = new XmlSerializer(typeof(Node));
-					CurrentNode = (Node) serializer.Deserialize(reader);
-				}
-			} catch(System.Exception e) {
-				UnityEngine.Debug.Log("Failed to load node-config.xml: " + e);
 
-				CurrentNode = new Node {
-					Id = 0,
-					Name = "Node",
-					Nodes = 0,
-					NodeType = Node.Type.master,
-					NodeServer = new Node.Server() {
-						Ip = "192.168.1.100",
-						Port = 2500
-					},
-					NodeScreen = new Node.Screen() {
-						ScreenEye = Eye.left,
-						Pa = new Node.Point() { X = -8f, Y = -4f, Z = 0f },
-						Pb =  new Node.Point() { X = 8f, Y = -4f, Z = 0f },
-						Pc = new Node.Point() { X = -8f, Y = 5f, Z = 0f },
-						Pe = Node.Point.Empty()
+		private static Node sCurrentNode;
+		public static Node CurrentNode {
+			get {
+				if (sCurrentNode == null) {
+					try {
+						using(var reader = new StreamReader(NodeInformationFilePath)) {
+							var serializer = new XmlSerializer(typeof(Node));
+							sCurrentNode = (Node) serializer.Deserialize(reader);
+						}
+					} catch(System.Exception e) {
+						UnityEngine.Debug.Log("Failed to load node-config.xml: " + e);
+
+						sCurrentNode = new Node {
+							Id = 1,
+							Name = "Node",
+							Nodes = 6,
+							NodeType = Node.Type.master,
+							NodeServer = new Node.Server() {
+								Ip = "192.168.1.100",
+								Port = 25000
+							},
+							NodeScreen = new Node.Screen() {
+								ScreenEye = Eye.left,
+								Stereo = false,
+								UsesGoogleVr = false,
+								Pa = new Node.Point { X = -8f, Y = -4f, Z = 0f },
+								Pb =  new Node.Point { X = 8f, Y = -4f, Z = 0f },
+								Pc = new Node.Point { X = -8f, Y = 5f, Z = 0f },
+								Pe = new Node.Point { X = 0f, Y = 0f, Z = 5f}
+							}
+						};
 					}
-				};
+				}
+				return sCurrentNode;
 			}
 		}
 		// Luiz: Could actually be a setter, however this way emphasizes the file processing
@@ -84,7 +93,7 @@ namespace UnityClusterPackage
 				serializer.Serialize(writer, node);
 			}
 
-			CurrentNode = node;
+			sCurrentNode = node;
 		}
 
 		// Values in lower case for us to not have a problem when deserializing

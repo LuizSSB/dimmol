@@ -13,6 +13,7 @@ namespace UnityClusterPackage {
 
 	public class UcpGui : MonoBehaviour {
 		public UcpGuiAction DoAfterSetUp;
+		public int FontSize = 20;
 		public event Action<Node> NodeSetUp;
 
 		private Node m_Node;
@@ -25,9 +26,9 @@ namespace UnityClusterPackage {
 		private string m_ErrorMessages = string.Empty;
 
 		protected static readonly Rect MainAreaFrame = new Rect(
-			Screen.width / 2 / 2,
+			(int)(Screen.width / 3f / 2f),
 			5,
-			Screen.width / 2,
+			(int)(Screen.width / 1.5f),
 			Screen.height - 5
 		);
 
@@ -41,11 +42,30 @@ namespace UnityClusterPackage {
 			m_Pc = ConvertNodePoint(m_Node.NodeScreen.Pc);
 			m_Pe = ConvertNodePoint(m_Node.NodeScreen.Pe);
 		}
-		Node.Type foo;
+
+		private bool setUp = false;
 
 		protected void OnGUI() {
+			GUISkin mySkin = GUI.skin;
+			mySkin.box.fontSize =
+				mySkin.button.fontSize =
+					mySkin.horizontalSlider.fontSize =
+						mySkin.textArea.fontSize =
+							mySkin.textField.fontSize =
+								mySkin.toggle.fontSize =
+									mySkin.window.fontSize =
+										mySkin.label.fontSize = FontSize;
+			GUI.skin = mySkin;
+
 			GUILayout.BeginArea(MainAreaFrame); {
-				GUILayout.Label("Node settings");
+				GUILayout.BeginHorizontal(); {
+					GUILayout.Label("Node settings", MakeWidthOption(.33f));
+
+					GUILayout.BeginVertical(); {
+						GUILayout.Label("GUI scale");
+						FontSize = (int)GUILayout.HorizontalSlider(FontSize, 10f, 40f);
+					} GUILayout.EndVertical();
+				} GUILayout.EndHorizontal();
 
 				// General stuff
 				GUILayout.BeginHorizontal(); {

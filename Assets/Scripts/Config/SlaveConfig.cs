@@ -22,20 +22,32 @@ namespace Config
 		}
 
 		private const string ConfigFileName = "slave-config.xml";
-		static SlaveConfig() {
-			try {
-				var filePath = Path.Combine(Application.streamingAssetsPath, ConfigFileName);
-				using(var reader = new StreamReader(filePath)) {
-					var serializer = new XmlSerializer(typeof(SlaveConfig));
-					CurrentConfig = (SlaveConfig)serializer.Deserialize(reader);
-				}
-			} catch (Exception e) {
-				UnityEngine.Debug.Log("Failed to load slave-config.xml: " + e);
+		private static SlaveConfig sCurrentConfig;
+		public static SlaveConfig CurrentConfig {
+			get {
+				if (sCurrentConfig == null) {
+					try {
+						var filePath = Path.Combine(
+							Application.isMobilePlatform ?
+								Application.persistentDataPath :
+								Application.streamingAssetsPath,
+							ConfigFileName
+						);
+						using(var reader = new StreamReader(filePath)) {
+							var serializer = new XmlSerializer(typeof(SlaveConfig));
+							sCurrentConfig = (SlaveConfig)serializer.Deserialize(reader);
+						}
+					} catch (Exception e) {
+						UnityEngine.Debug.Log("Failed to load slave-config.xml: " + e);
 
-				CurrentConfig = new SlaveConfig() {
-					CameraControl = false,
-					ShowEnergy = false
-				};
+						sCurrentConfig = new SlaveConfig() {
+							CameraControl = false,
+							ShowEnergy = false
+						};
+					}
+				}
+
+				return sCurrentConfig;
 			}
 		}
 
@@ -46,11 +58,8 @@ namespace Config
 				serializer.Serialize(writer, config);
 			}
 
-			CurrentConfig = config;
+			sCurrentConfig = config;
 		}
-
-		public static SlaveConfig CurrentConfig { get; private set; }
-		private SlaveConfig() {}
 	}
 }
 

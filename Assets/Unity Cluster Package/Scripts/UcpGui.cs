@@ -13,7 +13,6 @@ namespace UnityClusterPackage {
 
 	public class UcpGui : MonoBehaviour {
 		public UcpGuiAction DoAfterSetUp;
-		public int FontSize = 20;
 		public event Action<Node> NodeSetUp;
 
 		private Node m_Node;
@@ -54,7 +53,7 @@ namespace UnityClusterPackage {
 							mySkin.textField.fontSize =
 								mySkin.toggle.fontSize =
 									mySkin.window.fontSize =
-										mySkin.label.fontSize = FontSize;
+										mySkin.label.fontSize = Node.CurrentNode.GuiSize;
 			GUI.skin = mySkin;
 
 			GUILayout.BeginArea(MainAreaFrame); {
@@ -63,7 +62,7 @@ namespace UnityClusterPackage {
 
 					GUILayout.BeginVertical(); {
 						GUILayout.Label("GUI scale");
-						FontSize = (int)GUILayout.HorizontalSlider(FontSize, 10f, 40f);
+						Node.CurrentNode.GuiSize = (int)GUILayout.HorizontalSlider(Node.CurrentNode.GuiSize, 10f, 40f);
 					} GUILayout.EndVertical();
 				} GUILayout.EndHorizontal();
 

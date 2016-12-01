@@ -100,10 +100,10 @@ namespace UI
 			var stateFile = ParseUtils.SaveStateAsPDB(states.First(), Application.temporaryCachePath);
 			GUIDisplay.Instance.OpenFileCallback(stateFile);
 
-			new System.Threading.Thread(new System.Threading.ThreadStart(() => {
-				System.Threading.Thread.Sleep(250);
+//			new System.Threading.Thread(new System.Threading.ThreadStart(() => {
+//				System.Threading.Thread.Sleep(250);
 				UIData.Instance.stateChanged = true;
-			})).Start();
+//			})).Start();
 		}
 
 		public static void Clear() {

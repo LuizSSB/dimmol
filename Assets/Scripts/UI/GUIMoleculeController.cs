@@ -945,13 +945,15 @@ namespace UI {
 		{
 			return ChangeManager.ProcessPropertyChanged(typeof(GUIMoleculeController), propertyName, oldValue, newValue);
 		}
-		public void ChangeMetaphor(float aGlobalRadius, float aShrink, float aScale) {
+		public void ChangeMetaphor(float aGlobalRadius, float aShrink, float aScale, bool instantaneous = false) {
+			var divider = instantaneous ? 1 : transDelta;
+
 			newGlobalRadius = aGlobalRadius;
-			deltaRadius = (newGlobalRadius - globalRadius) / transDelta;
+			deltaRadius = (newGlobalRadius - globalRadius) / divider;
 			newShrink = aShrink;
-			deltaShrink = (newShrink - shrink) / transDelta;
+			deltaShrink = (newShrink - shrink) / divider;
 			newScale = aScale;
-			deltaScale = (newScale - linkScale) / transDelta;
+			deltaScale = (newScale - linkScale) / divider;
 			transMETAPHOR = true;
 		}
 	}

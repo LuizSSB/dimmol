@@ -105,10 +105,16 @@ namespace UI
 
 		// Luiz:
 		public bool stateChanged = false;
+		public float stateTime;
 		private bool _autoChangingState = false;
 				public bool autoChangingState {
 			get { return _autoChangingState; }
-			set { _autoChangingState = this.ProcessPropertyChanged("autoChangingState", _autoChangingState, value); }
+			set {
+				if (value != _autoChangingState) {
+					stateTime = 0f;
+				}
+				_autoChangingState = this.ProcessPropertyChanged("autoChangingState", _autoChangingState, value);
+			}
 		}
 		public bool MustDie { get; set; }
 		
@@ -348,50 +354,6 @@ namespace UI
 			}
 		}
 		public string ChosenPdbContents; //{ get; set; }
-		private static string[] mUpdateParts;
-		public string[] SerializeInParts() {
-			string serialized = JsonUtility.ToJson(this);
-			int length = (int) System.Math.Ceiling (serialized.Length / 4000.0);
-			string[] parts = new string[length];
-			for (int i = 0, idxPart = 0; i < serialized.Length; i += 4000, ++idxPart) {
-				parts [idxPart] = idxPart
-					+ "/"
-					+ length
-					+ "$"
-					+ serialized.Substring (i, System.Math.Min (4000, serialized.Length - i));
-			}
-			return parts;
-		}
-		public static bool DeserializePart(string serializedDataChunk) {
-			int indexOfSlash = serializedDataChunk.IndexOf ("/");
-			int indexOfDollar = serializedDataChunk.IndexOf ("$");
-
-			int totalParts = int.Parse (
-				serializedDataChunk.Substring(indexOfSlash + 1, indexOfDollar - (indexOfSlash + 1))
-			);
-			int idxPart = int.Parse (
-				serializedDataChunk.Substring(0, indexOfSlash)
-			);
-
-			if (mUpdateParts == null
-//				|| mUpdateParts.Length != totalParts
-//				|| (mUpdateParts[idxPart] != null
-//					&& mUpdateParts[idxPart] != serializedDataChunk)
-			) {
-				mUpdateParts = new string[totalParts];
-			}
-
-			mUpdateParts [idxPart] = serializedDataChunk.Substring (indexOfDollar + 1);
-
-			if (mUpdateParts.Any (p => p == null)) {
-				return false;
-			}
-
-			string serialized = string.Join (string.Empty, mUpdateParts);
-			sInstance = JsonUtility.FromJson<UIData> (serialized);
-			mUpdateParts = null;
-			return true;
-		}
 
 		public static void SetNewData(UIData newData) {
 			sInstance = newData;

@@ -410,41 +410,40 @@ public class Molecule3D:MonoBehaviour {
 	}
 
 	// Luiz:
+	private float StateTransitionTime = 1f;
 	public void LoadState(int stateIdx) {
 		TrajectoryData.Instance.CurrentStateIdx = stateIdx;
-		var transitionspeed = Time.deltaTime * 1.5f;
+		var transitionspeed = Time.deltaTime * StateTransitionTime;
 		var state = TrajectoryData.Instance.CurrentState;
+		UIData.Instance.stateTime += transitionspeed;
+
+		var setCorrectValues = UIData.Instance.stateTime >= StateTransitionTime;
 			
 		ExternalOutput.Atom currentAtom;
 		float[] currentLocation;
 		for(int idxAtom = 0; idxAtom < MoleculeModel.atomsLocationlist.Count; ++idxAtom) {
-			currentAtom = state.Atoms.ElementAt(idxAtom);
+			currentAtom = state.Atoms[idxAtom];
 			currentLocation = MoleculeModel.atomsLocationlist[idxAtom];
 
-			if(UIData.Instance.autoChangingState) {
+			if(!setCorrectValues && UIData.Instance.autoChangingState) {
 				var previousStateAtom = TrajectoryData.Instance.PreviousState.Atoms[idxAtom];
 				currentLocation[0] += (currentAtom.FloatX - previousStateAtom.FloatX) * transitionspeed;
 				currentLocation[1] += (currentAtom.FloatY - previousStateAtom.FloatY) * transitionspeed;
 				currentLocation[2] += (currentAtom.FloatZ - previousStateAtom.FloatZ) * transitionspeed;
 
 			} else {
-				currentLocation[0] = (float) currentAtom.FloatX;
-				currentLocation[1] = (float) currentAtom.FloatY;
-				currentLocation[2] = (float) currentAtom.FloatZ;
+				currentLocation[0] = currentAtom.FloatX;
+				currentLocation[1] = currentAtom.FloatY;
+				currentLocation[2] = currentAtom.FloatZ;
 			}
 		}
 
-		if (UIData.Instance.autoChangingState) {
-			float prevX = TrajectoryData.Instance.PreviousState.Atoms[0].FloatX;
-			float currX = state.Atoms[0].FloatX;
-			float firstX = MoleculeModel.atomsLocationlist[0][0];
-			if (Mathf.Abs(currX - prevX) <= 1e-6 || (prevX < currX && firstX >= currX) || (prevX > currX && firstX <= currX)) {
-				TrajectoryData.Instance.GoToNextState();
-			}	
-		}
-
-
 		StartCoroutine(UpdateVisualState());
+
+		if (UIData.Instance.autoChangingState && setCorrectValues) {
+			UIData.Instance.stateTime = 0f;
+			TrajectoryData.Instance.GoToNextState();
+		}
 	}
 
 	public IEnumerator UpdateVisualState() {

@@ -278,8 +278,8 @@ namespace UI {
 		protected GUIStyle m_centredText;
 
 		// Luiz:
-		public string ExternalOutputWebAddress = "https://gist.github.com/LuizSSB/a9f9487453e44807f7c7a3e048fc0bde/raw/8a4939d111cf889fa73e1301ac1f59fe310a974d/gistfile1.txt";
-		public ParseableOutputTypes ExternalOutputType = ParseableOutputTypes.Gamess;
+		public string TrajectoryWebAddress = "https://gist.github.com/LuizSSB/a9f9487453e44807f7c7a3e048fc0bde/raw/8a4939d111cf889fa73e1301ac1f59fe310a974d/gistfile1.txt";
+		public ParseableOutputTypes TrajectoryType = ParseableOutputTypes.Gamess;
 
 		// 		private int left=0;//0:oxygen;1:sulphur;2:carbon;3:nitrogen;4:phosphorus;5:unknown
 
@@ -356,19 +356,44 @@ namespace UI {
 		}
 
 		// Luiz:
-		public void OpenExternalOutputCallback(string path) {
-			m_fileBrowser = null;
+		public void OpenTrajectoryCallback(string path) {
+
 			if(path == null)
 				return;
 
+			UIData.Instance.SetError(false);
+
 			UpdateOldPaths(path);
-			TrajectoryData.Instance.LoadTrajectoryFile(path, ExternalOutputType);
+
+			try {
+				TrajectoryData.Instance.LoadTrajectoryFile(path, TrajectoryType);
+				m_fileBrowser = null;
+			} catch(System.Exception e) {
+				UIData.Instance.SetError(true, "Invalid trajectory file. Make sure the chosen file matches the chosen format below (.gms / .xmol).");
+			}
 		}
 
 		public void OpenFileCallback(string path) {
-			m_fileBrowser = null;
 			if(path == null)
 				return;
+
+			UIData.Instance.SetError(false);
+
+			UpdateOldPaths(path);
+
+			file_base_name = directorypath + System.IO.Path.DirectorySeparatorChar +
+				System.IO.Path.GetFileNameWithoutExtension(path);
+
+			// Luiz
+			file_extension = System.IO.Path.GetExtension(path);
+			file_extension = file_extension.Length > 1 ? file_extension.Substring(1) : string.Empty;
+
+			if (!ParseData.ParsePDB.RequestPDB.SupportsMoleculeExtension(file_extension)) {
+				UIData.Instance.SetError(true, "Unsupportd molecule format. Molecule file must be .PDB or .XYZ.");
+				return;
+			} else {
+				m_fileBrowser = null;
+			}
 
 			if (UIData.Instance.loadHireRNA == false) {
 				UIData.Instance.ffType = UIData.FFType.atomic;
@@ -380,15 +405,10 @@ namespace UI {
 				AtomModel.InitHiRERNA();
 			}
 
-			UpdateOldPaths(path);
-			file_base_name = directorypath + System.IO.Path.DirectorySeparatorChar +
-				System.IO.Path.GetFileNameWithoutExtension(path);
-			file_extension = System.IO.Path.GetExtension(path).Substring(1);
-
 			id = System.IO.Path.GetFileNameWithoutExtension(path);
 
 			UIData.Instance.fetchPDBFile = false;
-			UIData.Instance.isOpenFile=true;
+			UIData.Instance.isOpenFile = true;
 			UIData.Instance.atomtype=UIData.AtomType.particleball;
 			UIData.Instance.bondtype=UIData.BondType.nobond;
 		}
@@ -433,6 +453,7 @@ namespace UI {
 						//id != "" if a molecule is already open
 						if(!TrajectoryData.Instance.IsLoaded && string.IsNullOrEmpty(id))
 						{
+							GUILayout.Label("SINGLE MOLECULE");
 							if (GUILayout.Button (new GUIContent ("Open File From Disk", "Load a PDB/XYZ file from disk"))) {
 								m_fileBrowser = new ImprovedFileBrowser (Rectangles.fileBrowserRect, "", OpenFileCallback, m_lastOpenDir);
 								//							m_fileBrowser.SelectionPattern = "*.pdb|*.xgmml";
@@ -477,40 +498,46 @@ namespace UI {
 						}
 
 						if(string.IsNullOrEmpty(id)) {
-							if(GUILayout.Button(new GUIContent("Open external optimization output", "Load a GAMESS (.gms) or Xmol (.xmol) optimization/dynamics output file from disk"))) {
-								m_fileBrowser = new ImprovedFileBrowser(Rectangles.fileBrowserRect, "", OpenExternalOutputCallback, m_lastOpenDir);
+							GUILayout.Label(string.Empty);
+							GUILayout.Label("TRAJECTORY");
+							GUILayout.BeginHorizontal(); {
+								GUILayout.Label("Type: ");
+								TrajectoryType = (ParseableOutputTypes)GUILayout.SelectionGrid(
+									(int)TrajectoryType, new []{"GAMESS output", "XMOL"}, 2
+								);								
+							} GUILayout.EndHorizontal();
+							if(GUILayout.Button(new GUIContent("Open trajectory file from disk", "Load a GAMESS output (.gms) or Xmol (.xmol) file from disk"))) {
+								m_fileBrowser = new ImprovedFileBrowser(Rectangles.fileBrowserRect, "", OpenTrajectoryCallback, m_lastOpenDir);
 								m_fileBrowser.DirectoryImage = directoryimage; 
 								m_fileBrowser.FileImage = fileimage;
 								GUIMoleculeController.Instance.showOpenMenu = false;
 								GUIMoleculeController.Instance.showSecStructMenu = false;
 							}
-							GUILayout.Label("Web address to external output");
+							GUILayout.Label("Web address to trajectory file");
 							GUILayout.BeginHorizontal(); {
-								ExternalOutputWebAddress = GUILayout.TextField(ExternalOutputWebAddress, GUILayout.Width(pServerWidth));
-								if(GUILayout.Button(new GUIContent("Fetch", "Fetch external optimization/dynamics output file from the web"))) {
+								TrajectoryWebAddress = GUILayout.TextField(TrajectoryWebAddress, GUILayout.Width(pServerWidth));
+								if(GUILayout.Button(new GUIContent("Fetch", "Fetch trajectory file from the web"))) {
 
 									try {
 										GUIMoleculeController.Instance.showOpenMenu = false;
 										GUIMoleculeController.Instance.showSecStructMenu = false;
 										var filePath = RequestExternalOutput.Fetch(
-											ExternalOutputWebAddress,
+											TrajectoryWebAddress,
 											Application.persistentDataPath,
-											ExternalOutputType
+											TrajectoryType
 										);
-										OpenExternalOutputCallback(filePath);
+										OpenTrajectoryCallback(filePath);
 									} catch(System.Exception e) {
-										Debug.Log("Could not fetch external output: " + e);
+										UIData.Instance.SetError(true, "Could not fetch external output: " + e);
 										GUIMoleculeController.Instance.showOpenMenu = true;
 										GUIMoleculeController.Instance.showSecStructMenu = true;
 									}
-
 								}
 							} GUILayout.EndHorizontal();
 
-							ExternalOutputType = (ParseableOutputTypes)GUILayout.SelectionGrid(
-								(int)ExternalOutputType, new []{"GAMESS", "XMOL"}, 2
-							);
+							GUILayout.Label(string.Empty);
 
+							GUILayout.Label("SETTINGS");
 							GUILayout.BeginHorizontal ();
 
 							UIData.Instance.readHetAtom = GUILayout.Toggle (UIData.Instance.readHetAtom, "Read Hetero Atoms?");
@@ -1514,6 +1541,7 @@ namespace UI {
 			}
 
 			id="";
+			GUIMoleculeController.Instance.showOpenMenu = true;
 			UIData.Instance.MustDie = exitingScene;
 			UIData.Instance.isclear = true;
 			GUIMoleculeController.Instance.pdbGen = false;

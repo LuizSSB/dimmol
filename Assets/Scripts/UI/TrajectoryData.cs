@@ -82,6 +82,10 @@ namespace UI
 		public void LoadTrajectoryFile(string filePath, ParseableOutputTypes type) {
 			var states = ParseUtils.ExtractStates(filePath, type);
 
+			if (states.Count == 0) {
+				throw new ArgumentException("Trajectory file has no states");
+			}
+
 			AssemblyCSharp.RPCMessenger.GetCurrent().SendComplexObject(
 				new TrajectoryLoadedArgs { States = states },
 				GetType(),

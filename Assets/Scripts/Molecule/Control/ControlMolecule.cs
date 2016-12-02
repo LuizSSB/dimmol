@@ -80,24 +80,40 @@ namespace Molecule.Control {
 		
 		public static void CreateMolecule(TextReader sr) {
 
-			List<float[]>	alist			=	MoleculeModel.atomsLocationlist ?? new List<float[]>();
-			List<float[]>	calist			=	MoleculeModel.CatomsLocationlist ?? new List<float[]>();
-			
-			List<float>		BFactorList		=	MoleculeModel.BFactorList ?? new List<float>();
-         	
-			List<string>	resnamelist		=	MoleculeModel.atomsResnamelist ?? new List<string>();
-			List<string>	atomsNameList	=	MoleculeModel.atomsNamelist ?? new List<string>();
-			List<string>	caChainlist		=	MoleculeModel.CaSplineChainList ?? new List<string>();
-			
-			List<AtomModel>	typelist		=	MoleculeModel.atomsTypelist ?? new List<AtomModel>();
-			List<string>	chainlist		= 	MoleculeModel.atomsChainList ?? new List<string>();
-			
-			List<Color>		colorList		= MoleculeModel.atomsColorList ?? new List<Color>();
+//			List<float[]>	alist			=	MoleculeModel.atomsLocationlist ?? new List<float[]>();
+//			List<float[]>	calist			=	MoleculeModel.CatomsLocationlist ?? new List<float[]>();
+//
+//			List<float>		BFactorList		=	MoleculeModel.BFactorList ?? new List<float>();
+//
+//			List<string>	resnamelist		=	MoleculeModel.atomsResnamelist ?? new List<string>();
+//			List<string>	atomsNameList	=	MoleculeModel.atomsNamelist ?? new List<string>();
+//			List<string>	caChainlist		=	MoleculeModel.CaSplineChainList ?? new List<string>();
+//
+//			List<AtomModel>	typelist		=	MoleculeModel.atomsTypelist ?? new List<AtomModel>();
+//			List<string>	chainlist		= 	MoleculeModel.atomsChainList ?? new List<string>();
+//
+//			List<Color>		colorList		= MoleculeModel.atomsColorList ?? new List<Color>();
+//
+//			List<float[]>   sshelixlist     = MoleculeModel.ssHelixList ?? new List<float[]> ();
+//			List<float[]>   sssheetlist     = MoleculeModel.ssStrandList ?? new List<float[]> ();
 
-			List<float[]>   sshelixlist     = MoleculeModel.ssHelixList ?? new List<float[]> ();
-			List<float[]>   sssheetlist     = MoleculeModel.ssStrandList ?? new List<float[]> ();
+			List<float[]>	alist			=	new List<float[]>();
+			List<float[]>	calist			=	new List<float[]>();
+			List<float>		BFactorList		=	new List<float>();
+			List<string>	resnamelist		=	new List<string>();
+			List<string>	atomsNameList	=	new List<string>();
+			List<string>	caChainlist		=	new List<string>();
+			List<AtomModel>	typelist		=	new List<AtomModel>();
+			List<string>	chainlist		= 	new List<string>();
+			List<Color>		colorList		= new List<Color>();
+			List<float[]>   sshelixlist     = new List<float[]> ();
+			List<float[]>   sssheetlist     = new List<float[]> ();
 			
 			RequestPDB.ReadPDB(sr, alist, calist, BFactorList, resnamelist, atomsNameList, caChainlist, typelist, chainlist, colorList, sshelixlist, sssheetlist);
+
+			if (alist.Count == 0) {
+				throw new System.ArgumentException("Molecule has no atoms");
+			}
 			
 			BuildMoleculeComponents();
 			CreateSplines();

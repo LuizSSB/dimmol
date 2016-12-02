@@ -117,6 +117,25 @@ namespace UI
 			}
 		}
 		public bool MustDie { get; set; }
+
+		// Luiz: Needed b/c yield returns are not supported inside of try/catchs
+		public bool HasError { get; private set; }
+		public string ErrorMessage { get; private set; }
+		public void SetError(bool hasError, string message = null) {
+			HasError = hasError;
+			ErrorMessage = message;
+
+			// Luiz: this is ugly, but has to be done this way, otherwise controlling this thing would be hell;
+			if (hasError) {
+				DoOnMainThread.AddAction(() => {
+					UnityEditor.EditorUtility.DisplayDialog(
+						"Error",
+						message,
+						"OK"
+					);
+				});
+			}
+		}
 		
 		public bool isCubeLoaded = false;
 		public bool isSphereLoaded = false;

@@ -329,9 +329,8 @@ namespace  ParseData.ParsePDB
 			using (sr =new StreamReader(file_base_name+".pdb")) {
 				// Luiz:
 				string pdbContents = sr.ReadToEnd();
-				UIData.Instance.ChosenPdbContents = pdbContents;
-
 				ControlMolecule.CreateMolecule(new StringReader(pdbContents));
+				UIData.Instance.ChosenPdbContents = pdbContents;
 				//ReadPDB(sr);
 			}
 			
@@ -958,30 +957,35 @@ namespace  ParseData.ParsePDB
 			MoleculeModel.networkLoaded = true ; // there should be a network loaded, if all went well
 //			return alist;			
 		}
-		
-						////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	private void LoadChoice(int a)
-	{
-		FileInfo fieldlinefile=new FileInfo(UI.GUIDisplay.Instance.file_base_name+".json");
-		if(fieldlinefile.Exists)
-			wantjson = GUILayout.Toggle (wantjson, new GUIContent ( "JSON" , "Open the Json file"));
-		
-		FileInfo Surfacefile=new FileInfo(UI.GUIDisplay.Instance.file_base_name+".obj");
-		FileInfo Surfacefile0=new FileInfo(UI.GUIDisplay.Instance.file_base_name+"0.obj");
 
-		if(Surfacefile.Exists || Surfacefile0.Exists)
-			wantobj = GUILayout.Toggle (wantobj, new GUIContent ( "OBJ" , "Open the Obj file"));
+		public static readonly string[] SupportedMoleculeExtensions = {
+			"pdb",
+			"xyz",
+			"xmol"
+		};
+		public static bool SupportsMoleculeExtension(string extension) {
+			return SupportedMoleculeExtensions.Contains(extension.ToLower());
+		}
+		
+		////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		private void LoadChoice(int a)
+		{
+			FileInfo fieldlinefile = new FileInfo(UI.GUIDisplay.Instance.file_base_name + ".json");
+			if (fieldlinefile.Exists)
+				wantjson = GUILayout.Toggle(wantjson, new GUIContent("JSON", "Open the Json file"));
 			
-		FileInfo dxfile=new FileInfo(UI.GUIDisplay.Instance.file_base_name+".dx");
-		if(dxfile.Exists)
-				wantdx = GUILayout.Toggle (wantdx, new GUIContent ( "DX" , "Open the Dx file"));
-		if (GUILayout.Button("Confirm")){
+			FileInfo Surfacefile = new FileInfo(UI.GUIDisplay.Instance.file_base_name + ".obj");
+			FileInfo Surfacefile0 = new FileInfo(UI.GUIDisplay.Instance.file_base_name + "0.obj");
+
+			if (Surfacefile.Exists || Surfacefile0.Exists)
+				wantobj = GUILayout.Toggle(wantobj, new GUIContent("OBJ", "Open the Obj file"));
+				
+			FileInfo dxfile = new FileInfo(UI.GUIDisplay.Instance.file_base_name + ".dx");
+			if (dxfile.Exists)
+				wantdx = GUILayout.Toggle(wantdx, new GUIContent("DX", "Open the Dx file"));
+			if (GUILayout.Button("Confirm")) {
 //				wantpdb=false;
 			}
-
-	}
-	
-	}
-	
+		}	
+	}	
 }

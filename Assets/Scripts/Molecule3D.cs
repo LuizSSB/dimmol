@@ -241,7 +241,7 @@ public class Molecule3D:MonoBehaviour {
 		}
 	}
 
-	void OnGUI() {	
+	void OnGUI() {
 		GUI.skin = mySkin;
 		
 		if(!fontInitialized) {
@@ -405,6 +405,12 @@ public class Molecule3D:MonoBehaviour {
 	public IEnumerator loadLoadFile(){
 		UIData.Instance.isOpenFile = false;
 		yield return StartCoroutine(loadFile());
+
+		if (UIData.Instance.HasError) {
+			GUIDisplay.Instance.Clear(false);
+			return true;
+		}
+
 		Debug.Log ("T.T ==> BEFORE DISPLAY");
 		Display();
 	}
@@ -531,50 +537,68 @@ public class Molecule3D:MonoBehaviour {
 	
 	// loading the file in all possibilities
 	public  IEnumerator loadFile() {
-		#if !UNITY_WEBPLAYER
-		{
+		#if !UNITY_WEBPLAYER			
 //				alist=requestPDB.LoadPDBRequest(url,id);
 		
 		// check all format reading by unitymol PDB, XGMML and OBJ
-			if(UIData.Instance.fetchPDBFile) {
-				Debug.Log("pdbServer/pdbID :: "+GUIDisplay.Instance.pdbServer + GUIDisplay.Instance.PdbRequest.PdbId);
-				Debug.Log("proxyServer+proxyPort :: "+GUIDisplay.Instance.PdbRequest.ProxyServer + GUIDisplay.Instance.PdbRequest.ProxyPort);
-				int proxyport = 0;
-				if(GUIDisplay.Instance.PdbRequest.ProxyPort != "")
-					proxyport = int.Parse(GUIDisplay.Instance.PdbRequest.ProxyPort);
-				else
-					proxyport = 0;
-
+		if (UIData.Instance.fetchPDBFile) {
+			Debug.Log("pdbServer/pdbID :: " + GUIDisplay.Instance.pdbServer + GUIDisplay.Instance.PdbRequest.PdbId);
+			Debug.Log("proxyServer+proxyPort :: " + GUIDisplay.Instance.PdbRequest.ProxyServer + GUIDisplay.Instance.PdbRequest.ProxyPort);
+			int proxyport = string.IsNullOrEmpty(GUIDisplay.Instance.PdbRequest.ProxyPort) ?
+				0 : int.Parse(GUIDisplay.Instance.PdbRequest.ProxyPort);
+			try {
 				requestPDB.FetchPDB(GUIDisplay.Instance.pdbServer, GUIDisplay.Instance.PdbRequest.PdbId, GUIDisplay.Instance.PdbRequest.ProxyServer, proxyport);
+			} catch (Exception e) {
+				UIData.Instance.SetError(
+					true,
+					string.Format("Could not retrieve PDB with id {0}: {1}",
+						GUIDisplay.Instance.PdbRequest.PdbId,
+						e.Message
+					)
+				);
+				return true;
 			}
+		}
+
 		// if we laod a pdb file launch the reading of file
-			else if(GUIDisplay.Instance.file_extension=="pdb")
+		else if (GUIDisplay.Instance.file_extension == "pdb") {
+			try {
 				requestPDB.LoadPDBRequest(GUIDisplay.Instance.file_base_name);
-			else if(GUIDisplay.Instance.file_extension == "xyz" || GUIDisplay.Instance.file_extension == "xmol") {
-				requestPDB.MakePDBFromXYZ(GUIDisplay.Instance.file_base_name, GUIDisplay.Instance.file_extension);
+			} catch(Exception e) {
+				UIData.Instance.SetError(true, "Invalid PDB file: " + e.Message);
+				return true;
 			}
+		
+		} else if (GUIDisplay.Instance.file_extension == "xyz" || GUIDisplay.Instance.file_extension == "xmol") {
+			try {
+				requestPDB.MakePDBFromXYZ(GUIDisplay.Instance.file_base_name, GUIDisplay.Instance.file_extension);
+			} catch(Exception e) {
+				UIData.Instance.SetError(true, "Invalid XYZ/XMOL file: " + e.Message);
+				return true;
+			}
+		}
 
 		// check the format of xgmml	
-			else if(UI.GUIDisplay.Instance.file_extension=="xgmml") {
-					yield return StartCoroutine(requestPDB.LoadXGMML("file://"+GUIDisplay.Instance.file_base_name+"."+GUIDisplay.Instance.file_extension));
-					while(!RequestPDB.isDone) {
-						Debug.Log(requestPDB.progress);
-						yield return new WaitForEndOfFrame();
-					}
-					UIData.Instance.atomtype=UIData.AtomType.hyperball;
-					UIData.Instance.bondtype=UIData.BondType.hyperstick;
-					GUIMoleculeController.Instance.globalRadius = 0.22f;
-					GUIMoleculeController.Instance.shrink = 0.0001f;
-					GUIMoleculeController.Instance.linkScale = 0.70f;
-					SendMessage("Display",SendMessageOptions.DontRequireReceiver);
+		else if (UI.GUIDisplay.Instance.file_extension == "xgmml") {
+			yield return StartCoroutine(requestPDB.LoadXGMML("file://" + GUIDisplay.Instance.file_base_name + "." + GUIDisplay.Instance.file_extension));
+			while (!RequestPDB.isDone) {
+				Debug.Log(requestPDB.progress);
+				yield return new WaitForEndOfFrame();
 			}
-			else if(UI.GUIDisplay.Instance.file_extension=="obj") {
-					requestPDB.LoadOBJRequest(GUIDisplay.Instance.file_base_name+"."+GUIDisplay.Instance.file_extension);
-					MoleculeModel.surfaceFileExists=true;
-					GUIMoleculeController.Instance.modif=true;
-			}	
+			UIData.Instance.atomtype = UIData.AtomType.hyperball;
+			UIData.Instance.bondtype = UIData.BondType.hyperstick;
+			GUIMoleculeController.Instance.globalRadius = 0.22f;
+			GUIMoleculeController.Instance.shrink = 0.0001f;
+			GUIMoleculeController.Instance.linkScale = 0.70f;
+			SendMessage("Display", SendMessageOptions.DontRequireReceiver);
+
+		} else if (UI.GUIDisplay.Instance.file_extension == "obj") {
+			requestPDB.LoadOBJRequest(GUIDisplay.Instance.file_base_name + "." + GUIDisplay.Instance.file_extension);
+			MoleculeModel.surfaceFileExists = true;
+			GUIMoleculeController.Instance.modif = true;
+		}	
 //				requestPDB.GetTypelist();
-		}
+
 		//if the application is an wep player or a mobile application
 		#else
 		{

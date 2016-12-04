@@ -444,7 +444,7 @@ public class Molecule3D:MonoBehaviour {
 			}
 		}
 
-		StartCoroutine(UpdateVisualState());
+		StartCoroutine(UpdateVisualState(setCorrectValues));
 
 		if (UIData.Instance.autoChangingState && setCorrectValues) {
 			UIData.Instance.stateTime = 0f;
@@ -452,7 +452,7 @@ public class Molecule3D:MonoBehaviour {
 		}
 	}
 
-	public IEnumerator UpdateVisualState() {
+	public IEnumerator UpdateVisualState(bool recalculateBonds) {
 		GameObject parentGameObject;
 		GenericManager manager;
 
@@ -485,10 +485,14 @@ public class Molecule3D:MonoBehaviour {
 		if(manager != null)
 			manager.ResetPositions();
 
-		var oldClubs = GameObject.FindGameObjectsWithTag("Club");
+		IEnumerable<GameObject> oldClubs = null;
 
-		Molecule.Control.ControlMolecule.CreateSplines();
-		new Molecule.View.DisplayBond.BondCubeStyle().DisplayBonds();
+		if (recalculateBonds) {
+			oldClubs = GameObject.FindGameObjectsWithTag("Club");
+
+			Molecule.Control.ControlMolecule.CreateSplines();
+			new Molecule.View.DisplayBond.BondCubeStyle().DisplayBonds();
+		}
 
 		switch(UIData.Instance.bondtype) {
 		case UIData.BondType.hyperstick:
@@ -511,27 +515,29 @@ public class Molecule3D:MonoBehaviour {
 		if(manager != null)
 			manager.ResetPositions();
 
-		yield return new WaitForSeconds(0);
-		
-		// Luiz: making sure that things are reset,  believe it or not.
-		UIData.Instance.resetBondDisplay = true;
-		UIData.Instance.resetMeshcombine = true;
-		UIData.Instance.resetDisplay = true;
-		UIData.Instance.resetInteractive = true;
-		StickUpdate.resetColors = true;
-		HStickManager.resetBrightness = true;
-		BallUpdate.resetBondColors = true;
-		BallUpdate.resetColors = true;
-		BallUpdate.resetRadii = true;
-		BallUpdateCube.resetBondColors = true;
-		BallUpdate.bondsReadyToBeReset = true;
-		var diff = 1e-6f;
-		GUIMoleculeController.Instance.linkScale -= diff;
+		if (recalculateBonds) {
+			yield return new WaitForSeconds(0);
 
-		yield return new WaitForSeconds(0);
+			// Luiz: making sure that things are reset,  believe it or not.
+			UIData.Instance.resetBondDisplay = true;
+			UIData.Instance.resetMeshcombine = true;
+			UIData.Instance.resetDisplay = true;
+			UIData.Instance.resetInteractive = true;
+			StickUpdate.resetColors = true;
+			HStickManager.resetBrightness = true;
+			BallUpdate.resetBondColors = true;
+			BallUpdate.resetColors = true;
+			BallUpdate.resetRadii = true;
+			BallUpdateCube.resetBondColors = true;
+			BallUpdate.bondsReadyToBeReset = true;
+			var diff = 1e-6f;
+			GUIMoleculeController.Instance.linkScale -= diff;
 
-		foreach(var club in oldClubs) {
-			GameObject.Destroy(club);
+			yield return new WaitForSeconds(0);
+
+			foreach(var club in oldClubs) {
+				GameObject.Destroy(club);
+			}
 		}
 	}
 	
@@ -612,6 +618,7 @@ public class Molecule3D:MonoBehaviour {
 				requestPDB.LoadPDBResource(UIData.Instance.init_molecule);
 		}			
 		#endif
+
 		//Debug.Log("SDGFSDGSDGDSG");
 		GUIMoleculeController.Instance.showAtomMenu = true;
 		GameObject.FindGameObjectWithTag("MainCamera").GetComponent<SplashScreen>().enabled = false;

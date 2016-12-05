@@ -392,7 +392,7 @@ namespace Molecule.Control {
 			
 			// Trace interpolation from C-alpha positions
 			// Only if there are more than 2 C-alpha
-			if(calist.Count > 2) {
+			if(calist != null && calist.Count > 2) {
 				
 				MoleculeModel.backupCaSplineChainList = caChainlist;
 				MoleculeModel.backupCatomsLocationlist = calist;

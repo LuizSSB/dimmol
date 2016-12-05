@@ -78,17 +78,8 @@ namespace Molecule.View.DisplayBond
 
 	public class BondTubeStyle:IBondStyle
 	{
-		
-		public int number=1;
 		public List<int[]> bondEPList=new List<int[]>();
 
-		public BondTubeStyle()	
-		{
-			number=FunctionConfig.number;
-
-		}
-		
-		
 		public void DisplayBonds()
 		{
 			if(UIData.Instance.secondarystruct)
@@ -100,14 +91,14 @@ namespace Molecule.View.DisplayBond
 				bondEPList=MoleculeModel.bondEPList;
 			}
 				MoleculeModel.bondsnumber=bondEPList.Count;
-				int Number=bondEPList.Count/number;
+				int Number=bondEPList.Count;
 				
 				Debug.Log("DisplayBonds??bondEPList.Count "  + bondEPList.Count);
 				Debug.Log("UIData.Instance.EnableUpdate "  + UIData.Instance.EnableUpdate);
 
 				for(int i=0;i<Number;i++)
 				{
-					CreateTube(i*number);		
+					CreateTube(i);		
 				}
 						
 		}

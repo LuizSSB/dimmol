@@ -62,6 +62,7 @@
 /// using HyperBalls, a unified algorithm for balls, sticks and hyperboloids",
 /// J. Comput. Chem., 2011, 32, 2924
 ///
+using System.Linq;
 
 
 namespace Molecule.View.DisplayBond {
@@ -88,28 +89,24 @@ namespace Molecule.View.DisplayBond {
 	}
 
 	public class BondCubeStyle:IBondStyle {
-		public int number=1;
-		public List<int[]> bondList;
-		public List<int[]> bondEPList;
-		
 		public BondCubeStyle() {
-			number=FunctionConfig.number;
 		}
 		
 		public void DisplayBonds() {
+			List<int[]> bondEPList;
+
 			if(UIData.Instance.bondtype==UIData.BondType.cube) {
-				bondList=MoleculeModel.bondEPList;
-				MoleculeModel.bondsnumber=bondList.Count;
+				MoleculeModel.bondsnumber = MoleculeModel.bondEPList.Count;
 				if(UIData.Instance.secondarystruct)
 					bondEPList=MoleculeModel.bondCAList;
 				else
 					bondEPList=MoleculeModel.bondEPList;
-				int Number=bondEPList.Count/number;
+				int Number=bondEPList.Count;
 				
-				Debug.Log("DisplayBonds??bondList.Count "  + bondList.Count);
+				Debug.Log("DisplayBonds??bondList.Count "  + MoleculeModel.bondEPList.Count);
 
 				for(int i=0;i<Number;i++)
-					CreateCylinder(i*number);
+					CreateCylinder(i, bondEPList);
 				GameObject cbManagerObj = GameObject.FindGameObjectWithTag("CubeBondManager");
 				CubeBondManager cbManager = cbManagerObj.GetComponent<CubeBondManager>();
 				cbManager.Init();
@@ -122,10 +119,10 @@ namespace Molecule.View.DisplayBond {
 				else
 					bondEPList=MoleculeModel.bondEPList;
 				Debug.Log("Bonds?? bondEPList.Count :: "  + bondEPList.Count);
-				int Number=bondEPList.Count/number;
+				int Number=bondEPList.Count;
 
 				for(int i=0;i<Number;i++)
-					CreateCylinderByShader(i*number);
+					CreateCylinderByShader(i, bondEPList);
 				GameObject hsManagerObj = GameObject.FindGameObjectWithTag("HStickManager");
 				HStickManager hsManager = hsManagerObj.GetComponent<HStickManager>();
 				hsManager.Init();
@@ -152,57 +149,58 @@ namespace Molecule.View.DisplayBond {
 				else
 					bondEPList=MoleculeModel.bondEPList;
 				Debug.Log("DisplayBonds??bondEPList.Count "  + bondEPList.Count);
-				int Number=bondEPList.Count/number;
+				int Number=bondEPList.Count;
 
 				for(int i=0;i<Number;i++)
-					CreateBBCylinderByShader(i*number);
+					CreateBBCylinderByShader(i, bondEPList);
 			}
 		}
 
 		//Hypersticks
-		private void CreateCylinderByShader(int start) {
-				GameObject Stick;
-				int i = start;
+		private static GameObject CreateCylinderByShader(int start, List<int[]> bondEPList) {
+			GameObject Stick;
+			int i = start;
 
-				int[] atomsIds = bondEPList[i] as int[];
-				Stick=GameObject.CreatePrimitive(PrimitiveType.Cube);
-				RuntimePlatform platform = Application.platform;
-				switch(platform) {
-					case RuntimePlatform.WindowsPlayer:
-					case RuntimePlatform.WindowsWebPlayer:
-					case RuntimePlatform.WindowsEditor:
-				Stick.GetComponent<Renderer>().material.shader=Shader.Find("FvNano/Stick HyperBalls 2 OpenGL");
-						break;
-					default :
-						Stick.GetComponent<Renderer>().material.shader=Shader.Find("FvNano/Stick HyperBalls 2 OpenGL");
-						break;				
-				}
-				StickUpdate comp = Stick.AddComponent<StickUpdate>();
-				//Debug.Log("BOND : " + atomsIds[0] + " - " + atomsIds[1]);
-				//comp.atompointer1=(GameObject)MoleculeModel.atoms[atomsIds[0]];
-				//comp.atompointer2=(GameObject)MoleculeModel.atoms[atomsIds[1]];
+			int[] atomsIds = bondEPList[i] as int[];
+			Stick = GameObject.CreatePrimitive(PrimitiveType.Cube);
+			RuntimePlatform platform = Application.platform;
+			switch (platform) {
+				case RuntimePlatform.WindowsPlayer:
+				case RuntimePlatform.WindowsWebPlayer:
+				case RuntimePlatform.WindowsEditor:
+					Stick.GetComponent<Renderer>().material.shader = Shader.Find("FvNano/Stick HyperBalls 2 OpenGL");
+					break;
+				default :
+					Stick.GetComponent<Renderer>().material.shader = Shader.Find("FvNano/Stick HyperBalls 2 OpenGL");
+					break;				
+			}
+			StickUpdate comp = Stick.AddComponent<StickUpdate>();
+			//Debug.Log("BOND : " + atomsIds[0] + " - " + atomsIds[1]);
+			//comp.atompointer1=(GameObject)MoleculeModel.atoms[atomsIds[0]];
+			//comp.atompointer2=(GameObject)MoleculeModel.atoms[atomsIds[1]];
 				
-				if(UI.UIData.Instance.atomtype == UI.UIData.AtomType.particleball){
-					comp.atompointer1=(GameObject)MoleculeModel.atoms[atomsIds[0]];
-					comp.atompointer2=(GameObject)MoleculeModel.atoms[atomsIds[1]];
-				}
-				else{
-					GenericManager manager = Molecule.View.DisplayMolecule.GetManagers()[0];
-					comp.atompointer1 = manager.GetBall(Molecule.Model.MoleculeModel.atoms.Count - 1 - atomsIds[0]);
-					comp.atompointer2 = manager.GetBall(Molecule.Model.MoleculeModel.atoms.Count - 1 - atomsIds[1]);
-				}
+			if (UI.UIData.Instance.atomtype == UI.UIData.AtomType.particleball) {
+				comp.atompointer1 = (GameObject)MoleculeModel.atoms[atomsIds[0]];
+				comp.atompointer2 = (GameObject)MoleculeModel.atoms[atomsIds[1]];
+			} else {
+				GenericManager manager = Molecule.View.DisplayMolecule.GetManagers()[0];
+				comp.atompointer1 = manager.GetBall(Molecule.Model.MoleculeModel.atoms.Count - 1 - atomsIds[0]);
+				comp.atompointer2 = manager.GetBall(Molecule.Model.MoleculeModel.atoms.Count - 1 - atomsIds[1]);
+			}
 			
-				comp.enabled = true;										
-				Stick.GetComponent<Renderer>().material.SetFloat("_Shrink", StickUpdate.shrink);
-				Stick.tag="Club";
-				Stick.GetComponent<Collider>().enabled = false;
-				Stick.transform.position = comp.atompointer1.transform.position;
-				Stick.transform.parent = BondCubeData.Instance.BondCubeParent.transform;
+			comp.enabled = true;										
+			Stick.GetComponent<Renderer>().material.SetFloat("_Shrink", StickUpdate.shrink);
+			Stick.tag = "Club";
+			Stick.GetComponent<Collider>().enabled = false;
+			Stick.transform.position = comp.atompointer1.transform.position;
+			Stick.transform.parent = BondCubeData.Instance.BondCubeParent.transform;
+
+			return Stick;
 		}
 
 
 		//Cubes
-		private void CreateCylinder(int i) {
+		private static void CreateCylinder(int i, List<int[]> bondEPList) {
 /*			GameObject cylinder;
 			MeshFilter filter;
 			Mesh   cylinderMesh;
@@ -238,7 +236,7 @@ namespace Molecule.View.DisplayBond {
 		
 
 		//Billboard hypersticks
-		private void CreateBBCylinderByShader(int i) {
+		private static void CreateBBCylinderByShader(int i, List<int[]> bondEPList) {
 			GameObject Stick;
 			if(UIData.Instance.toggleClip)
 				Stick=Clip4HyperStick.CreateClip();
@@ -272,7 +270,36 @@ namespace Molecule.View.DisplayBond {
 			Stick.tag="Club";
 			Stick.transform.parent = BondCubeData.Instance.BondCubeParent.transform;
 		}
-		
-	}
 
+		// Luiz:
+		public static void ReassignBonds() {
+			GameObject hsManagerObj = GameObject.FindGameObjectWithTag("HStickManager");
+			var bondsScripts = HStickManager.sticks;
+			GenericManager atomManager = Molecule.View.DisplayMolecule.GetManagers()[0];
+
+			int idxBond = 0;
+			foreach (var bond in MoleculeModel.bondEPList) {
+				StickUpdate bondScript;
+
+				if (bondsScripts.Count == idxBond) {
+					var bondObject = CreateCylinderByShader(idxBond, MoleculeModel.bondEPList);
+					bondScript = bondObject.GetComponent<StickUpdate>();
+					bondsScripts.Add(bondScript);
+				} else {
+					bondScript = bondsScripts[idxBond];
+				}
+
+				bondScript.atompointer1 = atomManager.GetBall(MoleculeModel.atoms.Count - 1 - bond[0]);
+				bondScript.atompointer2 = atomManager.GetBall(MoleculeModel.atoms.Count - 1 - bond[1]);
+				
+				++idxBond;
+			}
+
+			while (bondsScripts.Count > idxBond) {
+				var bondScript = bondsScripts[idxBond];
+				bondsScripts.RemoveAt(idxBond);
+				GameObject.Destroy(bondScript.gameObject);
+			}
+		}
+	}
 }

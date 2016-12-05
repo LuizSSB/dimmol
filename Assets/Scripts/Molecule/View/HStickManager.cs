@@ -2,9 +2,10 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using UI;
+using System.Linq;
 
 public class HStickManager : GenericManager {
-	public static StickUpdate[] sticks;
+	public static List<StickUpdate> sticks;
 	
 	public static bool xgmml = false;
 	public static float depthFactor = 1.0f;
@@ -16,15 +17,19 @@ public class HStickManager : GenericManager {
 		if(UI.GUIDisplay.Instance.file_extension=="xgmml")
 			xgmml = true;
 		
-		sticks = GameObject.FindObjectsOfType(typeof(StickUpdate)) as StickUpdate[];
+		sticks = GetStickUpdates();
 		BallUpdate.bondsReadyToBeReset = true;
 		enabled = true;
-		//for (int i=0; i< sticks.Length; i++) {
-		for (int i=0; i< sticks.Length; i++){
+		//for (int i=0; i< sticks.Count; i++) {
+		for (int i=0; i< sticks.Count; i++){
 			sticks[i].GetComponent<Renderer>().enabled = true;
 			sticks[i].GetComponent<Renderer>().castShadows = false;
 			sticks[i].GetComponent<Renderer>().receiveShadows = false;
 		}
+	}
+
+	private static List<StickUpdate> GetStickUpdates() {
+		return (GameObject.FindObjectsOfType(typeof(StickUpdate)) as StickUpdate[]).ToList();
 	}
 	
 	public override void DestroyAll() {
@@ -46,17 +51,17 @@ public class HStickManager : GenericManager {
 		float attenuation;
 		attenuation = enabling? 1f : 0f;
 		
-		//for (int i=0; i< sticks.Length; i++)
-		for (int i=0; i< sticks.Length; i++)
+		//for (int i=0; i< sticks.Count; i++)
+		for (int i=0; i< sticks.Count; i++)
 			sticks[i].GetComponent<Renderer>().material.SetFloat("_Attenuation", attenuation);
 	}
 	
 	
 	private void ResetColors() {
 		if(UIData.Instance.bondtype == UIData.BondType.hyperstick){
-			sticks = GameObject.FindObjectsOfType(typeof(StickUpdate)) as StickUpdate[];
+			sticks = GetStickUpdates();	
 
-			for (int i=0; i< sticks.Length; i++) {
+			for (int i=0; i< sticks.Count; i++) {
 				sticks[i].GetComponent<Renderer>().material.SetColor("_Color", sticks[i].atompointer1.GetComponent<Renderer>().material.GetColor("_Color"));
 				sticks[i].GetComponent<Renderer>().material.SetColor("_Color2", sticks[i].atompointer2.GetComponent<Renderer>().material.GetColor("_Color"));
 			}
@@ -67,15 +72,15 @@ public class HStickManager : GenericManager {
 	
 	private void ResetTextures() {
 		if(UIData.Instance.bondtype == UIData.BondType.hyperstick){
-			sticks = GameObject.FindObjectsOfType(typeof(StickUpdate)) as StickUpdate[];
+			sticks = GetStickUpdates();
 			if(UIData.Instance.atomtype == UIData.AtomType.hyperball){
-				for (int i=0; i< sticks.Length; i++) {
+				for (int i=0; i< sticks.Count; i++) {
 					sticks[i].GetComponent<Renderer>().material.SetTexture("_MatCap", sticks[i].atompointer1.GetComponent<Renderer>().material.GetTexture("_MatCap"));
 					sticks[i].GetComponent<Renderer>().material.SetTexture("_MatCap2", sticks[i].atompointer2.GetComponent<Renderer>().material.GetTexture("_MatCap"));
 				}
 			}
 			else{
-			for (int i=0; i< sticks.Length; i++) {
+			for (int i=0; i< sticks.Count; i++) {
 					sticks[i].GetComponent<Renderer>().material.SetTexture("_MatCap", (Texture)Resources.Load("lit_spheres/divers/daphz05"));
 					sticks[i].GetComponent<Renderer>().material.SetTexture("_MatCap2", (Texture)Resources.Load("lit_spheres/divers/daphz05"));
 				}	
@@ -90,8 +95,8 @@ public class HStickManager : GenericManager {
 	/// </summary>
 	public override void ResetPositions()	{
 		Vector3 atomOne = Vector3.zero;
-		sticks = GameObject.FindObjectsOfType(typeof(StickUpdate)) as StickUpdate[];
-		for (int i=0; i< sticks.Length; i++) {
+		sticks = GetStickUpdates();
+		for (int i=0; i< sticks.Count; i++) {
 			atomOne = sticks[i].atompointer1.transform.position; // transform.position is costly; this way, we do it twice instead of thrice
 			sticks[i].GetComponent<Renderer>().material.SetVector("_TexPos1", atomOne);
 			sticks[i].transform.position = atomOne;
@@ -107,9 +112,9 @@ public class HStickManager : GenericManager {
 	/// Adjusts the stick radii, which is needed to match the size of the balls when their radii are modified.
 	/// </summary>
 	private void AdjustStickRadii() {
-		sticks = GameObject.FindObjectsOfType(typeof(StickUpdate)) as StickUpdate[];
+		sticks = GetStickUpdates();
 		if(UIData.Instance.atomtype == UIData.AtomType.hyperball) {
-			for (int i=0; i< sticks.Length; i++) {
+			for (int i=0; i< sticks.Count; i++) {
 				//if it's not a network
 				if(!xgmml){
 					sticks[i].GetComponent<Renderer>().material.SetFloat("_Rayon1", sticks[i].atompointer1.GetComponent<Renderer>().material.GetFloat("_Rayon"));
@@ -127,7 +132,7 @@ public class HStickManager : GenericManager {
 		}
 		else {
 			//sticks = GameObject.FindObjectsOfType(typeof(StickUpdate)) as StickUpdate[];
-			for (int i=0; i< sticks.Length; i++) {
+			for (int i=0; i< sticks.Count; i++) {
 				sticks[i].GetComponent<Renderer>().material.SetFloat("_Rayon1", sticks[i].atompointer1.transform.lossyScale.x/2);
 				sticks[i].GetComponent<Renderer>().material.SetFloat("_Rayon2", sticks[i].atompointer2.transform.lossyScale.x/2);
 				
@@ -138,21 +143,21 @@ public class HStickManager : GenericManager {
 	}
 	
 	public override void EnableRenderers() {
-		for (int i=0; i< sticks.Length; i++)
+		for (int i=0; i< sticks.Count; i++)
 			sticks[i].GetComponent<Renderer>().enabled = true;
 		enabled = true;
 	}
 	
 	public override void DisableRenderers() {
-		sticks = GameObject.FindObjectsOfType(typeof(StickUpdate)) as StickUpdate[];
+		sticks = GetStickUpdates();
 		Debug.Log("StickManager: DisableRenderers()");
-		for (int i=0; i< sticks.Length; i++)
+		for (int i=0; i< sticks.Count; i++)
 			sticks[i].GetComponent<Renderer>().enabled = false;
 		enabled = false;
 	}
 	
 	private void ResetBrightness() {
-		for(int i=0; i<sticks.Length; i++)
+		for(int i=0; i<sticks.Count; i++)
 			sticks[i].GetComponent<Renderer>().material.SetFloat("_Brightness", HBallManager.brightness);
 		
 		resetBrightness = false;
@@ -187,12 +192,12 @@ public class HStickManager : GenericManager {
 			ResetPositions();
 		
 		if(BallUpdate.resetRadii || (StickUpdate.shrink != StickUpdate.oldshrink)) {
-			for (int i=0; i< sticks.Length; i++)
+			for (int i=0; i< sticks.Count; i++)
 				sticks[i].GetComponent<Renderer>().material.SetFloat("_Shrink", StickUpdate.shrink);
 			StickUpdate.oldshrink = StickUpdate.shrink;
 		}
 		if(BallUpdate.resetRadii || (StickUpdate.scale != StickUpdate.oldscale)) {
-			for (int i=0; i< sticks.Length; i++)
+			for (int i=0; i< sticks.Count; i++)
 				sticks[i].GetComponent<Renderer>().material.SetFloat("_Scale",StickUpdate.scale);
 			StickUpdate.oldscale = StickUpdate.scale;
 		}

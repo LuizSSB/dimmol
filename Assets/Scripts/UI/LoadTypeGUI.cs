@@ -1165,7 +1165,7 @@ namespace UI {
 				if (MoleculeModel.sugarResname.Contains(MoleculeModel.atomsResnamelist[atom_number])){
 					HBallManager.hballs[i].GetComponent<Renderer>().enabled=show;
 				}
-				if (i<HStickManager.sticks.Length){ 
+				if (i<HStickManager.sticks.Count){ 
 					int atom_number1=(int)HStickManager.sticks[i].atompointer1.GetComponent<BallUpdate>().number;
 					int atom_number2=(int)HStickManager.sticks[i].atompointer2.GetComponent<BallUpdate>().number;
 
@@ -1176,7 +1176,7 @@ namespace UI {
 			}
 			//If we didn't finish to check the bond list (more bond than atoms)
 			//we check the end of the list.
-			while(i<HStickManager.sticks.Length){
+			while(i<HStickManager.sticks.Count){
 				int atom_number1=(int)HStickManager.sticks[i].atompointer1.GetComponent<BallUpdate>().number;
 				int atom_number2=(int)HStickManager.sticks[i].atompointer2.GetComponent<BallUpdate>().number;
 				if ((MoleculeModel.sugarResname.Contains(MoleculeModel.atomsResnamelist[atom_number1]))||
@@ -1194,7 +1194,7 @@ namespace UI {
 				if (!MoleculeModel.sugarResname.Contains(MoleculeModel.atomsResnamelist[atom_number])){
 					HBallManager.hballs[i].GetComponent<Renderer>().enabled=show;
 				}
-				if (i<HStickManager.sticks.Length){ 
+				if (i<HStickManager.sticks.Count){ 
 					int atom_number1=(int)HStickManager.sticks[i].atompointer1.GetComponent<BallUpdate>().number;
 					int atom_number2=(int)HStickManager.sticks[i].atompointer2.GetComponent<BallUpdate>().number;
 					
@@ -1205,7 +1205,7 @@ namespace UI {
 			}
 			//If we didn't finish to check the bond list (more bond than atoms)
 			//we check the end of the list.
-			while(i<HStickManager.sticks.Length){
+			while(i<HStickManager.sticks.Count){
 				int atom_number1=(int)HStickManager.sticks[i].atompointer1.GetComponent<BallUpdate>().number;
 				int atom_number2=(int)HStickManager.sticks[i].atompointer2.GetComponent<BallUpdate>().number;
 				if ((!MoleculeModel.sugarResname.Contains(MoleculeModel.atomsResnamelist[atom_number1]))||
@@ -1223,7 +1223,7 @@ namespace UI {
 				}
 				// We want to check atoms and bond in one loop. 
 				//so we check if we not over the size of the bond list
-				if (i<HStickManager.sticks.Length){ 
+				if (i<HStickManager.sticks.Count){ 
 					if ((HStickManager.sticks[i].atompointer2.tag == "H") ||
 					    (HStickManager.sticks[i].atompointer1.tag == "H"))
 						HStickManager.sticks[i].GetComponent<Renderer>().enabled=show;
@@ -1231,7 +1231,7 @@ namespace UI {
 			}
 			//If we didn't finish to check the bond list (more bond than atoms)
 			//we check the end of the list.
-			while(i<HStickManager.sticks.Length){
+			while(i<HStickManager.sticks.Count){
 				if ((HStickManager.sticks[i].atompointer2.tag == "H") ||
 				    (HStickManager.sticks[i].atompointer1.tag == "H"))
 					HStickManager.sticks[i].GetComponent<Renderer>().enabled=show;

@@ -873,10 +873,10 @@ namespace Molecule.View {
 			MoleculeModel.atomsSugarResnamelist = new List<string>();
 			MoleculeModel.atomsSugarLocationlist = new List<float[]>();
 			MoleculeModel.resSugarChainList = new List<string>();
-			MoleculeModel.CaSplineList=null;
-			MoleculeModel.CaSplineTypeList = null;
-			MoleculeModel.CaSplineChainList = null;
-			MoleculeModel.CatomsLocationlist = null;// CA atoms coordinates
+			MoleculeModel.CaSplineList.Clear();
+			MoleculeModel.CaSplineTypeList.Clear();
+			MoleculeModel.CaSplineChainList.Clear();
+			MoleculeModel.CatomsLocationlist.Clear();// CA atoms coordinates
 			
 			MoleculeModel.FieldLineList=null;
 //			MoleculeModel.FieldLineDist = null;// Field lines distance arrays

@@ -78,17 +78,12 @@ namespace Molecule.View.DisplayBond
 
 	public class BondLineStyle:IBondStyle
 	{
-		
-		public int number=1;
 		public List<int[]> bondEPList=new List<int[]>();
 
 		public BondLineStyle()	
 		{
-			number=FunctionConfig.number;
-
 		}
-		
-		
+				
 		public void DisplayBonds()
 		{
 			if(UIData.Instance.secondarystruct)
@@ -101,14 +96,14 @@ namespace Molecule.View.DisplayBond
 			}
 			
 			MoleculeModel.bondsnumber=bondEPList.Count;
-			int Number=bondEPList.Count/number;
+			int Number=bondEPList.Count;
 			
 			Debug.Log("DisplayBonds??bondEPList.Count "  + bondEPList.Count);
 			Debug.Log("UIData.Instance.EnableUpdate "  + UIData.Instance.EnableUpdate);
 
 			for(int i=0;i<Number;i++)
 			{
-				CreateLine(i*number);
+				CreateLine(i);
 			}
 			GameObject lineManagerObj = GameObject.FindGameObjectWithTag("LineManager");
 			LineManager lineManager = lineManagerObj.GetComponent<LineManager>();

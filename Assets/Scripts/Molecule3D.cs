@@ -488,10 +488,13 @@ public class Molecule3D:MonoBehaviour {
 		IEnumerable<GameObject> oldClubs = null;
 
 		if (recalculateBonds) {
-			oldClubs = GameObject.FindGameObjectsWithTag("Club");
+//			oldClubs = GameObject.FindGameObjectsWithTag("Club");
 
-			Molecule.Control.ControlMolecule.CreateSplines();
-			new Molecule.View.DisplayBond.BondCubeStyle().DisplayBonds();
+			// Luiz: Recalculates atoms' bonds
+			TrajectoryData.Instance.CurrentStateSpline.ApplyOnMoleculeModel();
+
+			// Luiz: draws the new bonds between the atoms.
+			Molecule.View.DisplayBond.BondCubeStyle.ReassignBonds();
 		}
 
 		switch(UIData.Instance.bondtype) {

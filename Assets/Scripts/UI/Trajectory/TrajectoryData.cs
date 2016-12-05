@@ -22,10 +22,17 @@ namespace UI
 
 //		private string[] StateFiles { get; private set; }
 		private OutputState[] States { get; set; }
+		private SplineData[] StatesSplines { get; set; }
 
 		public OutputState CurrentState {
 			get {
 				return IsLoaded ? States[CurrentStateIdx] : null;
+			}
+		}
+
+		public SplineData CurrentStateSpline {
+			get {
+				return IsLoaded ? StatesSplines[CurrentStateIdx] : null;
 			}
 		}
 
@@ -93,9 +100,37 @@ namespace UI
 			);
 		}
 
+
+		private static SplineData[] CalculateSplines(OutputState[] states) {
+			var firstStatePdb = PDBMaker.MakePDB(states[0]);
+			Molecule.Control.ControlMolecule.CreateMolecule(new System.IO.StringReader(firstStatePdb));
+
+			var splines = new SplineData[states.Length];
+
+			ExternalOutput.Atom currentAtom;
+			float[] currentLocation;
+			int idxState = 0;
+			foreach (var state in states) {
+				for(int idxAtom = 0; idxAtom < MoleculeModel.atomsLocationlist.Count; ++idxAtom) {
+					currentAtom = state.Atoms[idxAtom];
+					currentLocation = MoleculeModel.atomsLocationlist[idxAtom];
+					currentLocation[0] = currentAtom.FloatX;
+					currentLocation[1] = currentAtom.FloatY;
+					currentLocation[2] = currentAtom.FloatZ;
+				}
+
+				Molecule.Control.ControlMolecule.CreateSplines();
+
+				splines[idxState++] = SplineData.FromMoleculeModel();
+			}
+
+			return splines;
+		}
+
 		public static void ReceiveTrajectory(int nodeId, TrajectoryLoadedArgs trajectory) {
 			var states = trajectory.States;
 			Instance.States = states.ToArray();
+			Instance.StatesSplines = CalculateSplines(Instance.States);
 			Instance._CurrentStateIdx = 0;
 
 			var energies = states.Select(s => s.Energy);

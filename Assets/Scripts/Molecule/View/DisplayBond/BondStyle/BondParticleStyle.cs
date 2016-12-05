@@ -77,39 +77,36 @@ namespace Molecule.View.DisplayBond
 	using Molecule.View.DisplayAtom;
 	public class BondParticleStyle:IBondStyle
 	{
-		public int number=1;
 		public List<int[]> bondList=new List<int[]>();
 		public List<int[]> bondEPList=new List<int[]>();
 		
-		Particle[] p = new Particle[MoleculeModel.bondEPList.Count/FunctionConfig.number];
+		Particle[] p = new Particle[MoleculeModel.bondEPList.Count];
 		int bondindex=0;
 
 		public BondParticleStyle()
 		{
-			number=FunctionConfig.number;
 		}
 
-		
 		public void DisplayBonds()
 		{
 				bondEPList=MoleculeModel.bondEPList;
 				Debug.Log("DisplayBonds??bondEPList.Count "  + bondEPList.Count);
-				int Number=bondEPList.Count/number;
+				int Number=bondEPList.Count;
 
 				for(int i=0;i<Number;i++)
 				{
-					if(i!=number-1)
+					if(i!=0)
 					{
-						CreateCylinderByParticle(i*number,(i+1)*number);
+						CreateCylinderByParticle(i,(i+1));
 					}
 					else
 					{
-						CreateCylinderByParticle(i*number,bondEPList.Count);
+						CreateCylinderByParticle(i,bondEPList.Count);
 					}
 				}
 				GameObject ParticleStickManager=GameObject.Find("ParticleStickManager");
 						ParticleEffect particleeffect=ParticleStickManager.transform.GetComponent<ParticleEffect>();
-						particleeffect.atomcount=MoleculeModel.bondEPList.Count/FunctionConfig.number;
+						particleeffect.atomcount=MoleculeModel.bondEPList.Count;
 						particleeffect.p=p;
 						particleeffect.SpawnEffect ();
 						Debug.Log("the length of p ="+p.Length);

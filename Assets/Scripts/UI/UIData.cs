@@ -127,13 +127,7 @@ namespace UI
 
 			// Luiz: this is ugly, but has to be done this way, otherwise controlling this thing would be hell;
 			if (hasError) {
-				DoOnMainThread.AddAction(() => {
-					UnityEditor.EditorUtility.DisplayDialog(
-						"Error",
-						message,
-						"OK"
-					);
-				});
+				ModalUtility.ShowAlert("Error", message);
 			}
 		}
 		

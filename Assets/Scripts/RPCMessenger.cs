@@ -82,33 +82,45 @@ namespace AssemblyCSharp
 		}
 
 		public void SendComplexObject(object obj, Type callbackType, string callbackMethod) {
-			var objSerialized = JsonUtility.ToJson(obj);
-			var control = new ControlData {
-				CallbackType = callbackType,
-				CallbackMethodName = callbackMethod,
-				ObjectType = obj.GetType(),
-				TotalParts = (int) System.Math.Ceiling (objSerialized.Length / (double) ComplexObjectPartLength)
-			};
+			new System.Threading.Thread(() => {
+				ModalUtility.SetLoadingHud(true, "Sending to cluster nodes");
 
-			for (int idx = 0, idxPart = 0;
-				idx < objSerialized.Length;
-				idx += ComplexObjectPartLength, ++idxPart) {
+				var objSerialized = JsonUtility.ToJson(obj);
+				var control = new ControlData {
+					CallbackType = callbackType,
+					CallbackMethodName = callbackMethod,
+					ObjectType = obj.GetType(),
+					TotalParts = (int) System.Math.Ceiling (objSerialized.Length / (double) ComplexObjectPartLength)
+				};
 
-				control.CurrentPart = idxPart;
+				for (int idx = 0, idxPart = 0;
+					idx < objSerialized.Length;
+					idx += ComplexObjectPartLength, ++idxPart) {
 
-				var part = control +
-					"$" +
-					objSerialized.Substring(
-						idx,
-						(int) System.Math.Min(ComplexObjectPartLength, objSerialized.Length - idx)
-					);
+					control.CurrentPart = idxPart;
 
-				mNetworkView.RPC("ReceiveString", RPCMode.All, Node.CurrentNode.Id, part);
-			}
+					var part = control +
+						"$" +
+						objSerialized.Substring(
+							idx,
+							(int) System.Math.Min(ComplexObjectPartLength, objSerialized.Length - idx)
+						);
+
+					DoOnMainThread.AddAction(() => {
+						mNetworkView.RPC("ReceiveString", RPCMode.All, Node.CurrentNode.Id, part);
+					});
+				}
+
+				ModalUtility.SetLoadingHud(false);
+			}).Start();
 		}
 
 		[RPC]
 		public void ReceiveString(int nodeId, string value) {
+			if (!Node.CurrentNode.HasPermission(NodePermission.MenuControl)) {
+				ModalUtility.SetLoadingHud(true, "Receiving data");
+			}
+
 			var indexOfDollar = value.IndexOf("$");
 			var controlParts = value.Substring(0, indexOfDollar);
 			var control = ControlData.Deserialize(controlParts);
@@ -120,11 +132,18 @@ namespace AssemblyCSharp
 			mComplexObjectParts[control.CurrentPart] = value.Substring(indexOfDollar + 1);
 
 			if (!mComplexObjectParts.Any(p => p == null)) {
-				var serialized = string.Join(string.Empty, mComplexObjectParts);
-				var obj = JsonUtility.FromJson(serialized, control.ObjectType);
-				var method = control.CallbackType.GetMethod(control.CallbackMethodName);
-				method.Invoke(null, new object[] {nodeId, obj});
-				mComplexObjectParts = null;
+				new System.Threading.Thread(() => {
+					ModalUtility.SetLoadingHud(true, "Parsing received data");
+					var serialized = string.Join(string.Empty, mComplexObjectParts);
+					var obj = JsonUtility.FromJson(serialized, control.ObjectType);
+					var method = control.CallbackType.GetMethod(control.CallbackMethodName);
+					mComplexObjectParts = null;
+
+					ModalUtility.SetLoadingHud(false);
+					DoOnMainThread.AddAction(() => {
+						method.Invoke(null, new object[] { nodeId, obj });
+					});					
+				}).Start();
 			}
 		}
 

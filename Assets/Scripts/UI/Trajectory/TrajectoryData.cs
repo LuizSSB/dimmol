@@ -87,17 +87,30 @@ namespace UI
 		}
 
 		public void LoadTrajectoryFile(string filePath, ParseableOutputTypes type) {
-			var states = ParseUtils.ExtractStates(filePath, type);
+			new System.Threading.Thread(() => {
+				List<OutputState> states = null;
 
-			if (states.Count == 0) {
-				throw new ArgumentException("Trajectory file has no states");
-			}
+				ModalUtility.SetLoadingHud(true, "Reading trajectory");
+				try {
+					ModalUtility.SetLoadingHud(true, "Reading trajectory");
+					states = ParseUtils.ExtractStates(filePath, type);
+				} catch(Exception e) {
+					UIData.Instance.SetError(true, "Invalid trajectory file. Make sure the chosen file matches the chosen format (.gms for GAMESS output / .xmol for XMOL).");
+				}
+				ModalUtility.SetLoadingHud(false);
 
-			AssemblyCSharp.RPCMessenger.GetCurrent().SendComplexObject(
-				new TrajectoryLoadedArgs { States = states },
-				GetType(),
-				"ReceiveTrajectory"
-			);
+				if (states.Count == 0) {
+					UIData.Instance.SetError(true, "Trajectory file has no states");
+				} else {
+					DoOnMainThread.AddAction(() => {
+						AssemblyCSharp.RPCMessenger.GetCurrent().SendComplexObject(
+							new TrajectoryLoadedArgs { States = states },
+							GetType(),
+							"ReceiveTrajectory"
+						);
+					});
+				}
+			}).Start();
 		}
 
 

@@ -364,13 +364,9 @@ namespace UI {
 			UIData.Instance.SetError(false);
 
 			UpdateOldPaths(path);
+			m_fileBrowser = null;
 
-			try {
-				TrajectoryData.Instance.LoadTrajectoryFile(path, TrajectoryType);
-				m_fileBrowser = null;
-			} catch(System.Exception e) {
-				UIData.Instance.SetError(true, "Invalid trajectory file. Make sure the chosen file matches the chosen format below (.gms / .xmol).");
-			}
+			TrajectoryData.Instance.LoadTrajectoryFile(path, TrajectoryType);
 		}
 
 		public void OpenFileCallback(string path) {

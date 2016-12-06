@@ -9,7 +9,13 @@ namespace ExternalOutput
 		{
 			var pdbBuilder = new System.Text.StringBuilder();
 			pdbBuilder.AppendLine("COMPND    MAGICKOMPOUND");
-			pdbBuilder.AppendLine("TITLE     MAGICKOMPOUND, energy=" + state.Energy);
+			pdbBuilder.Append("TITLE     MAGICKOMPOUND");
+
+			if (state.HasEnergyData) {
+				pdbBuilder.AppendLine(", energy=" + state.Energy);
+			} else {
+				pdbBuilder.AppendLine();
+			}
 			pdbBuilder.AppendLine("AUTHOR    Foo bar");
 
 			var idx = 1;

@@ -4006,15 +4006,13 @@ namespace UI {
 
 		// Luiz:
 		public void Energy(int id) {
-			if (TrajectoryData.Instance.StateEnergyMinMax != null) {
-				EnergyWindow.Draw(
-					TrajectoryData.Instance.CurrentState.Energy,
-					TrajectoryData.Instance.StateEnergyMinMax.max,
-					TrajectoryData.Instance.StateEnergyMinMax.min
-				);
+			EnergyWindow.Draw(
+				TrajectoryData.Instance.CurrentState.Energy,
+				TrajectoryData.Instance.StateEnergyMinMax.max,
+				TrajectoryData.Instance.StateEnergyMinMax.min
+			);
 
-				GUI.DragWindow();
-			}
+			GUI.DragWindow();
 		}
 		
 		/// <summary>

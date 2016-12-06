@@ -11,7 +11,15 @@ namespace ExternalOutput
 		}
 		
 		public System.Collections.Generic.List<Atom> Atoms;
-		public float Energy;
+		public float Energy = OutputState.NullEnergy;
+
+		public bool HasEnergyData {
+			get {
+				return Energy != OutputState.NullEnergy;
+			}
+		}
+
+		public const float NullEnergy = float.MinValue;
 	}
 }
 

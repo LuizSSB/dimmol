@@ -45,6 +45,11 @@ namespace UI
 				return CurrentStateIdx >= 0;
 			}
 		}
+		public bool HasEnergyMeter {
+			get {
+				return IsLoaded && CurrentState.HasEnergyData;
+			}
+		}
 
 		public int NumberOfStates {
 			get {

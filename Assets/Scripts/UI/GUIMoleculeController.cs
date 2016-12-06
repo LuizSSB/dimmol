@@ -840,7 +840,7 @@ namespace UI {
 
 		public void SetEnergyWindow() {
 			if(UnityClusterPackage.Node.CurrentNode.HasPermission(NodePermission.Energy) &&
-				TrajectoryData.Instance.CurrentState != null)
+				TrajectoryData.Instance.HasEnergyMeter)
 			{
 				Rectangles.EnergyRect = GUI.Window(666, Rectangles.EnergyRect, LoadTypeGUI.Instance.Energy, emptyContent);
 			}

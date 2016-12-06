@@ -444,6 +444,8 @@ public class Molecule3D:MonoBehaviour {
 			}
 		}
 
+		// Luiz: calling this method as a coroutine gives us a SLIGHTLY better framerate.
+		// Around 2~3 fps.
 		StartCoroutine(UpdateVisualState(setCorrectValues));
 
 		if (UIData.Instance.autoChangingState && setCorrectValues) {
@@ -487,19 +489,17 @@ public class Molecule3D:MonoBehaviour {
 
 		IEnumerable<GameObject> oldClubs = null;
 
-//		if (recalculateBonds)
+		if (recalculateBonds)
 		{
-//			oldClubs = GameObject.FindGameObjectsWithTag("Club");
-
-			// Luiz: Recalculates atoms' bonds
+			// Luiz: Applies on the MoleculeModel class all the values relative to the current state.
 			TrajectoryData.Instance.CurrentStateSpline.ApplyOnMoleculeModel();
-//			Molecule.Control.ControlMolecule.CreateSplines();
 
-			// Luiz: draws the new bonds between the atoms.
-			Molecule.View.DisplayBond.BondCubeStyle.ReassignBonds();
-//			new Molecule.View.DisplayBond.BondCubeStyle().DisplayBonds();
-//			DisplayMolecule.ResetBondDisplay();
+			// Luiz: Reassign the relatioship between atoms in the  bonds objects in an effort
+			// to save up processing time and memory.
+			Molecule.View.DisplayBond.BondStyleUtils.ReassignBonds(!UIData.Instance.autoChangingState);
 		}
+
+		yield return new WaitForSeconds(0);
 
 		switch (UIData.Instance.bondtype) {
 			case UIData.BondType.hyperstick:
@@ -521,33 +521,6 @@ public class Molecule3D:MonoBehaviour {
 
 		if(manager != null)
 			manager.ResetPositions();
-
-//					new Molecule.View.DisplayBond.BondCubeStyle().DisplayBonds();
-//		if (recalculateBonds)
-		{
-			yield return new WaitForSeconds(0);
-
-			// Luiz: making sure that things are reset,  believe it or not.
-//			UIData.Instance.resetBondDisplay = true;
-//			UIData.Instance.resetMeshcombine = true;
-//			UIData.Instance.resetDisplay = true;
-//			UIData.Instance.resetInteractive = true;
-//			StickUpdate.resetColors = true;
-//			HStickManager.resetBrightness = true;
-//			BallUpdate.resetBondColors = true;
-//			BallUpdate.resetColors = true;
-//			BallUpdate.resetRadii = true;
-//			BallUpdateCube.resetBondColors = true;
-//			BallUpdate.bondsReadyToBeReset = true;
-//			var diff = 1e-6f;
-//			GUIMoleculeController.Instance.linkScale -= diff;
-
-//			yield return new WaitForSeconds(0);
-//
-//			foreach(var club in oldClubs) {
-//				GameObject.DestroyImmediate(club);
-//			}
-		}
 	}
 	
 	// loading the file in all possibilities

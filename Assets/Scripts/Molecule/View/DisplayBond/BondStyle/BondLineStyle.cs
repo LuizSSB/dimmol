@@ -78,14 +78,13 @@ namespace Molecule.View.DisplayBond
 
 	public class BondLineStyle:IBondStyle
 	{
-		public List<int[]> bondEPList=new List<int[]>();
-
 		public BondLineStyle()	
 		{
 		}
 				
 		public void DisplayBonds()
 		{
+			List<int[]> bondEPList;
 			if(UIData.Instance.secondarystruct)
 			{
 				bondEPList=MoleculeModel.bondCAList;
@@ -103,13 +102,13 @@ namespace Molecule.View.DisplayBond
 
 			for(int i=0;i<Number;i++)
 			{
-				CreateLine(i);
+				CreateLine(i, bondEPList);
 			}
 			GameObject lineManagerObj = GameObject.FindGameObjectWithTag("LineManager");
 			LineManager lineManager = lineManagerObj.GetComponent<LineManager>();
 			lineManager.Init();
 		}
-		private void CreateLine(int i)
+		public static GameObject CreateLine(int i, List<int[]> bondEPList)
 		{
 			GameObject Line=new GameObject("Line");
 
@@ -137,6 +136,9 @@ namespace Molecule.View.DisplayBond
 			
 			comp.enabled = true;										
 			Line.tag="Club";
+			Line.transform.parent = GameObject.Find("BondCubeParent").transform;
+
+			return Line;
 		}
 		
 	}

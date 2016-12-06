@@ -67,10 +67,12 @@ using UnityEngine;
 using System.Collections;
 using UI;
 
-public class LineUpdate : MonoBehaviour {
+public class LineUpdate : MonoBehaviour, IBondUpdate {
 
-	public GameObject atompointer1=null;
-	public GameObject atompointer2=null;
+	public GameObject atompointer1 { get; set; }
+	public GameObject atompointer2 { get; set; }
+	public int atomnumber1 { get; set; }
+	public int atomnumber2 { get; set; }
 	
 	public static float scale = 1.0f;
 	

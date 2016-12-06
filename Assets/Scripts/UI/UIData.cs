@@ -127,6 +127,7 @@ namespace UI
 
 			// Luiz: this is ugly, but has to be done this way, otherwise controlling this thing would be hell;
 			if (hasError) {
+				Debug.Log("An error happened: " + message);
 				ModalUtility.ShowAlert("Error", message);
 			}
 		}

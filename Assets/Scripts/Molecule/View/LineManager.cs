@@ -2,19 +2,26 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using UI;
+using System.Linq;
 
 
 public class LineManager : GenericManager {
-	private LineUpdate[] lines;
+	public static List<LineUpdate> lines;
 	LineRenderer lineRenderer;
+
+	public static List<LineUpdate> GetLineUpdates() {
+		return Molecule.View.DisplayBond.BondCubeData.Instance.BondCubeParent
+			.GetComponentsInChildren<LineUpdate>()
+			.ToList();
+	}
 
 	// Use this for initialization
 	public override void Init () {
-		lines = GameObject.FindObjectsOfType(typeof(LineUpdate)) as LineUpdate[];
+		lines = GetLineUpdates();
 		BallUpdate.bondsReadyToBeReset = true;
 		enabled = true;
 	}
-	
+
 	public override void DestroyAll() {
 		
 	}
@@ -59,8 +66,13 @@ public class LineManager : GenericManager {
 	}
 	
 	public override void DisableRenderers() {
-		foreach(LineUpdate lu in lines)
+		foreach (LineUpdate lu in lines) {
+			if (lu == null) {
+				lines.Clear();
+				break;
+			}
 			lu.GetComponent<Renderer>().enabled = false;
+		}
 		enabled = false;
 	}
 	
@@ -79,8 +91,8 @@ public class LineManager : GenericManager {
 	}
 	
 	public override void ResetPositions()	{
-		lines = GameObject.FindObjectsOfType(typeof(LineUpdate)) as LineUpdate[];
-		for (int i=0; i< lines.Length; i++) {
+		lines = GetLineUpdates();
+		for (int i=0; i< lines.Count; i++) {
 			lineRenderer = lines[i].GetComponent<LineRenderer>();
 			lineRenderer.SetPosition(0, lines[i].atompointer1.transform.position);
 			lineRenderer.SetPosition(1, lines[i].atompointer2.transform.position);

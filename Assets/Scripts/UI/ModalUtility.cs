@@ -14,7 +14,7 @@ namespace UI
 		}
 
 		private static readonly System.Random sRandom = new System.Random();
-		private static readonly Vector2 AlertSize =  new Vector2(400, 150);
+		private static readonly Vector2 AlertSize =  new Vector2(400f, 400f);
 		private static readonly Dictionary<int, Alert> AlertData = new Dictionary<int, Alert>();
 
 		public static void ShowAlert(string title, string text) {

@@ -2,17 +2,22 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using UI;
+using System.Linq;
 
 public class CubeBondManager : GenericManager {
-	private BondCubeUpdate[] bonds;
+	public static List<BondCubeUpdate> bonds;
 
 	// Use this for initialization
 	public override void Init () {
-		bonds = GameObject.FindObjectsOfType(typeof(BondCubeUpdate)) as BondCubeUpdate[];
+		bonds = GetBondsUpdates();
 		BallUpdate.bondsReadyToBeReset = true;
 		enabled = true;
 		foreach(BondCubeUpdate bu in bonds)
 			bu.GetComponent<Collider>().enabled = false;
+	}
+
+	public static List<BondCubeUpdate> GetBondsUpdates() {
+		return (GameObject.FindObjectsOfType(typeof(BondCubeUpdate)) as BondCubeUpdate[]).ToList();
 	}
 	
 	public override void DestroyAll() {
@@ -49,7 +54,7 @@ public class CubeBondManager : GenericManager {
 	
 	private void ResetColors() {
 		if(UIData.Instance.bondtype == UIData.BondType.cube){
-			bonds = GameObject.FindObjectsOfType(typeof(BondCubeUpdate)) as BondCubeUpdate[];
+			bonds = GetBondsUpdates();
 			foreach(BondCubeUpdate bcu in bonds) {
 				//bcu.renderer.material.SetColor("_Color1", bcu.atompointer1.renderer.material.GetColor("_Color"));
 				//bcu.renderer.material.SetColor("_Color2", bcu.atompointer2.renderer.material.GetColor("_Color"));
@@ -128,8 +133,8 @@ public class CubeBondManager : GenericManager {
 */
 	public override void ResetPositions()	{
 		Vector3 atomOne = Vector3.zero;
-		bonds = GameObject.FindObjectsOfType(typeof(BondCubeUpdate)) as BondCubeUpdate[];
-		for (int i=0; i< bonds.Length; i++) {
+		bonds = GetBondsUpdates();
+		for (int i=0; i< bonds.Count; i++) {
 			atomOne = bonds[i].atompointer1.transform.position; // transform.position is costly; this way, we do it twice instead of thrice
 			bonds[i].GetComponent<Renderer>().material.SetVector("_Pos1", atomOne);
 			bonds[i].transform.position = atomOne;

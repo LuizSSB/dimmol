@@ -1273,8 +1273,13 @@ namespace UI {
 //			if(UIData.Instance.atomtype==UIData.AtomType.particleball&&!UIData.Instance.openAllMenu)GUI.enabled=false;
 			GUILayout.BeginHorizontal ();
 			GUILayout.FlexibleSpace();
-			if (GUILayout.Button (new GUIContent ("Cube", "Use Cubes to represent bonds"), GUILayout.Width(Rectangles.atomButtonWidth))) {
-				ChangeBond (UIData.BondType.cube);
+
+			if (GUILayout.Button(new GUIContent("Cube", "Use Cubes to represent bonds"), GUILayout.Width(Rectangles.atomButtonWidth))) {
+				if (TrajectoryData.Instance.IsLoaded) {
+					UIData.Instance.SetError(true, "Cube bonds not available when using trajectories");
+				} else {
+					ChangeBond(UIData.BondType.cube);
+				}
 			}
 
 			if (GUILayout.Button (new GUIContent ("Line", "Use the Line renderer to represent bonds"), GUILayout.Width(Rectangles.atomButtonWidth))) {

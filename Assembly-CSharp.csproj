@@ -169,6 +169,7 @@
      <Compile Include="Assets\Scripts\Molecule\View\DisplayBond\BondStyle\BondTubeStyle.cs" />
      <Compile Include="Assets\Scripts\Molecule\View\DisplayBond\BondStyle\IBondStyle.cs" />
      <Compile Include="Assets\Scripts\Molecule\View\DisplayBond\BondUpdate\BondCubeUpdate.cs" />
+     <Compile Include="Assets\Scripts\Molecule\View\DisplayBond\BondUpdate\IBondUpdate.cs" />
      <Compile Include="Assets\Scripts\Molecule\View\DisplayBond\BondUpdate\LineUpdate.cs" />
      <Compile Include="Assets\Scripts\Molecule\View\DisplayBond\BondUpdate\StickUpdate.cs" />
      <Compile Include="Assets\Scripts\Molecule\View\DisplayBond\BondUpdate\StickUpdateParticle.cs" />

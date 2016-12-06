@@ -67,14 +67,14 @@ using UnityEngine;
 using System.Collections;
 using UI;
 
-public class BondCubeUpdate : MonoBehaviour {
+public class BondCubeUpdate : MonoBehaviour, IBondUpdate {
 	
 	public static float scale = 1.0f;
 	public static float radiusFactor = 1.0f;
-	public GameObject atompointer1=null;
-	public GameObject atompointer2=null;
-	public int atomnumber1;
-	public int atomnumber2;
+	public GameObject atompointer1 { get; set; }
+	public GameObject atompointer2 { get; set; }
+	public int atomnumber1 { get; set; }
+	public int atomnumber2 { get; set; }
 	
 	public static float oldscale = 1.0f;
 	public static float width = GUIMoleculeController.Instance.bondWidth ;
@@ -86,7 +86,7 @@ public class BondCubeUpdate : MonoBehaviour {
 
 	//Only check for d3d once
 //	private bool d3d= false;
-	void  Start () {
+	public void  Start () {
 //		d3d = SystemInfo.graphicsDeviceVersion.IndexOf("Direct3D") > -1;
 //		Debug.Log("BondCubeUpdate: Start()");
 		width = GUIMoleculeController.Instance.bondWidth ;

@@ -67,7 +67,7 @@ using UnityEngine;
 using System.Collections;
 using UI;
 
-public class StickUpdate : MonoBehaviour {
+public class StickUpdate : MonoBehaviour, IBondUpdate {
 	
 	public static bool resetColors = false;
 
@@ -98,10 +98,10 @@ public class StickUpdate : MonoBehaviour {
 	public static float oldscale = 1.0f;
 	
 	public static float radiusFactor = 1.0f;
-	public GameObject atompointer1=null;
-	public GameObject atompointer2=null;
-	public int atomnumber1;
-	public int atomnumber2;
+	public GameObject atompointer1 { get; set; }
+	public GameObject atompointer2 { get; set; }
+	public int atomnumber1 { get; set; }
+	public int atomnumber2 { get; set; }
 	
 	
 	

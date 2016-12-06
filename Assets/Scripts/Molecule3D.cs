@@ -487,60 +487,66 @@ public class Molecule3D:MonoBehaviour {
 
 		IEnumerable<GameObject> oldClubs = null;
 
-		if (recalculateBonds) {
+//		if (recalculateBonds)
+		{
 //			oldClubs = GameObject.FindGameObjectsWithTag("Club");
 
 			// Luiz: Recalculates atoms' bonds
 			TrajectoryData.Instance.CurrentStateSpline.ApplyOnMoleculeModel();
+//			Molecule.Control.ControlMolecule.CreateSplines();
 
 			// Luiz: draws the new bonds between the atoms.
 			Molecule.View.DisplayBond.BondCubeStyle.ReassignBonds();
+//			new Molecule.View.DisplayBond.BondCubeStyle().DisplayBonds();
+//			DisplayMolecule.ResetBondDisplay();
 		}
 
-		switch(UIData.Instance.bondtype) {
-		case UIData.BondType.hyperstick:
-			parentGameObject = GameObject.FindGameObjectWithTag("HStickManager");
-			manager = parentGameObject.GetComponent<HStickManager>();
-			break;
-		case UIData.BondType.line:
-			parentGameObject = GameObject.FindGameObjectWithTag("LineManager");
-			manager = parentGameObject.GetComponent<LineManager>();
-			break;
-		case UIData.BondType.cube:
-			parentGameObject = GameObject.FindGameObjectWithTag("CubeBondManager");
-			manager = parentGameObject.GetComponent<CubeBondManager>();
-			break;
-		case UIData.BondType.nobond:
-			manager = null;
-			break;
+		switch (UIData.Instance.bondtype) {
+			case UIData.BondType.hyperstick:
+				parentGameObject = GameObject.FindGameObjectWithTag("HStickManager");
+				manager = parentGameObject.GetComponent<HStickManager>();
+				break;
+			case UIData.BondType.line:
+				parentGameObject = GameObject.FindGameObjectWithTag("LineManager");
+				manager = parentGameObject.GetComponent<LineManager>();
+				break;
+			case UIData.BondType.cube:
+				parentGameObject = GameObject.FindGameObjectWithTag("CubeBondManager");
+				manager = parentGameObject.GetComponent<CubeBondManager>();
+				break;
+			case UIData.BondType.nobond:
+				manager = null;
+				break;
 		}
 
 		if(manager != null)
 			manager.ResetPositions();
 
-		if (recalculateBonds) {
+//					new Molecule.View.DisplayBond.BondCubeStyle().DisplayBonds();
+//		if (recalculateBonds)
+		{
 			yield return new WaitForSeconds(0);
 
 			// Luiz: making sure that things are reset,  believe it or not.
-			UIData.Instance.resetBondDisplay = true;
-			UIData.Instance.resetMeshcombine = true;
-			UIData.Instance.resetDisplay = true;
-			UIData.Instance.resetInteractive = true;
-			StickUpdate.resetColors = true;
-			HStickManager.resetBrightness = true;
-			BallUpdate.resetBondColors = true;
-			BallUpdate.resetColors = true;
-			BallUpdate.resetRadii = true;
-			BallUpdateCube.resetBondColors = true;
-			BallUpdate.bondsReadyToBeReset = true;
-			var diff = 1e-6f;
-			GUIMoleculeController.Instance.linkScale -= diff;
+//			UIData.Instance.resetBondDisplay = true;
+//			UIData.Instance.resetMeshcombine = true;
+//			UIData.Instance.resetDisplay = true;
+//			UIData.Instance.resetInteractive = true;
+//			StickUpdate.resetColors = true;
+//			HStickManager.resetBrightness = true;
+//			BallUpdate.resetBondColors = true;
+//			BallUpdate.resetColors = true;
+//			BallUpdate.resetRadii = true;
+//			BallUpdateCube.resetBondColors = true;
+//			BallUpdate.bondsReadyToBeReset = true;
+//			var diff = 1e-6f;
+//			GUIMoleculeController.Instance.linkScale -= diff;
 
-			yield return new WaitForSeconds(0);
-
-			foreach(var club in oldClubs) {
-				GameObject.Destroy(club);
-			}
+//			yield return new WaitForSeconds(0);
+//
+//			foreach(var club in oldClubs) {
+//				GameObject.DestroyImmediate(club);
+//			}
 		}
 	}
 	

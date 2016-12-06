@@ -29,7 +29,8 @@ public class HStickManager : GenericManager {
 	}
 
 	private static List<StickUpdate> GetStickUpdates() {
-		return (GameObject.FindObjectsOfType(typeof(StickUpdate)) as StickUpdate[]).ToList();
+		return Molecule.View.DisplayBond.BondCubeData.Instance.BondCubeParent.GetComponentsInChildren<StickUpdate>()
+			.ToList();
 	}
 	
 	public override void DestroyAll() {

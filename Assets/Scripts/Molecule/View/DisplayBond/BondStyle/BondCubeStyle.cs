@@ -63,6 +63,7 @@
 /// J. Comput. Chem., 2011, 32, 2924
 ///
 using System.Linq;
+using System;
 
 
 namespace Molecule.View.DisplayBond {
@@ -90,6 +91,65 @@ namespace Molecule.View.DisplayBond {
 
 	public class BondCubeStyle:IBondStyle {
 		public BondCubeStyle() {
+		}
+
+		// Luiz:
+		public static void ReassignBonds() {
+			IList bondsScripts; // Luiz: gotta be without generics
+			Func<int, IBondUpdate> createBondUpdate;
+
+			switch (UIData.Instance.bondtype) {
+				case UIData.BondType.cube:
+					bondsScripts = CubeBondManager.bonds;
+					createBondUpdate = (int idx) => {
+						var bondObject = CreateCylinder(idx, MoleculeModel.bondEPList);
+						return bondObject.GetComponent<BondCubeUpdate>();
+					};
+					break;
+				case UIData.BondType.hyperstick:
+					bondsScripts = HStickManager.sticks;
+					createBondUpdate = (int idx) => {
+						var bondObject = CreateCylinderByShader(idx, MoleculeModel.bondEPList);
+						return bondObject.GetComponent<StickUpdate>();
+					};
+					break;
+				default:
+					UIData.Instance.SetError(true, "Unrecognized bond type");
+					return;
+			}
+
+//			var clubs = GameObject.FindGameObjectsWithTag("Club");
+//			foreach (var club in clubs) {
+//				GameObject.Destroy(club);
+//			}
+//			bondsScripts.Clear();
+
+			GenericManager atomManager = Molecule.View.DisplayMolecule.GetManagers()[0];
+			int idxBond = 0;
+			foreach (var bond in MoleculeModel.bondEPList) {
+				IBondUpdate bondScript;
+
+				if (bondsScripts.Count == idxBond) {
+					bondScript = createBondUpdate(idxBond);
+					bondsScripts.Add(bondScript);
+				} else {
+					bondScript = (IBondUpdate)bondsScripts[idxBond];
+				}
+
+				bondScript.atompointer1 = atomManager.GetBall(MoleculeModel.atoms.Count - 1 - bond[0]);
+				bondScript.atomnumber1 = bond[0];
+				bondScript.atompointer2 = atomManager.GetBall(MoleculeModel.atoms.Count - 1 - bond[1]);
+				bondScript.atomnumber2 = bond[1];
+
+				++idxBond;
+			}
+
+			while (bondsScripts.Count > idxBond) {
+				var bondScript = bondsScripts[idxBond];
+				bondsScripts.RemoveAt(idxBond);
+				var bondObject = ((MonoBehaviour)bondScript).gameObject;
+				GameObject.Destroy(bondObject);
+			}
 		}
 		
 		public void DisplayBonds() {
@@ -163,6 +223,7 @@ namespace Molecule.View.DisplayBond {
 
 			int[] atomsIds = bondEPList[i] as int[];
 			Stick = GameObject.CreatePrimitive(PrimitiveType.Cube);
+			Stick.GetComponent<Collider>().enabled = false;
 			RuntimePlatform platform = Application.platform;
 			switch (platform) {
 				case RuntimePlatform.WindowsPlayer:
@@ -200,7 +261,7 @@ namespace Molecule.View.DisplayBond {
 
 
 		//Cubes
-		private static void CreateCylinder(int i, List<int[]> bondEPList) {
+		private static GameObject CreateCylinder(int i, List<int[]> bondEPList) {
 /*			GameObject cylinder;
 			MeshFilter filter;
 			Mesh   cylinderMesh;
@@ -213,6 +274,7 @@ namespace Molecule.View.DisplayBond {
 			int[] atomsIds = bondEPList[i] as int[];
 			GameObject o=GameObject.CreatePrimitive(PrimitiveType.Cube);
 			o.GetComponent<Renderer>().material=(Material)Resources.Load("Materials/CubeBoneMaterial");
+			o.GetComponent<Collider>().enabled = false;
 			BondCubeUpdate comp = o.AddComponent<BondCubeUpdate>();
 			//comp.atompointer1=(GameObject)MoleculeModel.atoms[atomsIds[0]];
 			//comp.atompointer2=(GameObject)MoleculeModel.atoms[atomsIds[1]];
@@ -232,6 +294,8 @@ namespace Molecule.View.DisplayBond {
 			o.transform.localScale=new Vector3(0.1f,0.1f,1f);
 			o.tag="Club";
 			o.transform.parent = BondCubeData.Instance.BondCubeParent.transform;
+
+			return o;
 		}
 		
 
@@ -269,37 +333,6 @@ namespace Molecule.View.DisplayBond {
 			Stick.GetComponent<Renderer>().material.SetFloat("_Shrink", 0.01f);
 			Stick.tag="Club";
 			Stick.transform.parent = BondCubeData.Instance.BondCubeParent.transform;
-		}
-
-		// Luiz:
-		public static void ReassignBonds() {
-			GameObject hsManagerObj = GameObject.FindGameObjectWithTag("HStickManager");
-			var bondsScripts = HStickManager.sticks;
-			GenericManager atomManager = Molecule.View.DisplayMolecule.GetManagers()[0];
-
-			int idxBond = 0;
-			foreach (var bond in MoleculeModel.bondEPList) {
-				StickUpdate bondScript;
-
-				if (bondsScripts.Count == idxBond) {
-					var bondObject = CreateCylinderByShader(idxBond, MoleculeModel.bondEPList);
-					bondScript = bondObject.GetComponent<StickUpdate>();
-					bondsScripts.Add(bondScript);
-				} else {
-					bondScript = bondsScripts[idxBond];
-				}
-
-				bondScript.atompointer1 = atomManager.GetBall(MoleculeModel.atoms.Count - 1 - bond[0]);
-				bondScript.atompointer2 = atomManager.GetBall(MoleculeModel.atoms.Count - 1 - bond[1]);
-				
-				++idxBond;
-			}
-
-			while (bondsScripts.Count > idxBond) {
-				var bondScript = bondsScripts[idxBond];
-				bondsScripts.RemoveAt(idxBond);
-				GameObject.Destroy(bondScript.gameObject);
-			}
 		}
 	}
 }

@@ -51,12 +51,12 @@ public class LineManager : GenericManager {
 	}
 	
 	private void AdjustWidths() {
-		float width = LineUpdate.width;
+		float width = GUIMoleculeController.Instance.bondWidth;
 		foreach(LineUpdate lu in lines) {
 			lineRenderer = lu.GetComponent<LineRenderer>();
 			lineRenderer.SetWidth(width, width);
 		}
-		LineUpdate.oldWidth = width;
+		GUIMoleculeController.Instance.oldBondWidth = width;
 	}
 	
 	public override void EnableRenderers() {
@@ -86,7 +86,7 @@ public class LineManager : GenericManager {
 		if(BallUpdate.bondsReadyToBeReset)
 			ResetColors();
 
-		if(LineUpdate.width != LineUpdate.oldWidth)
+		if(GUIMoleculeController.Instance.bondWidth != GUIMoleculeController.Instance.oldBondWidth)
 			AdjustWidths();
 	}
 	

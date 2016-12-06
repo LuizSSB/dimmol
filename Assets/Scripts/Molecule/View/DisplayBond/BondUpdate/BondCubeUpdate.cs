@@ -77,8 +77,6 @@ public class BondCubeUpdate : MonoBehaviour, IBondUpdate {
 	public int atomnumber2 { get; set; }
 	
 	public static float oldscale = 1.0f;
-	public static float width = GUIMoleculeController.Instance.bondWidth ;
-	public static float oldWidth = GUIMoleculeController.Instance.bondWidth ;
 //	private float oldrayon1 = 2.0f;
 //	private float oldrayon2 = 2.0f;
 
@@ -89,7 +87,6 @@ public class BondCubeUpdate : MonoBehaviour, IBondUpdate {
 	public void  Start () {
 //		d3d = SystemInfo.graphicsDeviceVersion.IndexOf("Direct3D") > -1;
 //		Debug.Log("BondCubeUpdate: Start()");
-		width = GUIMoleculeController.Instance.bondWidth ;
 		if (atompointer1 != null && atompointer2 != null) {
 			Vector3 v_dist = atompointer2.transform.position - atompointer1.transform.position ;
 			float length = v_dist.magnitude ;

@@ -191,6 +191,7 @@ namespace UI {
 			get { return _bondWidth; }
 			set { _bondWidth = ProcessPropertyChanged ("bondWidth", _bondWidth, value); }
 		}
+		public float oldBondWidth = .15f;
 		private float _drag = .6f;
 		public float drag {
 			get { return _drag; }

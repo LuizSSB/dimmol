@@ -88,14 +88,12 @@ public class LineUpdate : MonoBehaviour, IBondUpdate {
 	public float oldradius1 = 1.0f;
 	public float oldradius2 = 1.0f;
 		
-	public static float width = GUIMoleculeController.Instance.bondWidth ;
-	public static float oldWidth = GUIMoleculeController.Instance.bondWidth ;
-		
 	public LineRenderer lineRenderer;
 	
 	// Only check for d3d once
 	void  Start ()
 	{
+		var width = GUIMoleculeController.Instance.bondWidth;
 		lineRenderer = GetComponent<LineRenderer>();
 		lineRenderer.SetPosition(0, atompointer1.transform.position);
 		lineRenderer.SetPosition(1, atompointer2.transform.position);

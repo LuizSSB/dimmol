@@ -2746,8 +2746,6 @@ namespace UI {
 
 			GUIMoleculeController.Instance.bondWidth = GUIMoleculeController.Instance.LabelSlider(GUIMoleculeController.Instance.bondWidth, 0.00001f, 0.5f, "Width: " + GUIMoleculeController.Instance.bondWidth.ToString("0.00"), 
 					"Determines width of bonds for Cubes and Lines", true, (int)(0.90 * Rectangles.cubeLineBondTypeWidth), 1, true);
-			BondCubeUpdate.width = GUIMoleculeController.Instance.bondWidth;
-			LineUpdate.width = GUIMoleculeController.Instance.bondWidth;
 			GUI.enabled = true;
 			GUI.DragWindow();
 		}

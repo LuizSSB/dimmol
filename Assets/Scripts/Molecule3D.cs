@@ -413,6 +413,15 @@ public class Molecule3D:MonoBehaviour {
 
 		Debug.Log ("T.T ==> BEFORE DISPLAY");
 		Display();
+
+		// Luiz: Changing default representation to CPK, because it's better for Android, as
+		// some devices' graphical chips cannot render hyper sticks perfectly
+		// Awaits the passage of TWO frames because there's some setup being done on them.
+		// I didn't want to have to do it, but that's the way the app is wired.
+		yield return new WaitForEndOfFrame();
+		yield return new WaitForEndOfFrame();
+		// Luiz: copied from LoadTypeGUI::Metaphor (line 1352)
+		GUIMoleculeController.Instance.ChangeMetaphor(.2f, .0001f, .3f, true);
 	}
 
 	// Luiz:

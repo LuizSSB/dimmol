@@ -38,12 +38,12 @@ public class CubeBondManager : GenericManager {
 	}
 	
 	private void AdjustWidths() {
-		float width = BondCubeUpdate.width;
+		float width = GUIMoleculeController.Instance.bondWidth;
 		foreach(BondCubeUpdate bcu in bonds) {
 			Vector3 lscale = new Vector3(width, width, bcu.transform.localScale.z); 
 			bcu.transform.localScale = lscale ;	
 		}
-		BondCubeUpdate.oldWidth = width;
+		GUIMoleculeController.Instance.oldBondWidth = width;
 	}
 	
 	private void AdjustScales() {
@@ -107,7 +107,7 @@ public class CubeBondManager : GenericManager {
 			return;
 		}
 		
-		if(BondCubeUpdate.width != BondCubeUpdate.oldWidth)
+		if(GUIMoleculeController.Instance.bondWidth != GUIMoleculeController.Instance.oldBondWidth)
 			AdjustWidths();
 		
 		if(BondCubeUpdate.scale != BondCubeUpdate.oldscale)

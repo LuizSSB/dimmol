@@ -15,7 +15,7 @@ public class UnityMolUcpGui : UnityClusterPackage.UcpGui {
 	protected override void GuiCustomizationHook()
 	{
 		GUILayout.Label(string.Empty);
-		GUILayout.Label("Slave settings");
+		GUILayout.Label("SLAVE SETTINGS");
 		GUILayout.BeginHorizontal(); {
 			m_SlaveConfig.CameraControl = GUILayout.Toggle(
 				m_SlaveConfig.CameraControl,

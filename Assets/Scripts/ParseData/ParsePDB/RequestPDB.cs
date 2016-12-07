@@ -319,6 +319,7 @@ namespace  ParseData.ParsePDB
 				fullFileName, ExternalOutput.Parse.ParseableOutputTypes.Xyz_Xmol
 			);
 			string pdb = ExternalOutput.PDBMaker.MakePDB(atoms[0]);
+			UIData.Instance.ChosenPdbContents = pdb;
 			ControlMolecule.CreateMolecule(new StringReader(pdb));
 		}
 	

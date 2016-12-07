@@ -53,7 +53,7 @@ namespace UI
 
 		public int NumberOfStates {
 			get {
-				return States.Length;
+				return IsLoaded ? States.Length : 0;
 			}
 		}
 

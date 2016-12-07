@@ -824,6 +824,7 @@ public class Molecule3D:MonoBehaviour {
 
 	private int mDieFramesCount = 0;
 	public void LateUpdate() {
+		// Luiz: this stuff must be done here, because of the things that are done in each frame.
 		if (UIData.Instance.MustDie && ++mDieFramesCount >= 2) {
 			var masterObject = GameObject.Find("Master");
 			GameObject.DestroyImmediate(masterObject);
@@ -1243,16 +1244,19 @@ public class Molecule3D:MonoBehaviour {
 	public static void ReceiveNewUIData(int senderNodeId, UIData data) {
 		if (Node.CurrentNode.Id != senderNodeId) {
 			UIData.SetNewData(data);
-			UIData.Instance.isOpenFile = true;
 
 			if(UIData.Instance.ChosenPdbContents.IndexOf("ProxyPort") > -1) {
+				UIData.Instance.isOpenFile = true;
 				GUIDisplay.Instance.PdbRequest = JsonUtility.FromJson<GUIDisplay.PdbRequestData>(
 					UIData.Instance.ChosenPdbContents
 				);
 			} else {
-				var parentObject = GameObject.FindGameObjectWithTag("LoadBox");
-				var @this = parentObject.GetComponent<Molecule3D>();
-				@this.requestPDB.LoadPDB (UIData.Instance.ChosenPdbContents);
+				string filePath = System.IO.Path.Combine(
+					Application.temporaryCachePath,
+					"synced.pdb"
+				);
+				System.IO.File.WriteAllText(filePath, UIData.Instance.ChosenPdbContents);
+				GUIDisplay.Instance.OpenFileCallback(filePath);
 			}
 		}
 	}

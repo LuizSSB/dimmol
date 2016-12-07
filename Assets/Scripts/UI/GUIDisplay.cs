@@ -1532,13 +1532,15 @@ namespace UI {
 		// Luiz:
 		public event System.EventHandler<ClearingEventArgs> Cleared;
 		public void Clear(bool exitingScene) {
-			if (exitingScene && UnityClusterPackage.Node.CurrentNode.IsHostNode && Cleared != null) {
+			var currentNode = UnityClusterPackage.Node.CurrentNode;
+
+			if (exitingScene && (currentNode.IsHostNode || currentNode.HasPermission(NodePermission.MenuControl)) && Cleared != null) {
 				Cleared(this, new ClearingEventArgs(true));
 			}
 
 			id="";
 			GUIMoleculeController.Instance.showOpenMenu = true;
-			UIData.Instance.MustDie = exitingScene;
+			UIData.Instance.MustDie |= exitingScene; // Luiz: must be like this because, when killing a server node, the  client will send some messages back.
 			UIData.Instance.isclear = true;
 			GUIMoleculeController.Instance.pdbGen = false;
 			UIData.Instance.hasMoleculeDisplay = false;

@@ -79,13 +79,16 @@ namespace UnityClusterPackage {
 			if ( Node.CurrentNode.IsHostNode )
 			{
 				Network.Disconnect();
+				Debug.Log("Server disconnected");
 			}
 			else if ( Node.CurrentNode.IsChildNode )
 			{
 				// Luiz: Gotta be inside a try/catch because if the server disconnects before this object is destroyed
 				// there will be no connection to be closed.
 				try {
+					Network.Disconnect();
 					Network.CloseConnection( Network.player, true );
+					Debug.Log("Child disconnected");
 				} catch { }
 			}
 		}

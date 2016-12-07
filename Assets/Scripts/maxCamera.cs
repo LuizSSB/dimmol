@@ -97,9 +97,6 @@ public class MaxCameraData
 	public GameObject LocCamera {
 		get {
 			var cam =  _LocCamera = _LocCamera ?? GameObject.FindGameObjectWithTag("MainCamera");
-			if (cam == null) {
-				Debug.Log("frak");
-			}
 			return cam;
 		}
 	}

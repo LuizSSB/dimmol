@@ -10,20 +10,53 @@ namespace AssemblyCSharp
 {
 	public class RPCMessenger : MonoBehaviour
 	{
-		private NetworkView mNetworkView;
+		private const int ComplexObjectPartLength = 3950;
 
 		private string[] mComplexObjectParts = null;
-		private const int ComplexObjectPartLength = 3950;
+		private NetworkView NetworkView {
+			get {
+				return GetComponent<NetworkView>();
+			}
+		}
 		
 		void Start() {
-			mNetworkView = GetComponent<NetworkView>();
-
 			// Luiz: Configuring RPC calls for when stuff changes
-			if (UnityClusterPackage.Node.CurrentNode.HasPermission(NodePermission.MenuControl)) {
+			if (Node.CurrentNode.HasPermission(NodePermission.MenuControl) | Node.CurrentNode.IsHostNode) {
 				GUIDisplay.Instance.Cleared += HandleUICleared;
+			}
+			if (Node.CurrentNode.HasPermission(NodePermission.MenuControl)) {
 				ChangeManager.MethodInvoked += HandleChangeManagerMethodInvoked;
 				ChangeManager.PropertyChanged += HandleChangeManagerPropertyChanged;
 			}
+		}
+
+		private string mClientAddress;
+		void OnConnectedToServer() {
+			if (Node.CurrentNode.NodeType == Node.Type.client) {
+				NetworkView.RPC(
+					"ReceiveClientNode",
+					RPCMode.Server,
+					Node.CurrentNode.Id,
+					Network.player.ipAddress,
+					Network.player.port
+				);
+			}
+		}
+		void OnPlayerDisconnected(NetworkPlayer player) {
+			if(CombineIpAndPort(player.ipAddress, player.port) == mClientAddress) {
+				mClientAddress = null;
+				GUIDisplay.Instance.Clear(false);
+			}
+		}
+		void OnDisconnectedFromServer(NetworkDisconnection info) {
+			GUIDisplay.Instance.Clear(true);
+		}
+		[RPC]
+		void ReceiveClientNode(int clientId, string clientIp, int clientPort) {
+			mClientAddress = CombineIpAndPort(clientIp, clientPort);
+		}
+		private static string CombineIpAndPort(string ip, int port) {
+			return ip + ":" + port;
 		}
 
 		public static RPCMessenger GetCurrent() {
@@ -33,14 +66,14 @@ namespace AssemblyCSharp
 				Debug.Log("More than one RPCMessenger gameobject in scene. Will work only with the first one");
 			}
 
-			return gameObjects[0].GetComponent<RPCMessenger>();
+			return gameObjects.Length > 0 ? gameObjects[0].GetComponent<RPCMessenger>() : null;
 		}
 
 		void HandleChangeManagerPropertyChanged (object sender, PropertyEventArgs e)
 		{
 			DoOnMainThread.AddAction(delegate {
 				var rpcData = GetRPCData(e.NewValue, "Property");
-				mNetworkView.RPC(
+				NetworkView.RPC(
 					rpcData.HandlerName,
 					RPCMode.All,
 					Node.CurrentNode.Id,
@@ -55,7 +88,7 @@ namespace AssemblyCSharp
 		void HandleChangeManagerMethodInvoked (object sender, MethodParamEventArgs e)
 		{
 			var rpcData = GetRPCData(e.Param, "Method");
-			mNetworkView.RPC(
+			NetworkView.RPC(
 				rpcData.HandlerName,
 				RPCMode.All,
 				Node.CurrentNode.Id,
@@ -72,12 +105,8 @@ namespace AssemblyCSharp
 				ChangeManager.MethodInvoked -= HandleChangeManagerMethodInvoked;
 				ChangeManager.PropertyChanged -= HandleChangeManagerPropertyChanged;
 				GUIDisplay.Instance.Cleared -= HandleUICleared;
-
-				if (UnityClusterPackage.Node.CurrentNode.HasPermission(NodePermission.MenuControl)) {
-					mNetworkView.RPC("DieHard", RPCMode.All, Node.CurrentNode.Id);
-				}
 			} else {
-				mNetworkView.RPC("Clear", RPCMode.All, Node.CurrentNode.Id);
+				NetworkView.RPC("Clear", RPCMode.All, Node.CurrentNode.Id);
 			}
 		}
 
@@ -107,7 +136,7 @@ namespace AssemblyCSharp
 						);
 
 					DoOnMainThread.AddAction(() => {
-						mNetworkView.RPC("ReceiveString", RPCMode.All, Node.CurrentNode.Id, part);
+						NetworkView.RPC("ReceiveString", RPCMode.All, Node.CurrentNode.Id, part);
 					});
 				}
 
@@ -343,4 +372,4 @@ namespace AssemblyCSharp
 		}
 	}
 }
-
+	

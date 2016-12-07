@@ -72,6 +72,7 @@ namespace UnityClusterPackage
 								Ip = "192.168.1.100",
 								Port = 25000
 							},
+							GuiSize = 30,
 							NodeScreen = new Node.Screen() {
 								ScreenEye = Eye.left,
 								Stereo = false,

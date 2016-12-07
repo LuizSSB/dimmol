@@ -54,15 +54,20 @@ namespace UnityClusterPackage {
 								mySkin.toggle.fontSize =
 									mySkin.window.fontSize =
 										mySkin.label.fontSize = Node.CurrentNode.GuiSize;
-			GUI.skin = mySkin;
+			mySkin.horizontalSlider.fixedHeight =
+				mySkin.horizontalSliderThumb.fixedHeight = Mathf.Max(20f, Node.CurrentNode.GuiSize);
 
 			GUILayout.BeginArea(MainAreaFrame); {
 				GUILayout.BeginHorizontal(); {
-					GUILayout.Label("Node settings", MakeWidthOption(.33f));
+					GUILayout.Label("NODE SETTINGS", MakeWidthOption(.33f));
 
 					GUILayout.BeginVertical(); {
 						GUILayout.Label("GUI scale");
-						Node.CurrentNode.GuiSize = (int)GUILayout.HorizontalSlider(Node.CurrentNode.GuiSize, 10f, 40f);
+						Node.CurrentNode.GuiSize = (int)GUILayout.HorizontalSlider(
+							Node.CurrentNode.GuiSize,
+							10f,
+							40f
+						);
 					} GUILayout.EndVertical();
 				} GUILayout.EndHorizontal();
 

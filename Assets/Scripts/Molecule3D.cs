@@ -432,7 +432,7 @@ public class Molecule3D:MonoBehaviour {
 		var state = TrajectoryData.Instance.CurrentState;
 		UIData.Instance.stateTime += transitionspeed;
 
-		var setCorrectValues = UIData.Instance.stateTime >= StateTransitionTime;
+		var setCorrectValues = UIData.Instance.stateTime >= StateTransitionTime || !UIData.Instance.autoChangingState;
 			
 		ExternalOutput.Atom currentAtom;
 		float[] currentLocation;
@@ -478,7 +478,7 @@ public class Molecule3D:MonoBehaviour {
 		IEnumerable<GameObject> oldClubs = null;
 
 		if (recalculateBonds)
-		{
+		{			
 			// Luiz: Applies on the MoleculeModel class all the values relative to the current state.
 			TrajectoryData.Instance.CurrentStateSpline.ApplyOnMoleculeModel();
 

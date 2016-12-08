@@ -21,7 +21,6 @@ namespace Molecule.View.DisplayBond
 						var bondObject = BondCubeStyle.CreateCylinderByShader(idx, MoleculeModel.bondEPList);
 						return bondObject.GetComponent<StickUpdate>();
 					};
-					break;
 					setBondColor = (bondScript, bondObject) => {
 						bondObject.GetComponent<Renderer>().material.SetColor(
 							"_Color", bondScript.atompointer1.GetComponent<Renderer>().material.GetColor("_Color")
@@ -30,6 +29,7 @@ namespace Molecule.View.DisplayBond
 							"_Color2", bondScript.atompointer2.GetComponent<Renderer>().material.GetColor("_Color")
 						);
 					};
+					break;
 				case UIData.BondType.line:
 					bondsScripts = LineManager.lines;
 					createBondUpdate = (int idx) => {

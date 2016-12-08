@@ -77,7 +77,7 @@ public class ShurikenParticleManager : GenericManager {
 	/// </summary>
 	public override void Init () {
 		Debug.Log("Shuriken Initializing");
-		sourceParticles = MoleculeModel.p;
+		sourceParticles = MoleculeModel.p ?? new Particle[0];
 		pNumber = sourceParticles.Length;
 		Debug.Log("Found: " + pNumber + " particles");
 		particles = new ParticleSystem.Particle[pNumber];
@@ -195,10 +195,19 @@ public class ShurikenParticleManager : GenericManager {
 	}
 	
 	public override void ResetPositions(){
+		if (particles == null || particles.Length == 0) {
+			Init();
+		}
 		for (int j=0; j<particles.Length; j++){
-			particles[j].position = new Vector3(Molecule.Model.MoleculeModel.atomsLocationlist[j][0], 
-			                                               Molecule.Model.MoleculeModel.atomsLocationlist[j][1],
-			                                               Molecule.Model.MoleculeModel.atomsLocationlist[j][2]);
+			var z = MoleculeModel.atomsLocationlist[j][2];
+			if (TrajectoryData.Instance.IsLoaded) {
+				z -= 1f;
+			}
+			particles[j].position = new Vector3(
+				MoleculeModel.atomsLocationlist[j][0], 
+				MoleculeModel.atomsLocationlist[j][1],
+				z
+			);
 		}
 		pSystem.SetParticles(particles, pNumber);
 	}

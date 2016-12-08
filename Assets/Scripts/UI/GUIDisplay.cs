@@ -175,12 +175,10 @@ namespace UI {
 				if(newScale != oldScale){
 					GenericManager manager = DisplayMolecule.GetManagers()[0];
 					if(!GUIMoleculeController.Instance.toggle_NA_CLICK){
-						Debug.Log ("h0wwwww");
 						manager.SetRadii(applyToAtoms, applyToRes, applyToChain);
 						oldScale = newScale;
 					}
 					else{
-						Debug.Log ("h4lp");
 						foreach(GameObject obj in GameObject.FindGameObjectWithTag("MainCamera").GetComponent<ClickAtom>().objList)
 							manager.SetRadii((int)obj.GetComponent<BallUpdate>().number);	
 
@@ -1542,6 +1540,9 @@ namespace UI {
 			GUIMoleculeController.Instance.showOpenMenu = true;
 			UIData.Instance.MustDie |= exitingScene; // Luiz: must be like this because, when killing a server node, the  client will send some messages back.
 			UIData.Instance.isclear = true;
+			UIData.Instance.isParticlesInitialized = false;
+			UIData.Instance.isSphereToCube = true;
+			UIData.Instance.isCubeToSphere = false;
 			GUIMoleculeController.Instance.pdbGen = false;
 			UIData.Instance.hasMoleculeDisplay = false;
 			GUIMoleculeController.Instance.toggle_NA_INTERACTIVE = false; // causes all sorts of headaches otherwise

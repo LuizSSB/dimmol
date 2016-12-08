@@ -451,6 +451,12 @@ public class Molecule3D:MonoBehaviour {
 				currentLocation[1] = currentAtom.FloatY;
 				currentLocation[2] = currentAtom.FloatZ;
 			}
+
+			if (MoleculeModel.atoms.Count > 0) {
+				((GameObject)MoleculeModel.atoms[idxAtom]).transform.localPosition = new Vector3(
+					currentLocation[0], currentLocation[1], currentLocation[2]
+				);
+			}
 		}
 
 		// Luiz: calling this method as a coroutine gives us a SLIGHTLY better framerate.
@@ -464,37 +470,10 @@ public class Molecule3D:MonoBehaviour {
 	}
 
 	public IEnumerator UpdateVisualState(bool recalculateBonds) {
-		GameObject parentGameObject;
-		GenericManager manager;
-
-		switch(UIData.Instance.atomtype) {
-		case UIData.AtomType.sphere:
-			parentGameObject = GameObject.FindGameObjectWithTag("SphereManager");
-			manager = parentGameObject.GetComponent<SphereManager>();
-			break;
-
-		case UIData.AtomType.cube:
-			parentGameObject = GameObject.FindGameObjectWithTag("CubeManager");
-			manager = parentGameObject.GetComponent<CubeManager>();
-			break;
-
-		case UIData.AtomType.particleball:
-			parentGameObject = GameObject.FindGameObjectWithTag("ShurikenParticleManager");
-			manager = parentGameObject.GetComponent<ShurikenParticleManager>();
-			break;
-
-		case UIData.AtomType.hyperball:
-			parentGameObject = GameObject.FindGameObjectWithTag("HBallManager");
-			manager = parentGameObject.GetComponent<HBallManager>();
-			break;
-
-		default:
-			manager = null;
-			break;
+		List<GenericManager> managers = Molecule.View.DisplayMolecule.GetManagers();
+		if (managers != null && managers.Count > 0) {
+			managers[0].ResetPositions();
 		}
-
-		if(manager != null)
-			manager.ResetPositions();
 
 		IEnumerable<GameObject> oldClubs = null;
 
@@ -510,6 +489,8 @@ public class Molecule3D:MonoBehaviour {
 
 		yield return new WaitForSeconds(0);
 
+		GameObject parentGameObject;
+		GenericManager manager = null;
 		switch (UIData.Instance.bondtype) {
 			case UIData.BondType.hyperstick:
 				parentGameObject = GameObject.FindGameObjectWithTag("HStickManager");

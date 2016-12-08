@@ -253,7 +253,12 @@ namespace Molecule.View.DisplayAtom {
 				atomListByOrder.Add(atom);
 			}
 //			atomListByOrder=alist;//if we write like this directly, it will change the order of alist.
-			atomListByOrder.Sort(new StructComparer());
+
+			// HACK Luiz: this test was not previously here (the sort was always performed)
+			// I have put it here because otherwise it would be hell to change the atoms' positions when transitioning 
+			// betweem states of a trajectory.
+			if(!TrajectoryData.Instance.IsLoaded || UIData.Instance.secondarystruct)
+				atomListByOrder.Sort(new StructComparer());
 			
 			return atomListByOrder;
 		}

@@ -108,6 +108,7 @@ namespace Molecule.View.DisplayBond
 			LineManager lineManager = lineManagerObj.GetComponent<LineManager>();
 			lineManager.Init();
 		}
+
 		public static GameObject CreateLine(int i, List<int[]> bondEPList)
 		{
 			GameObject Line=new GameObject("Line");

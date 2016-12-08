@@ -44,6 +44,16 @@ namespace Molecule.View.DisplayBond
 			}
 
 			GenericManager atomManager = Molecule.View.DisplayMolecule.GetManagers()[0];
+			Func<int, GameObject> atomGetter;
+			switch (UIData.Instance.atomtype) {
+				case UIData.AtomType.particleball:
+					atomGetter = (idx) => (GameObject)MoleculeModel.atoms[idx];
+					break;
+				default:
+					atomGetter = (idx) => atomManager.GetBall(MoleculeModel.atoms.Count - 1 - idx);
+					break;
+			}
+
 			int idxBond = 0;
 			foreach (var bond in MoleculeModel.bondEPList) {
 				IBondUpdate bondScript;
@@ -55,9 +65,9 @@ namespace Molecule.View.DisplayBond
 					bondScript = (IBondUpdate)bondsScripts[idxBond];
 				}
 
-				bondScript.atompointer1 = atomManager.GetBall(MoleculeModel.atoms.Count - 1 - bond[0]);
+				bondScript.atompointer1 = atomGetter(bond[0]);
 				bondScript.atomnumber1 = bond[0];
-				bondScript.atompointer2 = atomManager.GetBall(MoleculeModel.atoms.Count - 1 - bond[1]);
+				bondScript.atompointer2 = atomGetter(bond[1]);
 				bondScript.atomnumber2 = bond[1];
 
 				++idxBond;

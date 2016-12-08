@@ -142,12 +142,10 @@ public class ShurikenParticleManager : GenericManager {
 	/// Resets the radii of the particle balls as needed when it is changed through the GUI.
 	/// </summary>
 	private void ResetRadii() {
-		ParticleSystem.Particle[] currentParticles = new ParticleSystem.Particle[pNumber];
-		pSystem.GetParticles(currentParticles);
 		for(int i=0; i<pNumber; i++)
-			currentParticles[i].size = currentParticles[i].size * BallUpdate.radiusFactor / BallUpdate.oldRadiusFactor;
+			particles[i].size = particles[i].size * BallUpdate.radiusFactor / BallUpdate.oldRadiusFactor;
 		
-		pSystem.SetParticles(currentParticles, pNumber);
+		pSystem.SetParticles(particles, pNumber);
 		Debug.Log("Resetting Particles radii");
 		BallUpdate.oldRadiusFactor = BallUpdate.radiusFactor;
 	}
@@ -195,9 +193,6 @@ public class ShurikenParticleManager : GenericManager {
 	}
 	
 	public override void ResetPositions(){
-		if (particles == null || particles.Length == 0) {
-			Init();
-		}
 		for (int j=0; j<particles.Length; j++){
 			var z = MoleculeModel.atomsLocationlist[j][2];
 			if (TrajectoryData.Instance.IsLoaded) {

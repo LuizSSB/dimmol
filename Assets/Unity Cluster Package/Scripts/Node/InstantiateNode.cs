@@ -9,7 +9,7 @@ namespace UnityClusterPackage {
 		public GameObject MultiProjectionCamera;
 		
 		void Awake() {
-			Network.sendRate = 100;
+			Network.sendRate = 100f;
 
 			if ( Node.CurrentNode.IsHostNode)
 			{

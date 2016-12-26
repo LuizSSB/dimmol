@@ -129,22 +129,33 @@ namespace UnityClusterPackage {
 					m_Node.NodeScreen.Stereo = GUILayout.Toggle(
 						m_Node.NodeScreen.Stereo,
 						"Stereo",
-						MakeWidthOption(.33f)
+						MakeWidthOption(.25f)
 					);
 
 					// Which eye stereo uses
 					m_Node.NodeScreen.ScreenEye = GUILayout.Toggle(
 						m_Node.NodeScreen.ScreenEye == Node.Eye.right,
 						"Right eye?",
-						MakeWidthOption(.33f)
+						MakeWidthOption(.25f)
 					) ? Node.Eye.right : Node.Eye.left;
 
 					// Whether it is using Google VR
 					m_Node.NodeScreen.UsesGoogleVr = GUILayout.Toggle(
 						m_Node.NodeScreen.UsesGoogleVr,
 						"Google VR",
-						MakeWidthOption(.33f)
+						MakeWidthOption(.25f)
 					);
+
+					// Whether it uses GoogleVR's head tracking
+					if (m_Node.NodeScreen.UsesGoogleVr) {
+						m_Node.NodeScreen.TracksHead = true;
+					} else {
+						m_Node.NodeScreen.TracksHead = GUILayout.Toggle(
+							m_Node.NodeScreen.TracksHead,
+							"Gyroscope / Tracks head",
+							MakeWidthOption(.249f)
+						);
+					}
 				} GUILayout.EndHorizontal();
 
 				// Points

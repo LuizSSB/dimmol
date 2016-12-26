@@ -75,6 +75,7 @@ namespace UnityClusterPackage
 								ScreenEye = Eye.left,
 								Stereo = false,
 								UsesGoogleVr = false,
+								TracksHead = false,
 								Pa = new Node.Point { X = -8f, Y = -4f, Z = 0f },
 								Pb =  new Node.Point { X = 8f, Y = -4f, Z = 0f },
 								Pc = new Node.Point { X = -8f, Y = 5f, Z = 0f },
@@ -136,6 +137,9 @@ namespace UnityClusterPackage
 
 			[XmlAttribute("googlevr")]
 			public bool UsesGoogleVr { get; set; }
+
+			[XmlAttribute("trackshead")]
+			public bool TracksHead { get; set; }
 
 			[XmlElement("pa")]
 			public Point Pa { get; set; }

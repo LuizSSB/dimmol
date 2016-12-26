@@ -53,12 +53,11 @@ namespace UI
 
 		private static void DrawAlert(int code) {
 			var modal = ModalData[ModalType.Message][0];
-			GUILayout.Label(modal.Message);
-			GUILayout.FlexibleSpace();
-
 			if (GUILayout.Button("OK")) {
 				ModalData[ModalType.Message].RemoveAt(0);
 			}
+			GUILayout.Label(modal.Message);
+			GUILayout.FlexibleSpace();
 		}
 
 		private static void DrawLoading(int code) {

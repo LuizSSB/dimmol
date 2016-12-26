@@ -188,8 +188,6 @@ namespace UI
 		
 		public bool switchmode=false;
 		
-		public bool hballsmoothmode=false;
-		
 		public bool grayscalemode = false;
 		
 		public bool hiddenUI=false;

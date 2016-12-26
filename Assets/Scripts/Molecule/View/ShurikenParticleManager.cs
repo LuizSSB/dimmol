@@ -193,6 +193,10 @@ public class ShurikenParticleManager : GenericManager {
 	}
 	
 	public override void ResetPositions(){
+		if (particles == null) {
+			Init();
+		}
+
 		for (int j=0; j<particles.Length; j++){
 			var z = MoleculeModel.atomsLocationlist[j][2];
 			if (TrajectoryData.Instance.IsLoaded) {

@@ -21,18 +21,20 @@ namespace Config
 			set;
 		}
 
+		private static string ConfigFilePath {
+			get {
+				return UnityEngine.Application.isMobilePlatform ? 
+					UnityEngine.Application.persistentDataPath :
+					UnityEngine.Application.streamingAssetsPath;
+			}
+		}
 		private const string ConfigFileName = "slave-config.xml";
 		private static SlaveConfig sCurrentConfig;
 		public static SlaveConfig CurrentConfig {
 			get {
 				if (sCurrentConfig == null) {
 					try {
-						var filePath = Path.Combine(
-							Application.isMobilePlatform ?
-								Application.persistentDataPath :
-								Application.streamingAssetsPath,
-							ConfigFileName
-						);
+						var filePath = Path.Combine(ConfigFilePath, ConfigFileName);
 						using(var reader = new StreamReader(filePath)) {
 							var serializer = new XmlSerializer(typeof(SlaveConfig));
 							sCurrentConfig = (SlaveConfig)serializer.Deserialize(reader);
@@ -53,7 +55,7 @@ namespace Config
 
 		public static void SetSlaveConfigData(SlaveConfig config, string path = null)
 		{
-			using (var writer = new StreamWriter(path ?? Path.Combine(Application.streamingAssetsPath, ConfigFileName))) {
+			using (var writer = new StreamWriter(path ?? Path.Combine(ConfigFilePath, ConfigFileName))) {
 				var serializer = new XmlSerializer(typeof(SlaveConfig));
 				serializer.Serialize(writer, config);
 			}

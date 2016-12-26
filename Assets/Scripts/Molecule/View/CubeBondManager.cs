@@ -95,6 +95,7 @@ public class CubeBondManager : GenericManager {
 	
 	public override void DisableRenderers() {
 		Debug.Log("CubeBondManager: DisableRenderers()");
+		bonds = GetBondsUpdates();
 		foreach(BondCubeUpdate bcu in bonds)
 			bcu.GetComponent<Renderer>().enabled = false;
 		enabled = false;

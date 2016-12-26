@@ -1600,6 +1600,10 @@ namespace UI {
 					Rectangles.Scale();
 				}
 			GUILayout.EndHorizontal();
+
+			if (!UIData.Instance.hasMoleculeDisplay) {
+				return;
+			}
 			
 			GUILayout.BeginHorizontal();
 			if (GUILayout.Button(new GUIContent("Ortho/Persp", "Switches between orthographic and perspective camera"))){
@@ -3087,16 +3091,21 @@ namespace UI {
 
 				}
 			}
-			GUI.enabled = true ;
+			GUI.enabled = true;
 			
 			if(!UIData.Instance.hasMoleculeDisplay)
 				GUI.enabled = false;
 
 			if (GUILayout.Button (new GUIContent ("Display", "Open display configuration menu")))
 				GUIMoleculeController.Instance.showManipulatorMenu = !GUIMoleculeController.Instance.showManipulatorMenu;
-			
+
+			// Luiz: Could've changed the buttons' order, so the conditional below would be executed only once,
+			// but I don't know how that would have affected to windows' positions on the screen.
+			GUI.enabled = true;			
 			if (GUILayout.Button(new GUIContent("Advanced", "Opens the advanced options menu")))
 				GUIMoleculeController.Instance.showAdvMenu = !GUIMoleculeController.Instance.showAdvMenu ;
+			if(!UIData.Instance.hasMoleculeDisplay)
+				GUI.enabled = false;
 
 			if (GUILayout.Button (new GUIContent ("Guided Nav.", "Opens the guided navigation menu")))
 				GUIMoleculeController.Instance.showGuidedMenu = !GUIMoleculeController.Instance.showGuidedMenu ;
@@ -3527,7 +3536,6 @@ namespace UI {
 				GUIMoleculeController.Instance.linkScale = 1.0f;
 				
 				GUIMoleculeController.Instance.toggle_NA_HBALLSMOOTH = false;
-				UIData.Instance.hballsmoothmode = false;
 			}
 			
 
@@ -4252,7 +4260,6 @@ namespace UI {
 		public void SmoothHyperBalls()
 		{
 			GUIMoleculeController.Instance.toggle_NA_HBALLSMOOTH = !GUIMoleculeController.Instance.toggle_NA_HBALLSMOOTH;
-			UIData.Instance.hballsmoothmode = GUIMoleculeController.Instance.toggle_NA_HBALLSMOOTH;
 
 			DispatchMethodPerformedEvent ("SmoothHyperBalls", null);
 		}

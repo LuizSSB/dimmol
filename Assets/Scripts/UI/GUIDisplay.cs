@@ -517,7 +517,7 @@ namespace UI {
 										GUIMoleculeController.Instance.showSecStructMenu = false;
 										var filePath = RequestExternalOutput.Fetch(
 											TrajectoryWebAddress,
-											Application.persistentDataPath,
+											Application.temporaryCachePath,
 											TrajectoryType
 										);
 										OpenTrajectoryCallback(filePath);
@@ -1538,14 +1538,19 @@ namespace UI {
 
 			id="";
 			GUIMoleculeController.Instance.showOpenMenu = true;
-			UIData.Instance.MustDie |= exitingScene; // Luiz: must be like this because, when killing a server node, the  client will send some messages back.
+			UIData.Instance.MustDie |= exitingScene; // Luiz: must be like this because, when killing a server node, the client will send some messages back.
 			UIData.Instance.isclear = true;
 			UIData.Instance.isParticlesInitialized = false;
 			UIData.Instance.isSphereToCube = true;
 			UIData.Instance.isCubeToSphere = false;
+			UIData.Instance.autoChangingState = false;
+			UIData.Instance.stateChanged = false;
+			UIData.Instance.stateTime = 0f;
 			GUIMoleculeController.Instance.pdbGen = false;
 			UIData.Instance.hasMoleculeDisplay = false;
 			GUIMoleculeController.Instance.toggle_NA_INTERACTIVE = false; // causes all sorts of headaches otherwise
+			GUIMoleculeController.Instance.toggle_NA_HBALLSMOOTH = false;
+			UIData.Instance.resetDisplay = true;
 			TrajectoryData.Clear();
 
 			var camera = GameObject.FindGameObjectWithTag("MainCamera");

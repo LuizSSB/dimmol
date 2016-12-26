@@ -602,7 +602,7 @@ namespace UI {
 			if (firstpass) {
 				firstpass = false;
 			//	Camera.mainCamera.backgroundColor = new Color (0.0f, 0.0f, 0.0f);
-				Camera.main.backgroundColor = new Color (0.5f, 0.5f, 0.5f);
+//				Camera.main.backgroundColor = new Color (0.5f, 0.5f, 0.5f);
 
 			}
 			

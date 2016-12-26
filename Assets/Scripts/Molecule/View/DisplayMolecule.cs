@@ -409,7 +409,6 @@ namespace Molecule.View {
 			// Luiz:
 //			if (GUIMoleculeController.Instance.HYPERBALLSDEFAULT){
 				GUIMoleculeController.Instance.toggle_NA_HBALLSMOOTH = !GUIMoleculeController.Instance.toggle_NA_HBALLSMOOTH;
-				UIData.Instance.hballsmoothmode = GUIMoleculeController.Instance.toggle_NA_HBALLSMOOTH;
 //			}
  
 			UIData.Instance.hasMoleculeDisplay=true;

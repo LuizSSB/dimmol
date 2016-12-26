@@ -154,7 +154,7 @@ namespace UI
 			var energies = states.Select(s => s.Energy);
 			Instance.StateEnergyMinMax = new RangeAttribute(energies.Min(), energies.Max());
 
-			var stateFile = ParseUtils.SaveStateAsPDB(states.First(), Application.temporaryCachePath);
+			var stateFile = ParseUtils.SaveStateAsPDB(states.First(), UnityClusterPackage.Constants.TemporaryFilesPath);
 			GUIDisplay.Instance.OpenFileCallback(stateFile);
 
 //			new System.Threading.Thread(new System.Threading.ThreadStart(() => {

@@ -517,7 +517,7 @@ namespace UI {
 										GUIMoleculeController.Instance.showSecStructMenu = false;
 										var filePath = RequestExternalOutput.Fetch(
 											TrajectoryWebAddress,
-											Application.temporaryCachePath,
+											UnityClusterPackage.Constants.TemporaryFilesPath,
 											TrajectoryType
 										);
 										OpenTrajectoryCallback(filePath);

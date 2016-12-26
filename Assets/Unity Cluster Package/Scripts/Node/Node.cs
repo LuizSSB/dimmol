@@ -43,9 +43,7 @@ namespace UnityClusterPackage
 		private static string NodeInformationFilePath {
 			get {
 				return Path.Combine(
-					UnityEngine.Application.isMobilePlatform ? 
-						UnityEngine.Application.persistentDataPath :
-						UnityEngine.Application.streamingAssetsPath,
+					UnityClusterPackage.Constants.ConfigFilesPath,
 					"node-config.xml"
 				);
 			}

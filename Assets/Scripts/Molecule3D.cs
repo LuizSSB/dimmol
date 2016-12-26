@@ -1233,7 +1233,7 @@ public class Molecule3D:MonoBehaviour {
 				);
 			} else {
 				string filePath = System.IO.Path.Combine(
-					Application.temporaryCachePath,
+					UnityClusterPackage.Constants.TemporaryFilesPath,
 					"synced.pdb"
 				);
 				System.IO.File.WriteAllText(filePath, UIData.Instance.ChosenPdbContents);

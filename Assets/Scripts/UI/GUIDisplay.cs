@@ -657,6 +657,8 @@ namespace UI {
 				GUIMoleculeController.Instance.SetVRPNMenu();
 				GUIMoleculeController.Instance.SetMDDriverMenu();
 				GUIMoleculeController.Instance.SetHydroMenu();
+			} else {
+				GUIMoleculeController.Instance.RenderInfo();
 			}
 			GUIMoleculeController.Instance.SetEnergyWindow();
 			if (GUI.Button(Rectangles.GoBackRect, new GUIContent("Go Back", "Goes back to the node setup"))) {

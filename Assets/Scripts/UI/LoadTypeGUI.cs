@@ -4237,6 +4237,7 @@ namespace UI {
 				ShurikenParticleManager shManager = shurikenParticleManagerObj.GetComponent<ShurikenParticleManager>();
 				//				shManager.Init();
 				shManager.EnableRenderers();
+				shManager.ResetPositions();
 				break;
 
 			case UIData.AtomType.sphere:

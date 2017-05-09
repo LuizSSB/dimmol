@@ -13,7 +13,7 @@ namespace AssemblyCSharp
 		private const int ComplexObjectPartLength = 3950;
 
 		private string[] mComplexObjectParts = null;
-		private NetworkView NetworkView {
+		private NetworkView Networking {
 			get {
 				return GetComponent<NetworkView>();
 			}
@@ -33,7 +33,7 @@ namespace AssemblyCSharp
 		private string mClientAddress;
 		void OnConnectedToServer() {
 			if (Node.CurrentNode.NodeType == Node.Type.client) {
-				NetworkView.RPC(
+				Networking.RPC(
 					"ReceiveClientNode",
 					RPCMode.Server,
 					Node.CurrentNode.Id,
@@ -73,7 +73,7 @@ namespace AssemblyCSharp
 		{
 			DoOnMainThread.AddAction(delegate {
 				var rpcData = GetRPCData(e.NewValue, "Property");
-				NetworkView.RPC(
+				Networking.RPC(
 					rpcData.HandlerName,
 					RPCMode.All,
 					Node.CurrentNode.Id,
@@ -88,7 +88,7 @@ namespace AssemblyCSharp
 		void HandleChangeManagerMethodInvoked (object sender, MethodParamEventArgs e)
 		{
 			var rpcData = GetRPCData(e.Param, "Method");
-			NetworkView.RPC(
+			Networking.RPC(
 				rpcData.HandlerName,
 				RPCMode.All,
 				Node.CurrentNode.Id,
@@ -106,7 +106,7 @@ namespace AssemblyCSharp
 				ChangeManager.PropertyChanged -= HandleChangeManagerPropertyChanged;
 				GUIDisplay.Instance.Cleared -= HandleUICleared;
 			} else {
-				NetworkView.RPC("Clear", RPCMode.All, Node.CurrentNode.Id);
+				Networking.RPC("Clear", RPCMode.All, Node.CurrentNode.Id);
 			}
 		}
 
@@ -136,7 +136,7 @@ namespace AssemblyCSharp
 						);
 
 					DoOnMainThread.AddAction(() => {
-						NetworkView.RPC("ReceiveString", RPCMode.All, Node.CurrentNode.Id, part);
+						Networking.RPC("ReceiveString", RPCMode.All, Node.CurrentNode.Id, part);
 					});
 				}
 
@@ -348,14 +348,17 @@ namespace AssemblyCSharp
 
 			public override string ToString()
 			{
-				return string.Format(
-					"{0}/{1}/{2}/{3}/{4}",
-					_CallbackTypeName,
-					CallbackMethodName,
-					_ObjectTypeName,
-					CurrentPart,
-					TotalParts
-				);
+				var value = string.Join(
+					            "/",
+					            new [] {
+									_CallbackTypeName,
+									CallbackMethodName,
+									_ObjectTypeName,
+									CurrentPart.ToString(),
+									TotalParts.ToString()
+								}
+				            );
+				return value;
 			}
 
 			public static ControlData Deserialize(string deserialized) {

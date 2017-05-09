@@ -909,13 +909,8 @@ namespace UI {
 				if (GUI.Button (new Rect (Screen.width / 4, 0.75f * Screen.height - 20 - 30, Screen.width / 2, 20), "Close unity mol help window"))
 					toggle_HELP = false; 
 			}
-			
-			// Print FPS and atom/bond count if activated ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-			if(toggle_INFOS) {
-				GUI.Label(Rectangles.fpsInfosRect, new GUIContent(" FPS : " + MoleculeModel.FPS 
-																+ "\n Atom count : " + MoleculeModel.atomsnumber.ToString()
-																+ "\n Bond count : " + MoleculeModel.bondsnumber.ToString()));
-			}
+
+			RenderInfo();
 			
 			// Print copyright and icon if activated :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 			if (toggle_VE_COPYR) {
@@ -940,6 +935,15 @@ namespace UI {
 				toggle_HELP = !toggle_HELP;
 			}
 		} // End of RenderHelp
+
+		public void RenderInfo() {
+			// Print FPS and atom/bond count if activated ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+			if(toggle_INFOS) {
+				GUI.Label(Rectangles.fpsInfosRect, new GUIContent(" FPS : " + MoleculeModel.FPS 
+					+ "\n Atom count : " + MoleculeModel.atomsnumber.ToString()
+					+ "\n Bond count : " + MoleculeModel.bondsnumber.ToString()));
+			}
+		}
 
 		// Luiz:
 		private T ProcessPropertyChanged<T> (string propertyName, T oldValue, T newValue)

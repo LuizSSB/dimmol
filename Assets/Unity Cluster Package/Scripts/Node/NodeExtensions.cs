@@ -27,28 +27,28 @@ namespace Config {
 				return false;
 
 			if (permission.IsFlagSet(NodePermission.Master))
-			if (Node.CurrentNode.NodeType != Node.Type.master)
+			if (Node.CurrentNode.NodeType != Node.Type.masterHost)
 				return false;
 
 			if (permission.IsFlagSet(NodePermission.Server))
-			if (Node.CurrentNode.NodeType != Node.Type.server)
+			if (Node.CurrentNode.NodeType != Node.Type.host)
 				return false;
 
 			if (permission.IsFlagSet(NodePermission.Client))
-			if (Node.CurrentNode.NodeType != Node.Type.client)
+			if (Node.CurrentNode.NodeType != Node.Type.master)
 				return false;
 
 			if (permission.IsFlagSet(NodePermission.CameraControl))
-			if (Node.CurrentNode.NodeType == Node.Type.server
+			if (Node.CurrentNode.NodeType == Node.Type.host
 				|| (Node.CurrentNode.NodeType == Node.Type.slave && !SlaveConfig.CurrentConfig.CameraControl))
 				return false;
 
 			if (permission.IsFlagSet(NodePermission.MenuControl))
-			if (Node.CurrentNode.NodeType != Node.Type.master && Node.CurrentNode.NodeType != Node.Type.client)
+			if (Node.CurrentNode.NodeType != Node.Type.masterHost && Node.CurrentNode.NodeType != Node.Type.master)
 				return false;
 
 			if (permission.IsFlagSet(NodePermission.Energy))
-			if (Node.CurrentNode.NodeType != Node.Type.master && Node.CurrentNode.NodeType != Node.Type.client
+			if (Node.CurrentNode.NodeType != Node.Type.masterHost && Node.CurrentNode.NodeType != Node.Type.master
 				&& !SlaveConfig.CurrentConfig.ShowEnergy)
 				return false;
 

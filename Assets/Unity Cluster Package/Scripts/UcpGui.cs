@@ -1,9 +1,5 @@
-﻿using UnityEngine;
-using System.Collections;
-using UnityEngine.UI;
-using UI;
-using System.Collections.Generic;
-using System;
+﻿using System;
+using UnityEngine;
 
 namespace UnityClusterPackage {
 	public abstract class UcpGuiAction : MonoBehaviour
@@ -15,34 +11,33 @@ namespace UnityClusterPackage {
 		public UcpGuiAction DoAfterSetUp;
 		public event Action<Node> NodeSetUp;
 
-		private Node m_Node;
-		private string m_ServerPort;
-		private StringNodePoint m_Pa;
-		private StringNodePoint m_Pb;
-		private StringNodePoint m_Pc;
-		private StringNodePoint m_Pe;
+		public Node Node { get; private set; }
+		bool m_IsMobileDevice;
+		string m_ServerPort;
+		StringNodePoint m_Pa;
+		StringNodePoint m_Pb;
+		StringNodePoint m_Pc;
+		StringNodePoint m_Pe;
 
-		private string m_ErrorMessages = string.Empty;
+		string m_ErrorMessages = string.Empty;
 
-		protected static readonly Rect MainAreaFrame = new Rect(
-			(int)(Screen.width / 3f / 2f),
-			5,
-			(int)(Screen.width / 1.5f),
-			Screen.height - 5
-		);
+		protected static readonly Rect MainAreaFrame = new Rect (
+			                                               (Screen.width / 3f / 2f),
+			                                               5,
+			                                               (Screen.width / 1.5f),
+			                                               Screen.height - 5
+		                                               );
 
 		// Use this for initialization
 		protected virtual void Start () {
-			m_Node = Node.CurrentNode;
+			Node = Node.CurrentNode;
 
-			m_ServerPort = m_Node.NodeServer.Port.ToString();
-			m_Pa = ConvertNodePoint(m_Node.NodeScreen.Pa);
-			m_Pb = ConvertNodePoint(m_Node.NodeScreen.Pb);
-			m_Pc = ConvertNodePoint(m_Node.NodeScreen.Pc);
-			m_Pe = ConvertNodePoint(m_Node.NodeScreen.Pe);
+			m_ServerPort = Node.NodeServer.Port.ToString();
+			m_Pa = ConvertNodePoint(Node.NodeScreen.Pa);
+			m_Pb = ConvertNodePoint(Node.NodeScreen.Pb);
+			m_Pc = ConvertNodePoint(Node.NodeScreen.Pc);
+			m_Pe = ConvertNodePoint(Node.NodeScreen.Pe);
 		}
-
-		private bool setUp = false;
 
 		protected void OnGUI() {
 			GUISkin mySkin = GUI.skin;
@@ -57,121 +52,165 @@ namespace UnityClusterPackage {
 			mySkin.horizontalSlider.fixedHeight =
 				mySkin.horizontalSliderThumb.fixedHeight = Mathf.Max(20f, Node.CurrentNode.GuiSize);
 
-			GUILayout.BeginArea(MainAreaFrame); {
-				GUILayout.BeginHorizontal(); {
-					GUILayout.Label("NODE SETTINGS", MakeWidthOption(.33f));
+			GUILayout.BeginArea(MainAreaFrame);
+			{
+				GUILayout.BeginHorizontal();
+				{
+					GUILayout.BeginVertical(MakeWidthOption(.33f));
+					{
+						GUILayout.Label("NODE SETTINGS", MakeWidthOption(.33f));
+						m_IsMobileDevice = IntToBool(GUILayout.SelectionGrid(
+							BoolToInt(m_IsMobileDevice),
+							new []{ "Desktop", "Mobile Device" },
+							2
+						));
+					}
+					GUILayout.EndVertical();
 
-					GUILayout.BeginVertical(); {
+					GUILayout.BeginVertical();
+					{
 						GUILayout.Label("GUI scale");
 						Node.CurrentNode.GuiSize = (int)GUILayout.HorizontalSlider(
 							Node.CurrentNode.GuiSize,
 							10f,
 							40f
 						);
-					} GUILayout.EndVertical();
-				} GUILayout.EndHorizontal();
+					}
+					GUILayout.EndVertical();
+				}
+				GUILayout.EndHorizontal();
 
 				// General stuff
-				GUILayout.BeginHorizontal(); {
-					// Id
-					GUILayout.BeginVertical(MakeWidthOption(.33f)); {
-						GUILayout.Label("Node Id");
-						var idString = GUILayout.TextField(m_Node.Id.ToString());
-						try {
-							m_Node.Id = int.Parse(idString);
-						} catch(Exception) { }
-					} GUILayout.EndVertical();
-
-					// Name
-					GUILayout.BeginVertical(MakeWidthOption(.33f)); {
-						GUILayout.Label("Node name");
-						m_Node.Name = GUILayout.TextField(m_Node.Name);
-					} GUILayout.EndVertical();
-
-					// Nodes
-					GUILayout.BeginVertical(MakeWidthOption(.32f)); {
-						GUILayout.Label("Number of nodes");
-						var nodes = GUILayout.TextField(m_Node.Nodes.ToString());
-						try {
-							m_Node.Nodes = int.Parse(nodes);
-						} catch(Exception) { }
-					} GUILayout.EndVertical();
-				} GUILayout.EndHorizontal();
-
-				// Server Data
-				GUILayout.BeginHorizontal(); {
+				GUILayout.BeginHorizontal();
+				{
 					// Node type
-					GUILayout.BeginVertical(MakeWidthOption(.33f)); {
+					GUILayout.BeginVertical(MakeWidthOption(.33f));
+					{
 						GUILayout.Label("Node type");
-						m_Node.NodeType = (Node.Type)GUILayout.SelectionGrid(
-							(int)m_Node.NodeType,
+						Node.NodeType = (Node.Type)GUILayout.SelectionGrid(
+							(int)Node.NodeType,
 							Enum.GetNames(typeof(Node.Type)),
 							2
 						);
-					} GUILayout.EndVertical();
-
-					// Server Address
-					GUILayout.BeginVertical(MakeWidthOption(.33f)); {
-						GUILayout.Label("Server IP");
-						m_Node.NodeServer.Ip = GUILayout.TextField(m_Node.NodeServer.Ip);
-					} GUILayout.EndVertical();
-
-					// Server Port
-					GUILayout.BeginVertical(MakeWidthOption(.32f)); {
-						GUILayout.Label("Server Port");
-						m_ServerPort = GUILayout.TextField(m_ServerPort);
-					} GUILayout.EndVertical();
-				}; GUILayout.EndHorizontal();
-
-				// Screen data
-				GUILayout.BeginHorizontal(); {
-					// Is Stereo?
-					m_Node.NodeScreen.Stereo = GUILayout.Toggle(
-						m_Node.NodeScreen.Stereo,
-						"Stereo",
-						MakeWidthOption(.25f)
-					);
-
-					// Which eye stereo uses
-					m_Node.NodeScreen.ScreenEye = GUILayout.Toggle(
-						m_Node.NodeScreen.ScreenEye == Node.Eye.right,
-						"Right eye?",
-						MakeWidthOption(.25f)
-					) ? Node.Eye.right : Node.Eye.left;
-
-					// Whether it is using Google VR
-					m_Node.NodeScreen.UsesGoogleVr = GUILayout.Toggle(
-						m_Node.NodeScreen.UsesGoogleVr,
-						"Google VR",
-						MakeWidthOption(.25f)
-					);
-
-					// Whether it uses GoogleVR's head tracking
-					if (m_Node.NodeScreen.UsesGoogleVr) {
-						m_Node.NodeScreen.TracksHead = true;
-					} else {
-						m_Node.NodeScreen.TracksHead = GUILayout.Toggle(
-							m_Node.NodeScreen.TracksHead,
-							"Gyroscope / Tracks head",
-							MakeWidthOption(.249f)
-						);
 					}
-				} GUILayout.EndHorizontal();
+					GUILayout.EndVertical();
 
-				// Points
-				DrawPoints("Pa", m_Pa);
-				DrawPoints("Pb", m_Pb);
-				DrawPoints("Pc", m_Pc);
-				DrawPoints("Pe", m_Pe);
+					// Id
+					GUILayout.BeginVertical(MakeWidthOption(.33f));
+					{
+						GUILayout.Label("Node Id");
+						var idString = GUILayout.TextField(Node.Id.ToString());
+						int idInt;
+						if (int.TryParse(idString, out idInt)) {
+							Node.Id = idInt;
+						}
+					}
+					GUILayout.EndVertical();
+
+					// Name
+					GUILayout.BeginVertical(MakeWidthOption(.33f));
+					{
+						GUILayout.Label("Node name");
+						Node.Name = GUILayout.TextField(Node.Name);
+					}
+					GUILayout.EndVertical();
+				}
+				GUILayout.EndHorizontal();
+
+				// Server Data
+
+				GUILayout.BeginHorizontal();
+				{
+					if (Node.NodeType.IsHost()) {
+						// Nodes
+						GUILayout.BeginVertical(MakeWidthOption(.32f));
+						{
+							GUILayout.Label("Number of nodes");
+							var nodes = GUILayout.TextField(Node.Nodes.ToString());
+							int nodesInt;
+							if (int.TryParse(nodes, out nodesInt)) {
+								Node.Nodes = nodesInt;
+							}
+						}
+						GUILayout.EndVertical();
+					} else {
+						// Server Address
+						GUILayout.BeginVertical(MakeWidthOption(.33f));
+						{
+							GUILayout.Label("Host IP");
+							Node.NodeServer.Ip = GUILayout.TextField(Node.NodeServer.Ip);
+						}
+						GUILayout.EndVertical();
+
+						// Server Port
+						GUILayout.BeginVertical(MakeWidthOption(.32f));
+						{
+							GUILayout.Label("Host Port");
+							m_ServerPort = GUILayout.TextField(m_ServerPort);
+						}
+						GUILayout.EndVertical();
+					}
+				}
+				GUILayout.EndHorizontal();
+
+				if (m_IsMobileDevice) {
+					// Screen data
+					GUILayout.BeginHorizontal();
+					{
+						// Whether it is using Google VR
+						Node.NodeScreen.UsesGoogleVr = GUILayout.Toggle(
+							Node.NodeScreen.UsesGoogleVr,
+							"Google VR",
+							MakeWidthOption(.33f)
+						);
+
+						// Whether it uses GoogleVR's head tracking
+						if (Node.NodeScreen.UsesGoogleVr) {
+							Node.NodeScreen.TracksHead = true;
+						} else {
+							Node.NodeScreen.TracksHead = GUILayout.Toggle(
+								Node.NodeScreen.TracksHead,
+								"Gyroscope / Tracks head",
+								MakeWidthOption(.33f)
+							);
+						}
+					}
+					GUILayout.EndHorizontal();
+
+				} else {
+					GUILayout.BeginHorizontal();
+					{
+						// Is Stereo?
+						Node.NodeScreen.Stereo = GUILayout.Toggle(
+							Node.NodeScreen.Stereo,
+							"Stereo",
+							MakeWidthOption(.33f)
+						);
+
+						if (Node.NodeScreen.Stereo) {
+							// Which eye stereo uses
+							Node.NodeScreen.ScreenEye = (Node.Eye)GUILayout.SelectionGrid(
+								(int)Node.NodeScreen.ScreenEye,
+								new [] { "Left eye", "Right eye" },
+								2,
+								MakeWidthOption(.33f)
+							);
+						}							
+					}
+					GUILayout.EndHorizontal();
+					// Points
+					DrawPoints("Pa", m_Pa);
+					DrawPoints("Pb", m_Pb);
+					DrawPoints("Pc", m_Pc);
+					DrawPoints("Pe", m_Pe);
+				}
 
 				// Buttons
 				if (GUILayout.Button("Confirm")) {
 					CheckAndSave();
 				}
 				if (GUILayout.Button("Confirm and save node-config.xml")) {
-					CheckAndSave(() => {
-						Node.SetNodeDataUp(m_Node);
-					});
+					CheckAndSave(() => Node.SetNodeDataUp(Node));
 				}
 
 				GuiCustomizationHook();
@@ -179,12 +218,13 @@ namespace UnityClusterPackage {
 				// Error messages
 				GUILayout.Label(m_ErrorMessages);
 
-			} GUILayout.EndArea();
+			}
+			GUILayout.EndArea();
 		}
 
 		protected virtual void GuiCustomizationHook() { }
 
-		private static void DrawPoints(string label, StringNodePoint point)
+		static void DrawPoints(string label, StringNodePoint point)
 		{
 			GUILayout.BeginHorizontal(); {
 				point.X = DrawPoint(label + " X", point.X);
@@ -193,7 +233,7 @@ namespace UnityClusterPackage {
 			} GUILayout.EndHorizontal();
 		}
 
-		private static string DrawPoint(string label, string pointValue, float fieldWidth = .33f) {
+		static string DrawPoint(string label, string pointValue, float fieldWidth = .33f) {
 			GUILayout.BeginVertical(MakeWidthOption(fieldWidth)); {
 				GUILayout.Label(label);
 				pointValue = GUILayout.TextField(pointValue);
@@ -202,36 +242,45 @@ namespace UnityClusterPackage {
 			return pointValue;
 		}
 
-		private void CheckAndSave(Action action = null)
+		void CheckAndSave(Action action = null)
 		{
 			var msgs = new System.Text.StringBuilder();
 			bool valid = true;
 
-			int port = 0;
+			int port;
 			if (!int.TryParse(m_ServerPort, out port)) {
 				msgs.AppendLine("INVALID SERVER PORT");
 				valid = false;
 			} else
-				m_Node.NodeServer.Port = port;
+				Node.NodeServer.Port = port;
 
-			if (!ValidatePoint(m_Pa, m_Node.NodeScreen.Pa)) {
-				msgs.AppendLine("INVALID PA COORDINATES");
-				valid = false;
-			}
+			if(m_IsMobileDevice) {
+				var defaultNode = Node.Default();
+				Node.NodeScreen.Pa = defaultNode.NodeScreen.Pa;
+				Node.NodeScreen.Pb = defaultNode.NodeScreen.Pb;
+				Node.NodeScreen.Pc = defaultNode.NodeScreen.Pc;
+				Node.NodeScreen.Pe = defaultNode.NodeScreen.Pe;
 
-			if (!ValidatePoint(m_Pb, m_Node.NodeScreen.Pb)) {
-				msgs.AppendLine("INVALID PB COORDINATES");
-				valid = false;
-			}
+			} else {
+				if (!ValidatePoint(m_Pa, Node.NodeScreen.Pa)) {
+					msgs.AppendLine("INVALID PA COORDINATES");
+					valid = false;
+				}
 
-			if (!ValidatePoint(m_Pc, m_Node.NodeScreen.Pc)) {
-				msgs.AppendLine("INVALID PC COORDINATES");
-				valid = false;
-			}
+				if (!ValidatePoint(m_Pb, Node.NodeScreen.Pb)) {
+					msgs.AppendLine("INVALID PB COORDINATES");
+					valid = false;
+				}
 
-			if (!ValidatePoint(m_Pe, m_Node.NodeScreen.Pe)) {
-				msgs.AppendLine("INVALID PE COORDINATES");
-				valid = false;
+				if (!ValidatePoint(m_Pc, Node.NodeScreen.Pc)) {
+					msgs.AppendLine("INVALID PC COORDINATES");
+					valid = false;
+				}
+
+				if (!ValidatePoint(m_Pe, Node.NodeScreen.Pe)) {
+					msgs.AppendLine("INVALID PE COORDINATES");
+					valid = false;
+				}
 			}
 
 			if (valid) {
@@ -244,7 +293,7 @@ namespace UnityClusterPackage {
 					}
 
 					if (NodeSetUp != null) {
-						NodeSetUp(m_Node);
+						NodeSetUp(Node);
 					}
 				} catch (Exception e) {
 					m_ErrorMessages = e.ToString();
@@ -254,15 +303,15 @@ namespace UnityClusterPackage {
 			}
 		}
 
-		private static StringNodePoint ConvertNodePoint(Node.Point point) {
-			return new StringNodePoint() {
+		static StringNodePoint ConvertNodePoint(Node.Point point) {
+			return new StringNodePoint {
 				X = point.X.ToString(),
 				Y = point.Y.ToString(),
 				Z = point.Z.ToString()
 			};
 		}
 
-		private static bool ValidatePoint(StringNodePoint stringPoint, Node.Point point)
+		static bool ValidatePoint(StringNodePoint stringPoint, Node.Point point)
 		{
 			float value;
 
@@ -285,7 +334,7 @@ namespace UnityClusterPackage {
 		}
 
 		protected static GUILayoutOption MakeWidthOption(float portionOfArea) {
-			return GUILayout.Width((int)(MainAreaFrame.width * portionOfArea));
+			return GUILayout.Width (MainAreaFrame.width * portionOfArea);
 		}
 
 		[System.Serializable]
@@ -303,6 +352,14 @@ namespace UnityClusterPackage {
 				get;
 				set;
 			}
+		}
+
+		static bool IntToBool(int value) {
+			return value != 0;
+		}
+
+		static int BoolToInt(bool value) {
+			return value ? 1 : 0;
 		}
 	}
 }

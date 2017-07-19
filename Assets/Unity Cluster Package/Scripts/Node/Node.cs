@@ -1,5 +1,4 @@
 ﻿using System.Xml.Serialization;
-using System.Collections;
 using System.IO;
 
 namespace UnityClusterPackage
@@ -30,26 +29,50 @@ namespace UnityClusterPackage
 
 		public bool IsHostNode {
 			get {
-				return NodeType == Type.master || NodeType == Type.server;
+				return NodeType == Type.masterHost || NodeType == Type.host;
 			}
 		}
 
 		public bool IsChildNode {
 			get {
-				return NodeType == Type.client || NodeType == Type.slave;
+				return NodeType == Type.master || NodeType == Type.slave;
 			}
 		}
 
-		private static string NodeInformationFilePath {
+		static string NodeInformationFilePath {
 			get {
 				return Path.Combine(
-					UnityClusterPackage.Constants.ConfigFilesPath,
+					Constants.ConfigFilesPath,
 					"node-config.xml"
 				);
 			}
 		}
 
-		private static Node sCurrentNode;
+		public static Node Default() {
+			return new Node {
+				Id = 1,
+				Name = "Node",
+				Nodes = 6,
+				NodeType = Node.Type.masterHost,
+				NodeServer = new Node.Server {
+					Ip = "192.168.1.100",
+					Port = 25000
+				},
+				GuiSize = 30,
+				NodeScreen = new Node.Screen {
+					ScreenEye = Eye.left,
+					Stereo = false,
+					UsesGoogleVr = false,
+					TracksHead = false,
+					Pa = new Node.Point { X = -8f, Y = -4f, Z = 0f },
+					Pb =  new Node.Point { X = 8f, Y = -4f, Z = 0f },
+					Pc = new Node.Point { X = -8f, Y = 5f, Z = 0f },
+					Pe = new Node.Point { X = 0f, Y = 0f, Z = 5f}
+				}
+			};
+		}
+
+		static Node sCurrentNode;
 		public static Node CurrentNode {
 			get {
 				if (sCurrentNode == null) {
@@ -61,27 +84,7 @@ namespace UnityClusterPackage
 					} catch(System.Exception e) {
 						UnityEngine.Debug.Log("Failed to load node-config.xml: " + e);
 
-						sCurrentNode = new Node {
-							Id = 1,
-							Name = "Node",
-							Nodes = 6,
-							NodeType = Node.Type.master,
-							NodeServer = new Node.Server() {
-								Ip = "192.168.1.100",
-								Port = 25000
-							},
-							GuiSize = 30,
-							NodeScreen = new Node.Screen() {
-								ScreenEye = Eye.left,
-								Stereo = false,
-								UsesGoogleVr = false,
-								TracksHead = false,
-								Pa = new Node.Point { X = -8f, Y = -4f, Z = 0f },
-								Pb =  new Node.Point { X = 8f, Y = -4f, Z = 0f },
-								Pc = new Node.Point { X = -8f, Y = 5f, Z = 0f },
-								Pe = new Node.Point { X = 0f, Y = 0f, Z = 5f}
-							}
-						};
+						sCurrentNode = Default();
 					}
 				}
 				return sCurrentNode;
@@ -103,18 +106,18 @@ namespace UnityClusterPackage
 		public enum Type {
 			// Used when a node gets to be a host while presenting the GUI.
 			// Designed to work as the only node or accompanied by N slaves.
-			master,
+			masterHost,
 
-			// Used when a node gets to be the host, but control is relegated to another node (client).
-			// Designed to work alongside a client node. May be accompanied by N slaves.
-			server,
+			// Used when a node gets to be the host, but control is relegated to another node (master).
+			// Designed to work alongside a master node. May be accompanied by N slaves.
+			host,
 
 			// Used when a node is responsible for controlling the app, but the cluster host is in another node.
-			// Designed to connect only to a server node. Should not be connected to master nodes.
-			client,
+			// Designed to connect only to a host node. Should not be connected to masterHost nodes.
+			master,
 
 			// Used when the node merely presents information and does nothing else.
-			// Designed to connect to server or master nodes.
+			// Designed to connect to host or masterHost nodes.
 			slave
 		}
 
@@ -177,6 +180,12 @@ namespace UnityClusterPackage
 			public UnityEngine.Vector3 ToVector3() {
 				return new UnityEngine.Vector3(X, Y, Z);
 			}
+		}
+	}
+
+	public static class TypeEx {
+		public static bool IsHost(this Node.Type type) {
+			return type == Node.Type.masterHost || type == Node.Type.host;
 		}
 	}
 }

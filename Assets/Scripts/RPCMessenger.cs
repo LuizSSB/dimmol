@@ -32,7 +32,7 @@ namespace AssemblyCSharp
 
 		private string mClientAddress;
 		void OnConnectedToServer() {
-			if (Node.CurrentNode.NodeType == Node.Type.client) {
+			if (Node.CurrentNode.NodeType == Node.Type.master) {
 				Networking.RPC(
 					"ReceiveClientNode",
 					RPCMode.Server,

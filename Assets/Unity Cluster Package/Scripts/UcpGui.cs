@@ -58,10 +58,10 @@ namespace UnityClusterPackage {
 				{
 					GUILayout.BeginVertical(MakeWidthOption(.33f));
 					{
-						GUILayout.Label("NODE SETTINGS", MakeWidthOption(.33f));
+						GUILayout.Label("CONFIGURAÇÕES DO NÓ", MakeWidthOption(.33f));
 						m_IsMobileDevice = IntToBool(GUILayout.SelectionGrid(
 							BoolToInt(m_IsMobileDevice),
-							new []{ "Desktop", "Mobile Device" },
+							new []{ "PC", "Dispositivo Móvel" },
 							2
 						));
 					}
@@ -69,7 +69,7 @@ namespace UnityClusterPackage {
 
 					GUILayout.BeginVertical();
 					{
-						GUILayout.Label("GUI scale");
+						GUILayout.Label("Escala visual");
 						Node.CurrentNode.GuiSize = (int)GUILayout.HorizontalSlider(
 							Node.CurrentNode.GuiSize,
 							10f,
@@ -86,7 +86,7 @@ namespace UnityClusterPackage {
 					// Node type
 					GUILayout.BeginVertical(MakeWidthOption(.33f));
 					{
-						GUILayout.Label("Node type");
+						GUILayout.Label("Tipo do nó");
 						Node.NodeType = (Node.Type)GUILayout.SelectionGrid(
 							(int)Node.NodeType,
 							Enum.GetNames(typeof(Node.Type)),
@@ -98,7 +98,7 @@ namespace UnityClusterPackage {
 					// Id
 					GUILayout.BeginVertical(MakeWidthOption(.33f));
 					{
-						GUILayout.Label("Node Id");
+						GUILayout.Label("Id do nó");
 						var idString = GUILayout.TextField(Node.Id.ToString());
 						int idInt;
 						if (int.TryParse(idString, out idInt)) {
@@ -110,7 +110,7 @@ namespace UnityClusterPackage {
 					// Name
 					GUILayout.BeginVertical(MakeWidthOption(.33f));
 					{
-						GUILayout.Label("Node name");
+						GUILayout.Label("Nome do nó");
 						Node.Name = GUILayout.TextField(Node.Name);
 					}
 					GUILayout.EndVertical();
@@ -125,7 +125,7 @@ namespace UnityClusterPackage {
 						// Nodes
 						GUILayout.BeginVertical(MakeWidthOption(.32f));
 						{
-							GUILayout.Label("Number of nodes");
+							GUILayout.Label("Quantidade de nós");
 							var nodes = GUILayout.TextField(Node.Nodes.ToString());
 							int nodesInt;
 							if (int.TryParse(nodes, out nodesInt)) {
@@ -137,7 +137,7 @@ namespace UnityClusterPackage {
 						// Server Address
 						GUILayout.BeginVertical(MakeWidthOption(.33f));
 						{
-							GUILayout.Label("Host IP");
+							GUILayout.Label("IP do host");
 							Node.NodeServer.Ip = GUILayout.TextField(Node.NodeServer.Ip);
 						}
 						GUILayout.EndVertical();
@@ -145,7 +145,7 @@ namespace UnityClusterPackage {
 						// Server Port
 						GUILayout.BeginVertical(MakeWidthOption(.32f));
 						{
-							GUILayout.Label("Host Port");
+							GUILayout.Label("Porta do host");
 							m_ServerPort = GUILayout.TextField(m_ServerPort);
 						}
 						GUILayout.EndVertical();
@@ -160,7 +160,7 @@ namespace UnityClusterPackage {
 						// Whether it is using Google VR
 						Node.NodeScreen.UsesGoogleVr = GUILayout.Toggle(
 							Node.NodeScreen.UsesGoogleVr,
-							"Google VR",
+							"Usar Google Cardboard?",
 							MakeWidthOption(.33f)
 						);
 
@@ -170,7 +170,7 @@ namespace UnityClusterPackage {
 						} else {
 							Node.NodeScreen.TracksHead = GUILayout.Toggle(
 								Node.NodeScreen.TracksHead,
-								"Gyroscope / Tracks head",
+								"Ativar giroscópio?",
 								MakeWidthOption(.33f)
 							);
 						}
@@ -183,7 +183,7 @@ namespace UnityClusterPackage {
 						// Is Stereo?
 						Node.NodeScreen.Stereo = GUILayout.Toggle(
 							Node.NodeScreen.Stereo,
-							"Stereo",
+							"Visão estereoscópica?",
 							MakeWidthOption(.33f)
 						);
 
@@ -191,7 +191,7 @@ namespace UnityClusterPackage {
 							// Which eye stereo uses
 							Node.NodeScreen.ScreenEye = (Node.Eye)GUILayout.SelectionGrid(
 								(int)Node.NodeScreen.ScreenEye,
-								new [] { "Left eye", "Right eye" },
+								new [] { "Olho esquerdo", "Olho Direito" },
 								2,
 								MakeWidthOption(.33f)
 							);
@@ -206,10 +206,10 @@ namespace UnityClusterPackage {
 				}
 
 				// Buttons
-				if (GUILayout.Button("Confirm")) {
+				if (GUILayout.Button("Confirmar")) {
 					CheckAndSave();
 				}
-				if (GUILayout.Button("Confirm and save node-config.xml")) {
+				if (GUILayout.Button("Confirmar e salvar configurações em arquivo")) {
 					CheckAndSave(() => Node.SetNodeDataUp(Node));
 				}
 
@@ -249,7 +249,7 @@ namespace UnityClusterPackage {
 
 			int port;
 			if (!int.TryParse(m_ServerPort, out port)) {
-				msgs.AppendLine("INVALID SERVER PORT");
+				msgs.AppendLine("PORTA DO HOST INVÁLIDA");
 				valid = false;
 			} else
 				Node.NodeServer.Port = port;
@@ -263,22 +263,22 @@ namespace UnityClusterPackage {
 
 			} else {
 				if (!ValidatePoint(m_Pa, Node.NodeScreen.Pa)) {
-					msgs.AppendLine("INVALID PA COORDINATES");
+					msgs.AppendLine("COORDENADAS PA INVÁLIDAS");
 					valid = false;
 				}
 
 				if (!ValidatePoint(m_Pb, Node.NodeScreen.Pb)) {
-					msgs.AppendLine("INVALID PB COORDINATES");
+					msgs.AppendLine("COORDENADAS PB INVÁLIDAS");
 					valid = false;
 				}
 
 				if (!ValidatePoint(m_Pc, Node.NodeScreen.Pc)) {
-					msgs.AppendLine("INVALID PC COORDINATES");
+					msgs.AppendLine("COORDENADAS PC INVÁLIDAS");
 					valid = false;
 				}
 
 				if (!ValidatePoint(m_Pe, Node.NodeScreen.Pe)) {
-					msgs.AppendLine("INVALID PE COORDINATES");
+					msgs.AppendLine("COORDENADAS PE INVÁLIDAS");
 					valid = false;
 				}
 			}

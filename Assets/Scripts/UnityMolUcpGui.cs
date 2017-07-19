@@ -18,22 +18,22 @@ public class UnityMolUcpGui : UnityClusterPackage.UcpGui {
 		}
 
 		GUILayout.Label(string.Empty);
-		GUILayout.Label("SLAVE SETTINGS");
+		GUILayout.Label("CONFIGURAÇÕES DE ESCRAVO");
 		GUILayout.BeginHorizontal(); {
 			m_SlaveConfig.CameraControl = GUILayout.Toggle(
 				m_SlaveConfig.CameraControl,
-				"Has camera control",
+				"Tem controle da câmera?",
 				MakeWidthOption(.33f)
 			);
 
 			m_SlaveConfig.ShowEnergy = GUILayout.Toggle(
 				m_SlaveConfig.ShowEnergy,
-				"Displays energy meter",
+				"Mostra medidor de energia?",
 				MakeWidthOption(.5f)
 			);
 		} GUILayout.EndHorizontal();
 
-		if (GUILayout.Button("Save slave settings")) {
+		if (GUILayout.Button("Salvar configurações de escravo")) {
 			SlaveConfig.SetSlaveConfigData(m_SlaveConfig);
 		}
 	}

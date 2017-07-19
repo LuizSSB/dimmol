@@ -95,6 +95,7 @@
      <Compile Include="Assets\Plotter\PlotManager.cs" />
      <Compile Include="Assets\Plotter\Test\TestPlotter.cs" />
      <Compile Include="Assets\Scripts\AFMLikeExp.cs" />
+     <Compile Include="Assets\Scripts\BlackBox\PreloaderGui.cs" />
      <Compile Include="Assets\Scripts\CameraControlScript.cs" />
      <Compile Include="Assets\Scripts\ChangeManager.cs" />
      <Compile Include="Assets\Scripts\ColorPicker.cs" />

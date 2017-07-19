@@ -3032,28 +3032,28 @@ namespace UI {
 					GUIMoleculeController.Instance.showOpenMenu = false;
 				}
 			}
-			
-			if(GUILayout.Button(new GUIContent("Sec. Structures", "Open the secondary structures dialogue")))
-				GUIMoleculeController.Instance.showSecStructMenu = !GUIMoleculeController.Instance.showSecStructMenu;
-			
-			if (GUILayout.Button (new GUIContent ("Surface", "Open the Surface rendering dialogue"))) {
-				if (GUIMoleculeController.Instance.showSurfaceMenu) {
-					GUIMoleculeController.Instance.showSurfaceMenu = false;
-//					GUIMoleculeController.Instance.showSurfaceCut=false;
-//					GUIMoleculeController.Instance.showSurfaceMobileCut=false;
-					GUIMoleculeController.Instance.showSurfaceTexture = false;
-				} else {
-					GUIMoleculeController.Instance.showSurfaceMenu = true;
-					GUIMoleculeController.Instance.showBfactorMenu = false;
-					GUIMoleculeController.Instance.showOpenMenu = false;
 
-				}
-				if (!UIData.Instance.toggleSurf) {
-					UIData.Instance.toggleBfac = false;
-					UIData.Instance.toggleSurf = true;
-					GUIMoleculeController.Instance.pdbGen = false;
-				}
-			}
+//			if(GUILayout.Button(new GUIContent("Sec. Structures", "Open the secondary structures dialogue")))
+//				GUIMoleculeController.Instance.showSecStructMenu = !GUIMoleculeController.Instance.showSecStructMenu;
+//			
+//			if (GUILayout.Button (new GUIContent ("Surface", "Open the Surface rendering dialogue"))) {
+//				if (GUIMoleculeController.Instance.showSurfaceMenu) {
+//					GUIMoleculeController.Instance.showSurfaceMenu = false;
+////					GUIMoleculeController.Instance.showSurfaceCut=false;
+////					GUIMoleculeController.Instance.showSurfaceMobileCut=false;
+//					GUIMoleculeController.Instance.showSurfaceTexture = false;
+//				} else {
+//					GUIMoleculeController.Instance.showSurfaceMenu = true;
+//					GUIMoleculeController.Instance.showBfactorMenu = false;
+//					GUIMoleculeController.Instance.showOpenMenu = false;
+//
+//				}
+//				if (!UIData.Instance.toggleSurf) {
+//					UIData.Instance.toggleBfac = false;
+//					UIData.Instance.toggleSurf = true;
+//					GUIMoleculeController.Instance.pdbGen = false;
+//				}
+//			}
 			//No bfactor option in this version
 /*			if (GUI.Button (new Rect (240 + 23, 2, 80, 20), new GUIContent ("Bfactor", "Open the Bfactor settings dialogue"))) 
 			{
@@ -3078,19 +3078,19 @@ namespace UI {
 			 	}
 			}
 */
-			if(!MoleculeModel.dxFileExists)
-				GUI.enabled = false;
-			if (GUILayout.Button (new GUIContent ("Electrostat.", "Open the electrostatics field lines dialogue"))) {
-				if (GUIMoleculeController.Instance.showElectrostaticsMenu) {
-					GUIMoleculeController.Instance.showElectrostaticsMenu = false;
-					showGrayColor = false;
-					GUIMoleculeController.Instance.m_colorPicker = null ;
-				} else {
-					GUIMoleculeController.Instance.showElectrostaticsMenu = true;
-					GUIMoleculeController.Instance.showOpenMenu = false;
-
-				}
-			}
+//			if(!MoleculeModel.dxFileExists)
+//				GUI.enabled = false;
+//			if (GUILayout.Button (new GUIContent ("Electrostat.", "Open the electrostatics field lines dialogue"))) {
+//				if (GUIMoleculeController.Instance.showElectrostaticsMenu) {
+//					GUIMoleculeController.Instance.showElectrostaticsMenu = false;
+//					showGrayColor = false;
+//					GUIMoleculeController.Instance.m_colorPicker = null ;
+//				} else {
+//					GUIMoleculeController.Instance.showElectrostaticsMenu = true;
+//					GUIMoleculeController.Instance.showOpenMenu = false;
+//
+//				}
+//			}
 			GUI.enabled = true;
 			
 			if(!UIData.Instance.hasMoleculeDisplay)
@@ -3107,36 +3107,37 @@ namespace UI {
 			if(!UIData.Instance.hasMoleculeDisplay)
 				GUI.enabled = false;
 
-			if (GUILayout.Button (new GUIContent ("Guided Nav.", "Opens the guided navigation menu")))
-				GUIMoleculeController.Instance.showGuidedMenu = !GUIMoleculeController.Instance.showGuidedMenu ;
-			
-			if (GUILayout.Button(new GUIContent("Sugar", "Opens the Sugar visualisation menu"))) //T TEST
-				GUIMoleculeController.Instance.showSugarChainMenu = !GUIMoleculeController.Instance.showSugarChainMenu ;
-			
-			if (GUILayout.Button (new GUIContent("VRPN", "Configure and run a VRPN client"))) {
-				GUIMoleculeController.Instance.showVRPNMenu = !GUIMoleculeController.Instance.showVRPNMenu;
-				if(VRPNManager.vrpnManager == null) {
-					Debug.Log ("Creating VRPN Manager");
-					VRPNManager.vrpnManager = (GameObject) GameObject.Instantiate(Resources.Load("VRPN/VRPNManager", typeof(GameObject)), Vector3.zero, Quaternion.identity);
-					VRPNManager.vrpnManagerScript = VRPNManager.vrpnManager.GetComponent<VRPNManager>();
-				}
-			}
-			
-			if (GUILayout.Button (new GUIContent("MDDriver", "Configure and run a molecular dynamics simulation"))) {
-				GUIMoleculeController.Instance.showMDDriverMenu = !GUIMoleculeController.Instance.showMDDriverMenu;
-			}
-			
-			if (GUILayout.Button (new GUIContent("Reset", "Resets the molecule to its original position"))) {
-				maxCamera fixeCam;
-				fixeCam = GUIMoleculeController.Instance.scenecontroller.GetComponent<maxCamera> ();
-				fixeCam.ToCenter();
-				if(UIData.Instance.atomtype == UIData.AtomType.hyperball){
-					GameObject hbManagerObj = GameObject.FindGameObjectWithTag("HBallManager");
-					HBallManager hbManager = hbManagerObj.GetComponent<HBallManager>();
-					hbManager.ResetPositions();
-				}
-			}
-			
+//			if (GUILayout.Button (new GUIContent ("Guided Nav.", "Opens the guided navigation menu")))
+//				GUIMoleculeController.Instance.showGuidedMenu = !GUIMoleculeController.Instance.showGuidedMenu ;
+//			
+//			if (GUILayout.Button(new GUIContent("Sugar", "Opens the Sugar visualisation menu"))) //T TEST
+//				GUIMoleculeController.Instance.showSugarChainMenu = !GUIMoleculeController.Instance.showSugarChainMenu ;
+//			
+//			if (GUILayout.Button (new GUIContent("VRPN", "Configure and run a VRPN client"))) {
+//				GUIMoleculeController.Instance.showVRPNMenu = !GUIMoleculeController.Instance.showVRPNMenu;
+//				if(VRPNManager.vrpnManager == null) {
+//					Debug.Log ("Creating VRPN Manager");
+//					VRPNManager.vrpnManager = (GameObject) GameObject.Instantiate(Resources.Load("VRPN/VRPNManager", typeof(GameObject)), Vector3.zero, Quaternion.identity);
+//					VRPNManager.vrpnManagerScript = VRPNManager.vrpnManager.GetComponent<VRPNManager>();
+//				}
+//			}
+//			
+//			if (GUILayout.Button (new GUIContent("MDDriver", "Configure and run a molecular dynamics simulation"))) {
+//				GUIMoleculeController.Instance.showMDDriverMenu = !GUIMoleculeController.Instance.showMDDriverMenu;
+//			}
+//			
+//			if (GUILayout.Button (new GUIContent("Reset", "Resets the molecule to its original position"))) {
+//				maxCamera fixeCam;
+//				fixeCam = GUIMoleculeController.Instance.scenecontroller.GetComponent<maxCamera> ();
+//				fixeCam.ToCenter();
+//				if(UIData.Instance.atomtype == UIData.AtomType.hyperball){
+//					GameObject hbManagerObj = GameObject.FindGameObjectWithTag("HBallManager");
+//					HBallManager hbManager = hbManagerObj.GetComponent<HBallManager>();
+//					hbManager.ResetPositions();
+//				}
+//			}
+
+			BlackBox.PreloaderGui.FindFirstInstance().DrawMenuOption();
 			
 			GUILayout.EndHorizontal();
 			GUI.enabled = true;

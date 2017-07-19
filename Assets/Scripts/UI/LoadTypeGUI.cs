@@ -72,14 +72,14 @@ namespace UI {
 	
 	// Can't be static because GUIMoleculeController isn't, thought it probably ought to be.
 	// 
-	// Luiz: well, check this out: the only reason this class inherited from GUIMoleculeController was because, due to
+	// Luiz: the reason this class inherited from GUIMoleculeController was because, due to
 	// the variable/if-driven aspect of this source-code, it would save up some words when accessing static variables 
 	// from GUIMoleculeController. Both classes were almost pretty much static and shared almost nothing in common.
-	// To put it simply: noobs in action.
-	// Luiz: had to cut-off this inheritance shit, because I needed both classes to be singletons. The reason for this 
+	//
+	// Luiz: had to cut-off the inheritance, because I needed both classes to be singletons. The reason for this 
 	// is that we're dealing with the possibility of the user traversing through scenes and the infinite static
 	// variables here hindered the possibility of going back to the Molecule3D scene, since the static variables would 
-	// fuck up something somewhere. With singletons, I can "reset" these variables, effectively reseting the scene.
+	// mess up something somewhere. With singletons, I can "reset" these variables, effectively reseting the scene.
 	[ClearableSingleton]
 	public class LoadTypeGUI {
 		//Luiz: singleton pattern

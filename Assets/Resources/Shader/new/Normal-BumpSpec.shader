@@ -1,3 +1,5 @@
+// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
 /// @file Normal-BumpSpec.shader
 /// @brief Details to be specified
 /// @author FvNano/LBT team
@@ -130,7 +132,7 @@ SubShader {
 			v2p o; // Shader output
 			
 			o.worldPos = v.vertex;
-			o.pos = mul (UNITY_MATRIX_MVP, v.vertex);
+			o.pos = UnityObjectToClipPos (v.vertex);
 			o.texcoord = TRANSFORM_TEX(v.texcoord,_MainTex);
 			return o;
 			}
@@ -139,7 +141,7 @@ SubShader {
 			fragment_out Surface_p(v2p i)
 			{
 				fragment_out OUT;
-				pos = mul (UNITY_MATRIX_MVP, float4(i.worldPos.x+_SurfacePos.x,i.worldPos.y+_SurfacePos.y,i.worldPos.z+_SurfacePos.z,0));
+				pos = UnityObjectToClipPos (float4(i.worldPos.x+_SurfacePos.x,i.worldPos.y+_SurfacePos.y,i.worldPos.z+_SurfacePos.z,0));
 				
 				// Cut of the molecule
 				if ( _cut== 1f ){ // active le cut fixe
@@ -259,7 +261,7 @@ ENDCG
 		
 
 		
-				pos = mul (UNITY_MATRIX_MVP, float4(IN.worldPos,0f)); // calcul la position des pixel dans l'espace  camera/
+				pos = UnityObjectToClipPos (float4(IN.worldPos,0f)); // calcul la position des pixel dans l'espace  camera/
 				if ( _cut== 1f ){ // active le cut fixe
 	//				if ( (_depthcut + _cutX *IN.worldPos.x+ _cutY *IN.worldPos.y+ _cutZ * IN.worldPos.z) / 500 < 0 ){
 	//					clip(-1);

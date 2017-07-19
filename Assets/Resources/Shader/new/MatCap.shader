@@ -1,3 +1,5 @@
+// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
 /// @file MatCap.shader
 /// @brief Details to be specified
 /// @author FvNano/LBT team
@@ -106,7 +108,7 @@ Shader "MatCap" {
                 v2f vert (appdata_tan v)
                 {
                     v2f o;
-                    o.pos = mul (UNITY_MATRIX_MVP, v.vertex);
+                    o.pos = UnityObjectToClipPos (v.vertex);
                     o.uv = TRANSFORM_TEX(v.texcoord,_BumpMap);
  
                     TANGENT_SPACE_ROTATION;

@@ -1,3 +1,5 @@
+// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
 /// @file SurfaceMATCAP.shader
 /// @brief Details to be specified
 /// @author FvNano/LBT team
@@ -144,7 +146,7 @@ SubShader {
  
 		v2f vert (appdata v) {
 			v2f o;
-			o.pos = mul (UNITY_MATRIX_MVP, v.vertex);
+			o.pos = UnityObjectToClipPos (v.vertex);
 			o.uv = TRANSFORM_TEX(v.texcoord,_BumpMap);
 			o.worldPos = v.vertex;
 			o.color = v.color;
@@ -162,7 +164,7 @@ SubShader {
 		uniform sampler2D _MatCap;
                
 		float4 frag (v2f i) : COLOR { 
-			pos = mul (UNITY_MATRIX_MVP, float4(i.worldPos.x+_SurfacePos.x,i.worldPos.y+_SurfacePos.y,i.worldPos.z+_SurfacePos.z,0));
+			pos = UnityObjectToClipPos (float4(i.worldPos.x+_SurfacePos.x,i.worldPos.y+_SurfacePos.y,i.worldPos.z+_SurfacePos.z,0));
 
 			// Cut of the molecule
 			if ( _cut== 1 ){ // active le cut fixe
@@ -244,7 +246,7 @@ SubShader {
 			v2p Surface_v(appdata_base v) {
 			v2p o; // Shader output
 			o.worldPos = v.vertex;
-			o.pos = mul (UNITY_MATRIX_MVP, v.vertex);
+			o.pos = UnityObjectToClipPos (v.vertex);
 			o.texcoord = TRANSFORM_TEX(v.texcoord,_MainTex);
 			return o;
 			}
@@ -252,7 +254,7 @@ SubShader {
 		// FRAGMENT SHADER IMPLEMENTATION =========================== 
 			fragment_out Surface_p(v2p i) {
 				fragment_out OUT;
-				pos = mul (UNITY_MATRIX_MVP, float4(i.worldPos.x+_SurfacePos.x,i.worldPos.y+_SurfacePos.y,i.worldPos.z+_SurfacePos.z,0));
+				pos = UnityObjectToClipPos (float4(i.worldPos.x+_SurfacePos.x,i.worldPos.y+_SurfacePos.y,i.worldPos.z+_SurfacePos.z,0));
 				
 				// Cut of the molecule
 				if ( _cut== 1f ){ // active le cut fixe

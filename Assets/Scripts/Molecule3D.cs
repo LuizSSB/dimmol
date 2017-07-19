@@ -408,7 +408,7 @@ public class Molecule3D:MonoBehaviour {
 
 		if (UIData.Instance.HasError) {
 			GUIDisplay.Instance.Clear(false);
-			return true;
+			yield break;
 		}
 
 		Debug.Log ("T.T ==> BEFORE DISPLAY");
@@ -534,7 +534,7 @@ public class Molecule3D:MonoBehaviour {
 						e.Message
 					)
 				);
-				return true;
+				yield break;
 			}
 		}
 
@@ -544,7 +544,7 @@ public class Molecule3D:MonoBehaviour {
 				requestPDB.LoadPDBRequest(GUIDisplay.Instance.file_base_name);
 			} catch(Exception e) {
 				UIData.Instance.SetError(true, "Invalid PDB file: " + e.Message);
-				return true;
+				yield break;
 			}
 		
 		} else if (GUIDisplay.Instance.file_extension == "xyz" || GUIDisplay.Instance.file_extension == "xmol") {
@@ -552,7 +552,7 @@ public class Molecule3D:MonoBehaviour {
 				requestPDB.MakePDBFromXYZ(GUIDisplay.Instance.file_base_name, GUIDisplay.Instance.file_extension);
 			} catch(Exception e) {
 				UIData.Instance.SetError(true, "Invalid XYZ/XMOL file: " + e.Message);
-				return true;
+				yield break;
 			}
 		}
 

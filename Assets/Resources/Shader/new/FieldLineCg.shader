@@ -1,3 +1,5 @@
+// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
 /// @file FieldLineCg.shader
 /// @brief Details to be specified
 /// @author FvNano/LBT team
@@ -158,7 +160,7 @@ Shader "Custom/FieldLineCg" {
 			v2p o; // Shader output
 			
 			o.textureCoordinates = v.texcoord ;  		// coordonnées sur la texture 
-			o.pos = mul (UNITY_MATRIX_MVP, v.vertex);	// coordonné a l'ecran
+			o.pos = UnityObjectToClipPos (v.vertex);	// coordonné a l'ecran
 			o.worldPos = v.vertex;						// coordonné réel (en fonction de la capmera
 
 				

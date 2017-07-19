@@ -1,3 +1,5 @@
+// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
 Shader "Custom/Ribbons" {
 
 
@@ -26,7 +28,7 @@ Shader "Custom/Ribbons" {
 	 
 			v2f vert (appdata i) {
 				v2f o;
-				o.position = mul (UNITY_MATRIX_MVP, i.position);
+				o.position = UnityObjectToClipPos (i.position);
 				o.color = i.color;
 				//o.normal = i.normal;
 				o.normal = mul( ((float3x3)UNITY_MATRIX_MVP), i.normal);

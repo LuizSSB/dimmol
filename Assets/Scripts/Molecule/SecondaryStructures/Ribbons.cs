@@ -398,8 +398,8 @@ public class Ribbons {
 	
 	private void ConstructControlPoints(List<Dictionary<string, Vector3>> residueDicts, int res, int ss, int handedness) {
 		//Debug.Log("RibbonsGeneralData.Instance.cs::ConstructControlPoints > Beginning.");
-		Vector3 ca0, ox0, ca1;
-		Vector3 p0, p1, p2, p3;
+		Vector3 ca0 = Vector3.zero, ox0 = Vector3.zero, ca1 = Vector3.zero;
+		Vector3 p0 = Vector3.zero, p1 = Vector3.zero, p2 = Vector3.zero, p3 = Vector3.zero;
 		
 		p1 = p2 = p3 = Vector3.zero;
 		

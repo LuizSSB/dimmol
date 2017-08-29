@@ -93,7 +93,7 @@ namespace UI {
 //		public bool HYPERBALLSDEFAULT = true;
 
 		// bool for showing windows
-		public bool showOpenMenu = true;
+		public bool showOpenMenu = false;
 		public bool showAtomMenu = false;
 		public bool showSecStructMenu = false;
 		public bool showSurfaceMenu = false;
@@ -927,7 +927,7 @@ namespace UI {
 			#if !UNITY_WEBPLAYER 
 			{
 //				if (GUI.Button (new Rect (principalxstart + principalwidth + 25, principalystart, 40, 20), new GUIContent ("EXIT", "Exit the Unity Mol program"))) {
-				if (GUI.Button (Rectangles.exitRect, new GUIContent ("EXIT", "Exit the Unity Mol program")))
+				if (GUI.Button (Rectangles.exitRect, new GUIContent ("Sair", "Fecha o programa")))
 					Application.Quit ();
 			}
 			#endif

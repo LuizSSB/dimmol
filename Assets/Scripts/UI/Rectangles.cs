@@ -67,6 +67,7 @@
 
 using UnityEngine;
 using System.Collections;
+using System.Runtime.InteropServices;
 
 public class Rectangles {
 
@@ -123,7 +124,7 @@ public class Rectangles {
 	public static int openHeight =(int) (sHeight / 1.5);
 	
 	// Rectangle for the open file menu
-	public static Rect openRect = new Rect(openXstart, openYstart, openWidth, openHeight);
+	public static Rect openRect = new Rect(openXstart + openWidth, openYstart, openWidth, openHeight);
 	
 	public static int atomMenuXstart = mainXstart;
 	public static int atomMenuYstart = mainYstart + mainHeight;

@@ -447,8 +447,8 @@ namespace UI {
 						//id != "" if a molecule is already open
 						if(!TrajectoryData.Instance.IsLoaded && string.IsNullOrEmpty(id))
 						{
-							GUILayout.Label("SINGLE MOLECULE");
-							if (GUILayout.Button (new GUIContent ("Open File From Disk", "Load a PDB/XYZ file from disk"))) {
+							GUILayout.Label("MOLÉCULA ÚNICA");
+							if (GUILayout.Button (new GUIContent ("Abrir arquivo do disco", "Carrega um arquivo PDB/XYZ do disco"))) {
 								m_fileBrowser = new ImprovedFileBrowser (Rectangles.fileBrowserRect, "", OpenFileCallback, m_lastOpenDir);
 								//							m_fileBrowser.SelectionPattern = "*.pdb|*.xgmml";
 								m_fileBrowser.DirectoryImage = directoryimage; 
@@ -458,8 +458,8 @@ namespace UI {
 							}
 
 							GUILayout.BeginHorizontal ();
-							GUILayout.Label ("Proxy Server", GUILayout.Width (pServerWidth));
-							GUILayout.Label ("Proxy Port", GUILayout.Width (pPortWidth));
+							GUILayout.Label ("Servidor do Proxy", GUILayout.Width (pServerWidth));
+							GUILayout.Label ("Porta do Proxy", GUILayout.Width (pPortWidth));
 							GUILayout.EndHorizontal ();
 
 							GUILayout.BeginHorizontal ();
@@ -476,11 +476,11 @@ namespace UI {
 							GUILayout.EndHorizontal ();
 
 
-							GUILayout.Label ("Please input a PDB ID");
+							GUILayout.Label ("Informe o ID do PDB");
 							GUILayout.BeginHorizontal ();
 							PdbRequest.PdbId = GUILayout.TextField (PdbRequest.PdbId, 4, GUILayout.Width (pPortWidth));
 							//						pdbID=GUILayout.TextField(pdbID,4);
-							if (GUILayout.Button (new GUIContent ("Fetch PDB", "Fetch a PDB file from the PDB server"))) {
+							if (GUILayout.Button (new GUIContent ("Adquirir PDB", "Adquire um arquivo PDB do World Wide Protein Data Bank"))) {
 								id = PdbRequest.PdbId;
 								UIData.Instance.fetchPDBFile = true;
 								UIData.Instance.isOpenFile = true;
@@ -493,24 +493,24 @@ namespace UI {
 
 						if(string.IsNullOrEmpty(id)) {
 							GUILayout.Label(string.Empty);
-							GUILayout.Label("TRAJECTORY");
+							GUILayout.Label("TRAJETÓRIA");
 							GUILayout.BeginHorizontal(); {
-								GUILayout.Label("Type: ");
+								GUILayout.Label("Tipo: ");
 								TrajectoryType = (ParseableOutputTypes)GUILayout.SelectionGrid(
-									(int)TrajectoryType, new []{"GAMESS output", "XMOL"}, 2
+									(int)TrajectoryType, new []{"saída GAMESS", "XMOL"}, 2
 								);								
 							} GUILayout.EndHorizontal();
-							if(GUILayout.Button(new GUIContent("Open trajectory file from disk", "Load a GAMESS output (.gms) or Xmol (.xmol) file from disk"))) {
+							if(GUILayout.Button(new GUIContent("Abrir arquivo de trajetória do disco", "Carrega um arquivo com saída do GAMESS (.gms) ou Xmol (.xmol) do disco"))) {
 								m_fileBrowser = new ImprovedFileBrowser(Rectangles.fileBrowserRect, "", OpenTrajectoryCallback, m_lastOpenDir);
 								m_fileBrowser.DirectoryImage = directoryimage; 
 								m_fileBrowser.FileImage = fileimage;
 								GUIMoleculeController.Instance.showOpenMenu = false;
 								GUIMoleculeController.Instance.showSecStructMenu = false;
 							}
-							GUILayout.Label("Web address to trajectory file");
+							GUILayout.Label("Endereço web para o arquivo de trajetória");
 							GUILayout.BeginHorizontal(); {
 								TrajectoryWebAddress = GUILayout.TextField(TrajectoryWebAddress, GUILayout.Width(pServerWidth));
-								if(GUILayout.Button(new GUIContent("Fetch", "Fetch trajectory file from the web"))) {
+								if(GUILayout.Button(new GUIContent("Adquirir", "Adquire arquivo de trajetória da web"))) {
 
 									try {
 										GUIMoleculeController.Instance.showOpenMenu = false;
@@ -522,7 +522,7 @@ namespace UI {
 										);
 										OpenTrajectoryCallback(filePath);
 									} catch(System.Exception e) {
-										UIData.Instance.SetError(true, "Could not fetch external output: " + e);
+										UIData.Instance.SetError(true, "Não pôde adequirir arquivo da web: " + e);
 										GUIMoleculeController.Instance.showOpenMenu = true;
 										GUIMoleculeController.Instance.showSecStructMenu = true;
 									}
@@ -531,25 +531,25 @@ namespace UI {
 
 							GUILayout.Label(string.Empty);
 
-							GUILayout.Label("SETTINGS");
+							GUILayout.Label("CONFIGURAÇÕES ");
 							GUILayout.BeginHorizontal ();
 
-							UIData.Instance.readHetAtom = GUILayout.Toggle (UIData.Instance.readHetAtom, "Read Hetero Atoms?");
+							UIData.Instance.readHetAtom = GUILayout.Toggle (UIData.Instance.readHetAtom, "Ler Hétero Átomos?");
 
-							UIData.Instance.readWater = GUILayout.Toggle (UIData.Instance.readWater, "Read Water?");
+							UIData.Instance.readWater = GUILayout.Toggle (UIData.Instance.readWater, "Ler Água?");
 
 							GUILayout.EndHorizontal ();
 
 							GUILayout.BeginHorizontal ();
-							GUILayout.Label ("Connectivity :");
-							UIData.Instance.connectivity_calc = GUILayout.Toggle (UIData.Instance.connectivity_calc, "Calculed?");
-							UIData.Instance.connectivity_PDB = GUILayout.Toggle (UIData.Instance.connectivity_PDB, "from PDB?");
+							GUILayout.Label ("Conectividade :");
+							UIData.Instance.connectivity_calc = GUILayout.Toggle (UIData.Instance.connectivity_calc, "Calculada?");
+							UIData.Instance.connectivity_PDB = GUILayout.Toggle (UIData.Instance.connectivity_PDB, "Pegar do arquivo?");
 
 
 							GUILayout.EndHorizontal ();
 						}
 						else {
-							if (GUILayout.Button (new GUIContent ("Clear", "Clear the scene"))) {
+							if (GUILayout.Button (new GUIContent ("Limpar", "Limpa a cena"))) {
 								// Luiz:
 								Clear (false);
 							}
@@ -661,7 +661,7 @@ namespace UI {
 				GUIMoleculeController.Instance.RenderInfo();
 			}
 			GUIMoleculeController.Instance.SetEnergyWindow();
-			if (GUI.Button(Rectangles.GoBackRect, new GUIContent("Go Back", "Goes back to the node setup"))) {
+			if (GUI.Button(Rectangles.GoBackRect, new GUIContent("Voltar", "Voltar para a configuração da aplicação"))) {
 				DieHard();
 				return false;
 			}
@@ -783,7 +783,7 @@ namespace UI {
 		/// Textures description.
 		/// </param>
 		private void AtomScales(string texDir,string[] texList, string texDescr){ // TODO: Move this ?
-			GUIMoleculeController.Instance.showSetAtomScales = LoadTypeGUI.Instance.SetTitleExit("Atom Colors, Textures and Scales");
+			GUIMoleculeController.Instance.showSetAtomScales = LoadTypeGUI.Instance.SetTitleExit("Cores, Texturas e Escalas dos Átomos");
 			// check on http://docs.unity3d.com/Documentation/ScriptReference/Texture2D.SetPixels.html
 
 			int fifth = Rectangles.atomScalesWidth / 5;
@@ -792,214 +792,214 @@ namespace UI {
 
 
 			// ---------- ATOMS CHOICE ----------
-			GUILayout.BeginHorizontal();
-			GUILayout.Box("Apply changes to:");
-
-			if(GUIMoleculeController.Instance.toggle_NA_CLICK){
-				GUI.color = Color.yellow;
-				GUILayout.Label("Atom Selection Mode: All changes applied to selected atoms");
-				GUI.color = Color.white;
-			}
-			else{
-				if(GUILayout.Button(new GUIContent("Reset", "Reset all selections"), GUILayout.Width(Rectangles.textureWidth / 8))){
-					applyToAtoms.Clear();
-					applyToAtoms.Add("All");
-					applyToRes = "All";
-					applyToChain = "All";
-					GUIMoleculeController.Instance.m_colorPicker = null;
-				}
-			}
-
-			GUILayout.FlexibleSpace();
-			GUILayout.EndHorizontal();
-			GUILayout.BeginHorizontal();
-			if(quickSelection)
-				GUI.color = new Color(0.5f, 1.0f, 0.5f);
-			if(GUIMoleculeController.Instance.toggle_NA_CLICK)
-				GUI.enabled = false;
-			if( GUILayout.Button (new GUIContent ("Quick atoms selection", "Click-and-run mode for atom selection"), GUILayout.Width(Rectangles.textureWidth / 2))){
-				quickSelection = true;
-				//extendedSelection = false;
-				GUIMoleculeController.Instance.m_colorPicker = null;
-				GUIMoleculeController.Instance.showAtomsExtendedMenu = false;
-				applyToAtoms.Clear();
-				applyToAtoms.Add("All");
-			}
-			GUI.color = Color.white;
-			GUILayout.FlexibleSpace();
-			if(!quickSelection)
-				GUI.enabled = false;
-			if(GUILayout.Button(new GUIContent("All", "Select all atoms"), GUILayout.Width(Rectangles.textureWidth / 6))){
-				applyToAtoms.Clear();
-				applyToAtoms.Add("All");
-				if(GUIMoleculeController.Instance.m_colorPicker != null)
-					ColorPickerCaller ();
-			}
-
-			if(GUILayout.Button(new GUIContent("None", "Unselect all atoms"), GUILayout.Width(Rectangles.textureWidth / 6))){
-				applyToAtoms.Clear();
-				applyToAtoms.Add("None");
-				GUIMoleculeController.Instance.m_colorPicker = null;
-			}
-			GUILayout.EndHorizontal();
-
-			GUILayout.BeginHorizontal();
-			if(applyToAtoms.Contains("H") || applyToAtoms.Contains("All"))
-				GUI.color = Color.green;
-			if(GUILayout.Button(new GUIContent ("H("+MoleculeModel.hydrogenNumber+")", "Modify hydrogen"))){
-				if(applyToAtoms.Contains("H"))
-					applyToAtoms.Remove("H");
-				else
-					applyToAtoms.Add("H");
-				if(GUIMoleculeController.Instance.m_colorPicker != null)
-					ColorPickerCaller ();
-			}
-			GUI.color = Color.white;
-			GUILayout.FlexibleSpace();
-			if(applyToAtoms.Contains("C") || applyToAtoms.Contains("All"))
-				GUI.color = Color.green;
-			if(GUILayout.Button(new GUIContent ("C("+MoleculeModel.carbonNumber+")", "Modify carbon"))){
-				if(applyToAtoms.Contains("C"))
-					applyToAtoms.Remove("C");
-				else
-					applyToAtoms.Add("C");
-				if(GUIMoleculeController.Instance.m_colorPicker != null)
-					ColorPickerCaller ();
-			}
-			GUI.color = Color.white;
-			GUILayout.FlexibleSpace();
-			if(applyToAtoms.Contains("N") || applyToAtoms.Contains("All"))
-				GUI.color = Color.green;
-			if(GUILayout.Button(new GUIContent ("N("+MoleculeModel.nitrogenNumber+")", "Modify nitrogen"))){
-				if(applyToAtoms.Contains("N"))
-					applyToAtoms.Remove("N");
-				else
-					applyToAtoms.Add("N");
-				if(GUIMoleculeController.Instance.m_colorPicker != null)
-					ColorPickerCaller ();
-			}
-			GUI.color = Color.white;
-			GUILayout.FlexibleSpace();
-			if(applyToAtoms.Contains("O") || applyToAtoms.Contains("All"))
-				GUI.color = Color.green;
-			if(GUILayout.Button(new GUIContent ("O("+MoleculeModel.oxygenNumber+")", "Modify oxygen"))){
-				if(applyToAtoms.Contains("O"))
-					applyToAtoms.Remove("O");
-				else
-					applyToAtoms.Add("O");
-				if(GUIMoleculeController.Instance.m_colorPicker != null)
-					ColorPickerCaller ();
-			}
-			GUI.color = Color.white;
-			GUILayout.FlexibleSpace();
-			if(applyToAtoms.Contains("P") || applyToAtoms.Contains("All"))
-				GUI.color = Color.green;
-			if(GUILayout.Button( new GUIContent ("P("+MoleculeModel.phosphorusNumber+")", "Modify phosphorus"))){
-				if(applyToAtoms.Contains("P"))
-					applyToAtoms.Remove("P");
-				else
-					applyToAtoms.Add("P");
-				if(GUIMoleculeController.Instance.m_colorPicker != null)
-					ColorPickerCaller ();
-			}
-			GUI.color = Color.white;
-			GUILayout.FlexibleSpace();
-			if(applyToAtoms.Contains("S") || applyToAtoms.Contains("All"))
-				GUI.color = Color.green;
-			if(GUILayout.Button(new GUIContent ("S("+MoleculeModel.sulphurNumber+")", "Modify sulphur"))){
-				if(applyToAtoms.Contains("S"))
-					applyToAtoms.Remove("S");
-				else
-					applyToAtoms.Add("S");
-				if(GUIMoleculeController.Instance.m_colorPicker != null)
-					ColorPickerCaller ();
-			}
-			GUI.color = Color.white;
-			GUILayout.FlexibleSpace();
-			if(applyToAtoms.Contains("X") || applyToAtoms.Contains("All"))
-				GUI.color = Color.green;
-			if(GUILayout.Button(new GUIContent ("X("+MoleculeModel.unknownNumber+")", "Modify unknown"))){
-				if(applyToAtoms.Contains("X"))
-					applyToAtoms.Remove("X");
-				else
-					applyToAtoms.Add("X");
-				if(GUIMoleculeController.Instance.m_colorPicker != null)
-					ColorPickerCaller ();
-			}
-			GUI.color = Color.white;
-			GUI.enabled = true;
-			GUILayout.FlexibleSpace();
-			GUILayout.EndHorizontal();
-
-			GUILayout.BeginHorizontal();
-			if(!quickSelection)
-				GUI.color = new Color(0.5f, 1.0f, 0.5f);
-			if(GUIMoleculeController.Instance.toggle_NA_CLICK)//applyToAtoms["Select"])
-				GUI.enabled = false;
-			if( GUILayout.Button (new GUIContent ("Extended atoms selection", "In-depth atom selection"), GUILayout.Width(Rectangles.textureWidth / 2))){
-				quickSelection = false;
-				//extendedSelection = true;
-				GUIMoleculeController.Instance.m_colorPicker = null;
-				GUIMoleculeController.Instance.showAtomsExtendedMenu = !GUIMoleculeController.Instance.showAtomsExtendedMenu;
-				applyToAtoms.Clear();
-				applyToAtoms.Add("All");
-			}
-			GUI.color = Color.white;
-			//			GUILayout.FlexibleSpace ();
-			//			GUILayout.EndHorizontal();
-
-			//			GUILayout.BeginHorizontal();
-			/*			GUILayout.Label(" : ");
-			if(!extendedSelection)
-				GUI.enabled = false;
-			if(GUILayout.Button(new GUIContent("Extended atoms", "Change atom"), GUILayout.Width(Rectangles.textureWidth / 8)))
-				GUIMoleculeController.Instance.showAtomsExtendedMenu = !GUIMoleculeController.Instance.showAtomsExtendedMenu;
-*/
-			GUILayout.FlexibleSpace();
-
-			GUI.enabled = true;
-			GUILayout.EndHorizontal();
-
-
-			// ---------- RESIDUES, CHAIN, GRAYSCALE, SELECTION ----------
-			GUILayout.BeginHorizontal();
-			GUILayout.Label("Residue :");
-			if(GUIMoleculeController.Instance.toggle_NA_CLICK
-				|| !UIData.Instance.hasResidues) {
-				GUI.enabled = false;
-				applyToRes = "All";
-			}
-
-			if(GUILayout.Button(new GUIContent(applyToRes, "Change residue"), GUILayout.Width(Rectangles.textureWidth / 8)))
-				GUIMoleculeController.Instance.showResiduesMenu = !GUIMoleculeController.Instance.showResiduesMenu;
-
-			GUI.enabled = true;
-
-			GUILayout.FlexibleSpace();
-
-			GUILayout.Label(" Chain :");
-			if(GUIMoleculeController.Instance.toggle_NA_CLICK
-				|| !UIData.Instance.hasChains) {
-				GUI.enabled = false;
-				applyToChain = "All";
-			}
-			if(GUILayout.Button(new GUIContent(applyToChain, "Change chain"), GUILayout.Width(Rectangles.textureWidth / 8))){
-				GUIMoleculeController.Instance.showChainsMenu = !GUIMoleculeController.Instance.showChainsMenu;
-			}
-			GUI.enabled = true;
-
-			GUILayout.FlexibleSpace();
-
-
-			GUILayout.EndHorizontal();
+//			GUILayout.BeginHorizontal();
+//			GUILayout.Box("Apply changes to:");
+//
+//			if(GUIMoleculeController.Instance.toggle_NA_CLICK){
+//				GUI.color = Color.yellow;
+//				GUILayout.Label("Atom Selection Mode: All changes applied to selected atoms");
+//				GUI.color = Color.white;
+//			}
+//			else{
+//				if(GUILayout.Button(new GUIContent("Reset", "Reset all selections"), GUILayout.Width(Rectangles.textureWidth / 8))){
+//					applyToAtoms.Clear();
+//					applyToAtoms.Add("All");
+//					applyToRes = "All";
+//					applyToChain = "All";
+//					GUIMoleculeController.Instance.m_colorPicker = null;
+//				}
+//			}
+//
+//			GUILayout.FlexibleSpace();
+//			GUILayout.EndHorizontal();
+//			GUILayout.BeginHorizontal();
+//			if(quickSelection)
+//				GUI.color = new Color(0.5f, 1.0f, 0.5f);
+//			if(GUIMoleculeController.Instance.toggle_NA_CLICK)
+//				GUI.enabled = false;
+//			if( GUILayout.Button (new GUIContent ("Quick atoms selection", "Click-and-run mode for atom selection"), GUILayout.Width(Rectangles.textureWidth / 2))){
+//				quickSelection = true;
+//				//extendedSelection = false;
+//				GUIMoleculeController.Instance.m_colorPicker = null;
+//				GUIMoleculeController.Instance.showAtomsExtendedMenu = false;
+//				applyToAtoms.Clear();
+//				applyToAtoms.Add("All");
+//			}
+//			GUI.color = Color.white;
+//			GUILayout.FlexibleSpace();
+//			if(!quickSelection)
+//				GUI.enabled = false;
+//			if(GUILayout.Button(new GUIContent("All", "Select all atoms"), GUILayout.Width(Rectangles.textureWidth / 6))){
+//				applyToAtoms.Clear();
+//				applyToAtoms.Add("All");
+//				if(GUIMoleculeController.Instance.m_colorPicker != null)
+//					ColorPickerCaller ();
+//			}
+//
+//			if(GUILayout.Button(new GUIContent("None", "Unselect all atoms"), GUILayout.Width(Rectangles.textureWidth / 6))){
+//				applyToAtoms.Clear();
+//				applyToAtoms.Add("None");
+//				GUIMoleculeController.Instance.m_colorPicker = null;
+//			}
+//			GUILayout.EndHorizontal();
+//
+//			GUILayout.BeginHorizontal();
+//			if(applyToAtoms.Contains("H") || applyToAtoms.Contains("All"))
+//				GUI.color = Color.green;
+//			if(GUILayout.Button(new GUIContent ("H("+MoleculeModel.hydrogenNumber+")", "Modify hydrogen"))){
+//				if(applyToAtoms.Contains("H"))
+//					applyToAtoms.Remove("H");
+//				else
+//					applyToAtoms.Add("H");
+//				if(GUIMoleculeController.Instance.m_colorPicker != null)
+//					ColorPickerCaller ();
+//			}
+//			GUI.color = Color.white;
+//			GUILayout.FlexibleSpace();
+//			if(applyToAtoms.Contains("C") || applyToAtoms.Contains("All"))
+//				GUI.color = Color.green;
+//			if(GUILayout.Button(new GUIContent ("C("+MoleculeModel.carbonNumber+")", "Modify carbon"))){
+//				if(applyToAtoms.Contains("C"))
+//					applyToAtoms.Remove("C");
+//				else
+//					applyToAtoms.Add("C");
+//				if(GUIMoleculeController.Instance.m_colorPicker != null)
+//					ColorPickerCaller ();
+//			}
+//			GUI.color = Color.white;
+//			GUILayout.FlexibleSpace();
+//			if(applyToAtoms.Contains("N") || applyToAtoms.Contains("All"))
+//				GUI.color = Color.green;
+//			if(GUILayout.Button(new GUIContent ("N("+MoleculeModel.nitrogenNumber+")", "Modify nitrogen"))){
+//				if(applyToAtoms.Contains("N"))
+//					applyToAtoms.Remove("N");
+//				else
+//					applyToAtoms.Add("N");
+//				if(GUIMoleculeController.Instance.m_colorPicker != null)
+//					ColorPickerCaller ();
+//			}
+//			GUI.color = Color.white;
+//			GUILayout.FlexibleSpace();
+//			if(applyToAtoms.Contains("O") || applyToAtoms.Contains("All"))
+//				GUI.color = Color.green;
+//			if(GUILayout.Button(new GUIContent ("O("+MoleculeModel.oxygenNumber+")", "Modify oxygen"))){
+//				if(applyToAtoms.Contains("O"))
+//					applyToAtoms.Remove("O");
+//				else
+//					applyToAtoms.Add("O");
+//				if(GUIMoleculeController.Instance.m_colorPicker != null)
+//					ColorPickerCaller ();
+//			}
+//			GUI.color = Color.white;
+//			GUILayout.FlexibleSpace();
+//			if(applyToAtoms.Contains("P") || applyToAtoms.Contains("All"))
+//				GUI.color = Color.green;
+//			if(GUILayout.Button( new GUIContent ("P("+MoleculeModel.phosphorusNumber+")", "Modify phosphorus"))){
+//				if(applyToAtoms.Contains("P"))
+//					applyToAtoms.Remove("P");
+//				else
+//					applyToAtoms.Add("P");
+//				if(GUIMoleculeController.Instance.m_colorPicker != null)
+//					ColorPickerCaller ();
+//			}
+//			GUI.color = Color.white;
+//			GUILayout.FlexibleSpace();
+//			if(applyToAtoms.Contains("S") || applyToAtoms.Contains("All"))
+//				GUI.color = Color.green;
+//			if(GUILayout.Button(new GUIContent ("S("+MoleculeModel.sulphurNumber+")", "Modify sulphur"))){
+//				if(applyToAtoms.Contains("S"))
+//					applyToAtoms.Remove("S");
+//				else
+//					applyToAtoms.Add("S");
+//				if(GUIMoleculeController.Instance.m_colorPicker != null)
+//					ColorPickerCaller ();
+//			}
+//			GUI.color = Color.white;
+//			GUILayout.FlexibleSpace();
+//			if(applyToAtoms.Contains("X") || applyToAtoms.Contains("All"))
+//				GUI.color = Color.green;
+//			if(GUILayout.Button(new GUIContent ("X("+MoleculeModel.unknownNumber+")", "Modify unknown"))){
+//				if(applyToAtoms.Contains("X"))
+//					applyToAtoms.Remove("X");
+//				else
+//					applyToAtoms.Add("X");
+//				if(GUIMoleculeController.Instance.m_colorPicker != null)
+//					ColorPickerCaller ();
+//			}
+//			GUI.color = Color.white;
+//			GUI.enabled = true;
+//			GUILayout.FlexibleSpace();
+//			GUILayout.EndHorizontal();
+//
+//			GUILayout.BeginHorizontal();
+//			if(!quickSelection)
+//				GUI.color = new Color(0.5f, 1.0f, 0.5f);
+//			if(GUIMoleculeController.Instance.toggle_NA_CLICK)//applyToAtoms["Select"])
+//				GUI.enabled = false;
+//			if( GUILayout.Button (new GUIContent ("Extended atoms selection", "In-depth atom selection"), GUILayout.Width(Rectangles.textureWidth / 2))){
+//				quickSelection = false;
+//				//extendedSelection = true;
+//				GUIMoleculeController.Instance.m_colorPicker = null;
+//				GUIMoleculeController.Instance.showAtomsExtendedMenu = !GUIMoleculeController.Instance.showAtomsExtendedMenu;
+//				applyToAtoms.Clear();
+//				applyToAtoms.Add("All");
+//			}
+//			GUI.color = Color.white;
+//			//			GUILayout.FlexibleSpace ();
+//			//			GUILayout.EndHorizontal();
+//
+//			//			GUILayout.BeginHorizontal();
+//			/*			GUILayout.Label(" : ");
+//			if(!extendedSelection)
+//				GUI.enabled = false;
+//			if(GUILayout.Button(new GUIContent("Extended atoms", "Change atom"), GUILayout.Width(Rectangles.textureWidth / 8)))
+//				GUIMoleculeController.Instance.showAtomsExtendedMenu = !GUIMoleculeController.Instance.showAtomsExtendedMenu;
+//*/
+//			GUILayout.FlexibleSpace();
+//
+//			GUI.enabled = true;
+//			GUILayout.EndHorizontal();
+//
+//
+//			// ---------- RESIDUES, CHAIN, GRAYSCALE, SELECTION ----------
+//			GUILayout.BeginHorizontal();
+//			GUILayout.Label("Residue :");
+//			if(GUIMoleculeController.Instance.toggle_NA_CLICK
+//				|| !UIData.Instance.hasResidues) {
+//				GUI.enabled = false;
+//				applyToRes = "All";
+//			}
+//
+//			if(GUILayout.Button(new GUIContent(applyToRes, "Change residue"), GUILayout.Width(Rectangles.textureWidth / 8)))
+//				GUIMoleculeController.Instance.showResiduesMenu = !GUIMoleculeController.Instance.showResiduesMenu;
+//
+//			GUI.enabled = true;
+//
+//			GUILayout.FlexibleSpace();
+//
+//			GUILayout.Label(" Chain :");
+//			if(GUIMoleculeController.Instance.toggle_NA_CLICK
+//				|| !UIData.Instance.hasChains) {
+//				GUI.enabled = false;
+//				applyToChain = "All";
+//			}
+//			if(GUILayout.Button(new GUIContent(applyToChain, "Change chain"), GUILayout.Width(Rectangles.textureWidth / 8))){
+//				GUIMoleculeController.Instance.showChainsMenu = !GUIMoleculeController.Instance.showChainsMenu;
+//			}
+//			GUI.enabled = true;
+//
+//			GUILayout.FlexibleSpace();
+//
+//
+//			GUILayout.EndHorizontal();
 
 			// ---------- SCALE, COLOR ----------
 			GUILayout.BeginHorizontal();
-			GUILayout.Box("Color and Scale :");
-			if (GUILayout.Button (new GUIContent ("Panels", "Open colors and textures panels menu"), GUILayout.Width(Rectangles.textureWidth / 4))) {
+			GUILayout.Box("Cor e escala:");
+			if (GUILayout.Button (new GUIContent ("Painéis", "Abre painel de cores e texturas."), GUILayout.Width(Rectangles.textureWidth / 4))) {
 				GUIMoleculeController.Instance.showPanelsMenu = !GUIMoleculeController.Instance.showPanelsMenu;
 			}
-			if(GUILayout.Button(new GUIContent("Reset scales", "Reset all scales to 100"), GUILayout.Width(Rectangles.textureWidth / 4))){
+			if(GUILayout.Button(new GUIContent("Resetar escalas", "Reseta todas as escalas para 100."), GUILayout.Width(Rectangles.textureWidth / 4))){
 				newScale = 100f;
 				GenericManager manager = DisplayMolecule.GetManagers()[0];
 				manager.SetRadii(ToList("All"), "All", "All");
@@ -1015,24 +1015,24 @@ namespace UI {
 			GUILayout.FlexibleSpace();
 
 			newScale = GUIMoleculeController.Instance.LabelSlider(newScale, 50, 150.0f,
-				"Scale: "+(int)(newScale*10)/10,
-				"Determines atom radius",true,sliderWidth,(int)(nameWidth*0.75));
+				"Escala: "+(int)(newScale*10)/10,
+				"Determina o raio dos átomos",true,sliderWidth,(int)(nameWidth*0.75));
 
 			//GUILayout.FlexibleSpace();
 			GUILayout.EndHorizontal();
 
 			// ---------- TEXTURE ----------
 			GUILayout.BeginHorizontal();
-			GUILayout.Box("Texture: " + texDescr);
+			GUILayout.Box("Textura: " + texDescr);
 			GUILayout.FlexibleSpace();
 			if(UIData.Instance.atomtype != UIData.AtomType.hyperball)
 				GUI.enabled = false;
 
-			UIData.Instance.grayscalemode = GUILayout.Toggle (UIData.Instance.grayscalemode, new GUIContent ("Grayscale", "Use grayscale version of the texture"));
+			UIData.Instance.grayscalemode = GUILayout.Toggle (UIData.Instance.grayscalemode, new GUIContent ("Escala-de-cinza", "Usa versão da textura em escala-de-cinza."));
 			GUILayout.EndHorizontal();
 
 			GUILayout.BeginHorizontal();
-			if(GUILayout.Button(new GUIContent("<<","Go to previous series of textures"))){ // Cycle through texture sets
+			if(GUILayout.Button(new GUIContent("<<","Vai para a série anterior de texturas."))){ // Cycle through texture sets
 				texture_set--; 
 				if(GUIMoleculeController.Instance.onlyBestTextures){
 					if(texture_set < 0)
@@ -1044,14 +1044,14 @@ namespace UI {
 				}
 			}			
 
-			if(GUILayout.Button(new GUIContent("Open","Open custom texture image from disk"))) {	
-				m_fileBrowser = new ImprovedFileBrowser(Rectangles.fileBrowserRect,
-					"Choose Image File",
-					FileSelectedCallback,
-					m_last_texture_dir);
-			}
+//			if(GUILayout.Button(new GUIContent("Open","Open custom texture image from disk"))) {	
+//				m_fileBrowser = new ImprovedFileBrowser(Rectangles.fileBrowserRect,
+//					"Choose Image File",
+//					FileSelectedCallback,
+//					m_last_texture_dir);
+//			}
 
-			if(GUILayout.Button(new GUIContent(">>","Go to next series of textures"))) { // Cycle through texture sets
+			if(GUILayout.Button(new GUIContent(">>","Vai para a próxima série de texturas."))) { // Cycle through texture sets
 				texture_set++; 
 				if (GUIMoleculeController.Instance.onlyBestTextures) {
 					if(texture_set>4) // First 5 pages are best textures (0-4)
@@ -1170,82 +1170,82 @@ namespace UI {
 		/// No idea...
 		/// </param>
 		public void PanelsMenu(int a) {
-			GUIMoleculeController.Instance.showPanelsMenu = LoadTypeGUI.Instance.SetTitleExit("Panels Menu");
+			GUIMoleculeController.Instance.showPanelsMenu = LoadTypeGUI.Instance.SetTitleExit("Menu de painéis");
 
 			//---------- To edit/add Color and Texture palettes, please read Assets/Resources/HowToColorPanel.txt ----------
 			// NB : the name "ColorPanel.txt" and everything related to it (like panelDict, RenderDict or whatever) doesn't seem really great,
 			// but it would be a pain to change them now. [Erwan]
 			GUILayout.BeginHorizontal();
-			GUILayout.Label("Color Panels");
+			GUILayout.Label("Painéis de cor");
 			GUILayout.EndHorizontal();
 
 			// Luiz
 			GUILayout.BeginHorizontal();
-			if( GUILayout.Button(new GUIContent("All white", "Change all colors to white"))){
+			if( GUILayout.Button(new GUIContent("Tudo branco", "Muda todas as cores para branco."))){
 				HandlePanelSelected ("All_White");
 			}
-			if (GUILayout.Button(new GUIContent("Goodsell", "Change all colors to David Goodsell style colors"))){
+			if (GUILayout.Button(new GUIContent("Goodsell", "Muda todas as cores para o estilo David Goodsell."))){
 				HandlePanelSelected ("Goodsell");
 			}
-			if (GUILayout.Button(new GUIContent("Watercolor", "Change all colors to Watercolor palette"))){
+			if (GUILayout.Button(new GUIContent("Aquarela", "Muda todas as cores para paleta Aquarela."))){
 				HandlePanelSelected ("Watercolor");
 			}
 			GUILayout.EndHorizontal();
 
 			GUILayout.BeginHorizontal();
-			if (GUILayout.Button(new GUIContent("Pastel", "Change all colors to pastel"))){
+			if (GUILayout.Button(new GUIContent("Pastel", "Muda todas as cores para pastéis."))){
 				HandlePanelSelected ("Pastel");
 			}
-			if (GUILayout.Button(new GUIContent("CPK", "A CPK-like atom color palette"))){
+			if (GUILayout.Button(new GUIContent("CPK", "Paleta de cor tipo CPK."))){
 				HandlePanelSelected ("CPK");
 			}
-			if(GUILayout.Button(new GUIContent("Basic","Set previous default color parameters (quite intense colors)"))){
+			if(GUILayout.Button(new GUIContent("Básica","Define a coloração padrão (cores um tanto intensas)."))){
 				HandlePanelSelected ("Basic");
 			}
-			if (GUILayout.Button(new GUIContent("IUPAC?", "A IUPAC color palette (?)"))){
-				HandlePanelSelected ("IUPAC");
-			}
+//			if (GUILayout.Button(new GUIContent("IUPAC?", "A IUPAC color palette (?)"))){
+//				HandlePanelSelected ("IUPAC");
+//			}
 			GUILayout.EndHorizontal();
 			GUILayout.BeginHorizontal();
-			if(!UIData.Instance.hasChains)
-				GUI.enabled = false;
-			if (GUILayout.Button(new GUIContent("Chains", "Quick chains coloring"))){
-				HandlePanelSelected ("Chains");
-			}
-			GUI.enabled = true;
-			//T.T. Add coloring for sugar representation
-			if (GUILayout.Button(new GUIContent("Sugar", "Quick sugar type coloring"))){
-				HandlePanelSelected ("Sugar");
-			}
-			if(GUILayout.Button(new GUIContent("ADN/ARN", "Base coloring: A[red] T/U[blue] C[yellow] G[green]"))){
-				HandlePanelSelected ("ADN-ARN");
-			}
-			if(GUILayout.Button(new GUIContent("HiRE-RNA", "Base coloring: A[red] T/U[blue] C[yellow] G[green]"))){
-				HandlePanelSelected ("HiRERNA");
-			}
-			GUILayout.EndHorizontal();
+//			if(!UIData.Instance.hasChains)
+//				GUI.enabled = false;
+//			if (GUILayout.Button(new GUIContent("Chains", "Quick chains coloring"))){
+//				HandlePanelSelected ("Chains");
+//			}
+//			GUI.enabled = true;
+//			//T.T. Add coloring for sugar representation
+//			if (GUILayout.Button(new GUIContent("Sugar", "Quick sugar type coloring"))){
+//				HandlePanelSelected ("Sugar");
+//			}
+//			if(GUILayout.Button(new GUIContent("ADN/ARN", "Base coloring: A[red] T/U[blue] C[yellow] G[green]"))){
+//				HandlePanelSelected ("ADN-ARN");
+//			}
+//			if(GUILayout.Button(new GUIContent("HiRE-RNA", "Base coloring: A[red] T/U[blue] C[yellow] G[green]"))){
+//				HandlePanelSelected ("HiRERNA");
+//			}
+//			GUILayout.EndHorizontal();
 
-			GUILayout.BeginHorizontal();
-			GUILayout.Label("Texture Panels");
-			GUILayout.EndHorizontal();
-
-			if(UIData.Instance.atomtype != UIData.AtomType.hyperball)
-				GUI.enabled = false;
-
-			GUILayout.BeginHorizontal();
-			if (GUILayout.Button(new GUIContent("Default", "Default color/texture palette"))){
-				HandlePanelSelected ("Default");
-			}
-			if (GUILayout.Button(new GUIContent("CPK", "A CPK-like atom textures palette (great with CPK metaphor)"))){
-				HandlePanelSelected ("CPK/All_White");
-			}
-			if(!UIData.Instance.hasResidues)
-				GUI.enabled = false;
-			if (GUILayout.Button(new GUIContent("Acid-Basic", "A texturing for acid (ASP/GLU) and basic (ARG/LYS) residues."))){
-				HandlePanelSelected ("Acid-Base_Res");
-			}
-			GUI.enabled = true;
-			GUILayout.EndHorizontal();
+//			GUILayout.BeginHorizontal();
+//			GUILayout.Label("Painéis de Textura");
+//			GUILayout.EndHorizontal();
+//
+//			if(UIData.Instance.atomtype != UIData.AtomType.hyperball)
+//				GUI.enabled = false;
+//
+//			GUILayout.BeginHorizontal();
+//			if (GUILayout.Button(new GUIContent("Default", "Default color/texture palette"))){
+//				HandlePanelSelected ("Default");
+//			}
+//			if (GUILayout.Button(new GUIContent("CPK", "A CPK-like atom textures palette (great with CPK metaphor)"))){
+//				HandlePanelSelected ("CPK/All_White");
+//			}
+//			if(!UIData.Instance.hasResidues)
+//				GUI.enabled = false;
+//			if (GUILayout.Button(new GUIContent("Acid-Basic", "A texturing for acid (ASP/GLU) and basic (ARG/LYS) residues."))){
+//				HandlePanelSelected ("Acid-Base_Res");
+//			}
+//			GUI.enabled = true;
+//			GUILayout.EndHorizontal();
 
 
 			if (Event.current.type == EventType.Repaint)
@@ -1539,7 +1539,7 @@ namespace UI {
 			}
 
 			id="";
-			GUIMoleculeController.Instance.showOpenMenu = true;
+			GUIMoleculeController.Instance.showOpenMenu = false;
 			UIData.Instance.MustDie |= exitingScene; // Luiz: must be like this because, when killing a server node, the client will send some messages back.
 			UIData.Instance.isclear = true;
 			UIData.Instance.isParticlesInitialized = false;

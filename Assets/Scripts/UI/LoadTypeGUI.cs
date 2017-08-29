@@ -632,24 +632,24 @@ namespace UI {
 		/// Window identifier.
 		/// </param>
 		public void AtomStyle (int a) {
-			SetTitle("Choose Atom Style");
+			SetTitle("Escolha o estilo dos átomos");
 			
 			GUILayout.BeginHorizontal();
-			if (GUILayout.Button (new GUIContent ("Cube", "Use cubes to represent atoms"))) {	
+			if (GUILayout.Button (new GUIContent ("Cubo", "Usa cubos para representar átomos."))) {	
 				ChangeRepresentation (UIData.AtomType.cube);
 			}
 			
-			if (GUILayout.Button (new GUIContent ("Sphere", "Use triangulated spheres to represent atoms"))) {
+			if (GUILayout.Button (new GUIContent ("Esfera", "Usa esferas para representar átomos."))) {
 				ChangeRepresentation (UIData.AtomType.sphere);
 			}
 			GUILayout.EndHorizontal ();			
 			
 			GUILayout.BeginHorizontal ();
-			if (GUILayout.Button (new GUIContent ("Hyperball", "Use the HyperBalls shader to render atoms"))) {
+			if (GUILayout.Button (new GUIContent ("Hyperball", "Usa o HyperBalls/híperbolóides para representar átomos."))) {
 				ChangeRepresentation (UIData.AtomType.hyperball);
 			}			
 	
-			if (GUILayout.Button (new GUIContent ("Particle", "Use the ParticleBall shader to represent atoms"))) {
+			if (GUILayout.Button (new GUIContent ("Partícula", "Usa partículas para representar os átomos."))) {
 				ChangeRepresentation (UIData.AtomType.particleball);
 			}						
 			GUILayout.EndHorizontal ();
@@ -1268,21 +1268,21 @@ namespace UI {
 		/// Window identifier.
 		/// </param>
 		public void Bond (int a)	{
-			SetTitle("Bond Style");
+			SetTitle("Estilo da Ligação");
 			
 //			if(UIData.Instance.atomtype==UIData.AtomType.particleball&&!UIData.Instance.openAllMenu)GUI.enabled=false;
 			GUILayout.BeginHorizontal ();
 			GUILayout.FlexibleSpace();
 
-			if (GUILayout.Button(new GUIContent("Cube", "Use Cubes to represent bonds"), GUILayout.Width(Rectangles.atomButtonWidth))) {
+			if (GUILayout.Button(new GUIContent("Cubo", "Usa cubos para representar ligações."), GUILayout.Width(Rectangles.atomButtonWidth))) {
 				if (TrajectoryData.Instance.IsLoaded) {
-					UIData.Instance.SetError(true, "Cube bonds not available when using trajectories");
+					UIData.Instance.SetError(true, "Ligações em cubo não disponíveis ao usar trajetórias.");
 				} else {
 					ChangeBond(UIData.BondType.cube);
 				}
 			}
 
-			if (GUILayout.Button (new GUIContent ("Line", "Use the Line renderer to represent bonds"), GUILayout.Width(Rectangles.atomButtonWidth))) {
+			if (GUILayout.Button (new GUIContent ("Linha", "Usa linhas 2D para representar ligações."), GUILayout.Width(Rectangles.atomButtonWidth))) {
 				ChangeBond (UIData.BondType.line);
 			}
 			GUILayout.FlexibleSpace();
@@ -1290,11 +1290,11 @@ namespace UI {
 			
 			GUILayout.BeginHorizontal ();
 			GUILayout.FlexibleSpace();
-			if (GUILayout.Button (new GUIContent ("HyperStick", "Use the HyperStick shader to represent bonds"), GUILayout.Width(Rectangles.atomButtonWidth))) {	
+			if (GUILayout.Button (new GUIContent ("HyperStick", "Usa HyperStick/híper-varetas para representar ligações."), GUILayout.Width(Rectangles.atomButtonWidth))) {	
 				ChangeBond (UIData.BondType.hyperstick);
 			}
 
-			if (GUILayout.Button (new GUIContent ("No Stick", "Do not render any bonds"), GUILayout.Width(Rectangles.atomButtonWidth))) {
+			if (GUILayout.Button (new GUIContent ("Sem ligação", "Não renderiza ligações."), GUILayout.Width(Rectangles.atomButtonWidth))) {
 				ChangeBond (UIData.BondType.nobond);
 			}
 			GUILayout.FlexibleSpace();
@@ -1351,28 +1351,28 @@ namespace UI {
 		/// Window identifier.
 		/// </param>
 		public void Metaphor (int a) {
-			GUIMoleculeController.Instance.showMetaphorType = SetTitleExit("Metaphor");
+			GUIMoleculeController.Instance.showMetaphorType = SetTitleExit("Metáfora");
 			GUILayout.BeginHorizontal ();
-			if (GUILayout.Button (new GUIContent ("CPK", "CPK representation as balls and sticks"))) {
+			if (GUILayout.Button (new GUIContent ("CPK", "Representação CPK com bolas-e-varetas."))) {
 				GUIMoleculeController.Instance.ChangeMetaphor(.2f, .0001f, .3f);
 			}
 			GUILayout.EndHorizontal ();
 			
 			GUILayout.BeginHorizontal ();			
-			if (GUILayout.Button (new GUIContent ("Licorice", "Licorice representation of the molecule"))) {
+			if (GUILayout.Button (new GUIContent ("Alcaçuz", "Representação da molécula como um alcaçuz."))) {
 				GUIMoleculeController.Instance.ChangeMetaphor(.1f, .0001f, 1f);
 			}						
 			GUILayout.EndHorizontal ();
 
 			GUILayout.BeginHorizontal ();
 			
-			if (GUILayout.Button (new GUIContent ("VdW", "van der Waals representation as spacefilling spheres"))) {
+			if (GUILayout.Button (new GUIContent ("VdW", "Representação Van der Waals com esferas."))) {
 				GUIMoleculeController.Instance.ChangeMetaphor(1f, .8f, 1f);
 			}
 			GUILayout.EndHorizontal ();
 
 			GUILayout.BeginHorizontal ();			
-			if (GUILayout.Button (new GUIContent ("Smooth", "Smooth HyperBalls metaphor representation"))) {
+			if (GUILayout.Button (new GUIContent ("Suave", "Representação com metáfora de HyperBalls suaves."))) {
 				GUIMoleculeController.Instance.ChangeMetaphor(.35f, .4f, 1f);
 			}						
 			GUILayout.EndHorizontal ();
@@ -1588,20 +1588,20 @@ namespace UI {
 		/// Window identifier.
 		/// </param>
 		public void AdvOptions(int a){
-			GUIMoleculeController.Instance.showAdvMenu = SetTitleExit("Advanced Options");
+			GUIMoleculeController.Instance.showAdvMenu = SetTitleExit("Opções avançadas");
 			
 			GUILayout.BeginHorizontal();
-			GUILayout.Label (new GUIContent ("GUI Scale: " + GUIDisplay.Instance.guiScale.ToString("0.00"), "Adjusts the scale of the GUI windows"), GUILayout.MinWidth ((int)(Rectangles.advOptWidth * 0.4f)));
+			GUILayout.Label (new GUIContent ("Escala visual: " + GUIDisplay.Instance.guiScale.ToString("0.00"), "Ajusa a escala das janelas da interface de usuário."), GUILayout.MinWidth ((int)(Rectangles.advOptWidth * 0.4f)));
 			GUIDisplay.Instance.guiScale = GUILayout.HorizontalSlider (GUIDisplay.Instance.guiScale, 0.3f, 1.7f, GUILayout.Width (((int)(Rectangles.advOptWidth * 0.4f))));
 			
-			if (GUILayout.Button(new GUIContent("OK", "Apply new GUI Scale")))
+			if (GUILayout.Button(new GUIContent("OK", "Aplica nova escala visual")))
 				if(GUIDisplay.Instance.guiScale != GUIDisplay.Instance.oldGuiScale) {
 					GUIDisplay.Instance.oldGuiScale = GUIDisplay.Instance.guiScale;
 					Rectangles.Scale();
 				}
 			GUILayout.EndHorizontal();
 
-			if (!UIData.Instance.hasMoleculeDisplay) {
+			if (true || !UIData.Instance.hasMoleculeDisplay) {
 				return;
 			}
 			
@@ -2746,10 +2746,10 @@ namespace UI {
 		/// Window identifier.
 		/// </param>
 		public void CubeLineBond (int a){
-			SetTitle("Bond Width");
+			SetTitle("Espessura da ligação");
 
-			GUIMoleculeController.Instance.bondWidth = GUIMoleculeController.Instance.LabelSlider(GUIMoleculeController.Instance.bondWidth, 0.00001f, 0.5f, "Width: " + GUIMoleculeController.Instance.bondWidth.ToString("0.00"), 
-					"Determines width of bonds for Cubes and Lines", true, (int)(0.90 * Rectangles.cubeLineBondTypeWidth), 1, true);
+			GUIMoleculeController.Instance.bondWidth = GUIMoleculeController.Instance.LabelSlider(GUIMoleculeController.Instance.bondWidth, 0.00001f, 0.5f, "Espessura: " + GUIMoleculeController.Instance.bondWidth.ToString("0.00"), 
+					"Determina a espessura de ligações para cubos e linhas.", true, (int)(0.90 * Rectangles.cubeLineBondTypeWidth), 1, true);
 			GUI.enabled = true;
 			GUI.DragWindow();
 		}
@@ -2829,7 +2829,7 @@ namespace UI {
 		/// </summary>
 		private void MetaphorControl () {
 			GUILayout.BeginHorizontal ();
-			if (GUILayout.Button (new GUIContent ("Metaphor", "Change HyperBalls parameters to values for standard representations")))
+			if (GUILayout.Button (new GUIContent ("Metáfora", "Muda parâmetros do Hyperballs para valores para representações padrão.")))
 				GUIMoleculeController.Instance.showMetaphorType = !GUIMoleculeController.Instance.showMetaphorType;
 			GUILayout.EndHorizontal ();
 			
@@ -2876,16 +2876,16 @@ namespace UI {
 		/// </param>
 		public void HyperballStyle (int a) {
 			int sliderWidth = (int)(0.40 * Rectangles.hyperballWidth);
-			SetTitle("Hyperball Style");
-			GUIMoleculeController.Instance.shrink = GUIMoleculeController.Instance.LabelSlider (GUIMoleculeController.Instance.shrink, 0.00001f, 0.99f, "Shrink " + GUIMoleculeController.Instance.shrink.ToString("0.00"),
-				"Determines shrink factor parameter for HyperBalls", true, sliderWidth, 1);
+			SetTitle("Estilo Hyperball");
+			GUIMoleculeController.Instance.shrink = GUIMoleculeController.Instance.LabelSlider (GUIMoleculeController.Instance.shrink, 0.00001f, 0.99f, "Encolhimento " + GUIMoleculeController.Instance.shrink.ToString("0.00"),
+				"Determina o parâmetro do fator de encolhimento para HyperBalls.", true, sliderWidth, 1);
 			
 //			toggle_HB_RANIM = GUILayout.Toggle (toggle_HB_RANIM, new GUIContent ("HB_RANIM", "Animate radius parameter"));
-			GUIMoleculeController.Instance.linkScale = GUIMoleculeController.Instance.LabelSlider (GUIMoleculeController.Instance.linkScale, 0.00001f, 1.0f, "Scale " + GUIMoleculeController.Instance.linkScale.ToString("0.00"),
-				"Determines scale parameter", true, sliderWidth, 1);
+			GUIMoleculeController.Instance.linkScale = GUIMoleculeController.Instance.LabelSlider (GUIMoleculeController.Instance.linkScale, 0.00001f, 1.0f, "Escala " + GUIMoleculeController.Instance.linkScale.ToString("0.00"),
+				"Determina parâmetro de escala.", true, sliderWidth, 1);
 			
-			GUIMoleculeController.Instance.depthfactor = GUIMoleculeController.Instance.LabelSlider (GUIMoleculeController.Instance.depthfactor, -3.0f, 3.0f, "DFactor " + GUIMoleculeController.Instance.depthfactor.ToString("0.00"),
-				"Determines depth factor for network visualization", MoleculeModel.networkLoaded, sliderWidth, 1);
+//			GUIMoleculeController.Instance.depthfactor = GUIMoleculeController.Instance.LabelSlider (GUIMoleculeController.Instance.depthfactor, -3.0f, 3.0f, "DFactor " + GUIMoleculeController.Instance.depthfactor.ToString("0.00"),
+//				"Determines depth factor for network visualization", MoleculeModel.networkLoaded, sliderWidth, 1);
 			GUI.enabled = true;
 			
 			MetaphorControl ();
@@ -2894,13 +2894,13 @@ namespace UI {
 				GUI.enabled = false;
 				GUIMoleculeController.Instance.toggle_NA_INTERACTIVE = false;
 			}
-			GUIMoleculeController.Instance.toggle_NA_INTERACTIVE = GUILayout.Toggle (GUIMoleculeController.Instance.toggle_NA_INTERACTIVE, new GUIContent ("Interactive mode", "Toggle interactive mode, the physics engine will be used"));
-			GUI.enabled = true;
-			GUIMoleculeController.Instance.drag = GUIMoleculeController.Instance.LabelSlider (GUIMoleculeController.Instance.drag, 0.00001f, 5f, "Drag " + GUIMoleculeController.Instance.drag.ToString("0.00"), "Determines PhysX engine drag value", 
-									UIData.Instance.interactive, sliderWidth, 1);
-			GUIMoleculeController.Instance.spring = GUIMoleculeController.Instance.LabelSlider (GUIMoleculeController.Instance.spring, 0.00001f, 20, "Spring " + GUIMoleculeController.Instance.spring.ToString("0.00"), "Determines PhysX engine spring constant",
-									UIData.Instance.interactive, sliderWidth, 1);
-			PhysicalChoice();
+//			GUIMoleculeController.Instance.toggle_NA_INTERACTIVE = GUILayout.Toggle (GUIMoleculeController.Instance.toggle_NA_INTERACTIVE, new GUIContent ("Interactive mode", "Toggle interactive mode, the physics engine will be used"));
+//			GUI.enabled = true;
+//			GUIMoleculeController.Instance.drag = GUIMoleculeController.Instance.LabelSlider (GUIMoleculeController.Instance.drag, 0.00001f, 5f, "Drag " + GUIMoleculeController.Instance.drag.ToString("0.00"), "Determines PhysX engine drag value", 
+//									UIData.Instance.interactive, sliderWidth, 1);
+//			GUIMoleculeController.Instance.spring = GUIMoleculeController.Instance.LabelSlider (GUIMoleculeController.Instance.spring, 0.00001f, 20, "Spring " + GUIMoleculeController.Instance.spring.ToString("0.00"), "Determines PhysX engine spring constant",
+//									UIData.Instance.interactive, sliderWidth, 1);
+//			PhysicalChoice();
 
 			// Luiz FIXME: gotta find a way to synchronize this before enabling it
 			GUIMoleculeController.Instance.toggle_NA_INTERACTIVE=false;
@@ -2908,15 +2908,15 @@ namespace UI {
 			GUI.enabled = true;	
 			
 			GUILayout.BeginHorizontal();
-			toggle_NA_MEASURE = GUILayout.Toggle (toggle_NA_MEASURE, new GUIContent ("Measure dist.", "Toggle mouse clicking to measure the distance between two atoms"));
+//			toggle_NA_MEASURE = GUILayout.Toggle (toggle_NA_MEASURE, new GUIContent ("Measure dist.", "Toggle mouse clicking to measure the distance between two atoms"));
 			GUILayout.EndHorizontal();
 
 			// Luiz FIXME gotta find a way to synchronize selection
 			toggle_NA_MEASURE = false;
 			
-			GUILayout.BeginHorizontal();
-			GUIMoleculeController.Instance.toggle_DISTANCE_CUEING = GUILayout.Toggle (GUIMoleculeController.Instance.toggle_DISTANCE_CUEING, new GUIContent ("Dist. cueing", "Toggle distance cueing, which darkens distant objects"));
-			GUILayout.EndHorizontal();
+//			GUILayout.BeginHorizontal();
+//			GUIMoleculeController.Instance.toggle_DISTANCE_CUEING = GUILayout.Toggle (GUIMoleculeController.Instance.toggle_DISTANCE_CUEING, new GUIContent ("Dist. cueing", "Toggle distance cueing, which darkens distant objects"));
+//			GUILayout.EndHorizontal();
 			
 			if(GUIMoleculeController.Instance.toggle_DISTANCE_CUEING) {
 				if(!GUIMoleculeController.Instance.distanceCueingEnabled)
@@ -2988,8 +2988,11 @@ namespace UI {
 //			GUILayout.BeginVertical();
 			
 			GUILayout.BeginHorizontal();
+
+			BlackBox.PreloaderGui.FindFirstInstance().DrawMenuOption();
+
 //			if (GUI.Button (new Rect(300,5,40,10),new GUIContent ("Open", "Open the File Open dialogue"))) {
-			if (GUILayout.Button (new GUIContent ("File", "Open the File Open dialogue"))) {
+			if (GUILayout.Button (new GUIContent ("Arquivo", "Abre diálogo de abertura de arquivos."))) {
 				if (GUIMoleculeController.Instance.showOpenMenu)
 					GUIMoleculeController.Instance.showOpenMenu = false;
 				else {
@@ -3022,7 +3025,7 @@ namespace UI {
 			
 			if(!UIData.Instance.hasMoleculeDisplay)
 				GUI.enabled = false;
-			if (GUILayout.Button (new GUIContent ("Atoms", "Open the Atom appearance dialogue"))) {
+			if (GUILayout.Button (new GUIContent ("Átomos", "Abre diálogo de aparência dos átomos"))) {
 				if (GUIMoleculeController.Instance.showAtomMenu) { // already open, we close it
 					GUIMoleculeController.Instance.showAtomMenu = false;
 					GUIDisplay.Instance.m_texture = false ; // this is pointless when the atom menu is closed
@@ -3096,13 +3099,13 @@ namespace UI {
 			if(!UIData.Instance.hasMoleculeDisplay)
 				GUI.enabled = false;
 
-			if (GUILayout.Button (new GUIContent ("Display", "Open display configuration menu")))
+			if (GUILayout.Button (new GUIContent ("Visualização", "Abre menu de configuração da visualização")))
 				GUIMoleculeController.Instance.showManipulatorMenu = !GUIMoleculeController.Instance.showManipulatorMenu;
 
 			// Luiz: Could've changed the buttons' order, so the conditional below would be executed only once,
 			// but I don't know how that would have affected to windows' positions on the screen.
 			GUI.enabled = true;			
-			if (GUILayout.Button(new GUIContent("Advanced", "Opens the advanced options menu")))
+			if (GUILayout.Button(new GUIContent("Avançado", "Abre menu de opções avançadas")))
 				GUIMoleculeController.Instance.showAdvMenu = !GUIMoleculeController.Instance.showAdvMenu ;
 			if(!UIData.Instance.hasMoleculeDisplay)
 				GUI.enabled = false;
@@ -3136,8 +3139,6 @@ namespace UI {
 //					hbManager.ResetPositions();
 //				}
 //			}
-
-			BlackBox.PreloaderGui.FindFirstInstance().DrawMenuOption();
 			
 			GUILayout.EndHorizontal();
 			GUI.enabled = true;
@@ -3486,12 +3487,12 @@ namespace UI {
 //			toggle_HB_SANIM = GUILayout.Toggle (toggle_HB_SANIM, new GUIContent ("HB_SANIM", "Animate shrink parameter"));
 			
 			GUILayout.BeginHorizontal();
-			GUILayout.Label("Color/Texture/Scale"); // Make a little more place between the representation selection and the rendering parameters
+			GUILayout.Label("Cor/Textura/Escala"); // Make a little more place between the representation selection and the rendering parameters
 			GUILayout.EndHorizontal();
 			
 			GUILayout.BeginHorizontal ();
 			GUILayout.FlexibleSpace(); // so as to center the buttons
-			if (GUILayout.Button (new GUIContent ("Renderer", "Choose the color, texture and scale of each atom"), GUILayout.Width(Rectangles.atomButtonWidth))){
+			if (GUILayout.Button (new GUIContent ("Renderização", "Escolha cor, textura e escala de cada átomo."), GUILayout.Width(Rectangles.atomButtonWidth))){
 				GUIMoleculeController.Instance.showSetAtomScales = !GUIMoleculeController.Instance.showSetAtomScales;
 				GUIMoleculeController.Instance.showAtomsExtendedMenu = false;
 				GUIMoleculeController.Instance.showResiduesMenu = false;
@@ -3499,7 +3500,7 @@ namespace UI {
 				GUIDisplay.Instance.applyToAtoms.Add("All");
 			}
 			
-			if (GUILayout.Button (new GUIContent ("Panels", "Open colors and textures panels menu"), GUILayout.Width(Rectangles.atomButtonWidth))) {
+			if (GUILayout.Button (new GUIContent ("Painéis", "Abre o painel de cores e texturas."), GUILayout.Width(Rectangles.atomButtonWidth))) {
 				GUIMoleculeController.Instance.showPanelsMenu = !GUIMoleculeController.Instance.showPanelsMenu;
 			}
 			
@@ -3508,10 +3509,10 @@ namespace UI {
 			
 			GUILayout.BeginHorizontal();
 			GUI.enabled = true;
-			GUIMoleculeController.Instance.toggle_NA_HIDE = GUILayout.Toggle (GUIMoleculeController.Instance.toggle_NA_HIDE, new GUIContent ("Hide", "Hide/Display atoms")); // && !carbon_alpha?
+			GUIMoleculeController.Instance.toggle_NA_HIDE = GUILayout.Toggle (GUIMoleculeController.Instance.toggle_NA_HIDE, new GUIContent ("Esconder", "Esconde/mostra átomos.")); // && !carbon_alpha?
 			GUILayout.EndHorizontal();
 			
-			GUIMoleculeController.Instance.globalRadius = GUIMoleculeController.Instance.LabelSlider (GUIMoleculeController.Instance.globalRadius, 0.00001f, 2.0f, "Radius " + GUIMoleculeController.Instance.globalRadius.ToString("0.00"), "Determines radius value", true, (int)(0.90 * Rectangles.atomMenuWidth), 1, true);
+			GUIMoleculeController.Instance.globalRadius = GUIMoleculeController.Instance.LabelSlider (GUIMoleculeController.Instance.globalRadius, 0.00001f, 2.0f, "Raio " + GUIMoleculeController.Instance.globalRadius.ToString("0.00"), "Determina o valor do raio.", true, (int)(0.90 * Rectangles.atomMenuWidth), 1, true);
 			
 			
 			if (GUIMoleculeController.Instance.toggle_NA_HBALLSMOOTH) {
@@ -3540,18 +3541,16 @@ namespace UI {
 			}
 			
 
-			GUILayout.BeginHorizontal();
 			if(GUIMoleculeController.Instance.toggle_NA_HIDE || UIData.Instance.atomtype == UIData.AtomType.particleball)
 				GUI.enabled = false;
-			toggle_NA_SWITCH = GUILayout.Toggle (toggle_NA_SWITCH, new GUIContent 
-				("LOD mode", "Toggle LOD.  When this is enabled and the molecule is moving, hyperboloids are replaced by particle balls for smoother framerates."));
+//			toggle_NA_SWITCH = GUILayout.Toggle (toggle_NA_SWITCH, new GUIContent 
+//				("Modo Nível de Detalhe", "Alterna nível de detalhe. Quando está habilitado e a molécula, se movendo, hiperboloides são substituídos por bolas de partículas para animação mais suave."));
 			UIData.Instance.switchmode = toggle_NA_SWITCH;
 			GUI.enabled = true;
 			if(GUIMoleculeController.Instance.toggle_NA_HIDE)
 				GUI.enabled = false;
-			GUIMoleculeController.Instance.toggle_NA_AUTOMOVE = GUILayout.Toggle (GUIMoleculeController.Instance.toggle_NA_AUTOMOVE, new GUIContent ("Automove", "Camera auto rotation"));
+			GUIMoleculeController.Instance.toggle_NA_AUTOMOVE = GUILayout.Toggle (GUIMoleculeController.Instance.toggle_NA_AUTOMOVE, new GUIContent ("Movimento automático", "Rotação automática da câmera."));
 			GUI.enabled = true;
-			GUILayout.EndHorizontal();
 			
 			GUI.enabled = true;
 			if (Event.current.type == EventType.Repaint)
@@ -3732,8 +3731,8 @@ namespace UI {
 			
 			GUILayout.BeginHorizontal ();
 			GUILayout.FlexibleSpace();
-			GUILayout.Label("Atom Style", GUILayout.Width(Rectangles.atomButtonWidth));
-			GUILayout.Label("Bond Style", GUILayout.Width(Rectangles.atomButtonWidth));
+			GUILayout.Label("Estilo Átomo", GUILayout.Width(Rectangles.atomButtonWidth));
+			GUILayout.Label("Estilo Ligação", GUILayout.Width(Rectangles.atomButtonWidth));
 			GUILayout.FlexibleSpace();
 			GUILayout.EndHorizontal ();
 
@@ -3787,7 +3786,7 @@ namespace UI {
 				displayAtomType = "Particle";
 			else
 				displayAtomType = atomtype;
-			if (GUILayout.Button (new GUIContent (displayAtomType, "Change the atom appearance style or rendering method"), GUILayout.Width(Rectangles.atomButtonWidth))) {
+			if (GUILayout.Button (new GUIContent (displayAtomType, "Mudar o estilo da aparência dos átomos ou método de renderização."), GUILayout.Width(Rectangles.atomButtonWidth))) {
 				GUIMoleculeController.Instance.showAtomType = !GUIMoleculeController.Instance.showAtomType;
 				GUIMoleculeController.Instance.showBondType = false;
 				GUIMoleculeController.Instance.m_colorPicker = null;
@@ -3820,7 +3819,7 @@ namespace UI {
 			}
 
 			
-			if (GUILayout.Button (new GUIContent (bondtype, "Change the bond appearance style or rendering method"), GUILayout.Width(Rectangles.atomButtonWidth))) {	
+			if (GUILayout.Button (new GUIContent (bondtype, "Mudar estilo da representação das ligações ou método de renderização"), GUILayout.Width(Rectangles.atomButtonWidth))) {	
 				GUIMoleculeController.Instance.showBondType = !GUIMoleculeController.Instance.showBondType;
 				GUIMoleculeController.Instance.showAtomType = false;
 			}
@@ -3830,7 +3829,7 @@ namespace UI {
 			GUILayout.BeginHorizontal();
 			if(GUIMoleculeController.Instance.toggle_NA_HIDE)
 				GUI.enabled = false;
-			if(GUILayout.Button(new GUIContent("Smooth HyperBalls", "Set a parameter combo for HyperBalls and Sticks with SmoothLinks once"))) {
+			if(GUILayout.Button(new GUIContent("Suavizar HyperBalls", "Muda representação para HyperBalls com ligações suavizadas."))) {
 				SmoothHyperBalls ();
 			}
 			GUILayout.EndHorizontal();
@@ -3847,19 +3846,19 @@ namespace UI {
 		/// Window identifier.
 		/// </param>
 		public void AtomMenu (int a) {
-			GUIMoleculeController.Instance.showAtomMenu = SetTitleExit("Atom appearance");
+			GUIMoleculeController.Instance.showAtomMenu = SetTitleExit("Aparência dos átomos");
 			SetAtomStyle ();
 			RenderingParameters ();
 			
-			GUILayout.BeginHorizontal();
-			GUIMoleculeController.Instance.toggle_NA_CLICK = GUILayout.Toggle (GUIMoleculeController.Instance.toggle_NA_CLICK, new GUIContent ("Atom selection", "Toggles mouse clicking to select/deselect atoms (left click/right click)"));
-			GUILayout.EndHorizontal();
+//			GUILayout.BeginHorizontal();
+//			GUIMoleculeController.Instance.toggle_NA_CLICK = GUILayout.Toggle (GUIMoleculeController.Instance.toggle_NA_CLICK, new GUIContent ("Atom selection", "Toggles mouse clicking to select/deselect atoms (left click/right click)"));
+//			GUILayout.EndHorizontal();
 
 			// Luiz FIXME gotta find a way yo synchronize selection
 			GUIMoleculeController.Instance.toggle_NA_CLICK = false;
 			
 			GUILayout.BeginHorizontal();
-			GUIMoleculeController.Instance.toggle_NA_CAMLOCK = GUILayout.Toggle (GUIMoleculeController.Instance.toggle_NA_CAMLOCK, new GUIContent ("Lock camera", "Enable/Disable camera movements"));
+			GUIMoleculeController.Instance.toggle_NA_CAMLOCK = GUILayout.Toggle (GUIMoleculeController.Instance.toggle_NA_CAMLOCK, new GUIContent ("Travar câmera", "Habilita/desabilita movimentação da câmera."));
 			GUILayout.EndHorizontal();
 			
 			if (!GUIMoleculeController.Instance.toggle_NA_CLICK && GameObject.FindGameObjectWithTag("MainCamera").GetComponent<ClickAtom> ())
@@ -3872,8 +3871,8 @@ namespace UI {
 			int labelWidth = (int) (Rectangles.atomButtonWidth * 0.4f);
 			
 			GUILayout.BeginHorizontal();
-			HBallManager.brightness = GUIMoleculeController.Instance.LabelSlider(HBallManager.brightness, 0.33f, 2.0f, "Brightness: " + HBallManager.brightness.ToString("0.00"), 
-									"Adjusts the brightness of atoms and bonds represented with the MatCap shader",
+			HBallManager.brightness = GUIMoleculeController.Instance.LabelSlider(HBallManager.brightness, 0.33f, 2.0f, "Brilho: " + HBallManager.brightness.ToString("0.00"), 
+									"Ajusta o brilho de átomos e ligações representados com o shader MatCap.",
 									(UIData.Instance.atomtype == UIData.AtomType.hyperball), sliderWidth, labelWidth, false);
 			if(GUI.changed)
 				HBallManager.resetBrightness = true;
@@ -3944,17 +3943,17 @@ namespace UI {
 
 			Color newColor = sNullColor;
 
-			if (GUILayout.Button (new GUIContent ("White", "Set background to plain white"))) {
+			if (GUILayout.Button (new GUIContent ("Branco", "Define a cor de fundo como branco."))) {
 				// Luiz:
 				newColor = new Color (1, 1, 1, 0);
 			}
 			
-			if (GUILayout.Button (new GUIContent ("Grey", "Set background color to grey"))) {
+			if (GUILayout.Button (new GUIContent ("Cinza", "Define a cor de fundo como cinza."))) {
 				// Luiz:
 				newColor = Color.gray;
 			}
 
-			if (GUILayout.Button (new GUIContent ("Black", "Set background color to plain black"))) {
+			if (GUILayout.Button (new GUIContent ("Preto", "Define a cor de fundo como preto."))) {
 				// Luiz:
 				newColor = Color.black;
 			}
@@ -3987,11 +3986,11 @@ namespace UI {
 		/// A.
 		/// </param>
 		public void Display (int a) {
-			GUIMoleculeController.Instance.showManipulatorMenu = SetTitleExit("Display");
+			GUIMoleculeController.Instance.showManipulatorMenu = SetTitleExit("Visualização");
 			// VisualControl ();
-			LoadScreenShot ();
+//			LoadScreenShot ();
 			//ShaderControl();
-			BackGroundControl ();
+//			BackGroundControl ();
 
 			if(GUIMoleculeController.Instance.showBackgroundType)
 				GUI.enabled = false;
@@ -3999,12 +3998,12 @@ namespace UI {
 			GUI.enabled = true;
 			
 			GUILayout.BeginHorizontal ();
-			if (GUILayout.Button (new GUIContent ("Effects", "Toggle what kind of special effect to apply to the scene"))) 
+			if (GUILayout.Button (new GUIContent ("Efeitos", "Alterna qual tipo de efeito especial é aplicado a cena"))) 
 				GUIMoleculeController.Instance.showEffectType = !GUIMoleculeController.Instance.showEffectType;
 			GUILayout.EndHorizontal ();
 			
 			GUILayout.BeginHorizontal ();
-			if (GUILayout.Button (new GUIContent ("Infos", "Show/Hide the FPS, atom count and bond count"))) 
+			if (GUILayout.Button (new GUIContent ("Infos", "Mostra/esconde FPS e contagens de átomos e ligações."))) 
 				GUIMoleculeController.Instance.toggle_INFOS = !GUIMoleculeController.Instance.toggle_INFOS;
 			GUILayout.EndHorizontal ();
 
@@ -4032,29 +4031,29 @@ namespace UI {
 		/// Window identifier.
 		/// </param>
 		public void Manipulator (int a) {
-			SetTitle("Molecule Manipulator");
+			SetTitle("Manipulador da Molécula");
 			maxCamera fixeCam;
 			fixeCam = GUIMoleculeController.Instance.scenecontroller.GetComponent<maxCamera> ();
-			if (GUILayout.RepeatButton (new GUIContent ("Up", "Move Up")))
+			if (GUILayout.RepeatButton (new GUIContent ("Cima", "Move para cima")))
 				fixeCam.upyDeg ();
 			
 			GUILayout.BeginHorizontal ();
-			if (GUILayout.RepeatButton (new GUIContent ("Left", "Move Left")))
+			if (GUILayout.RepeatButton (new GUIContent ("Esquerda", "Move para esquerda")))
 				fixeCam.downxDeg ();
 
-			if (GUILayout.RepeatButton (new GUIContent ("Right", "Move Right")))
+			if (GUILayout.RepeatButton (new GUIContent ("Direita", "Move para direita")))
 				fixeCam.upxDeg ();
 			
 			GUILayout.EndHorizontal ();
 
-			if (GUILayout.RepeatButton (new GUIContent ("Down", "Move Down")))
+			if (GUILayout.RepeatButton (new GUIContent ("Baixo", "Move para baixo")))
 				fixeCam.downyDeg ();
 
 			GUILayout.BeginHorizontal ();
-			if (GUILayout.RepeatButton (new GUIContent ("Rot Left", "Rotate Left")))
+			if (GUILayout.RepeatButton (new GUIContent ("Rot esquerda", "Rotaciona para esquerda")))
 				fixeCam.upzDeg ();
 
-			if (GUILayout.RepeatButton (new GUIContent ("Rot Right", "Rotate Right")))
+			if (GUILayout.RepeatButton (new GUIContent ("Rot direita", "Rotaciona para direita")))
 				fixeCam.downzDeg ();
 
 			GUILayout.EndHorizontal ();
@@ -4063,7 +4062,7 @@ namespace UI {
 				var oldAutoChangeState = UIData.Instance.autoChangingState;
 				GUILayout.BeginHorizontal();
 				UIData.Instance.autoChangingState = GUILayout.Toggle(
-					UIData.Instance.autoChangingState, new GUIContent ("Auto state transition", "Automatically transitions between states.")
+					UIData.Instance.autoChangingState, new GUIContent ("Transição de estados automática", "Transita pelos estados da trajetória automaticamente.")
 				);
 				GUILayout.EndHorizontal();
 
@@ -4075,8 +4074,8 @@ namespace UI {
 					TrajectoryData.Instance.CurrentStateIdx,
 					0f,
 					TrajectoryData.Instance.NumberOfStates - 1,
-					"State: " + (TrajectoryData.Instance.CurrentStateIdx + 1) + " / " + (TrajectoryData.Instance.NumberOfStates),
-					"State of molecule across time",
+					"Estado: " + (TrajectoryData.Instance.CurrentStateIdx + 1) + " / " + (TrajectoryData.Instance.NumberOfStates),
+					"Estado da molécula no tempo",
 					!UIData.Instance.autoChangingState,
 					(int)(0.9f * Rectangles.manipulatorWidth),
 					100,

@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using ExternalOutput.Parse;
+using System.Runtime.Serialization;
+using System.Security.Cryptography.X509Certificates;
 
 namespace BlackBox
 {
@@ -56,7 +58,16 @@ namespace BlackBox
 				}},
 		};
 
-		public bool ShowingMenu { get; set; }
+		private Vector2 mScrollPosition = Vector2.zero;
+		public bool mShowingMenu;
+		public bool ShowingMenu { // Luiz: must not be auto property, because I want it visible in the editor.
+			get {
+				return mShowingMenu;
+			}
+			set {
+				mShowingMenu = value;
+			}
+		}
 
 		public void DrawMenuOption() {
 			var guiEnabled = GUI.enabled;
@@ -73,12 +84,19 @@ namespace BlackBox
 				return;
 			
 			var frame = Rectangles.openRect;
-			frame.x += frame.width;
+			frame.x = 0;
 
 			GUI.Window(
 				1332,
 				frame,
 				id => {
+					var innerFrame = frame;
+					innerFrame.x = innerFrame.y = 0;
+					var sizeRect = innerFrame;
+					sizeRect.height *= 2;
+
+					mScrollPosition = GUI.BeginScrollView(innerFrame, mScrollPosition,sizeRect, true, false);
+
 					if(DrawWindowTitleBar()) {
 						ShowingMenu = false;
 						return;
@@ -100,6 +118,8 @@ namespace BlackBox
 					}
 
 					GUI.skin.button.alignment = buttonAligment;
+
+					GUI.EndScrollView(true);
 				},
 				string.Empty
 			);

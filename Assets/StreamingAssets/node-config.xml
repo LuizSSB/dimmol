@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" type="masterHost" name="Node" id="133" nodes="6" guisize="15">
+<node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" type="masterHost" name="Node" id="133" nodes="6" guisize="10">
   <server ip="192.168.1.102" port="25000" />
   <screen stereo="false" eye="left" googlevr="false" trackshead="false">
     <pa x="-8" y="-4" z="0" />

@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using ExternalOutput.Parse;
-using System.Runtime.Serialization;
-using System.Security.Cryptography.X509Certificates;
 
 namespace BlackBox
 {
@@ -58,7 +56,7 @@ namespace BlackBox
 				}},
 		};
 
-		private Vector2 mScrollPosition = Vector2.zero;
+		Vector2 mScrollPosition = Vector2.zero;
 		public bool mShowingMenu;
 		public bool ShowingMenu { // Luiz: must not be auto property, because I want it visible in the editor.
 			get {
@@ -69,14 +67,13 @@ namespace BlackBox
 			}
 		}
 
-		public void DrawMenuOption() {
-			var guiEnabled = GUI.enabled;
-			GUI.enabled = true;
+		public bool DrawMenuOption() {
 			if(GUILayout.Button(new GUIContent("Moléculas", "Menu de moléculas pré-carregadas")))
 			{
 				ShowingMenu = !ShowingMenu;
 			}
-			GUI.enabled = guiEnabled;
+
+			return ShowingMenu;
 		}
 
 		void OnGUI() {
@@ -86,6 +83,7 @@ namespace BlackBox
 			var frame = Rectangles.openRect;
 			frame.x = 0;
 
+			Rectangles.SetFontSize();
 			GUI.Window(
 				1332,
 				frame,
@@ -94,8 +92,9 @@ namespace BlackBox
 					innerFrame.x = innerFrame.y = 0;
 					var sizeRect = innerFrame;
 					sizeRect.height *= 2;
+					sizeRect.width -= 10;
 
-					mScrollPosition = GUI.BeginScrollView(innerFrame, mScrollPosition,sizeRect, true, false);
+					mScrollPosition = GUI.BeginScrollView(innerFrame, mScrollPosition, sizeRect, true, false);
 
 					if(DrawWindowTitleBar()) {
 						ShowingMenu = false;
@@ -111,8 +110,13 @@ namespace BlackBox
 
 						foreach(var structure in structureType.Value) {
 							if(GUILayout.Button(structure.Label)) {
-								ShowingMenu = false;
-								LoadStructure(structure);
+								if(fa++ == 0) {
+									ShowingMenu = false;
+									LoadStructure(structure);
+								} else {
+									Object.DestroyImmediate(GameObject.Find("VrCamera(Clone)"));
+
+								}
 							}
 						}
 					}
@@ -124,7 +128,7 @@ namespace BlackBox
 				string.Empty
 			);
 		}
-
+		int fa = 0;
 		static void LoadStructure(PreloadedStructure structure) {
 			string path = Path.Combine(
 				              Application.streamingAssetsPath,

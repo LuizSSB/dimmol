@@ -2989,7 +2989,7 @@ namespace UI {
 			
 			GUILayout.BeginHorizontal();
 
-			BlackBox.PreloaderGui.FindFirstInstance().DrawMenuOption();
+			GUIMoleculeController.Instance.showAtomMenu &= !BlackBox.PreloaderGui.FindFirstInstance().DrawMenuOption();
 
 //			if (GUI.Button (new Rect(300,5,40,10),new GUIContent ("Open", "Open the File Open dialogue"))) {
 			if (GUILayout.Button (new GUIContent ("Arquivo", "Abre diálogo de abertura de arquivos."))) {
@@ -3030,6 +3030,7 @@ namespace UI {
 					GUIMoleculeController.Instance.showAtomMenu = false;
 					GUIDisplay.Instance.m_texture = false ; // this is pointless when the atom menu is closed
 					GUIMoleculeController.Instance.showSetAtomScales = false;
+					BlackBox.PreloaderGui.FindFirstInstance().ShowingMenu = false;
 				} else {
 					GUIMoleculeController.Instance.showAtomMenu = true;
 					GUIMoleculeController.Instance.showOpenMenu = false;

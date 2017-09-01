@@ -312,63 +312,90 @@ namespace  ParseData.ParsePDB
 		}
 
 		// Luiz:
-		public void MakePDBFromXYZ(string xyzFileName, string fileFomat)
+		public IEnumerator MakePDBFromXYZ(string xyzFileName, string fileFomat)
 		{
-			string fullFileName = xyzFileName + "." + fileFomat;
-			var atoms = ExternalOutput.Parse.ParseUtils.ExtractStates(
-				fullFileName, ExternalOutput.Parse.ParseableOutputTypes.Xyz_Xmol
-			);
-			string pdb = ExternalOutput.PDBMaker.MakePDB(atoms[0]);
-			UIData.Instance.ChosenPdbContents = pdb;
-			ControlMolecule.CreateMolecule(new StringReader(pdb));
+			return MakePDBFromXYZ(xyzFileName + "." + fileFomat);
+		}
+
+		// Luiz:
+		public IEnumerator MakePDBFromXYZ(string xyzFilePath)
+		{
+			string contents = null;
+			if (xyzFilePath.Contains("://")) {
+				var www = new WWW(xyzFilePath);
+				yield return www;
+				contents = www.text;
+			}
+
+			try { 
+				if (string.IsNullOrEmpty(contents)) {
+					contents = File.ReadAllText(xyzFilePath);
+				}
+				var atoms = ExternalOutput.Parse.ParseUtils.ExtractStatesFromContent(
+					contents, ExternalOutput.Parse.ParseableOutputTypes.Xyz_Xmol
+				);
+				string pdb = ExternalOutput.PDBMaker.MakePDB(atoms[0]);
+				UIData.Instance.ChosenPdbContents = pdb;
+				ControlMolecule.CreateMolecule(new StringReader(pdb));
+			} catch(Exception e) {
+				UIData.Instance.SetError(true, "Invalid XYZ/XMOL file: " + e.Message);
+				yield break;
+			}
 		}
 	
-		public void LoadPDBRequest(string file_base_name, bool withData = true) {
-			StreamReader sr ;
-				
-//			FileInfo file=new FileInfo(file_base_name+".pdb");
-			using (sr =new StreamReader(file_base_name+".pdb")) {
-				// Luiz:
-				string pdbContents = sr.ReadToEnd();
-				ControlMolecule.CreateMolecule(new StringReader(pdbContents));
-				UIData.Instance.ChosenPdbContents = pdbContents;
-				//ReadPDB(sr);
+		public IEnumerator LoadPDBRequest(string file_base_name, bool withData = true) {
+			string path = file_base_name + ".pdb";
+			string contents = null;
+			if (path.Contains("://")) {
+				var www = new WWW(path);
+				yield return www;
+				contents = www.text;
+			} else {
+				contents = File.ReadAllText(path);
 			}
-			
-			//ReadPDB(sr);
-//			ControlMolecule.CreateMolecule(sr);
 
-			if(withData) {
-				FileInfo fieldlinefile=new FileInfo(file_base_name+".json");
-				FileInfo apffile=new FileInfo(file_base_name+".apf");
-				if(fieldlinefile.Exists) {
-					LoadJsonRequest("file://"+file_base_name+".json",MoleculeModel.Offset);
-					MoleculeModel.fieldLineFileExists=true;
-				} else if(apffile.Exists) {
-					LoadJsonRequest("file://"+file_base_name+".apf",MoleculeModel.Offset);
-					MoleculeModel.fieldLineFileExists=true;
-				} else {
-					MoleculeModel.fieldLineFileExists=false;
-					MoleculeModel.FieldLineList=null;
-				}
-					
-				FileInfo Surfacefile=new FileInfo(file_base_name+".obj");
-				FileInfo Surfacefile0=new FileInfo(file_base_name+"0.obj");
+			try {
+				ControlMolecule.CreateMolecule(new StringReader(contents));
+				UIData.Instance.ChosenPdbContents = contents;
+				
+				//ReadPDB(sr);
+	//			ControlMolecule.CreateMolecule(sr);
 
-				if(Surfacefile.Exists || Surfacefile0.Exists) {
-					LoadOBJRequest(file_base_name);
-					MoleculeModel.surfaceFileExists=true;
-					GUIMoleculeController.Instance.modif=true;
-				} else {
-					MoleculeModel.surfaceFileExists=false;
+				if(withData) {
+					FileInfo fieldlinefile=new FileInfo(file_base_name+".json");
+					FileInfo apffile=new FileInfo(file_base_name+".apf");
+					if(fieldlinefile.Exists) {
+						LoadJsonRequest("file://"+file_base_name+".json",MoleculeModel.Offset);
+						MoleculeModel.fieldLineFileExists=true;
+					} else if(apffile.Exists) {
+						LoadJsonRequest("file://"+file_base_name+".apf",MoleculeModel.Offset);
+						MoleculeModel.fieldLineFileExists=true;
+					} else {
+						MoleculeModel.fieldLineFileExists=false;
+						MoleculeModel.FieldLineList=null;
+					}
+						
+					FileInfo Surfacefile=new FileInfo(file_base_name+".obj");
+					FileInfo Surfacefile0=new FileInfo(file_base_name+"0.obj");
+
+					if(Surfacefile.Exists || Surfacefile0.Exists) {
+						LoadOBJRequest(file_base_name);
+						MoleculeModel.surfaceFileExists=true;
+						GUIMoleculeController.Instance.modif=true;
+					} else {
+						MoleculeModel.surfaceFileExists=false;
+					}
+						
+					FileInfo dxfile=new FileInfo(file_base_name+".dx");
+					MoleculeModel.dxFileExists = false ; // otherwise a molecule might load dx data from a previous molecule
+					if(dxfile.Exists) {
+						MoleculeModel.dxFileExists = true ;
+						LoadDxRequest(file_base_name+".dx",MoleculeModel.Offset);
+					}
 				}
-					
-				FileInfo dxfile=new FileInfo(file_base_name+".dx");
-				MoleculeModel.dxFileExists = false ; // otherwise a molecule might load dx data from a previous molecule
-				if(dxfile.Exists) {
-					MoleculeModel.dxFileExists = true ;
-					LoadDxRequest(file_base_name+".dx",MoleculeModel.Offset);
-				}
+			} catch(Exception e) {
+				UIData.Instance.SetError(true, "Invalid PDB file: " + e.Message);
+				yield break;
 			}
 		}           
          	  // 	Regex RE = new Regex("\n", RegexOptions.Multiline);

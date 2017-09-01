@@ -248,6 +248,7 @@
      <Compile Include="Assets\Scripts\Utility\MouseOverMDDriverMolecule.cs" />
      <Compile Include="Assets\Scripts\Utility\MouseOverMolecule.cs" />
      <Compile Include="Assets\Scripts\Utility\ObservableList.cs" />
+     <Compile Include="Assets\Scripts\Utility\PlatformUtils.cs" />
      <Compile Include="Assets\Scripts\Utility\Popup.cs" />
      <Compile Include="Assets\Scripts\Utility\ScreenShot.cs" />
      <Compile Include="Assets\Scripts\Utility\SelectAtomFocus.cs" />

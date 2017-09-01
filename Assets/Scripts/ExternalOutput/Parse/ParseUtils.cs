@@ -1,17 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using UnityEngine;
 
 namespace ExternalOutput.Parse
 {
-	public class ParseUtils
+	public static class ParseUtils
 	{
 		public static List<OutputState> ExtractStates(string fromOutputFilePath, ParseableOutputTypes ofType)
 		{
 			IParser parser = ParserFactory.GetInitialParser(fromOutputFilePath, ofType);
 
 			using (var reader = File.OpenText(fromOutputFilePath))
+			{
+				string line;
+				for (int idx = 0; (line = reader.ReadLine()) != null; ++idx)
+				{
+					parser = parser.ParseLine(line, idx);
+				}
+			}
+
+			return parser.AtomsStates;
+		}
+		public static List<OutputState> ExtractStatesFromContent(string content, ParseableOutputTypes ofType)
+		{
+			IParser parser = ParserFactory.GetInitialParser(string.Empty, ofType);
+
+			using (var reader = new StringReader(content))
 			{
 				string line;
 				for (int idx = 0; (line = reader.ReadLine()) != null; ++idx)

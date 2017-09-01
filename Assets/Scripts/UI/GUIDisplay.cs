@@ -65,13 +65,13 @@
 using ExternalOutput;
 using System.Linq;
 using ExternalOutput.Parse;
+using AssemblyCSharp;
 
 namespace UI {
 	using UnityEngine;
 	using System.Collections;
 	using System.IO;
 	using System.Collections.Generic;
-	using SocketConnect.UnitySocket;
 	using Config;
 	using Molecule.View;
 	using Molecule.Model;
@@ -353,18 +353,31 @@ namespace UI {
 			Debug.Log ("If you don't see me, Uniteh brOke!");
 		}
 
-		// Luiz:
-		public void OpenTrajectoryCallback(string path) {
-
+		bool BaseOpenTrajectorycallback(string path) {
 			if(path == null)
-				return;
+				return false;
 
 			UIData.Instance.SetError(false);
 
 			UpdateOldPaths(path);
 			m_fileBrowser = null;
 
-			TrajectoryData.Instance.LoadTrajectoryFile(path, TrajectoryType);
+			return true;
+
+		}
+
+		// Luiz:
+		public void OpenTrajectoryCallback(string path) {
+			if(BaseOpenTrajectorycallback(path)) {
+				TrajectoryData.Instance.LoadTrajectoryFile(path, TrajectoryType);
+			}
+		}
+
+		// Luiz:
+		public IEnumerator OpenTrajectoryCallbackCoroutine(string path) {
+			if(BaseOpenTrajectorycallback(path)) {
+				yield return TrajectoryData.Instance.LoadTrajectoryFileCoroutine(path, TrajectoryType);
+			}
 		}
 
 		public void OpenFileCallback(string path) {
@@ -383,7 +396,7 @@ namespace UI {
 			file_extension = file_extension.Length > 1 ? file_extension.Substring(1) : string.Empty;
 
 			if (!ParseData.ParsePDB.RequestPDB.SupportsMoleculeExtension(file_extension)) {
-				UIData.Instance.SetError(true, "Unsupportd molecule format. Molecule file must be .PDB or .XYZ.");
+				UIData.Instance.SetError(true, "Unsupported molecule format. Molecule file must be .PDB or .XYZ.");
 				return;
 			} else {
 				m_fileBrowser = null;
@@ -408,7 +421,13 @@ namespace UI {
 		}
 
 		private void UpdateOldPaths(string newPath) {
-			directorypath = System.IO.Path.GetDirectoryName(newPath);
+			// Luiz:
+			if(newPath.Contains("://")) {
+				var splits = newPath.Split('/');
+				directorypath = string.Join("/", splits.Where(s => s != splits.Last()).ToArray());
+			} else {
+				directorypath = Path.GetDirectoryName(newPath);
+			}
 
 			if (!TrajectoryData.Instance.IsLoaded) {
 				m_lastOpenDir = directorypath;
@@ -448,7 +467,14 @@ namespace UI {
 						if(!TrajectoryData.Instance.IsLoaded && string.IsNullOrEmpty(id))
 						{
 							GUILayout.Label("MOLÉCULA ÚNICA");
-							if (GUILayout.Button (new GUIContent ("Abrir arquivo do disco", "Carrega um arquivo PDB/XYZ do disco"))) {
+
+							//Luiz:
+							if (
+								PlatformUtils.IsDesktop &&
+								GUILayout.Button (
+									new GUIContent ("Abrir arquivo do disco", "Carrega um arquivo PDB/XYZ do disco")
+								)
+							) {
 								m_fileBrowser = new ImprovedFileBrowser (Rectangles.fileBrowserRect, "", OpenFileCallback, m_lastOpenDir);
 								//							m_fileBrowser.SelectionPattern = "*.pdb|*.xgmml";
 								m_fileBrowser.DirectoryImage = directoryimage; 
@@ -500,7 +526,14 @@ namespace UI {
 									(int)TrajectoryType, new []{"saída GAMESS", "XMOL"}, 2
 								);								
 							} GUILayout.EndHorizontal();
-							if(GUILayout.Button(new GUIContent("Abrir arquivo de trajetória do disco", "Carrega um arquivo com saída do GAMESS (.gms) ou Xmol (.xmol) do disco"))) {
+							if(
+								PlatformUtils.IsDesktop &&
+								GUILayout.Button(
+									new GUIContent(
+										"Abrir arquivo de trajetória do disco",
+										"Carrega um arquivo com saída do GAMESS (.gms) ou Xmol (.xmol) do disco")
+								)
+							) {
 								m_fileBrowser = new ImprovedFileBrowser(Rectangles.fileBrowserRect, "", OpenTrajectoryCallback, m_lastOpenDir);
 								m_fileBrowser.DirectoryImage = directoryimage; 
 								m_fileBrowser.FileImage = fileimage;
@@ -522,7 +555,7 @@ namespace UI {
 										);
 										OpenTrajectoryCallback(filePath);
 									} catch(System.Exception e) {
-										UIData.Instance.SetError(true, "Não pôde adequirir arquivo da web: " + e);
+										UIData.Instance.SetError(true, "Não pôde adquirir arquivo da web: " + e);
 										GUIMoleculeController.Instance.showOpenMenu = true;
 										GUIMoleculeController.Instance.showSecStructMenu = true;
 									}

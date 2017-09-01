@@ -540,20 +540,10 @@ public class Molecule3D:MonoBehaviour {
 
 		// if we laod a pdb file launch the reading of file
 		else if (GUIDisplay.Instance.file_extension == "pdb") {
-			try {
-				requestPDB.LoadPDBRequest(GUIDisplay.Instance.file_base_name);
-			} catch(Exception e) {
-				UIData.Instance.SetError(true, "Invalid PDB file: " + e.Message);
-				yield break;
-			}
+			yield return requestPDB.LoadPDBRequest(GUIDisplay.Instance.file_base_name);
 		
 		} else if (GUIDisplay.Instance.file_extension == "xyz" || GUIDisplay.Instance.file_extension == "xmol") {
-			try {
-				requestPDB.MakePDBFromXYZ(GUIDisplay.Instance.file_base_name, GUIDisplay.Instance.file_extension);
-			} catch(Exception e) {
-				UIData.Instance.SetError(true, "Invalid XYZ/XMOL file: " + e.Message);
-				yield break;
-			}
+			yield return requestPDB.MakePDBFromXYZ(GUIDisplay.Instance.file_base_name, GUIDisplay.Instance.file_extension);
 		}
 
 		// check the format of xgmml	
@@ -597,7 +587,7 @@ public class Molecule3D:MonoBehaviour {
 		Debug.Log("T.T ==> END OF LOADING");
 
 		// Luiz:
-		if (UnityClusterPackage.Node.CurrentNode.HasPermission(NodePermission.MenuControl) &&
+		if (Node.CurrentNode.HasPermission(NodePermission.MenuControl) &&
 			!TrajectoryData.Instance.IsLoaded) {
 			AssemblyCSharp.RPCMessenger.GetCurrent().SendComplexObject(
 				UIData.Instance, GetType(), "ReceiveNewUIData"

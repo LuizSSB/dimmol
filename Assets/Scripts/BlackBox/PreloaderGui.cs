@@ -82,6 +82,7 @@ namespace BlackBox
 			
 			var frame = Rectangles.openRect;
 			frame.x = 0;
+			frame.height = Rectangles.GoBackRect.y - frame.y;
 
 			Rectangles.SetFontSize();
 			GUI.Window(
@@ -110,13 +111,9 @@ namespace BlackBox
 
 						foreach(var structure in structureType.Value) {
 							if(GUILayout.Button(structure.Label)) {
-								if(fa++ == 0) {
-									ShowingMenu = false;
-									LoadStructure(structure);
-								} else {
-									Object.DestroyImmediate(GameObject.Find("VrCamera(Clone)"));
-
-								}
+								ShowingMenu = false;
+								LoadStructure(structure);
+								break;
 							}
 						}
 					}
@@ -128,17 +125,18 @@ namespace BlackBox
 				string.Empty
 			);
 		}
-		int fa = 0;
-		static void LoadStructure(PreloadedStructure structure) {
-			string path = Path.Combine(
-				              Application.streamingAssetsPath,
-				              Path.Combine(
-					              "Structures",
-					              structure.File
-				              ));
 
+		void LoadStructure(PreloadedStructure structure) {
 			GUIDisplay.Instance.Clear(false);
 			GUIMoleculeController.Instance.showOpenMenu = false;
+
+			string path = Path.Combine(
+				Application.streamingAssetsPath,
+				Path.Combine(
+					"Structures",
+					structure.File
+				)
+			);
 
 			var format = structure.Format;
 			if(format == "xyz" || format == "pdb") {
@@ -146,7 +144,7 @@ namespace BlackBox
 			} else {
 				GUIDisplay.Instance.TrajectoryType = format == "xmol" ?
 					ParseableOutputTypes.Xyz_Xmol : ParseableOutputTypes.Gamess;
-				GUIDisplay.Instance.OpenTrajectoryCallback(path);
+				StartCoroutine(GUIDisplay.Instance.OpenTrajectoryCallbackCoroutine(path));
 			}
 		}
 

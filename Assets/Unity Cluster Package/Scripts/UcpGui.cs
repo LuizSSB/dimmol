@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using AssemblyCSharp;
 
 namespace UnityClusterPackage {
 	public abstract class UcpGuiAction : MonoBehaviour
@@ -37,6 +38,8 @@ namespace UnityClusterPackage {
 			m_Pb = ConvertNodePoint(Node.NodeScreen.Pb);
 			m_Pc = ConvertNodePoint(Node.NodeScreen.Pc);
 			m_Pe = ConvertNodePoint(Node.NodeScreen.Pe);
+
+			m_IsMobileDevice = PlatformUtils.IsMobile;
 		}
 
 		protected void OnGUI() {
